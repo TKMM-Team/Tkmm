@@ -1,0 +1,35 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="True">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Menu>
+                <MenuItem Header="File">
+                    <MenuItem Header="Open" />
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Open" />
+                </MenuItem>
+            </Menu>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="MenuItem.MenuFactor-MenuItem">
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Style Selector="^ /template/ Border#PART_LayoutRoot">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.08" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </Style>
+
+    <Style Selector="MenuItem.MenuFactor-TopLevel">
+        <Setter Property="Margin" Value="0,2" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+</Styles>
