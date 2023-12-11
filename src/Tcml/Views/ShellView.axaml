@@ -46,11 +46,12 @@
             <TextBlock Grid.Column="1"
                        Margin="5,0"
                        VerticalAlignment="Center"
-                       FontSize="12"
+                       FontFamily="{StaticResource UbuntuMono}"
                        Text="{Binding Status, Source={x:Static app:AppStatus.Shared}}" />
             <TextBlock Grid.Column="3"
                        Margin="5,0"
                        VerticalAlignment="Center"
+                       FontFamily="{StaticResource UbuntuMono}"
                        FontSize="12"
                        Text="{x:Static app:App.AppName}" />
         </Grid>

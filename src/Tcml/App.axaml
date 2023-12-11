@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sty="using:FluentAvalonia.Styling"
              RequestedThemeVariant="Default">
-    <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
+    <Application.Resources>
+        <FontFamily x:Key="UbuntuMono">avares://Tcml/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
+    </Application.Resources>
 
     <Application.Styles>
         <sty:FluentAvaloniaTheme />
