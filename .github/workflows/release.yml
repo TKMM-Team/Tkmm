@@ -27,7 +27,7 @@ jobs:
             ext: ~
 
     env:
-      proj: "Tcml"
+      proj: "Tcml.Desktop"
 
     steps:
       - uses: actions/checkout@master
@@ -53,7 +53,7 @@ jobs:
       - name: Archive Build Files
         uses: TheDoctor0/zip-release@0.7.1
         with:
-          type: 'zip'
+          type: 'application/zip'
           filename: ../TCML-${{ matrix.config.runtime }}.zip
           directory: ${{ matrix.config.name }}
           path: ./**
