@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    permissions: write-all
+    name: Build ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: Linux
+            os: ubuntu-20.04
+            runtime: linux-x64
+            ext: ~
+          - name: Windows
+            os: windows-latest
+            runtime: win-x64
+            ext: ".exe"
+          - name: MacOS
+            os: macos-latest
+            runtime: osx-x64
+            ext: ~
+
+    env:
+      proj: "Tcml"
+
+    steps:
+      - uses: actions/checkout@master
+        with:
+          submodules: recursive
+
+      - name: Install DotNET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Publish TCML
+        shell: bash
+        run: |
+          dotnet publish src/${{ env.proj }}/${{ env.proj }}.csproj \
+          -r ${{ matrix.config.runtime }} \
+          -c Release \
+          --sc false \
+          --version-suffix ${{ github.event.release.tag_name }} \
+          -o ${{ matrix.config.name }} \
+          -p:Version=${{ github.event.release.tag_name }}
+
+      - name: Archive Build Files
+        uses: TheDoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: ../${{ matrix.config.runtime }}.zip
+          directory: ${{ matrix.config.name }}
+          path: ./**
+          
+      - name: Upload artifacts
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: TCML-${{ matrix.config.runtime }}.zip
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
