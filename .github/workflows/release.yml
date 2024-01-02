@@ -54,7 +54,7 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          filename: ../${{ matrix.config.runtime }}.zip
+          filename: ../TCML-${{ matrix.config.runtime }}.zip
           directory: ${{ matrix.config.name }}
           path: ./**
           
