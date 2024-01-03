@@ -18,8 +18,8 @@ namespace Tcml;
 
 public partial class App : Application
 {
-    public static string AppName { get; } = $"Totk Single-platform Mod Loader - v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-    public static string CondensedAppName { get; } = $"TSML v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+    public static string AppName { get; } = $"Totk Cross-platform Mod Loader - v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+    public static string CondensedAppName { get; } = $"TCML v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
@@ -58,6 +58,7 @@ public partial class App : Application
 
             PageManager.Shared.Register("Home", new HomePageView(), Symbol.Home, "Home");
             PageManager.Shared.Register("Tools", new ToolsPageView(), Symbol.CodeHTML, "Mod Developer Tools");
+            PageManager.Shared.Register("About", new HomePageView(), Symbol.Home, "About The Project");
 
             shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
         }

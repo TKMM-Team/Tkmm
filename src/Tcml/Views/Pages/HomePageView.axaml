@@ -8,7 +8,10 @@
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
              mc:Ignorable="d">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button Command="{Binding SetStatusCommand}" Content="Set Status" />
-    </Grid>
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Canvas>
+			<TextBlock Text="TCML" Canvas.Left="-300" Canvas.Top="-170" />
+		</Canvas>
+		<Button Command="{Binding SetStatusCommand}" Content="Set Status" />
+	</Grid>
 </UserControl>
