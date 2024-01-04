@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core;
+using Tkmm.Core.Helpers.Operations;
 
 namespace Tkmm.Models.Mods;
 
@@ -18,7 +18,7 @@ public partial class Mod : ObservableObject
 
     [ObservableProperty]
     private string _version = string.Empty;
-    
+
     [ObservableProperty]
     private string _author = string.Empty;
 
@@ -27,13 +27,13 @@ public partial class Mod : ObservableObject
 
     [ObservableProperty]
     private string _description = string.Empty;
-    
+
     [ObservableProperty]
     private string? _thumbnailUri;
-    
+
     [ObservableProperty]
     private bool _isEnabled = true;
-    
+
     [ObservableProperty]
     [property: JsonIgnore]
     private Bitmap? _thumbnail;

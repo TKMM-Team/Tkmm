@@ -2,8 +2,6 @@
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Attributes;
-using Tkmm.Core;
-using Tkmm.Core.Helpers.Operations;
 using Tkmm.Helpers;
 using Tkmm.Models.Mods;
 using Tkmm.ViewModels.Pages;

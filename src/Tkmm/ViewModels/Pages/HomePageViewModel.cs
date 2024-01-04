@@ -6,7 +6,6 @@ using FluentAvalonia.UI.Controls;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using Tkmm.Core;
-using Tkmm.Core.Helpers.Operations;
 using Tkmm.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
