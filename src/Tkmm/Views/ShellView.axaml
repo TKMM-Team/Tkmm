@@ -1,0 +1,61 @@
+<uiw:AppWindow x:Class="Tkmm.Views.ShellView"
+               xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:app="using:Tkmm"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:helper-models="using:Tkmm.Helpers.Models"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+               xmlns:ui="using:FluentAvalonia.UI.Controls"
+               xmlns:uiw="using:FluentAvalonia.UI.Windowing"
+               xmlns:vm="using:Tkmm.ViewModels"
+               Title="{x:Static app:App.CondensedAppName}"
+               Width="800"
+               Height="450"
+               MinWidth="650"
+               MinHeight="450"
+               d:DesignHeight="450"
+               d:DesignWidth="800"
+               x:DataType="vm:ShellViewModel"
+               mc:Ignorable="d">
+    <Grid RowDefinitions="32,*,25">
+        <Grid ColumnDefinitions="Auto,*">
+            <Image Margin="4,2"
+                   Source="/Assets/icon.ico"
+                   Stretch="4" />
+            <Menu Name="MainMenu" Grid.Column="1" />
+        </Grid>
+
+        <ui:NavigationView Name="MainNavigation"
+                           Grid.Row="1"
+                           PaneDisplayMode="LeftCompact"
+                           PaneTitle="{x:Static app:App.CondensedAppName}">
+            <ui:NavigationView.MenuItemTemplate>
+                <DataTemplate x:DataType="helper-models:PageModel">
+                    <ui:NavigationViewItem Content="{Binding Title}"
+                                           IconSource="{Binding Icon}"
+                                           Tag="{Binding Content}"
+                                           ToolTip.Tip="{Binding Description}" />
+                </DataTemplate>
+            </ui:NavigationView.MenuItemTemplate>
+        </ui:NavigationView>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="Auto,Auto,*,Auto,Auto"
+              IsHitTestVisible="False">
+            <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
+            <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static app:AppStatus.Shared}}" />
+            <TextBlock Grid.Column="1"
+                       Margin="5,0"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource UbuntuMono}"
+                       Text="{Binding Status, Source={x:Static app:AppStatus.Shared}}" />
+            <TextBlock Grid.Column="3"
+                       Margin="5,0"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource UbuntuMono}"
+                       FontSize="12"
+                       Text="{x:Static app:App.AppName}" />
+        </Grid>
+    </Grid>
+</uiw:AppWindow>

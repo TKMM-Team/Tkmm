@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm", "Tkmm\Tkmm.csproj", "{3321B06B-B5CB-4CA2-BD21-33E583964517}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Desktop", "Tkmm.Desktop\Tkmm.Desktop.csproj", "{40A7617E-DE6F-4042-BF60-160D7C5AD87F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core", "Tkmm.Core\Tkmm.Core.csproj", "{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3321B06B-B5CB-4CA2-BD21-33E583964517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3321B06B-B5CB-4CA2-BD21-33E583964517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3321B06B-B5CB-4CA2-BD21-33E583964517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3321B06B-B5CB-4CA2-BD21-33E583964517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A7617E-DE6F-4042-BF60-160D7C5AD87F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A7617E-DE6F-4042-BF60-160D7C5AD87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A7617E-DE6F-4042-BF60-160D7C5AD87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A7617E-DE6F-4042-BF60-160D7C5AD87F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E3CBDD9-5DDE-459B-AAA6-90CAD61F9EA4}
+	EndGlobalSection
+EndGlobal

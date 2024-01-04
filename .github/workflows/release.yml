@@ -27,7 +27,7 @@ jobs:
             ext: ~
 
     env:
-      proj: "Tcml.Desktop"
+      proj: "Tkmm.Desktop"
 
     steps:
       - uses: actions/checkout@master
@@ -39,7 +39,7 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Publish TCML
+      - name: Publish TKMM
         shell: bash
         run: |
           dotnet publish src/${{ env.proj }}/${{ env.proj }}.csproj \
@@ -54,12 +54,12 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          filename: ../TCML-${{ matrix.config.runtime }}.zip
+          filename: ../TKMM-${{ matrix.config.runtime }}.zip
           directory: ${{ matrix.config.name }}
           path: ./**
           
       - name: Upload artifacts
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: TCML-${{ matrix.config.runtime }}.zip
+          files: TKMM-${{ matrix.config.runtime }}.zip
           repo-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1880,11 +1880,11 @@
       "locked": false,
       "fontSize": 16,
       "fontFamily": 1,
-      "text": "Configuration models (data defined as fields) for TCML\nand TotK (game paths). These are separate because\nthe TotkConfig is shared by other apps (I.e. NXE)",
+      "text": "Configuration models (data defined as fields) for TKMM\nand TotK (game paths). These are separate because\nthe TotkConfig is shared by other apps (I.e. NXE)",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Configuration models (data defined as fields) for TCML\nand TotK (game paths). These are separate because\nthe TotkConfig is shared by other apps (I.e. NXE)",
+      "originalText": "Configuration models (data defined as fields) for TKMM\nand TotK (game paths). These are separate because\nthe TotkConfig is shared by other apps (I.e. NXE)",
       "lineHeight": 1.25,
       "baseline": 54
     }
