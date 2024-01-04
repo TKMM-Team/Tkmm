@@ -2,11 +2,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using Tkmm.Core.Helpers.Operations;
+using Tkmm.Core;
 
 namespace Tkmm.Models.Mods;
 
 public partial class Mod : ObservableObject
 {
+    [ObservableProperty]
+    private Guid _id = Guid.Empty;
+
     [ObservableProperty]
     private string _name = string.Empty;
 
@@ -29,10 +35,16 @@ public partial class Mod : ObservableObject
     private bool _isEnabled = true;
     
     [ObservableProperty]
-    [property: System.Text.Json.Serialization.JsonIgnore()]
+    [property: JsonIgnore]
     private Bitmap? _thumbnail;
 
-    public static Mod FromFolder(string folder)
+    [JsonIgnore]
+    public string SourceFolder { get; private set; } = string.Empty;
+
+    [JsonIgnore]
+    public bool IsFromStorage { get; private set; } = false;
+
+    public static Mod FromFolder(string folder, bool isFromStorage = false)
     {
         string modInfoPath = Path.Combine(folder, "info.json");
         if (!File.Exists(modInfoPath)) {
@@ -44,6 +56,9 @@ public partial class Mod : ObservableObject
         Mod result = JsonSerializer.Deserialize<Mod>(fs)
             ?? throw new InvalidOperationException(
                 "Could not parse ModInfo");
+
+        result.SourceFolder = folder;
+        result.IsFromStorage = isFromStorage;
 
         // Resolve thumbnail
         if (result.ThumbnailUri is string uri) {
@@ -73,5 +88,15 @@ public partial class Mod : ObservableObject
         }
 
         return result;
+    }
+
+    public void Import()
+    {
+        if (IsFromStorage) {
+            return;
+        }
+
+        string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString());
+        DirectoryOperations.CopyDirectory(SourceFolder, outputModFolder);
     }
 }

@@ -44,14 +44,16 @@ public partial class HomePageViewModel : ObservableObject
         // This should be abstracted to a
         // service but this should work
 
+        foreach (var mod in Mods) {
+            // Import the mod if
+            // it's not already
+            mod.Import();
+        }
+
         string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
         using FileStream fs = File.Create(modList);
 
-        JsonSerializer.Serialize(fs, Mods.Select(x => DirectoryOperations
-            .ToSafeName(x.Name)
-            .Replace(' ', '-')
-            .ToLower())
-        );
+        JsonSerializer.Serialize(fs, Mods.Select(x => x.Id));
 
         AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
         return Task.CompletedTask;
@@ -110,7 +112,7 @@ public partial class HomePageViewModel : ObservableObject
         foreach (string mod in mods) {
             string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod);
             if (Directory.Exists(modFolder)) {
-                Mods.Add(Mod.FromFolder(modFolder));
+                Mods.Add(Mod.FromFolder(modFolder, isFromStorage: true));
             }
         }
 

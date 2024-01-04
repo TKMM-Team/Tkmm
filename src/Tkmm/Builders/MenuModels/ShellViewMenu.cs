@@ -31,14 +31,6 @@ public class ShellViewMenu
 
         Mod mod = Mod.FromFolder(selectedFolder);
 
-        string modFolderName = DirectoryOperations
-            .ToSafeName(mod.Name)
-            .Replace(' ', '-')
-            .ToLower();
-
-        string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", modFolderName);
-        DirectoryOperations.CopyDirectory(selectedFolder, outputModFolder);
-
         HomePageViewModel homePage
             = PageManager.Shared.Get<HomePageViewModel>(Page.Home);
 
