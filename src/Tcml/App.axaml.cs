@@ -37,8 +37,7 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
             ShellView shellView = new() {
                 DataContext = new ShellViewModel()
             };

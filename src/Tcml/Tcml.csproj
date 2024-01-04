@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   
   <ItemGroup>
@@ -26,11 +27,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tcml.Core\Tcml.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\Fonts\Nin-ZeldaGlyphs-v2\Nin-ZeldaGlyphs-v2-Deco.bfotf.otf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AvaloniaResource>
   </ItemGroup>
 </Project>

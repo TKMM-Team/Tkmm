@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 using System.Diagnostics;
-using System.Threading;
 
 namespace Tcml;
 

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
-using ConfigFactory.Core.Attributes;
 
 namespace Tcml.Core;
 

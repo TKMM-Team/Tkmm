@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
-using ConfigFactory.Core.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Tcml.Core;
@@ -26,7 +25,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
     private string _gamePath = string.Empty;
-    
+
     [JsonIgnore]
     public string ZsDicPath => Path.Combine(GamePath, "Pack", "ZsDic.pack.zs");
 
