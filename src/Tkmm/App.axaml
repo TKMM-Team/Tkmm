@@ -8,7 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <FontFamily x:Key="UbuntuMono">avares://Tkmm/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
-                    <FontFamily x:Key="TKMMTitleFont">avares://Tkmm/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
+                    <FontFamily x:Key="HyliaGlyph">avares://Tkmm/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>

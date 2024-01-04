@@ -12,89 +12,144 @@
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
              mc:Ignorable="d">
-    <Grid Margin="25"
-          ColumnDefinitions="*,Auto,0.4*"
-          RowDefinitions="Auto,*,0.4*,Auto">
-        <Grid Name="TitleGrid"
-              Margin="0,0,0,15"
-              ColumnDefinitions="*,Auto,Auto">
-            <TextBlock VerticalAlignment="Center"
-                       FontSize="18"
-                       FontWeight="Medium"
-                       Text="{Binding CurrentMod.Name}"
-                       TextTrimming="CharacterEllipsis" />
-            <TextBlock Grid.Column="1"
-                       VerticalAlignment="Center"
-                       FontSize="18"
-                       Text="{Binding CurrentMod.Author, StringFormat=' By {0} and'}" />
-            <ui:HyperlinkButton Grid.Column="2"
-                                Margin="3,0,0,0"
-                                Padding="1"
-                                Command="{Binding ShowContributorsCommand}"
-                                Content="Contributors"
-                                FontSize="16" />
-        </Grid>
-        <Grid Name="ContentGrid"
-              Grid.Row="1"
-              Margin="0,0,0,15">
-            <Border HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    BoxShadow="2 2 30 1 #30000000"
-                    CornerRadius="5">
-                <Border ClipToBounds="True" CornerRadius="5">
-                    <Image Source="{Binding CurrentMod.Thumbnail}" />
-                </Border>
-            </Border>
-        </Grid>
-        <ScrollViewer Name="DescriptionGrid" Grid.Row="2">
-            <StackPanel>
-                <TextBlock Margin="0,0,0,8"
+    <Grid Name="DropTarget"
+          Background="Transparent"
+          DragDrop.AllowDrop="True">
+        <Viewbox Name="WelcomePage"
+                 MaxWidth="800"
+                 MaxHeight="600"
+                 IsVisible="{Binding !Mods.Count}">
+            <ContentControl HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Grid Width="600"
+                      Height="300"
+                      Margin="10"
+                      RowDefinitions="auto,*">
+                    <TextBlock Margin="5"
+                               FontFamily="{StaticResource HyliaGlyph}"
+                               FontSize="32"
+                               Foreground="{DynamicResource SystemChromeHighColor}"
+                               Text="{x:Static app:App.Title}" />
+                    <ui:HyperlinkButton Margin="5"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Content="{x:Static app:App.Version}"
+                                        FontFamily="{StaticResource UbuntuMono}"
+                                        FontSize="20" />
+                    <Rectangle Grid.Row="1"
+                               Margin="5"
+                               Stroke="{DynamicResource SystemChromeHighColor}"
+                               StrokeDashArray="7,7"
+                               StrokeThickness="2" />
+                    <Border Grid.Row="1"
+                            Margin="5"
+                            Background="Transparent">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <pi:Icon Margin="25"
+                                     Foreground="{DynamicResource SystemChromeHighColor}"
+                                     RenderTransform="scale(5)"
+                                     Value="fa-regular fa-folder-open" />
+                            <TextBlock Margin="5"
+                                       Padding="15"
+                                       FontFamily="{StaticResource Ubuntu}"
+                                       FontStyle="Italic"
+                                       Foreground="{DynamicResource SystemChromeHighColor}"
+                                       Text="Drag and Drop a mod folder ot TCL to import"
+                                       TextAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ContentControl>
+        </Viewbox>
+        <Grid Name="ModDisplayPage"
+              Margin="25"
+              ColumnDefinitions="*,Auto,0.4*"
+              IsVisible="{Binding Mods.Count}"
+              RowDefinitions="Auto,*,0.4*,Auto">
+            <Grid Name="TitleGrid"
+                  Margin="0,0,0,15"
+                  ColumnDefinitions="*,Auto,Auto">
+                <TextBlock VerticalAlignment="Center"
                            FontSize="18"
                            FontWeight="Medium"
-                           Text="Description" />
-                <TextBlock Text="{Binding CurrentMod.Description}" TextWrapping="WrapWithOverflow" />
-            </StackPanel>
-        </ScrollViewer>
+                           Text="{Binding CurrentMod.Name}"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                           FontSize="18"
+                           Text="{Binding CurrentMod.Author, StringFormat=' By {0} and'}" />
+                <ui:HyperlinkButton Grid.Column="2"
+                                    Margin="3,0,0,0"
+                                    Padding="1"
+                                    Command="{Binding ShowContributorsCommand}"
+                                    Content="Contributors"
+                                    FontSize="16" />
+            </Grid>
+            <Grid Name="ContentGrid"
+                  Grid.Row="1"
+                  Margin="0,0,0,15">
+                <Border HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        BoxShadow="2 2 30 1 #30000000"
+                        CornerRadius="5">
+                    <Border ClipToBounds="True" CornerRadius="5">
+                        <Image Source="{Binding CurrentMod.Thumbnail}" />
+                    </Border>
+                </Border>
+            </Grid>
+            <ScrollViewer Name="DescriptionGrid" Grid.Row="2">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,8"
+                               FontSize="18"
+                               FontWeight="Medium"
+                               Text="Description" />
+                    <TextBlock Text="{Binding CurrentMod.Description}" TextWrapping="WrapWithOverflow" />
+                </StackPanel>
+            </ScrollViewer>
 
-        <Border Grid.RowSpan="4"
-                Grid.Column="1"
-                Width="1"
-                Margin="15,0"
-                VerticalAlignment="Stretch"
-                Background="{DynamicResource SystemAccentColor}" />
+            <Border Grid.RowSpan="4"
+                    Grid.Column="1"
+                    Width="1"
+                    Margin="15,0"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource SystemAccentColor}" />
 
-        <Grid Name="ModListGrid"
-              Grid.RowSpan="3"
-              Grid.Column="2">
-            <ListBox ItemsSource="{Binding Mods}" SelectedItem="{Binding CurrentMod}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:Mod}">
-                        <TextBlock Background="Transparent"
-                                   Text="{Binding Name}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip.Tip="{Binding Name}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Grid Name="ModListGrid"
+                  Grid.RowSpan="3"
+                  Grid.Column="2">
+                <ListBox ItemsSource="{Binding Mods}" SelectedItem="{Binding CurrentMod}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:Mod}">
+                            <TextBlock Background="Transparent"
+                                       Text="{Binding Name}"
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip.Tip="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <Grid Grid.Row="4"
+                  Grid.Column="2"
+                  HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Button Command="{Binding RemoveCommand}" ToolTip.Tip="Remove Mod">
+                        <pi:Icon Value="fa-solid fa-trash" />
+                    </Button>
+                    <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
+                        <pi:Icon Value="fa-solid fa-caret-up" />
+                    </Button>
+                    <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
+                        <pi:Icon Value="fa-solid fa-caret-down" />
+                    </Button>
+                    <Button Command="{Binding ApplyCommand}">
+                        <pi:Icon Value="fa-solid fa-list-check" />
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Grid>
 
-        <Grid Grid.Row="4"
-              Grid.Column="2"
-              HorizontalAlignment="Right">
-            <StackPanel Orientation="Horizontal" Spacing="5">
-                <Button Command="{Binding RemoveCommand}" ToolTip.Tip="Remove Mod">
-                    <pi:Icon Value="fa-solid fa-trash" />
-                </Button>
-                <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
-                    <pi:Icon Value="fa-solid fa-caret-up" />
-                </Button>
-                <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
-                    <pi:Icon Value="fa-solid fa-caret-down" />
-                </Button>
-                <Button Command="{Binding ApplyCommand}">
-                    <pi:Icon Value="fa-solid fa-list-check" />
-                </Button>
-            </StackPanel>
-        </Grid>
+        <Border Name="DragFadeMask"
+                Background="#90000000"
+                IsVisible="False" />
     </Grid>
 </UserControl>

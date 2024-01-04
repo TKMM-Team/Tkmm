@@ -9,7 +9,7 @@
                xmlns:ui="using:FluentAvalonia.UI.Controls"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
                xmlns:vm="using:Tkmm.ViewModels"
-               Title="{x:Static app:App.CondensedAppName}"
+               Title="{x:Static app:App.ShortTitle}"
                Width="800"
                Height="450"
                MinWidth="650"
@@ -30,7 +30,7 @@
         <ui:NavigationView Name="MainNavigation"
                            Grid.Row="1"
                            PaneDisplayMode="LeftCompact"
-                           PaneTitle="{x:Static app:App.CondensedAppName}">
+                           PaneTitle="{x:Static app:App.ShortTitle}">
             <ui:NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="helper-models:PageModel">
                     <ui:NavigationViewItem Content="{Binding Title}"
@@ -55,8 +55,11 @@
                        Margin="5,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource UbuntuMono}"
-                       FontSize="12"
-                       Text="{x:Static app:App.AppName}" />
+                       FontSize="12">
+                <Run Text="{x:Static app:App.Title}" />
+                <Run Text=" | " />
+                <Run Text="{Binding, Source={x:Static app:App.Version}, StringFormat=' v{0}'}" />
+            </TextBlock>
         </Grid>
     </Grid>
 </uiw:AppWindow>

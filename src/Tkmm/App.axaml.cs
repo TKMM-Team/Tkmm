@@ -18,8 +18,10 @@ namespace Tkmm;
 
 public partial class App : Application
 {
-    public static string AppName { get; } = $"TotK Mod Manager - v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-    public static string CondensedAppName { get; } = $"TKMM v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+    public static string? Version { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+    public static string Title { get; } = $"TotK Mod Manager";
+    public static string ShortTitle { get; } = $"TKMM v{Version}";
+    public static string ReleaseUrl { get; } = $"https://github.com/TKMM-Team/Tkmm/releases/{Version}";
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
