@@ -1,0 +1,26 @@
+{
+  "Name": "Ultracam",
+  "Version": "1.0.0",
+  "Author": "maxlastbreath",
+  "Contributors": [
+    {
+      "Name": "The5thTear",
+      "Contributions": ["Emotional Support", "Encouragement"]
+    },
+    {
+      "Name": "Shadow",
+      "Contributions": ["exefs stuffs"]
+    }
+  ],
+  "Description": "This is a description, its cool.",
+  "Compatibility": [
+    112
+  ],
+  "Changelog": [
+    {
+      "Version": "1.0.0",
+      "Date": "2024-01-02",
+      "Changes": ["Initial release"]
+    }
+  ]
+}
