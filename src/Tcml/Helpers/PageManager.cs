@@ -1,4 +1,6 @@
-﻿using FluentAvalonia.UI.Controls;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FluentAvalonia.UI.Controls;
 using System.Collections.ObjectModel;
 using Tcml.Helpers.Models;
 
@@ -31,13 +33,15 @@ public class PageManager
         });
     }
 
-    public PageModel Get(Page page)
+    public T Get<T>(Page page) where T : ObservableObject
     {
-        return Pages[_lookup[page]];
-    }
+        if (Pages[_lookup[page]].Content is UserControl userControl) {
+            if (userControl.DataContext is T value) {
+                return value;
+            }
+        }
 
-    public T Get<T>(Page page) where T : PageModel
-    {
-        return (T)Pages[_lookup[page]];
+        throw new InvalidOperationException(
+            $"Invalid ViewModel type for '{page}'");
     }
 }
