@@ -18,8 +18,8 @@ namespace Tcml;
 
 public partial class App : Application
 {
-    public static string AppName { get; } = $"Totk Cross-platform Mod Loader - v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-    public static string CondensedAppName { get; } = $"TCML v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+    public static string AppName { get; } = $"TotK Mod Manager - v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+    public static string CondensedAppName { get; } = $"TKMM v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
