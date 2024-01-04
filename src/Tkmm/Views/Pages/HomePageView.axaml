@@ -76,6 +76,9 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Spacing="5">
+            <Button Command="{Binding RemoveCommand}" ToolTip.Tip="Remove Mod">
+                <pi:Icon Value="fa-solid fa-trash" />
+            </Button>
             <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
                 <pi:Icon Value="fa-solid fa-caret-up" />
             </Button>

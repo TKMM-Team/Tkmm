@@ -73,6 +73,29 @@ public partial class HomePageViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
+    [RelayCommand]
+    private Task Remove()
+    {
+        if (CurrentMod is null) {
+            return Task.CompletedTask;
+        }
+
+        int removeIndex = Mods.IndexOf(CurrentMod);
+        Mods.RemoveAt(removeIndex);
+
+        if (Mods.Count == 0) {
+            return Task.CompletedTask;
+        }
+
+        while (removeIndex >= Mods.Count) {
+            removeIndex--;
+        }
+
+        CurrentMod = Mods[removeIndex];
+
+        return Task.CompletedTask;
+    }
+
     private void Move(int offset)
     {
         if (CurrentMod is null) {
