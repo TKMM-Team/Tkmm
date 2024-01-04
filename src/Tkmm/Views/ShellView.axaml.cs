@@ -26,6 +26,7 @@ public partial class ShellView : AppWindow
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
         MainNavigation.MenuItemsSource = PageManager.Shared.Pages;
+        MainNavigation.FooterMenuItemsSource = PageManager.Shared.FooterPages;
         MainNavigation.SelectionChanged += (s, e) => {
             if (e.IsSettingsSelected) {
                 MainNavigation.Content = _configPage;

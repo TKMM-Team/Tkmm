@@ -57,7 +57,7 @@ public partial class App : Application
 
             PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home");
             PageManager.Shared.Register(Page.Tools, "Dev Tools", new ToolsPageView(), Symbol.CodeHTML, "Mod Developer Tools");
-            PageManager.Shared.Register(Page.About, "About", new HomePageView(), Symbol.Help, "About The Project");
+            PageManager.Shared.Register(Page.About, "About", new HomePageView(), Symbol.Help, "About The Project", isFooter: true);
 
             shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
         }

@@ -18,14 +18,16 @@ public class PageManager
     private static readonly Lazy<PageManager> _shared = new(() => new());
     public static PageManager Shared => _shared.Value;
 
-    private readonly Dictionary<Page, int> _lookup = [];
+    private readonly Dictionary<Page, (int Index, bool IsFooter)> _lookup = [];
     public ObservableCollection<PageModel> Pages { get; } = [];
+    public ObservableCollection<PageModel> FooterPages { get; } = [];
 
-    public void Register(Page page, string title, object? content, Symbol icon, string? description = null)
+    public void Register(Page page, string title, object? content, Symbol icon, string? description = null, bool isFooter = false)
     {
-        _lookup[page] = Pages.Count;
+        ObservableCollection<PageModel> source = isFooter ? FooterPages : Pages;
+        _lookup[page] = (source.Count, isFooter);
 
-        Pages.Add(new PageModel {
+        source.Add(new PageModel {
             Title = title,
             Content = content,
             Description = description,
@@ -35,7 +37,8 @@ public class PageManager
 
     public T Get<T>(Page page) where T : ObservableObject
     {
-        if (Pages[_lookup[page]].Content is UserControl userControl) {
+        (int index, bool isFooter) = _lookup[page];
+        if ((isFooter ? FooterPages : Pages)[index].Content is UserControl userControl) {
             if (userControl.DataContext is T value) {
                 return value;
             }
