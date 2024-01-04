@@ -55,9 +55,9 @@ public partial class App : Application
                 RequestedThemeVariant = theme == "Dark" ? ThemeVariant.Dark : ThemeVariant.Light;
             };
 
-            PageManager.Shared.Register("Home", new HomePageView(), Symbol.Home, "Home");
-            PageManager.Shared.Register("Tools", new ToolsPageView(), Symbol.CodeHTML, "Mod Developer Tools");
-            PageManager.Shared.Register("About", new HomePageView(), Symbol.Home, "About The Project");
+            PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home");
+            PageManager.Shared.Register(Page.Tools, "Tools", new ToolsPageView(), Symbol.CodeHTML, "Mod Developer Tools");
+            PageManager.Shared.Register(Page.About, "About", new HomePageView(), Symbol.Home, "About The Project");
 
             shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
         }

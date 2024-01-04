@@ -1,5 +1,4 @@
 ﻿using FluentAvalonia.UI.Controls;
-using System.Collections.ObjectModel;
 using Tcml.Helpers.Models;
 
 namespace Tcml.Helpers;
@@ -7,7 +6,8 @@ namespace Tcml.Helpers;
 public enum Page
 {
     Home,
-    Tools
+    Tools,
+    About
 }
 
 public class PageManager
@@ -15,11 +15,11 @@ public class PageManager
     private static readonly Lazy<PageManager> _shared = new(() => new());
     public static PageManager Shared => _shared.Value;
 
-    public ObservableCollection<PageModel> Pages { get; } = [];
+    public Dictionary<Page, PageModel> Pages { get; } = [];
 
-    public void Register(string title, object? content, Symbol icon, string? description = null)
+    public void Register(Page page, string title, object? content, Symbol icon, string? description = null)
     {
-        Pages.Add(new PageModel {
+        Pages.Add(page, new PageModel {
             Title = title,
             Content = content,
             Description = description,
