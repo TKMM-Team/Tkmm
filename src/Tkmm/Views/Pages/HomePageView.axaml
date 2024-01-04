@@ -20,8 +20,9 @@
                     <Run FontWeight="Medium" Text="{Binding CurrentMod.Name}" />
                     <Run Text=" | " />
                     <Run Text="{Binding CurrentMod.Author}" />
+                    <Run Text=" | " />
                 </TextBlock>
-                <Button Margin="15,0,0,0"
+                <Button Margin="3,0,0,0"
                         Command="{Binding ShowContributorsCommand}"
                         Content="Contributors" />
             </StackPanel>
@@ -66,7 +67,10 @@
             <ListBox ItemsSource="{Binding Mods}" SelectedItem="{Binding CurrentMod}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:Mod}">
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Background="Transparent"
+                                   Text="{Binding Name}"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip.Tip="{Binding Name}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
