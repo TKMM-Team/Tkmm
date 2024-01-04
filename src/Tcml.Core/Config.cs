@@ -8,11 +8,11 @@ public partial class Config : ConfigModule<Config>
     public static Action<string>? SetTheme { get; set; }
 
     [ObservableProperty]
-    [property: Config(
+    [property: ConfigFactory.Core.Attributes.Config(
         Header = "Theme",
         Description = "",
         Group = "Application")]
-    [property: DropdownConfig("Dark", "Light")]
+    [property: ConfigFactory.Core.Attributes.DropdownConfig("Dark", "Light")]
     private string _theme = "Dark";
 
     partial void OnThemeChanged(string value)

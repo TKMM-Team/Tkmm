@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
+using ConfigFactory.Core.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Tcml.Core;
@@ -10,7 +11,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Totk", "config.json");
 
     [ObservableProperty]
-    [property: Config(
+    [property: ConfigFactory.Core.Attributes.Config(
         Header = "Game Path",
         Description = """
             The absolute path to your TotK RomFS game dump
@@ -20,7 +21,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
             - 'Pack/ZsDic.pack.zs'
             """,
         Category = "TotK")]
-    [property: BrowserConfig(
+    [property:  ConfigFactory.Core.Attributes.BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
