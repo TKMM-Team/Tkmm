@@ -4,8 +4,29 @@
              xmlns:sty="using:FluentAvalonia.Styling"
              RequestedThemeVariant="Default">
     <Application.Resources>
-        <FontFamily x:Key="UbuntuMono">avares://Tkmm/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
-        <FontFamily x:Key="TKMMTitleFont">avares://Tkmm/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <FontFamily x:Key="UbuntuMono">avares://Tkmm/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
+                    <FontFamily x:Key="TKMMTitleFont">avares://Tkmm/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="SystemChromeHighColor">#FFACACAC</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeLowColor">Transparent</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeMediumColor">#FFF2F2F2</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeMediumLowColor">#FFE6E6E6</SolidColorBrush>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="SystemChromeHighColor">#FF737373</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeLowColor">Transparent</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeMediumColor">#FF2B2B2B</SolidColorBrush>
+                    <SolidColorBrush x:Key="SystemChromeMediumLowColor">#FF1F1F1F</SolidColorBrush>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+
     </Application.Resources>
 
     <Application.Styles>
