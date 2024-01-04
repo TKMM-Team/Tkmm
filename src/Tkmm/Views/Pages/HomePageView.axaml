@@ -7,6 +7,7 @@
              xmlns:models="using:Tkmm.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
@@ -14,23 +15,30 @@
     <Grid Margin="25"
           ColumnDefinitions="*,Auto,0.4*"
           RowDefinitions="Auto,*,0.4*,Auto">
-        <Grid Name="TitleGrid">
-            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" FontSize="18">
-                    <Run FontWeight="Medium" Text="{Binding CurrentMod.Name}" />
-                    <Run Text=" | " />
-                    <Run Text="{Binding CurrentMod.Author}" />
-                    <Run Text=" | " />
-                </TextBlock>
-                <Button Margin="3,0,0,0"
-                        Command="{Binding ShowContributorsCommand}"
-                        Content="Contributors" />
-            </StackPanel>
+        <Grid Name="TitleGrid"
+              Margin="0,0,0,15"
+              ColumnDefinitions="*,Auto,Auto">
+            <TextBlock VerticalAlignment="Center"
+                       FontSize="18"
+                       FontWeight="Medium"
+                       Text="{Binding CurrentMod.Name}"
+                       TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       FontSize="18"
+                       Text="{Binding CurrentMod.Author, StringFormat=' By {0} and'}" />
+            <ui:HyperlinkButton Grid.Column="2"
+                                Margin="3,0,0,0"
+                                Padding="1"
+                                Command="{Binding ShowContributorsCommand}"
+                                Content="Contributors"
+                                FontSize="16" />
         </Grid>
         <Grid Name="ContentGrid"
               Grid.Row="1"
               Margin="0,0,0,15">
             <Border HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
                     BoxShadow="2 2 30 1 #30000000"
                     CornerRadius="5">
                 <Border ClipToBounds="True" CornerRadius="5">
@@ -70,24 +78,23 @@
             </ListBox>
         </Grid>
 
-        <StackPanel Grid.Row="4"
-                    Grid.Column="2"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal"
-                    Spacing="5">
-            <Button Command="{Binding RemoveCommand}" ToolTip.Tip="Remove Mod">
-                <pi:Icon Value="fa-solid fa-trash" />
-            </Button>
-            <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
-                <pi:Icon Value="fa-solid fa-caret-up" />
-            </Button>
-            <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
-                <pi:Icon Value="fa-solid fa-caret-down" />
-            </Button>
-            <Button Command="{Binding ApplyCommand}">
-                <pi:Icon Value="fa-solid fa-list-check" />
-            </Button>
-        </StackPanel>
+        <Grid Grid.Row="4"
+              Grid.Column="2"
+              HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <Button Command="{Binding RemoveCommand}" ToolTip.Tip="Remove Mod">
+                    <pi:Icon Value="fa-solid fa-trash" />
+                </Button>
+                <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
+                    <pi:Icon Value="fa-solid fa-caret-up" />
+                </Button>
+                <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
+                    <pi:Icon Value="fa-solid fa-caret-down" />
+                </Button>
+                <Button Command="{Binding ApplyCommand}">
+                    <pi:Icon Value="fa-solid fa-list-check" />
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
