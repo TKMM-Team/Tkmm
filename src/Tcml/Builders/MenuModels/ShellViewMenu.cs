@@ -1,8 +1,9 @@
 ﻿using Avalonia.Controls;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
-using System.Text.Json;
 using Tcml.Attributes;
+using Tcml.Core;
+using Tcml.Core.Helpers.Operations;
 using Tcml.Helpers;
 using Tcml.Models.Mods;
 using Tcml.ViewModels.Pages;
@@ -28,15 +29,20 @@ public class ShellViewMenu
             return;
         }
 
-        string jsonFilePath = Path.Combine(selectedFolder, "info.json");
-        string jsonContent = File.ReadAllText(jsonFilePath);
+        Mod mod = Mod.FromFolder(selectedFolder);
 
-        ModInfo modInfo = JsonSerializer.Deserialize<ModInfo>(jsonContent)
-            ?? throw new InvalidOperationException(
-                "Could not parse ModInfo");
+        string modFolderName = DirectoryOperations
+            .ToSafeName(mod.Name)
+            .Replace(' ', '-')
+            .ToLower();
+
+        string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", modFolderName);
+        DirectoryOperations.CopyDirectory(selectedFolder, outputModFolder);
 
         HomePageViewModel homePage
             = PageManager.Shared.Get<HomePageViewModel>(Page.Home);
-        homePage.Description = modInfo.Description;
+
+        homePage.Mods.Add(mod);
+        homePage.CurrentMod = homePage.Mods.Last();
     }
 }
