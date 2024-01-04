@@ -5,7 +5,8 @@
              RequestedThemeVariant="Default">
     <Application.Resources>
         <FontFamily x:Key="UbuntuMono">avares://Tcml/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
-    </Application.Resources>
+		<FontFamily x:Key="TCMLTitleFont">avares://Tcml/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
+	</Application.Resources>
 
     <Application.Styles>
         <sty:FluentAvaloniaTheme />

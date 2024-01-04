@@ -8,10 +8,13 @@
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
              mc:Ignorable="d">
-	<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-		<Canvas>
-			<TextBlock Text="TCML" Canvas.Left="-300" Canvas.Top="-170" />
-		</Canvas>
-		<Button Command="{Binding SetStatusCommand}" Content="Set Status" />
+	<Grid>
+		<Button Command="{Binding SetStatusCommand}" Content="Set Status" HorizontalAlignment="Right" Margin="0,0,50,0"/>
+		<TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,40,0,0" FontSize="60" Foreground="#0078c9" FontFamily="{StaticResource TCMLTitleFont}">
+			TCML
+		</TextBlock>
+		<TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,90" FontSize="30" Foreground="#FFFFFF">
+			Description
+		</TextBlock>
 	</Grid>
 </UserControl>

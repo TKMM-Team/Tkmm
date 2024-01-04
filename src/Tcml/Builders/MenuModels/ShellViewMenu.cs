@@ -48,6 +48,8 @@ namespace Tcml.Builders.MenuModels
                 try
                 {
                     modInfo = JsonSerializer.Deserialize<ModInfo>(jsonContent);
+
+
                 }
                 catch (JsonException ex)
                 {

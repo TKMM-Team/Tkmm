@@ -20,7 +20,7 @@
                mc:Ignorable="d">
     <Grid RowDefinitions="32,*,25">
         <Grid ColumnDefinitions="Auto,*">
-            <Image Margin="6,4" Source="/Assets/icon.ico" />
+            <Image Margin="4,2" Source="/Assets/icon.ico" Stretch="4"/>
             <Menu Name="MainMenu" Grid.Column="1" />
         </Grid>
 
