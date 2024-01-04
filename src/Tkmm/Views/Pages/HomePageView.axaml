@@ -53,7 +53,7 @@
                                        FontFamily="{StaticResource Ubuntu}"
                                        FontStyle="Italic"
                                        Foreground="{DynamicResource SystemChromeHighColor}"
-                                       Text="Drag and Drop a mod folder ot TCL to import"
+                                       Text="Drag and Drop a mod folder or TCL to import"
                                        TextAlignment="Center" />
                         </StackPanel>
                     </Border>
