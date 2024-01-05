@@ -9,6 +9,6 @@ public partial class AboutPageViewModel : ObservableObject
     [RelayCommand]
     private static async Task Refresh()
     {
-        await WikiSourceManager.Shared.Fetch(forceFetch: true);
+        await WikiSourceManager.Shared.Fetch();
     }
 }

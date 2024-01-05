@@ -17,19 +17,9 @@ public partial class WikiSourceManager : ObservableObject
     private ObservableCollection<WikiItem> _items = [];
 
     [RelayCommand]
-    public async Task Fetch(bool forceFetch = false)
+    public async Task Fetch()
     {
-        Retry:
-        if (!forceFetch) {
-            string cached = Path.Combine(Config.Shared.StorageFolder, "wiki.json");
-            if (File.Exists(cached)) {
-                using FileStream fs = File.OpenRead(cached);
-                Items = JsonSerializer.Deserialize<ObservableCollection<WikiItem>>(fs)
-                    ?? throw new InvalidOperationException("Could not deserialize WikiItems from cache");
-            }
-
-            return;
-        }
+        string cached = Path.Combine(Config.Shared.StorageFolder, "wiki.json");
 
         // Fill Items
         try {
@@ -38,11 +28,16 @@ public partial class WikiSourceManager : ObservableObject
 
             Items = JsonSerializer.Deserialize<ObservableCollection<WikiItem>>(data)
                 ?? throw new InvalidOperationException("Could not deserialize WikiItems");
+            File.WriteAllBytes(cached, data);
         }
         catch (Exception ex) {
             Trace.WriteLine(ex);
-            forceFetch = false;
-            goto Retry;
+
+            if (File.Exists(cached)) {
+                using FileStream fs = File.OpenRead(cached);
+                Items = JsonSerializer.Deserialize<ObservableCollection<WikiItem>>(fs)
+                    ?? throw new InvalidOperationException("Could not deserialize WikiItems from cache");
+            }
         }
     }
 }
