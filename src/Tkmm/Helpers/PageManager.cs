@@ -10,7 +10,10 @@ public enum Page
 {
     Home,
     Tools,
-    About
+    Mods,
+
+    About,
+    Logs,
 }
 
 public class PageManager
