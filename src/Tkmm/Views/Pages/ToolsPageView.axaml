@@ -1,14 +1,74 @@
-<UserControl x:Class="Tkmm.Views.Pages.ToolsPageView"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:pages="using:Tkmm.ViewModels.Pages"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
-             x:DataType="pages:ToolsPageViewModel"
-             mc:Ignorable="d">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Developer Page" />
+<UserControl
+    x:Class="Tkmm.Views.Pages.ToolsPageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:Tkmm.ViewModels.Pages"
+    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="pages:ToolsPageViewModel"
+    mc:Ignorable="d">
+    <Grid>
+        <TextBlock
+            Margin="0,0,10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            FontFamily="{StaticResource HyliaGlyph}"
+            FontSize="50"
+            Foreground="{DynamicResource SystemAccentColor}"
+            Text=".TCL Packaging Hub" />
+        <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock
+                    Margin="10,0,0,0"
+                    FontWeight="Bold"
+                    Text="Mod Path:" />
+                <TextBox
+                    Width="300"
+                    Margin="40,10,0,10"
+                    Text="Add the mod path here!" />
+                <TextBlock
+                    Margin="10,0,0,10"
+                    FontWeight="Bold"
+                    Text="Thumbnail Path:" />
+                <TextBox
+                    Width="300"
+                    Margin="40,10,0,0"
+                    Text="Add the thumbnail path here!" />
+                <TextBlock
+                    Margin="10,10,0,10"
+                    FontWeight="Bold"
+                    Text="Primary Author:" />
+                <TextBox
+                    Width="300"
+                    Margin="40,0,0,0"
+                    Text="Add the primary author here!" />
+                <TextBlock
+                    Margin="10,10,0,10"
+                    FontWeight="Bold"
+                    Text="Additional Contributors:" />
+                <Button Width="40" Height="30">
+                    <pi:Icon Value="fa-solid fa-plus" />
+                </Button>
+                <TextBlock
+                    Margin="10,0,0,10"
+                    FontWeight="Bold"
+                    Text="Mod Title:" />
+                <TextBox
+                    Width="300"
+                    Margin="40,10,0,10"
+                    Text="Add The Title Here!" />
+                <TextBlock
+                    Margin="10,0,0,10"
+                    FontWeight="Bold"
+                    Text="Mod Version:" />
+                <TextBox
+                    Width="300"
+                    Margin="40,0,0,0"
+                    Text="Add The Version Here!" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
