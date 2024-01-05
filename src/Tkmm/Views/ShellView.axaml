@@ -57,7 +57,7 @@
                        FontFamily="{StaticResource UbuntuMono}"
                        FontSize="12">
                 <Run Text="{x:Static app:App.Title}" />
-                <Run Text=" | " />
+                <Run Text=" |" />
                 <Run Text="{Binding, Source={x:Static app:App.Version}, StringFormat=' v{0}'}" />
             </TextBlock>
         </Grid>
