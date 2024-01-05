@@ -12,14 +12,14 @@
              mc:Ignorable="d">
     <Grid Margin="25"
           ColumnDefinitions="*,*"
-          RowDefinitions="Auto,*">
+          RowDefinitions="Auto,*,Auto">
         <TextBlock Grid.Row="0"
                    Grid.ColumnSpan="2"
-                   Margin="0,0,10,0"
+                   Margin="0,0,0,15"
                    FontFamily="{StaticResource HyliaGlyph}"
                    FontSize="30"
                    Foreground="{DynamicResource SystemAccentColor}"
-                   Text=".TCL Packaging Hub" />
+                   Text="Devloper Tools | TCL Packager" />
         <ScrollViewer Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Properties}">
                 <ItemsControl.DataTemplates>
@@ -44,5 +44,18 @@
                 </ItemsControl.DataTemplates>
             </ItemsControl>
         </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button BorderBrush="{DynamicResource SystemAccentColor}"
+                    Command="{Binding CreateCommand}"
+                    ToolTip.Tip="Create TCL">
+                <StackPanel Orientation="Horizontal">
+                    <pi:Icon Value="fa-solid fa-boxes-packing" />
+                    <TextBlock Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="Create Package" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

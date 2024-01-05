@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Octokit;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using Tkmm.Models.Mods;
 
@@ -33,4 +33,10 @@ public partial class ToolsPageViewModel : ObservableObject
             Watermark = "Mod version (yours, not the game version)..."
         }
     ];
+
+    [RelayCommand]
+    private Task Create()
+    {
+        throw new NotImplementedException();
+    }
 }
