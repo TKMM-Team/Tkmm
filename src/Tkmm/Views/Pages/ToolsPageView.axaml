@@ -1,100 +1,48 @@
-<UserControl
-    x:Class="Tkmm.Views.Pages.ToolsPageView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:pages="using:Tkmm.ViewModels.Pages"
-    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="pages:ToolsPageViewModel"
-    mc:Ignorable="d">
-    <Grid>
-        <TextBlock
-            Margin="0,0,10,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            FontFamily="{StaticResource HyliaGlyph}"
-            FontSize="30"
-            Foreground="{DynamicResource SystemAccentColor}"
-            Text=".TCL Packaging Hub" />
-        <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,17,0,0"
-                        FontWeight="Bold"
-                        Text="Mod Path" />
-                    <TextBox
-                        Width="300"
-                        Margin="90,10,0,20"
-                        Foreground="#4C4C4C"
-                        Text="mod folder path..." />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,17,0,0"
-                        FontWeight="Bold"
-                        Text="Thumbnail Path" />
-                    <TextBox
-                        Width="300"
-                        Margin="50,10,0,20"
-                        Foreground="#4C4C4C"
-                        Text="thumbnail image path..." />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,17,0,0"
-                        FontWeight="Bold"
-                        Text="Primary Author" />
-                    <TextBox
-                        Width="300"
-                        Margin="50,10,0,20"
-                        Foreground="#4C4C4C"
-                        Text="mod folder path..." />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,10,0,20"
-                        FontWeight="Bold"
-                        Text="Additional Contributors:" />
-                    <Button
-                        Width="40"
-                        Height="30"
-                        Margin="10,5,0,0">
-                        <pi:Icon Value="fa-solid fa-plus" />
-                    </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,17,0,0"
-                        FontWeight="Bold"
-                        Text="Mod Title" />
-                    <TextBox
-                        Width="300"
-                        Margin="90,10,0,20"
-                        Foreground="#4C4C4C"
-                        Text="mod name..." />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        Margin="10,17,0,0"
-                        FontWeight="Bold"
-                        Text="Mod Version" />
-                    <TextBox
-                        Width="300"
-                        Margin="70,10,0,20"
-                        Foreground="#4C4C4C"
-                        Text="mod version (yours, not the game version)..." />
-                </StackPanel>
-                <Button
-                    Width="180"
-                    Height="50"
-                    Margin="10,5,0,0">
-                    <pi:Icon Value="fa-solid fa-truck-fast" />
-                </Button>
-            </StackPanel>
+<UserControl x:Class="Tkmm.Views.Pages.ToolsPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:Tkmm.Models.Mods"
+             xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="pages:ToolsPageViewModel"
+             mc:Ignorable="d">
+    <Grid Margin="25"
+          ColumnDefinitions="*,*"
+          RowDefinitions="Auto,*">
+        <TextBlock Grid.Row="0"
+                   Grid.ColumnSpan="2"
+                   Margin="0,0,10,0"
+                   FontFamily="{StaticResource HyliaGlyph}"
+                   FontSize="30"
+                   Foreground="{DynamicResource SystemAccentColor}"
+                   Text=".TCL Packaging Hub" />
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Properties}">
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type models:ModProperty}">
+                        <Grid Margin="0,0,0,15" ColumnDefinitions="Auto,*">
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                            <TextBox Grid.Column="1"
+                                     Margin="10,0,0,0"
+                                     Text="{Binding Value}"
+                                     Watermark="{Binding Watermark}" />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type models:ModImageProperty}">
+                        <Grid Margin="0,0,0,15" ColumnDefinitions="Auto,*">
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                            <TextBox Grid.Column="1"
+                                     Margin="10,0,0,0"
+                                     Text="{Binding Value}"
+                                     Watermark="Hardcoded" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </UserControl>
