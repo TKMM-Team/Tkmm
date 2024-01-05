@@ -72,7 +72,8 @@
                            FontSize="18"
                            FontWeight="Medium"
                            Text="{Binding CurrentMod.Name}"
-                           TextTrimming="CharacterEllipsis" />
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip.Tip="{Binding CurrentMod.Name}" />
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Center"
                            FontSize="18"
@@ -96,7 +97,9 @@
                     </Border>
                 </Border>
             </Grid>
-            <ScrollViewer Name="DescriptionGrid" Grid.Row="2">
+            <ScrollViewer Name="DescriptionGrid"
+                          Grid.Row="2"
+                          Padding="0,0,25,0">
                 <StackPanel>
                     <TextBlock Margin="0,0,0,8"
                                FontSize="18"
