@@ -50,10 +50,9 @@
                                      Value="fa-regular fa-folder-open" />
                             <TextBlock Margin="5"
                                        Padding="15"
-                                       FontFamily="{StaticResource Ubuntu}"
                                        FontStyle="Italic"
                                        Foreground="{DynamicResource SystemChromeHighColor}"
-                                       Text="Drag and Drop a mod folder or TCL to import"
+                                       Text="Drag and Drop a mod folder or file TCL to import"
                                        TextAlignment="Center" />
                         </StackPanel>
                     </Border>
