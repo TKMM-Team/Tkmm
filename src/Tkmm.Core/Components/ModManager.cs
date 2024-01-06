@@ -87,11 +87,11 @@ public partial class ModManager : ObservableObject
     {
         Apply();
 
-        string output = Path.Combine(Config.Shared.StaticStorageFolder, "merged");
+        string output = Path.Combine(Config.Shared.StorageFolder, "merged");
         Directory.CreateDirectory(output);
 
         await Process.Start(_malsToolPath, $"""
-            merge "{string.Join('|', Mods.Select(x => x.SourceFolder))}" "{output}"
+            merge "{string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs")))}" "{output}"
             """)
             .WaitForExitAsync();
     }
