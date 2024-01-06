@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text.Json;
 using Tkmm.Core.Models.Mods;
 
@@ -11,13 +12,10 @@ namespace Tkmm.Core.Components;
 /// </summary>
 public partial class ModManager : ObservableObject
 {
-    public string sarcToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "TKMM.SarcTool.exe");
-
-    public string rsdbToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "rsdb-merge.exe");
-
-    public string malsToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "MalsMerger.exe");
-
-    public string restblToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "restbl.exe");
+    private readonly string _sarcToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "TKMM.SarcTool.exe");
+    private readonly string _rsdbToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "rsdb-merge.exe");
+    private readonly string _malsToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "MalsMerger.exe");
+    private readonly string _restblToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "restbl.exe");
 
     // Singleton pattern - this means it's loaded once and never again
 
@@ -87,16 +85,14 @@ public partial class ModManager : ObservableObject
     /// <returns></returns>
     public async Task Merge()
     {
-        // Good luck
+        Apply();
 
-        foreach (var mod in Mods) { }
+        string output = Path.Combine(Config.Shared.StaticStorageFolder, "merged");
+        Directory.CreateDirectory(output);
 
-        string sarcArgs = string.Empty;
-
-        string rsdbArgs = string.Empty;
-
-        string malsArgs = string.Empty; 
-
-        string restblArgs = string.Empty;
+        await Process.Start(_malsToolPath, $"""
+            merge "{string.Join('|', Mods.Select(x => x.SourceFolder))}" "{output}"
+            """)
+            .WaitForExitAsync();
     }
 }
