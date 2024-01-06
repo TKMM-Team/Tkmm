@@ -3,10 +3,10 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using System.Collections.ObjectModel;
 using System.Text.Json;
 using Tkmm.Core;
-using Tkmm.Models.Mods;
+using Tkmm.Core.Components;
+using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -14,9 +14,6 @@ public partial class HomePageViewModel : ObservableObject
 {
     [ObservableProperty]
     private Mod? _currentMod;
-
-    [ObservableProperty]
-    private ObservableCollection<Mod> _mods = [];
 
     [RelayCommand]
     private async Task ShowContributors()
@@ -40,20 +37,7 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private Task Apply()
     {
-        // This should be abstracted to a
-        // service but this should work
-
-        foreach (var mod in Mods) {
-            // Import the mod if
-            // it's not already
-            mod.Import();
-        }
-
-        string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
-        using FileStream fs = File.Create(modList);
-
-        JsonSerializer.Serialize(fs, Mods.Select(x => x.Id));
-
+        ModManager.Shared.Apply();
         AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
         return Task.CompletedTask;
     }
@@ -79,19 +63,18 @@ public partial class HomePageViewModel : ObservableObject
             return Task.CompletedTask;
         }
 
-        int removeIndex = Mods.IndexOf(CurrentMod);
-        Mods.RemoveAt(removeIndex);
+        int removeIndex = ModManager.Shared.Mods.IndexOf(CurrentMod);
+        ModManager.Shared.Mods.RemoveAt(removeIndex);
 
-        if (Mods.Count == 0) {
+        if (ModManager.Shared.Mods.Count == 0) {
             return Task.CompletedTask;
         }
 
-        while (removeIndex >= Mods.Count) {
+        while (removeIndex >= ModManager.Shared.Mods.Count) {
             removeIndex--;
         }
 
-        CurrentMod = Mods[removeIndex];
-
+        CurrentMod = ModManager.Shared.Mods[removeIndex];
         return Task.CompletedTask;
     }
 
@@ -101,43 +84,22 @@ public partial class HomePageViewModel : ObservableObject
             return;
         }
 
-        int currentIndex = Mods.IndexOf(CurrentMod);
+        int currentIndex = ModManager.Shared.Mods.IndexOf(CurrentMod);
         int newIndex = currentIndex + offset;
 
-        if (newIndex < 0 || newIndex >= Mods.Count) {
+        if (newIndex < 0 || newIndex >= ModManager.Shared.Mods.Count) {
             return;
         }
 
-        Mod store = Mods[newIndex];
-        Mods[newIndex] = CurrentMod;
-        Mods[currentIndex] = store;
+        Mod store = ModManager.Shared.Mods[newIndex];
+        ModManager.Shared.Mods[newIndex] = CurrentMod;
+        ModManager.Shared.Mods[currentIndex] = store;
 
-        CurrentMod = Mods[newIndex];
+        CurrentMod = ModManager.Shared.Mods[newIndex];
     }
 
     public HomePageViewModel()
     {
-        // Load the mod list when the home
-        // page view model is first initialized
-
-        // This can be replaced with an
-        // active profile later
-        string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
-        if (!File.Exists(modList)) {
-            return;
-        }
-
-        using FileStream fs = File.OpenRead(modList);
-        List<string> mods = JsonSerializer.Deserialize<List<string>>(fs)
-            ?? [];
-
-        foreach (string mod in mods) {
-            string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod);
-            if (Directory.Exists(modFolder)) {
-                Mods.Add(Mod.FromFolder(modFolder, isFromStorage: true));
-            }
-        }
-
-        CurrentMod = Mods.FirstOrDefault();
+        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
     }
 }

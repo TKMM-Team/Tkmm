@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
-namespace Tkmm.Models.Mods;
+namespace Tkmm.Core.Models.Mods;
 
 public partial class ModContributor : ObservableObject
 {

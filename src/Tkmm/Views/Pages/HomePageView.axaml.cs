@@ -1,7 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
-using Tkmm.Models.Mods;
+using Tkmm.Core.Components;
+using Tkmm.Core.Models.Mods;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Views.Pages;
@@ -23,9 +24,8 @@ public partial class HomePageView : UserControl
         if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
             foreach (var path in paths.Select(x => x.Path.LocalPath)) {
                 if (DataContext is HomePageViewModel homePage) {
-                    Mod import = Mod.FromFolder(path);
-                    homePage.Mods.Add(import);
-                    homePage.CurrentMod = import;
+                    Mod mod = ModManager.Shared.Import(path);
+                    homePage.CurrentMod = mod;
                 }
             }
         }

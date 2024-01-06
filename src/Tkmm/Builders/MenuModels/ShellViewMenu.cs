@@ -2,8 +2,9 @@
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Attributes;
+using Tkmm.Core.Components;
+using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
-using Tkmm.Models.Mods;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Builders.MenuModels;
@@ -27,12 +28,6 @@ public class ShellViewMenu
             return;
         }
 
-        Mod mod = Mod.FromFolder(selectedFolder);
-
-        HomePageViewModel homePage
-            = PageManager.Shared.Get<HomePageViewModel>(Page.Home);
-
-        homePage.Mods.Add(mod);
-        homePage.CurrentMod = homePage.Mods.Last();
+        ModManager.Shared.Import(selectedFolder);
     }
 }

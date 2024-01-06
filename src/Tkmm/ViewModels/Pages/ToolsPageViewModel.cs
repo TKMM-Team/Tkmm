@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using Tkmm.Models.Mods;
+using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
 

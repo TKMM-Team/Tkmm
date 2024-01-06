@@ -1,12 +1,11 @@
-﻿using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core;
 using Tkmm.Core.Helpers.Operations;
 
-namespace Tkmm.Models.Mods;
+namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject
 {
@@ -34,15 +33,16 @@ public partial class Mod : ObservableObject
     [ObservableProperty]
     private bool _isEnabled = true;
 
-    [ObservableProperty]
-    [property: JsonIgnore]
-    private Bitmap? _thumbnail;
-
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
 
     [JsonIgnore]
     public bool IsFromStorage { get; private set; } = false;
+
+    public static Mod FromFile(string file)
+    {
+        throw new NotImplementedException();
+    }
 
     public static Mod FromFolder(string folder, bool isFromStorage = false)
     {
@@ -61,31 +61,33 @@ public partial class Mod : ObservableObject
         result.IsFromStorage = isFromStorage;
 
         // Resolve thumbnail
-        if (result.ThumbnailUri is string uri) {
-            string localPath = Path.Combine(folder, uri);
-            if (File.Exists(localPath)) {
-                result.Thumbnail = new(localPath);
-            }
-
-            //
-            // URL image support (broken)
-
-            // else if (uri.StartsWith("https://")) {
-            //     try {
-            //         using HttpClient client = new();
-            //         using Stream stream = await client.GetStreamAsync(uri);
-            //         mod.Thumbnail = new(stream);
-            //     }
-            //     catch (Exception ex) {
-            //         Trace.WriteLine($"""
-            //             Error reading thumbnail URL: '{uri}'
-
-            //             Exception:
-            //             {ex}
-            //             """);
-            //     }
-            // }
-        }
+        // This needs to be moved to the UI stack (it uses a UI type)
+        // 
+        // if (result.ThumbnailUri is string uri) {
+        //     string localPath = Path.Combine(folder, uri);
+        //     if (File.Exists(localPath)) {
+        //         result.Thumbnail = new(localPath);
+        //     }
+        // 
+        //     //
+        //     // URL image support (broken)
+        // 
+        //     // else if (uri.StartsWith("https://")) {
+        //     //     try {
+        //     //         using HttpClient client = new();
+        //     //         using Stream stream = await client.GetStreamAsync(uri);
+        //     //         mod.Thumbnail = new(stream);
+        //     //     }
+        //     //     catch (Exception ex) {
+        //     //         Trace.WriteLine($"""
+        //     //             Error reading thumbnail URL: '{uri}'
+        // 
+        //     //             Exception:
+        //     //             {ex}
+        //     //             """);
+        //     //     }
+        //     // }
+        // }
 
         return result;
     }

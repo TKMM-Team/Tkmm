@@ -2,9 +2,10 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:app="using:Tkmm"
+             xmlns:comp="using:Tkmm.Core.Components"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="using:Tkmm.Models.Mods"
+             xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -18,7 +19,7 @@
         <Viewbox Name="WelcomePage"
                  MaxWidth="800"
                  MaxHeight="600"
-                 IsVisible="{Binding !Mods.Count}">
+                 IsVisible="{Binding !Mods.Count, Source={x:Static comp:ModManager.Shared}}">
             <ContentControl HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                 <Grid Width="600"
                       Height="300"
@@ -62,7 +63,7 @@
         <Grid Name="ModDisplayPage"
               Margin="25"
               ColumnDefinitions="*,Auto,0.4*"
-              IsVisible="{Binding Mods.Count}"
+              IsVisible="{Binding Mods.Count, Source={x:Static comp:ModManager.Shared}}"
               RowDefinitions="Auto,*,0.4*,Auto">
             <Grid Name="TitleGrid"
                   Margin="0,0,0,15"
@@ -92,7 +93,12 @@
                         BoxShadow="2 2 30 1 #30000000"
                         CornerRadius="5">
                     <Border ClipToBounds="True" CornerRadius="5">
-                        <Image Source="{Binding CurrentMod.Thumbnail}" />
+                        <!--  I removed thumbnail cause it used UI code  -->
+                        <!--
+                            I don't know how it should be implemented
+                            so I'll just comment it out for now
+                        -->
+                        <!--<Image Source="{Binding CurrentMod.Thumbnail}" />-->
                     </Border>
                 </Border>
             </Grid>
@@ -118,7 +124,7 @@
             <Grid Name="ModListGrid"
                   Grid.RowSpan="3"
                   Grid.Column="2">
-                <ListBox ItemsSource="{Binding Mods}" SelectedItem="{Binding CurrentMod}">
+                <ListBox ItemsSource="{Binding Mods, Source={x:Static comp:ModManager.Shared}}" SelectedItem="{Binding CurrentMod}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Mod}">
                             <TextBlock Background="Transparent"

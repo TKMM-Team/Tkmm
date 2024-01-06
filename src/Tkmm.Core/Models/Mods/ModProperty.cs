@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Tkmm.Models.Mods;
+namespace Tkmm.Core.Models.Mods;
 
 public partial class ModProperty : ObservableObject
 {
