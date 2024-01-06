@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
 using System.Text.Json;
@@ -13,6 +14,14 @@ namespace Tkmm.Core.Components;
 /// </summary>
 public partial class ModManager : ObservableObject
 {
+    public string sarcToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "TKMM.SarcTool.exe");
+
+    public string rsdbToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "rsdb-merge.exe");
+
+    public string malsToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "MalsMerger.exe");
+
+    public string restblToolPath { get; } = Path.Combine(Config.Shared.StaticStorageFolder, "restbl.exe");
+
     // Singleton pattern - this means it's loaded once and never again
 
     private static readonly Lazy<ModManager> _shared = new(() => new());
@@ -75,5 +84,16 @@ public partial class ModManager : ObservableObject
     public async Task Merge()
     {
         // Good luck
+
+        foreach (var mod in Mods) { }
+
+        string sarcArgs = string.Empty;
+
+        string rsdbArgs = string.Empty;
+
+        string malsArgs = string.Empty; 
+
+        string restblArgs = string.Empty;
+
     }
 }

@@ -8,6 +8,9 @@ public partial class Config : ConfigModule<Config>
 {
     private static readonly string _defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm");
 
+    public string StaticStorageFolder { get; }
+    = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tkmm");
+
     public static Action<string>? SetTheme { get; set; }
 
     [ObservableProperty]
