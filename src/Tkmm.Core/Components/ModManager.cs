@@ -90,9 +90,24 @@ public partial class ModManager : ObservableObject
         string output = Path.Combine(Config.Shared.StaticStorageFolder, "merged");
         Directory.CreateDirectory(output);
 
-        await Process.Start(_malsToolPath, $"""
+        try
+        {
+            await Process.Start(_malsToolPath, $"""
             merge "{string.Join('|', Mods.Select(x => x.SourceFolder))}" "{output}"
             """)
-            .WaitForExitAsync();
+                .WaitForExitAsync();
+        }
+        catch (IOException ex)
+        {
+            // Handle IOException (file or directory in use)
+            Console.WriteLine($"Error merging mods: {ex.Message}");
+            // You can log the error, show a user-friendly message, or take other appropriate actions.
+        }
+        catch (Exception ex)
+        {
+            // Handle other exceptions
+            Console.WriteLine($"Unexpected error merging mods: {ex.Message}");
+            // You can log the error, show a user-friendly message, or take other appropriate actions.
+        }
     }
 }
