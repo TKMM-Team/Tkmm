@@ -13,7 +13,7 @@ public static class DirectoryOperations
         foreach (var folder in Directory.EnumerateDirectories(src)) {
             string folderName = Path.GetFileName(folder);
             string dstFolder = Path.Combine(dst, folderName);
-            CopyDirectory(folder, dstFolder);
+            CopyDirectory(folder, dstFolder, overwrite);
         }
     }
 
