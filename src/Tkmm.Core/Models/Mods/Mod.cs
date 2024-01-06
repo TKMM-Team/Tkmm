@@ -31,6 +31,9 @@ public partial class Mod : ObservableObject
     private string? _thumbnailUri;
 
     [ObservableProperty]
+    private object? _thumbnail;
+
+    [ObservableProperty]
     private bool _isEnabled = true;
 
     [JsonIgnore]
@@ -59,35 +62,6 @@ public partial class Mod : ObservableObject
 
         result.SourceFolder = folder;
         result.IsFromStorage = isFromStorage;
-
-        // Resolve thumbnail
-        // This needs to be moved to the UI stack (it uses a UI type)
-        // 
-        // if (result.ThumbnailUri is string uri) {
-        //     string localPath = Path.Combine(folder, uri);
-        //     if (File.Exists(localPath)) {
-        //         result.Thumbnail = new(localPath);
-        //     }
-        // 
-        //     //
-        //     // URL image support (broken)
-        // 
-        //     // else if (uri.StartsWith("https://")) {
-        //     //     try {
-        //     //         using HttpClient client = new();
-        //     //         using Stream stream = await client.GetStreamAsync(uri);
-        //     //         mod.Thumbnail = new(stream);
-        //     //     }
-        //     //     catch (Exception ex) {
-        //     //         Trace.WriteLine($"""
-        //     //             Error reading thumbnail URL: '{uri}'
-        // 
-        //     //             Exception:
-        //     //             {ex}
-        //     //             """);
-        //     //     }
-        //     // }
-        // }
 
         return result;
     }

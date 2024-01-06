@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -101,5 +102,52 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
         CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
+
+        // Listen to when the mod list changes
+        // and update the view accordingly
+        ModManager.Shared.Mods.CollectionChanged += ModsUpdated;
+
+        foreach (var mod in ModManager.Shared.Mods) {
+            ResolveThumbnail(mod);
+        }
+    }
+
+    private void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems is IList<Mod> mods) {
+            foreach (Mod mod in mods) {
+                ResolveThumbnail(mod);
+                CurrentMod = mod;
+            }
+        }
+    }
+
+    private static void ResolveThumbnail(Mod mod)
+    {
+        if (mod.ThumbnailUri is string uri) {
+            string localPath = Path.Combine(mod.SourceFolder, uri);
+            if (File.Exists(localPath)) {
+                mod.Thumbnail = new Bitmap(localPath);
+            }
+
+            //
+            // URL image support (broken)
+
+            // else if (uri.StartsWith("https://")) {
+            //     try {
+            //         using HttpClient client = new();
+            //         using Stream stream = await client.GetStreamAsync(uri);
+            //         mod.Thumbnail = new(stream);
+            //     }
+            //     catch (Exception ex) {
+            //         Trace.WriteLine($"""
+            //             Error reading thumbnail URL: '{uri}'
+
+            //             Exception:
+            //             {ex}
+            //             """);
+            //     }
+            // }
+        }
     }
 }
