@@ -99,6 +99,12 @@ public partial class Mod : ObservableObject
         }
 
         string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString());
-        DirectoryOperations.CopyDirectory(SourceFolder, outputModFolder);
+        DirectoryOperations.CopyDirectory(SourceFolder, outputModFolder, overwrite: true);
+    }
+
+    public void StageImport(string path)
+    {
+        IsFromStorage = false;
+        SourceFolder = path;
     }
 }

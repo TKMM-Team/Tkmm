@@ -2,12 +2,12 @@
 
 public static class DirectoryOperations
 {
-    public static void CopyDirectory(string src, string dst)
+    public static void CopyDirectory(string src, string dst, bool overwrite = false)
     {
         Directory.CreateDirectory(dst);
 
         foreach (var file in Directory.EnumerateFiles(src)) {
-            File.Copy(file, Path.Combine(dst, Path.GetFileName(file)));
+            File.Copy(file, Path.Combine(dst, Path.GetFileName(file)), overwrite);
         }
 
         foreach (var folder in Directory.EnumerateDirectories(src)) {

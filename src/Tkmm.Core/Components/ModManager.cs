@@ -1,8 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
-using System.Net.NetworkInformation;
 using System.Text.Json;
 using Tkmm.Core.Models.Mods;
 
@@ -58,6 +55,13 @@ public partial class ModManager : ObservableObject
         Mod mod = File.Exists(path)
             ? Mod.FromFile(path) : Mod.FromFolder(path);
 
+        // If any mods exists with the id
+        // stage it to be imported again
+        if (Mods.FirstOrDefault(x => x.Id == mod.Id) is Mod existing) {
+            existing.StageImport(path);
+            return existing;
+        }
+
         Mods.Add(mod);
         return mod;
     }
@@ -94,6 +98,5 @@ public partial class ModManager : ObservableObject
         string malsArgs = string.Empty; 
 
         string restblArgs = string.Empty;
-
     }
 }
