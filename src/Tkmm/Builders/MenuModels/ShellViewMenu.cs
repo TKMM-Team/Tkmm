@@ -18,7 +18,7 @@ public class ShellViewMenu
         Environment.Exit(0);
     }
 
-    [Menu("Import", "Mod", "Ctrl + I", "fa-solid fa-right-from-bracket")]
+    [Menu("Import", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
     public static async Task Mod_Import()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
@@ -29,5 +29,11 @@ public class ShellViewMenu
         }
 
         ModManager.Shared.Import(selectedFolder);
+    }
+
+    [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge")]
+    public static async Task Mod_Merge()
+    {
+        await ModManager.Shared.Merge();
     }
 }
