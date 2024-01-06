@@ -4,8 +4,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using System.Text.Json;
-using Tkmm.Core;
+using System.Collections;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 
@@ -114,7 +113,7 @@ public partial class HomePageViewModel : ObservableObject
 
     private void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        if (e.NewItems is IList<Mod> mods) {
+        if (e.NewItems is IList mods) {
             foreach (Mod mod in mods) {
                 ResolveThumbnail(mod);
                 CurrentMod = mod;
