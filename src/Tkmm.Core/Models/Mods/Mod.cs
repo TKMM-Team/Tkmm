@@ -73,6 +73,7 @@ public partial class Mod : ObservableObject
         }
 
         string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString());
+        SourceFolder = outputModFolder;
         DirectoryOperations.CopyDirectory(SourceFolder, outputModFolder, overwrite: true);
     }
 
