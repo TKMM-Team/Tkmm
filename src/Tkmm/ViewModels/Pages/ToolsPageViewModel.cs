@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
@@ -8,35 +8,18 @@ namespace Tkmm.ViewModels.Pages;
 public partial class ToolsPageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private ObservableCollection<ObservableObject> _properties = [
-        new ModProperty {
-            Name = "Mod Path",
-            Watermark = "Mod folder path..."
-        },
-        new ModImageProperty {
-            Name = "Thumbnail Path"
-        },
-        new ModProperty {
-            Name = "Primary Author",
-            Watermark = "Primary author name..."
-        },
-        new ModProperty {
-            Name = "Additional Contributors",
-            Watermark = "{null}"
-        },
-        new ModProperty {
-            Name = "Mod Title",
-            Watermark = "Mod name..."
-        },
-        new ModProperty {
-            Name = "Mod Version",
-            Watermark = "Mod version (yours, not the game version)..."
-        }
-    ];
+    private string _exportFile = string.Empty;
+
+    [ObservableProperty]
+    private Mod _mod = new();
 
     [RelayCommand]
-    private Task Create()
+    private async Task Create()
     {
-        throw new NotImplementedException();
+        AppStatus.Set("Package building...");
+        PackageGenerator packageGenerator = new(Mod, ExportFile);
+        await packageGenerator.Build();
+
+        AppStatus.Set("Package built");
     }
 }

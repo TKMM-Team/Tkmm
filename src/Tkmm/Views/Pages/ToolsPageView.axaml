@@ -20,30 +20,21 @@
                    FontSize="30"
                    Foreground="{DynamicResource SystemAccentColor}"
                    Text="Devloper Tools | TCL Packager" />
-        <ScrollViewer Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding Properties}">
-                <ItemsControl.DataTemplates>
-                    <DataTemplate DataType="{x:Type models:ModProperty}">
-                        <Grid Margin="0,0,0,15" ColumnDefinitions="Auto,*">
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                            <TextBox Grid.Column="1"
-                                     Margin="10,0,0,0"
-                                     Text="{Binding Value}"
-                                     Watermark="{Binding Watermark}" />
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type models:ModImageProperty}">
-                        <Grid Margin="0,0,0,15" ColumnDefinitions="Auto,*">
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                            <TextBox Grid.Column="1"
-                                     Margin="10,0,0,0"
-                                     Text="{Binding Value}"
-                                     Watermark="Hardcoded" />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.DataTemplates>
-            </ItemsControl>
-        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Spacing="5">
+            <!--  Add browse button  -->
+            <TextBox Text="{Binding ExportFile}" Watermark="Export File" />
+            <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
+
+            <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
+            <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
+            <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
+            <TextBox Text="{Binding Mod.Description}" Watermark="Description" />
+
+            <!--  Add browse button  -->
+            <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumnail" />
+        </StackPanel>
+
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button BorderBrush="{DynamicResource SystemAccentColor}"
