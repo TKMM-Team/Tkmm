@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Octokit;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Components;
@@ -12,13 +14,6 @@ namespace Tkmm.Core.Components;
 /// </summary>
 public partial class ModManager : ObservableObject
 {
-    private readonly string _sarcToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "TKMM.SarcTool.exe");
-    private readonly string _rsdbToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "rsdb-merge.exe");
-    private readonly string _malsToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "MalsMerger.exe");
-    private readonly string _restblToolPath = Path.Combine(Config.Shared.StaticStorageFolder, "restbl.exe");
-
-    // Singleton pattern - this means it's loaded once and never again
-
     private static readonly Lazy<ModManager> _shared = new(() => new());
     public static ModManager Shared => _shared.Value;
 
@@ -90,9 +85,9 @@ public partial class ModManager : ObservableObject
         string output = Path.Combine(Config.Shared.StorageFolder, "merged");
         Directory.CreateDirectory(output);
 
-        await Process.Start(_malsToolPath, $"""
-            merge "{string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs")))}" "{output}"
-            """)
+        await ToolHelper.Call("MalsMerger",
+            "merge",
+            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), output)
             .WaitForExitAsync();
     }
 }
