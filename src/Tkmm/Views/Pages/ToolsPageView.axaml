@@ -32,7 +32,7 @@
             <TextBox Text="{Binding Mod.Description}" Watermark="Description" />
 
             <!--  Add browse button  -->
-            <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumnail" />
+            <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />
         </StackPanel>
 
 
