@@ -35,8 +35,9 @@ public partial class Mod : ObservableObject
     [ObservableProperty]
     private bool _isEnabled = true;
 
-    [JsonIgnore]
-    public string SourceFolder { get; private set; } = string.Empty;
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private string _sourceFolder = string.Empty;
 
     [JsonIgnore]
     public bool IsFromStorage { get; private set; } = false;
