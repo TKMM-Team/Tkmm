@@ -9,7 +9,7 @@ namespace Tkmm.Core.Models.Mods;
 public partial class Mod : ObservableObject
 {
     [ObservableProperty]
-    private Guid _id = Guid.Empty;
+    private Guid _id = Guid.NewGuid();
 
     [ObservableProperty]
     private string _name = string.Empty;
