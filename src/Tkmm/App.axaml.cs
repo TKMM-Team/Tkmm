@@ -60,7 +60,7 @@ public partial class App : Application
 
             PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home");
             PageManager.Shared.Register(Page.Tools, "Dev Tools", new ToolsPageView(), Symbol.CodeHTML, "Mod Developer Tools");
-            PageManager.Shared.Register(Page.Mods, "Mods", new UserControl(), Symbol.Globe, "GameBanana Mods");
+            PageManager.Shared.Register(Page.Mods, "Mods", new ModsPageView(), Symbol.Globe, "GameBanana Mods");
 
             PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
             PageManager.Shared.Register(Page.Logs, "Logs", new UserControl(), Symbol.AllApps, "System Logs", isFooter: true);
