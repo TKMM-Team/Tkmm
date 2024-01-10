@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics;
+using Tkmm.Core.Models;
 
 namespace Tkmm;
 
@@ -42,9 +43,9 @@ public partial class AppStatus : ObservableObject
     /// <param name="icon">The font-awesome icon name and type to use in the status modal</param>
     /// <param name="isWorkingStatus"></param>
     /// <param name="temporaryStatusTime">Reset the status message after a set amount of time (seconds)</param>
-    public static void Set(string status, string icon = "fa-regular fa-message", bool? isWorkingStatus = null, double temporaryStatusTime = double.NaN)
+    public static void Set(string status, string icon = "fa-regular fa-message", bool? isWorkingStatus = null, double temporaryStatusTime = double.NaN, LogLevel logLevel = LogLevel.Default)
     {
-        bool isResetStatus = status.ToLower() == "ready";
+        bool isResetStatus = status.Equals("ready", StringComparison.CurrentCultureIgnoreCase);
 
         Shared.Status = status;
         Shared.IsWorking = isWorkingStatus ?? !isResetStatus;
@@ -65,7 +66,7 @@ public partial class AppStatus : ObservableObject
         }
 
         if (!isResetStatus) {
-            Trace.WriteLine(status);
+            Trace.WriteLine($"[{logLevel}] {status}");
         }
     }
 }

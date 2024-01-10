@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Tkmm.Attributes;
+using Tkmm.Core.Models;
 using Tkmm.Helpers;
 
 namespace Tkmm.Builders;
@@ -114,8 +115,8 @@ public class MenuFactory(TopLevel? topLevel) : IMenuFactory
                 }
             }
             catch (Exception ex) {
-                AppStatus.Set($"Failed to execute action: {attribute.Name}", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 3);
-                Trace.WriteLine($"{ex} - {ex.Message}");
+                AppStatus.Set($"Failed to execute action: {attribute.Name}", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 3, LogLevel.Error);
+                Trace.WriteLine($"[{LogLevel.Error}] {ex} - {ex.Message}");
             }
         });
 
