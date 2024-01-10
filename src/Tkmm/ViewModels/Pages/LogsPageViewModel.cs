@@ -37,7 +37,7 @@ public partial class LogsPageViewModel : ObservableObject
         Copy(Selected.ToMarkdown());
     }
 
-    private void Copy(string text)
+    private static void Copy(string text)
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
             if (desktop.MainWindow?.Clipboard is IClipboard clipboard) {
