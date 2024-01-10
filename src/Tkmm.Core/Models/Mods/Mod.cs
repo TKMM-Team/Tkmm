@@ -52,7 +52,7 @@ public partial class Mod : ObservableObject
         string modInfoPath = Path.Combine(folder, "info.json");
         if (!File.Exists(modInfoPath)) {
             throw new NotSupportedException(
-                "Mods with no info.json is not supported");
+                "Mods without any info.json files are not supported");
         }
 
         using FileStream fs = File.OpenRead(modInfoPath);
