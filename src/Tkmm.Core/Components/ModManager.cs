@@ -89,5 +89,30 @@ public partial class ModManager : ObservableObject
             "merge",
             string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), output)
             .WaitForExitAsync();
+
+        // Generate JSON changelogs for each mod
+
+        string changelogOutputPath = Path.Combine(Config.Shared.StorageFolder, "temp");
+        Directory.CreateDirectory(changelogOutputPath);
+
+        foreach (var mod in Mods)
+        {
+            string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
+
+            await ToolHelper.Call("RsdbMerge",
+                "--generate-changelog", rsdbFolderPath,
+                "--output", Path.Combine(changelogOutputPath, mod.Name + ".json"))
+                .WaitForExitAsync();
+        }
+
+        // Apply changelogs to merge RSDB files
+        string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "mergedRSDB");
+        Directory.CreateDirectory(mergedOutput);
+
+        await ToolHelper.Call("RsdbMerge",
+            "--apply-changelogs", changelogOutputPath,
+            "--output", mergedOutput,
+            "--version", "121") // Replace "121" with the desired version number
+            .WaitForExitAsync();
     }
 }
