@@ -88,11 +88,11 @@ public partial class ModManager : ObservableObject
 
         await ToolHelper.Call("MalsMerger",
             "merge",
-            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), mergedOutput)
+            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), Path.Combine(mergedOutput, "Mals"))
             .WaitForExitAsync();
 
-        // Collect paths to the generated changelogs
-        List<string> changelogPaths = new List<string>();
+        // Collect paths to the mods' source folders
+        List<string> modPaths = new List<string>();
         foreach (var mod in Mods)
         {
             string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
@@ -103,34 +103,27 @@ public partial class ModManager : ObservableObject
                 "--output", mod.SourceFolder)
                 .WaitForExitAsync();
 
-            // Check if the changelog file exists
-            string changelogPath = Path.Combine(mod.SourceFolder, "rsdb.json");
-            Console.WriteLine($"Checking for changelog at: {changelogPath}"); // Debugging check
-            if (File.Exists(changelogPath))
-            {
-                changelogPaths.Add(changelogPath);
-                Console.WriteLine($"Changelog found and added: {changelogPath}"); // Debugging check
-            }
-            else
-            {
-                Console.WriteLine($"Changelog not found at: {changelogPath}"); // Debugging check
-            }
+            // Add mod's source folder to the list (assuming the source folder is the required path)
+            modPaths.Add($"\"{mod.SourceFolder}\""); // Enclosing in quotes
         }
 
-        // Apply changelogs to merge RSDB file
+        // Apply changelogs to merge RSDB files
         Directory.CreateDirectory(mergedOutput);
 
-        if (changelogPaths.Any())
+        if (modPaths.Any())
         {
             Console.WriteLine("Attempting to apply changelogs.");
-            string changelogArguments = string.Join("|", changelogPaths);
+            string modPathsArguments = string.Join(" ", modPaths); // Separated by space and each path is quoted
+
+            string rsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
+            Directory.CreateDirectory(rsdbFolder);
 
             // Log the final command for debugging
-            Console.WriteLine($"RsdbMerge command: --apply-changelogs {changelogArguments} --output {Path.Combine(mergedOutput, "romfs", "RSDB")} --version 121");
+            Console.WriteLine($"RsdbMerge command: --apply-changelogs {modPathsArguments} --output \"{rsdbFolder}\" --version 121");
 
             await ToolHelper.Call("RsdbMerge",
-                "--apply-changelogs", changelogArguments,
-                "--output", Path.Combine(mergedOutput, "romfs", "RSDB"),
+                "--apply-changelogs", modPathsArguments,
+                "--output", $"\"{rsdbFolder}\"", // Enclosing output path in quotes
                 "--version", "121")
                 .WaitForExitAsync();
         }
