@@ -82,37 +82,72 @@ public partial class ModManager : ObservableObject
     {
         Apply();
 
-        string output = Path.Combine(Config.Shared.StorageFolder, "merged");
-        Directory.CreateDirectory(output);
+        string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "merged");
+
+        Directory.CreateDirectory(mergedOutput);
 
         await ToolHelper.Call("MalsMerger",
             "merge",
-            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), output)
+            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), mergedOutput)
             .WaitForExitAsync();
 
-        // Generate JSON changelogs for each mod
-
-        string changelogOutputPath = Path.Combine(Config.Shared.StorageFolder, "temp");
-        Directory.CreateDirectory(changelogOutputPath);
-
+        // Collect paths to the generated changelogs
+        List<string> changelogPaths = new List<string>();
         foreach (var mod in Mods)
         {
             string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
 
+            // Generate changelog for each mod
             await ToolHelper.Call("RsdbMerge",
                 "--generate-changelog", rsdbFolderPath,
-                "--output", Path.Combine(changelogOutputPath, mod.Name + ".json"))
+                "--output", mod.SourceFolder)
                 .WaitForExitAsync();
+
+            // Check if the changelog file exists
+            string changelogPath = Path.Combine(mod.SourceFolder, "rsdb.json");
+            Console.WriteLine($"Checking for changelog at: {changelogPath}"); // Debugging check
+            if (File.Exists(changelogPath))
+            {
+                changelogPaths.Add(changelogPath);
+                Console.WriteLine($"Changelog found and added: {changelogPath}"); // Debugging check
+            }
+            else
+            {
+                Console.WriteLine($"Changelog not found at: {changelogPath}"); // Debugging check
+            }
         }
 
-        // Apply changelogs to merge RSDB files
-        string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "mergedRSDB");
+        // Apply changelogs to merge RSDB file
         Directory.CreateDirectory(mergedOutput);
 
-        await ToolHelper.Call("RsdbMerge",
-            "--apply-changelogs", changelogOutputPath,
-            "--output", mergedOutput,
-            "--version", "121") // Replace "121" with the desired version number
+        if (changelogPaths.Any())
+        {
+            Console.WriteLine("Attempting to apply changelogs.");
+            string changelogArguments = string.Join("|", changelogPaths);
+
+            // Log the final command for debugging
+            Console.WriteLine($"RsdbMerge command: --apply-changelogs {changelogArguments} --output {Path.Combine(mergedOutput, "romfs", "RSDB")} --version 121");
+
+            await ToolHelper.Call("RsdbMerge",
+                "--apply-changelogs", changelogArguments,
+                "--output", Path.Combine(mergedOutput, "romfs", "RSDB"),
+                "--version", "121")
+                .WaitForExitAsync();
+        }
+        else
+        {
+            Console.WriteLine("No changelogs were found to apply.");
+        }
+
+        // After merging, execute Restbl on the merged mod folder
+        await ToolHelper.Call("Restbl",
+            "--action", "single-mod", // Ensure correct syntax for action argument
+            "--use-checksums",
+            "--version", "121",
+            "--mod-path", mergedOutput,
+            "--compress")
             .WaitForExitAsync();
+
+        Console.WriteLine("Restbl tool execution completed."); // Debugging check
     }
 }
