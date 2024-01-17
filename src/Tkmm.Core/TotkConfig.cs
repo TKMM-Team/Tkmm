@@ -27,8 +27,26 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         Title = "TotK RomFS Game Path")]
     private string _gamePath = string.Empty;
 
+    public static int GetVersion(string romfsFolder, int @default = 100)
+    {
+        string regionLangMask = Path.Combine(romfsFolder, "System", "RegionLangMask.txt");
+        if (File.Exists(regionLangMask))
+        {
+            string[] lines = File.ReadAllLines(regionLangMask);
+            if (lines.Length >= 3 && int.TryParse(lines[2], out int value))
+            {
+                return value;
+            }
+        }
+
+        return @default;
+    }
+
     [JsonIgnore]
     public string ZsDicPath => Path.Combine(GamePath, "Pack", "ZsDic.pack.zs");
+
+    [JsonIgnore]
+    public int Version => GetVersion(GamePath);
 
     partial void OnGamePathChanged(string value)
     {
@@ -37,4 +55,5 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
                 && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"));
         });
     }
+
 }

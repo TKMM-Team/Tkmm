@@ -83,9 +83,11 @@ public partial class ModManager : ObservableObject
         Apply();
 
         string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "merged");
-
-        string version = 
-
+        // Check if the "merged" folder exists and delete it if it does
+        if (Directory.Exists(mergedOutput))
+        {
+            Directory.Delete(mergedOutput, true);
+        }
         Directory.CreateDirectory(mergedOutput);
 
         await ToolHelper.Call("MalsMerger",
@@ -121,11 +123,8 @@ public partial class ModManager : ObservableObject
             string rsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
             Directory.CreateDirectory(rsdbFolder);
 
-            // Log the final command for debugging
-            Console.WriteLine($"RsdbMerge command: --apply-changelogs {modPathsArguments} --output \"{rsdbFolder}\" --version 121");
-
             await ToolHelper.Call("RsdbMerge",
-                "--apply-changelogs", modPathsArguments, "--output", rsdbFolder, "--version", "121")
+                "--apply-changelogs", modPathsArguments, "--output", rsdbFolder, "--version", TotkConfig.Shared.Version.ToString())
                 .WaitForExitAsync();
         }
         else
@@ -137,7 +136,7 @@ public partial class ModManager : ObservableObject
         await ToolHelper.Call("Restbl",
             "--action", "single-mod", // Ensure correct syntax for action argument
             "--use-checksums",
-            "--version", "121",
+            "--version", TotkConfig.Shared.Version.ToString(),
             "--mod-path", mergedOutput,
             "--compress")
             .WaitForExitAsync();
