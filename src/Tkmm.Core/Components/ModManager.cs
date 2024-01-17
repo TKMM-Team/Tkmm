@@ -95,25 +95,26 @@ public partial class ModManager : ObservableObject
         List<string> modPaths = new List<string>();
         foreach (var mod in Mods)
         {
-            string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
+//            string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
 
             // Generate changelog for each mod
-            await ToolHelper.Call("RsdbMerge",
-                "--generate-changelog", rsdbFolderPath,
-                "--output", mod.SourceFolder)
-                .WaitForExitAsync();
+//            await ToolHelper.Call("RsdbMerge",
+//                "--generate-changelog", rsdbFolderPath,
+//                "--output", mod.SourceFolder)
+//                .WaitForExitAsync();
 
             // Add mod's source folder to the list (assuming the source folder is the required path)
-            modPaths.Add($"\"{mod.SourceFolder}\""); // Enclosing in quotes
+            modPaths.Add(mod.SourceFolder); // Enclosing in quotes
         }
 
         // Apply changelogs to merge RSDB files
         Directory.CreateDirectory(mergedOutput);
 
+        string modPathsArguments = string.Join("|", modPaths);
+
         if (modPaths.Any())
         {
             Console.WriteLine("Attempting to apply changelogs.");
-            string modPathsArguments = string.Join(" ", modPaths); // Separated by space and each path is quoted
 
             string rsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
             Directory.CreateDirectory(rsdbFolder);
@@ -122,9 +123,7 @@ public partial class ModManager : ObservableObject
             Console.WriteLine($"RsdbMerge command: --apply-changelogs {modPathsArguments} --output \"{rsdbFolder}\" --version 121");
 
             await ToolHelper.Call("RsdbMerge",
-                "--apply-changelogs", modPathsArguments,
-                "--output", $"\"{rsdbFolder}\"", // Enclosing output path in quotes
-                "--version", "121")
+                "--apply-changelogs", modPathsArguments, "--output", rsdbFolder, "--version", "121")
                 .WaitForExitAsync();
         }
         else
