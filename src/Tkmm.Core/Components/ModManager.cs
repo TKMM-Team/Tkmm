@@ -84,11 +84,13 @@ public partial class ModManager : ObservableObject
 
         string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "merged");
 
+        string version = 
+
         Directory.CreateDirectory(mergedOutput);
 
         await ToolHelper.Call("MalsMerger",
             "merge",
-            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), Path.Combine(mergedOutput, "Mals"))
+            string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), Path.Combine(mergedOutput, "romfs"))
             .WaitForExitAsync();
 
         // Collect paths to the mods' source folders
