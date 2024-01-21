@@ -193,7 +193,7 @@ public partial class ModManager : ObservableObject
 
         string basePath = Path.Combine(Config.Shared.StorageFolder, "mods");
 
-        string modPathsArguments2 = string.Join("", modNames);
+        string modPathsArguments2 = string.Join(" ", modNames.Select(name => $"\"{name}\""));
 
         // Run the first SARC merger command.
         await ToolHelper.Call("SarcTool",
