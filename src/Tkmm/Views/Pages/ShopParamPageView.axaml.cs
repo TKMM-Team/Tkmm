@@ -6,9 +6,9 @@ using Avalonia;
 
 namespace Tkmm.Views.Pages;
 
-public partial class ToolsPageView : UserControl
+public partial class ShopParamPageView : UserControl
 {
-    public ToolsPageView()
+    public ShopParamPageView()
     {
         InitializeComponent();
         this.AttachedToVisualTree += OnAttachedToVisualTree;
@@ -21,7 +21,7 @@ public partial class ToolsPageView : UserControl
         if (window != null)
         {
             // Pass the window to the ViewModel
-            DataContext = new ToolsPageViewModel(window);
+            DataContext = new ShopParamPageViewModel();
         }
     }
 }

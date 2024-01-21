@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="Tkmm.Views.Pages.ToolsPageView"
+    x:Class="Tkmm.Views.Pages.ShopParamPageView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,33 @@
     xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="pages:ToolsPageViewModel"
+    x:DataType="pages:ShopParamPageViewModel"
     mc:Ignorable="d">
+
+    <DataGrid Items="{Binding Shops}">
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding ShopName}" Header="Shop Name" />
+            <DataGridTextColumn Binding="{Binding NPCName}" Header="NPC Name" />
+            <DataGridTextColumn Binding="{Binding Location}" Header="Location" />
+            <DataGridTextColumn Binding="{Binding RequiredQuest}" Header="Required Quest" />
+            <DataGridTextColumn Binding="{Binding NPCActorName}" Header="NPC ActorName" />
+            <DataGridTemplateColumn Header="Reorder">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Command="{Binding $parent[DataGrid].DataContext.MoveUp}"
+                                CommandParameter="{Binding}"
+                                Content="Up" />
+                            <Button
+                                Command="{Binding $parent[DataGrid].DataContext.MoveDown}"
+                                CommandParameter="{Binding}"
+                                Content="Down" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
 
 </UserControl>
