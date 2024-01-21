@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Helpers.Operations;
+using Tkmm.Core.Components.Models;
 
 namespace Tkmm.Core.Models.Mods;
 
@@ -42,9 +45,31 @@ public partial class Mod : ObservableObject
     [JsonIgnore]
     public bool IsFromStorage { get; private set; } = false;
 
+    [JsonIgnore]
+    private IModImporter? _importer;
+
     public static Mod FromFile(string file)
     {
-        throw new NotImplementedException();
+        FileStream fs = File.OpenRead(file);
+        ZipArchive archive = new(fs, mode: ZipArchiveMode.Read, leaveOpen: true);
+
+        if (archive.Entries.FirstOrDefault(x => x.Name == "info.json")?.Open() is Stream stream) {
+            if (JsonSerializer.Deserialize<Mod>(stream) is Mod mod) {
+                if (archive.Entries.FirstOrDefault(x => x.Name == mod.ThumbnailUri)?.Open() is Stream thumbnailStream) {
+                    string tmpThumbnailPath = Path.GetTempFileName();
+                    using FileStream tmpThumbnail = File.Create(tmpThumbnailPath);
+                    thumbnailStream.CopyTo(tmpThumbnail);
+                    mod.ThumbnailUri = tmpThumbnailPath;
+                }
+
+                mod._importer = new ArchiveModImporter(archive);
+                return mod;
+            }
+        }
+
+        throw new InvalidOperationException("""
+            Error parsing tkcl file
+            """);
     }
 
     public static Mod FromFolder(string folder, bool isFromStorage = false)
@@ -60,6 +85,7 @@ public partial class Mod : ObservableObject
             ?? throw new InvalidOperationException(
                 "Could not parse ModInfo");
 
+        result._importer = new FolderModImporter(folder);
         result.SourceFolder = folder;
         result.IsFromStorage = isFromStorage;
 
@@ -68,13 +94,12 @@ public partial class Mod : ObservableObject
 
     public void Import()
     {
-        if (IsFromStorage) {
+        if (IsFromStorage || _importer is null) {
             return;
         }
 
-        string outputModFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString());
-        DirectoryOperations.CopyDirectory(SourceFolder, outputModFolder, overwrite: true);
-        SourceFolder = outputModFolder;
+        _importer.Import(SourceFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString()));
+        _importer = null;
         IsFromStorage = true;
     }
 
