@@ -2,9 +2,12 @@
 using Octokit;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
+using System.IO;
+using System.IO.Compression; // Include this for ZipFile
 
 namespace Tkmm.Core.Components;
 
@@ -45,12 +48,29 @@ public partial class ModManager : ObservableObject
     /// <returns></returns>
     public Mod Import(string path)
     {
+        // Check if the file is a ZIP file
+        if (File.Exists(path) && Path.GetExtension(path).Equals(".tkcl", StringComparison.OrdinalIgnoreCase))
+        {   
+            // Extract the ZIP file to a new directory
+            string extractPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path));
+
+            if (Path.Exists(extractPath))
+            {
+                Directory.Delete(extractPath, true);
+            }
+
+            ZipFile.ExtractToDirectory(path, extractPath);
+
+            // Use the extracted folder path for further processing
+            path = extractPath;
+        }
+
         Mod mod = File.Exists(path)
             ? Mod.FromFile(path) : Mod.FromFolder(path);
 
-        // If any mods exists with the id
-        // stage it to be imported again
-        if (Mods.FirstOrDefault(x => x.Id == mod.Id) is Mod existing) {
+        // Check for existing mods
+        if (Mods.FirstOrDefault(x => x.Id == mod.Id) is Mod existing)
+        {
             existing.StageImport(path);
             return existing;
         }

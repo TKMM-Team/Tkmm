@@ -31,7 +31,7 @@
             <!--  Add browse button for ExportFile  -->
             <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <TextBox
-                    Width="200"
+                    Width="375"
                     Text="{Binding ExportFile}"
                     Watermark="Export File" />
                 <Button
@@ -43,7 +43,7 @@
             <!--  Add browse button for Mod.SourceFolder  -->
             <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <TextBox
-                    Width="200"
+                    Width="375"
                     Text="{Binding Mod.SourceFolder}"
                     Watermark="Folder" />
                 <Button
@@ -60,7 +60,7 @@
             <!--  Add browse button for Mod.ThumbnailUri  -->
             <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <TextBox
-                    Width="200"
+                    Width="375"
                     Text="{Binding Mod.ThumbnailUri}"
                     Watermark="Thumbnail" />
                 <Button

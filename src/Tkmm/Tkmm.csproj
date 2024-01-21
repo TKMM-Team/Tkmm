@@ -28,4 +28,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Pages\ShopParamPageView.axaml.cs">
+      <DependentUpon>ShopParamPageView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
