@@ -34,7 +34,7 @@ public class PackageGenerator
         Directory.CreateDirectory(_tempOutput);
 
         // Define the file extensions and subfolders to exclude
-        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".byml.zs", ".bgyml", ".pack.zs", ".sarc.zs", ".blarc.zs" };
+        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".rstbl.byml.zs", ".pack.zs", ".sarc.zs", ".blarc.zs" };
 
         string exefsPath = Path.Combine(_mod.SourceFolder, "exefs");
         string destinationDir = Path.Combine(_tempOutput, "exefs");

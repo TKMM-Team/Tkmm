@@ -181,9 +181,20 @@ public partial class ModManager : ObservableObject
             modNames.Add(mod.Id.ToString()); // Enclosing in quotes
         }
 
-        foreach (var mod in Mods) 
+        string ConvertPaths(string input)
         {
-            
+            if (string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
+
+            var paths = input.Split('|');
+            for (int i = 0; i < paths.Length; i++)
+            {
+                paths[i] = paths[i].Trim();
+            }
+
+            return string.Join(" ", paths);
         }
 
         // Apply changelogs to merge RSDB files
@@ -191,15 +202,17 @@ public partial class ModManager : ObservableObject
 
         string modPathsArguments = string.Join("|", modPaths);
 
+        string modPathsArguments2 = string.Join("|", modNames);
+
         string basePath = Path.Combine(Config.Shared.StorageFolder, "mods");
 
-        string modPathsArguments2 = string.Join(" ", modNames.Select(name => $"\"{name}\""));
+        string convertedPath = ConvertPaths(modPathsArguments2);
 
         // Run the first SARC merger command.
         await ToolHelper.Call("SarcTool",
             "merge",
             "--base", basePath,
-            "--mods", modPathsArguments2,
+            "--mods", convertedPath,
             "--process", "All",
             "--output", Path.Combine(mergedOutput, "romfs"))
             .WaitForExitAsync();
