@@ -1,50 +1,87 @@
-<UserControl x:Class="Tkmm.Views.Pages.ToolsPageView"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="using:Tkmm.Core.Models.Mods"
-             xmlns:pages="using:Tkmm.ViewModels.Pages"
-             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
-             x:DataType="pages:ToolsPageViewModel"
-             mc:Ignorable="d">
-    <Grid Margin="25"
-          ColumnDefinitions="*,*"
-          RowDefinitions="Auto,*,Auto">
-        <TextBlock Grid.Row="0"
-                   Grid.ColumnSpan="2"
-                   Margin="0,0,0,15"
-                   FontFamily="{StaticResource HyliaGlyph}"
-                   FontSize="30"
-                   Foreground="{DynamicResource SystemAccentColor}"
-                   Text="Devloper Tools | TCL Packager" />
+<UserControl
+    x:Class="Tkmm.Views.Pages.ToolsPageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Tkmm.Core.Models.Mods"
+    xmlns:pages="using:Tkmm.ViewModels.Pages"
+    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="pages:ToolsPageViewModel"
+    mc:Ignorable="d">
+    <Grid
+        Margin="25"
+        ColumnDefinitions="*,*"
+        RowDefinitions="Auto,*,Auto">
+        <TextBlock
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,15"
+            FontFamily="{StaticResource HyliaGlyph}"
+            FontSize="30"
+            Foreground="{DynamicResource SystemAccentColor}"
+            Text="Developer Tools | TKCL Packager" />
 
-        <StackPanel Grid.Row="1" Spacing="5">
-            <!--  Add browse button  -->
-            <TextBox Text="{Binding ExportFile}" Watermark="Export File" />
-            <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            Spacing="5">
+            <!--  Add browse button for ExportFile  -->
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <TextBox
+                    Width="200"
+                    Text="{Binding ExportFile}"
+                    Watermark="Export File" />
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding BrowseExportFileCommand}"
+                    Content="Browse..." />
+            </StackPanel>
+
+            <!--  Add browse button for Mod.SourceFolder  -->
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <TextBox
+                    Width="200"
+                    Text="{Binding Mod.SourceFolder}"
+                    Watermark="Folder" />
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding BrowseSourceFolderCommand}"
+                    Content="Browse..." />
+            </StackPanel>
 
             <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
             <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
             <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
             <TextBox Text="{Binding Mod.Description}" Watermark="Description" />
 
-            <!--  Add browse button  -->
-            <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />
+            <!--  Add browse button for Mod.ThumbnailUri  -->
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <TextBox
+                    Width="200"
+                    Text="{Binding Mod.ThumbnailUri}"
+                    Watermark="Thumbnail" />
+                <Button
+                    Margin="5,0,0,0"
+                    Command="{Binding BrowseThumbnailCommand}"
+                    Content="Browse..." />
+            </StackPanel>
         </StackPanel>
 
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button BorderBrush="{DynamicResource SystemAccentColor}"
-                    Command="{Binding CreateCommand}"
-                    ToolTip.Tip="Create TCL">
+            <Button
+                BorderBrush="{DynamicResource SystemAccentColor}"
+                Command="{Binding CreateCommand}"
+                ToolTip.Tip="Create TKCL">
                 <StackPanel Orientation="Horizontal">
                     <pi:Icon Value="fa-solid fa-boxes-packing" />
-                    <TextBlock Margin="10,0,0,0"
-                               VerticalAlignment="Center"
-                               Text="Create Package" />
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="Create Package" />
                 </StackPanel>
             </Button>
         </StackPanel>

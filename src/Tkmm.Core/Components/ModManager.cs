@@ -40,7 +40,7 @@ public partial class ModManager : ObservableObject
     }
 
     /// <summary>
-    /// Import a mod from a tcl file or folder
+    /// Import a mod from a .tkcl file or folder
     /// </summary>
     /// <returns></returns>
     public Mod Import(string path)
@@ -90,6 +90,9 @@ public partial class ModManager : ObservableObject
         }
         Directory.CreateDirectory(mergedOutput);
 
+        // Define the file extensions and subfolders to exclude
+        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".byml.zs", ".bgyml", ".pack.zs", ".sarc.zs", ".blarc.zs"};
+
         await ToolHelper.Call("MalsMerger",
             "merge",
             string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))), Path.Combine(mergedOutput, "romfs"))
@@ -97,24 +100,64 @@ public partial class ModManager : ObservableObject
 
         // Collect paths to the mods' source folders
         List<string> modPaths = new List<string>();
+        List<string> modNames = new List<string>();
         foreach (var mod in Mods)
         {
-//            string rsdbFolderPath = Path.Combine(mod.SourceFolder, "romfs", "RSDB");
+            foreach (var file in Directory.EnumerateFiles(mod.SourceFolder, "*.*", SearchOption.AllDirectories))
+            {
+                var fileInfo = new FileInfo(file);
 
-            // Generate changelog for each mod
-//            await ToolHelper.Call("RsdbMerge",
-//                "--generate-changelog", rsdbFolderPath,
-//                "--output", mod.SourceFolder)
-//                .WaitForExitAsync();
+                // Compute the relative directory path
 
+                // Skip the file if its name ends with any of the excluded extensions
+                if (excludedExtensions.Any(ex => fileInfo.Name.EndsWith(ex)))
+                    continue;
+
+                // Compute the destination path
+                var relativePath = fileInfo.FullName.Substring(mod.SourceFolder.Length + 1);
+                var destinationPath = Path.Combine(mergedOutput, relativePath);
+
+                // Create the destination directory if it doesn't exist
+                var destinationDirectory = Path.GetDirectoryName(destinationPath);
+                if (!Directory.Exists(destinationDirectory))
+                    Directory.CreateDirectory(destinationDirectory);
+
+                // Copy the file
+                File.Copy(file, destinationPath, true);
+            }
+
+            string exefsPath = Path.Combine(mod.SourceFolder, "exefs");
+
+            if (Directory.Exists(exefsPath))
+                Directory.CreateDirectory(Path.Combine(mergedOutput, "exefs"));
+
+            foreach (var file in Directory.EnumerateFiles(exefsPath, "*.*", SearchOption.AllDirectories))
+            {
+                // Copy the file
+                File.Copy(file, exefsPath, true);
+            }
             // Add mod's source folder to the list (assuming the source folder is the required path)
             modPaths.Add(mod.SourceFolder); // Enclosing in quotes
+            modNames.Add(mod.Id.ToString()); // Enclosing in quotes
         }
 
         // Apply changelogs to merge RSDB files
         Directory.CreateDirectory(mergedOutput);
 
         string modPathsArguments = string.Join("|", modPaths);
+
+        string basePath = Path.Combine(Config.Shared.StorageFolder, "mods");
+
+        string modPathsArguments2 = string.Join("", modNames);
+
+        // Run the first SARC merger command.
+        await ToolHelper.Call("SarcTool",
+            "merge",
+            "--base", basePath,
+            "--mods", modPathsArguments2,
+            "--process", "All",
+            "--output", Path.Combine(mergedOutput, "romfs"))
+            .WaitForExitAsync();
 
         if (modPaths.Any())
         {
@@ -142,5 +185,7 @@ public partial class ModManager : ObservableObject
             .WaitForExitAsync();
 
         Console.WriteLine("Restbl tool execution completed."); // Debugging check
+
+        Console.WriteLine("Merging Complete!");
     }
 }
