@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
+using System.Diagnostics;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 
@@ -107,46 +108,43 @@ public partial class HomePageViewModel : ObservableObject
         ModManager.Shared.Mods.CollectionChanged += ModsUpdated;
 
         foreach (var mod in ModManager.Shared.Mods) {
-            ResolveThumbnail(mod);
+            _ = ResolveThumbnail(mod);
         }
     }
 
-    private void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is IList mods) {
             foreach (Mod mod in mods) {
-                ResolveThumbnail(mod);
+                await ResolveThumbnail(mod);
                 CurrentMod = mod;
             }
         }
     }
 
-    private static void ResolveThumbnail(Mod mod)
+    private static async Task ResolveThumbnail(Mod mod)
     {
         if (mod.ThumbnailUri is string uri) {
             string localPath = Path.Combine(mod.SourceFolder, uri);
             if (File.Exists(localPath)) {
                 mod.Thumbnail = new Bitmap(localPath);
             }
+            else if (uri.StartsWith("https://")) {
+                try {
+                    using HttpClient client = new();
+                    byte[] data = await client.GetByteArrayAsync(uri);
+                    using MemoryStream ms = new(data);
+                    mod.Thumbnail = new Bitmap(ms);
+                }
+                catch (Exception ex) {
+                    Trace.WriteLine($"""
+                        Error reading thumbnail URL: '{uri}'
 
-            //
-            // URL image support (broken)
-
-            // else if (uri.StartsWith("https://")) {
-            //     try {
-            //         using HttpClient client = new();
-            //         using Stream stream = await client.GetStreamAsync(uri);
-            //         mod.Thumbnail = new(stream);
-            //     }
-            //     catch (Exception ex) {
-            //         Trace.WriteLine($"""
-            //             Error reading thumbnail URL: '{uri}'
-
-            //             Exception:
-            //             {ex}
-            //             """);
-            //     }
-            // }
+                        Exception:
+                        {ex}
+                        """);
+                }
+            }
         }
     }
 }
