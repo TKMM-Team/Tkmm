@@ -127,14 +127,28 @@ public partial class ModManager : ObservableObject
             }
 
             string exefsPath = Path.Combine(mod.SourceFolder, "exefs");
+            string destinationDir = Path.Combine(mergedOutput, "exefs");
 
             if (Directory.Exists(exefsPath))
-                Directory.CreateDirectory(Path.Combine(mergedOutput, "exefs"));
+                Directory.CreateDirectory(destinationDir);
 
             foreach (var file in Directory.EnumerateFiles(exefsPath, "*.*", SearchOption.AllDirectories))
             {
+                // Calculate the relative path
+                string relativePath = file.Substring(exefsPath.Length + 1);
+
+                // Construct the destination file path
+                string destFile = Path.Combine(destinationDir, relativePath);
+
+                // Create the directory if it doesn't exist
+                string destDir = Path.GetDirectoryName(destFile);
+                if (!Directory.Exists(destDir))
+                {
+                    Directory.CreateDirectory(destDir);
+                }
+
                 // Copy the file
-                File.Copy(file, exefsPath, true);
+                File.Copy(file, destFile, true);
             }
             // Add mod's source folder to the list (assuming the source folder is the required path)
             modPaths.Add(mod.SourceFolder); // Enclosing in quotes
