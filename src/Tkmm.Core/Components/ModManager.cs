@@ -7,7 +7,8 @@ using System.Text.Json;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
 using System.IO;
-using System.IO.Compression; // Include this for ZipFile
+using System.IO.Compression;
+using System.Runtime.InteropServices; // Include this for ZipFile
 
 namespace Tkmm.Core.Components;
 
@@ -150,29 +151,39 @@ public partial class ModManager : ObservableObject
             string destinationDir = Path.Combine(mergedOutput, "exefs");
 
             if (Directory.Exists(exefsPath))
-                Directory.CreateDirectory(destinationDir);
 
-            foreach (var file in Directory.EnumerateFiles(exefsPath, "*.*", SearchOption.AllDirectories))
             {
-                // Calculate the relative path
-                string relativePath = file.Substring(exefsPath.Length + 1);
 
-                // Construct the destination file path
-                string destFile = Path.Combine(destinationDir, relativePath);
+                    Directory.CreateDirectory(destinationDir);
 
-                // Create the directory if it doesn't exist
-                string destDir = Path.GetDirectoryName(destFile);
-                if (!Directory.Exists(destDir))
-                {
-                    Directory.CreateDirectory(destDir);
+                    foreach (var file in Directory.EnumerateFiles(exefsPath, "*.*", SearchOption.AllDirectories))
+                    {
+                        // Calculate the relative path
+                        string relativePath = file.Substring(exefsPath.Length + 1);
+
+                        // Construct the destination file path
+                        string destFile = Path.Combine(destinationDir, relativePath);
+
+                        // Create the directory if it doesn't exist
+                        string destDir = Path.GetDirectoryName(destFile);
+                        if (!Directory.Exists(destDir))
+                        {
+                            Directory.CreateDirectory(destDir);
+                        }
+
+                        // Copy the file
+                        File.Copy(file, destFile, true);
+                    }
+
                 }
-
-                // Copy the file
-                File.Copy(file, destFile, true);
-            }
             // Add mod's source folder to the list (assuming the source folder is the required path)
             modPaths.Add(mod.SourceFolder); // Enclosing in quotes
             modNames.Add(mod.Id.ToString()); // Enclosing in quotes
+        }
+
+        foreach (var mod in Mods) 
+        {
+            
         }
 
         // Apply changelogs to merge RSDB files
@@ -199,6 +210,8 @@ public partial class ModManager : ObservableObject
 
             string rsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
             Directory.CreateDirectory(rsdbFolder);
+
+            Console.WriteLine(modPathsArguments);
 
             await ToolHelper.Call("RsdbMerge",
                 "--apply-changelogs", modPathsArguments, "--output", rsdbFolder, "--version", TotkConfig.Shared.Version.ToString())

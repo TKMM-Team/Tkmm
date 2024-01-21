@@ -34,12 +34,14 @@ public class PackageGenerator
         Directory.CreateDirectory(_tempOutput);
 
         // Define the file extensions and subfolders to exclude
-        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".byml.zs", ".bgyml", ".pack.zs", ".sarc.zs", ".blarc.zs"};
+        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".byml.zs", ".bgyml", ".pack.zs", ".sarc.zs", ".blarc.zs" };
 
         string exefsPath = Path.Combine(_mod.SourceFolder, "exefs");
         string destinationDir = Path.Combine(_tempOutput, "exefs");
 
         if (Directory.Exists(exefsPath))
+
+        {
             Directory.CreateDirectory(destinationDir);
 
 
@@ -61,7 +63,7 @@ public class PackageGenerator
                 // Copy the file
                 File.Copy(file, destFile, true);
             }
-
+        }
         // Enumerate all files in the source folder and its subfolders
         foreach (var file in Directory.EnumerateFiles(_mod.SourceFolder, "*.*", SearchOption.AllDirectories))
         {   
