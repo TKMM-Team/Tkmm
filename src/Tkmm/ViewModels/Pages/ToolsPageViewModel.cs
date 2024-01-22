@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ConfigFactory.Avalonia.Helpers;
+using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
-using System.Windows.Input;
-using Microsoft.Win32;
-using System.IO;
-using Avalonia.Controls;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -17,53 +15,30 @@ public partial class ToolsPageViewModel : ObservableObject
     [ObservableProperty]
     private Mod _mod = new();
 
-    public ICommand BrowseExportFileCommand { get; }
-    public ICommand BrowseSourceFolderCommand { get; }
-    public ICommand BrowseThumbnailCommand { get; }
-
-    private Window _window;
-
-    public ToolsPageViewModel(Window window)
+    [RelayCommand]
+    private async Task BrowseExportFile()
     {
-        _window = window;
-
-        BrowseExportFileCommand = new RelayCommand(BrowseExportFile);
-        BrowseSourceFolderCommand = new RelayCommand(BrowseSourceFolder);
-        BrowseThumbnailCommand = new RelayCommand(BrowseThumbnail);
-    }
-
-    private async void BrowseExportFile()
-    {
-        var dialog = new SaveFileDialog
-        {
-            DefaultExtension = "tkcl",
-            Filters = new List<FileDialogFilter> { new FileDialogFilter { Name = "TKCL Files", Extensions = new List<string> { "tkcl" } } }
-        };
-        var result = await dialog.ShowAsync(_window);
-        if (result != null)
-        {
+        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export Location", "TKCL Files:*.tkcl");
+        if (await dialog.ShowDialog() is string result) {
             ExportFile = result;
         }
     }
 
-    private async void BrowseSourceFolder()
+    [RelayCommand]
+    private async Task BrowseSourceFolder()
     {
-        var dialog = new OpenFolderDialog();
-        var result = await dialog.ShowAsync(_window);
-        if (result != null)
-        {
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Source Folder");
+        if (await dialog.ShowDialog() is string result) {
             Mod.SourceFolder = result;
         }
     }
 
-    private async void BrowseThumbnail()
+    [RelayCommand]
+    private async Task BrowseThumbnail()
     {
-        var dialog = new OpenFileDialog();
-        dialog.Filters.Add(new FileDialogFilter { Name = "Image files", Extensions = new List<string> { "png", "jpg", "" } });
-        var result = await dialog.ShowAsync(_window);
-        if (result != null && result.Length > 0)
-        {
-            Mod.ThumbnailUri = result[0];
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail", "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.tif");
+        if (await dialog.ShowDialog() is string result) {
+            Mod.ThumbnailUri = result;
         }
     }
 
@@ -72,7 +47,7 @@ public partial class ToolsPageViewModel : ObservableObject
     {
         AppStatus.Set("Package building...");
         PackageGenerator packageGenerator = new(Mod, ExportFile);
-        await packageGenerator.Build();
+        await packageGenerator.Save();
 
         AppStatus.Set("Package built");
     }
