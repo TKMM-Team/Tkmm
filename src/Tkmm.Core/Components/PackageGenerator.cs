@@ -13,14 +13,21 @@ public class PackageGenerator
     private readonly Mod _mod;
     private readonly string _outputFolder;
     private readonly string _tempRomfsOutput;
-    private readonly string _exportFileLocation;
     private readonly string _SourceRomfsFolder;
 
-    public PackageGenerator(Mod mod, string tkclExportFileLocation)
+    public PackageGenerator(Mod mod)
     {
         _mod = mod;
-        _exportFileLocation = tkclExportFileLocation;
         _outputFolder = Path.Combine(Path.GetTempPath(), mod.Id.ToString());
+        _tempRomfsOutput = Path.Combine(_outputFolder, "romfs");
+        Directory.CreateDirectory(_tempRomfsOutput);
+        _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
+    }
+
+    public PackageGenerator(Mod mod, string outputFolder)
+    {
+        _mod = mod;
+        _outputFolder = outputFolder;
         _tempRomfsOutput = Path.Combine(_outputFolder, "romfs");
         Directory.CreateDirectory(_tempRomfsOutput);
         _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
@@ -57,17 +64,21 @@ public class PackageGenerator
             _mod.ThumbnailUri = THUMBNAIL_URI;
         }
 
-        using (FileStream fs = File.Create(Path.Combine(_outputFolder, "info.json"))) {
-            JsonSerializer.Serialize(fs, _mod);
-        }
+        using FileStream fs = File.Create(Path.Combine(_outputFolder, "info.json"));
+        JsonSerializer.Serialize(fs, _mod);
+    }
 
-        if (Path.GetDirectoryName(_exportFileLocation) is string exportFolder) {
+    public void Save(string exportFile, bool clearOutputFolder = false)
+    {
+        if (Path.GetDirectoryName(exportFile) is string exportFolder) {
             Directory.CreateDirectory(exportFolder);
         }
 
-        using FileStream tkcl = File.Create(_exportFileLocation);
+        using FileStream tkcl = File.Create(exportFile);
         ZipFile.CreateFromDirectory(_outputFolder, tkcl);
 
-        Directory.Delete(_outputFolder, true);
+        if (clearOutputFolder) {
+            Directory.Delete(_outputFolder, true);
+        }
     }
 }

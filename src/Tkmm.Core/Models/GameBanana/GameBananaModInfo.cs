@@ -68,8 +68,10 @@ public partial class GameBananaModInfo : ObservableObject
             }
         }
 
-        PackageGenerator generator = new(mod, "D:\\bin\\mods\\debug.tkcl");
+        PackageGenerator generator = new(mod, ModManager.GetModFolder(mod));
         await generator.Build();
+
+        ModManager.Shared.Mods.Add(mod);
     }
 
     [RelayCommand]

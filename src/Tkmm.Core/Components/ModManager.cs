@@ -53,6 +53,11 @@ public partial class ModManager : ObservableObject
         }
     }
 
+    public static string GetModFolder(Mod mod)
+    {
+        return Path.Combine(_modsPath, mod.Id.ToString());
+    }
+
     /// <summary>
     /// Import a mod from a .tkcl file or folder
     /// </summary>
