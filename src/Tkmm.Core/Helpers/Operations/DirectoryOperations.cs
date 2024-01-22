@@ -16,19 +16,4 @@ public static class DirectoryOperations
             CopyDirectory(folder, dstFolder, overwrite);
         }
     }
-
-    public static string ToSafeName(string path)
-    {
-        // I'm sorry that this sucks
-        return path
-            .Replace("\\", string.Empty)
-            .Replace("/", string.Empty)
-            .Replace(":", string.Empty)
-            .Replace("*", string.Empty)
-            .Replace("?", string.Empty)
-            .Replace("\"", string.Empty)
-            .Replace("<", string.Empty)
-            .Replace(">", string.Empty)
-            .Replace("|", string.Empty);
-    }
 }

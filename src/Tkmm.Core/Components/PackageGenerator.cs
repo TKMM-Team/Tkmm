@@ -1,16 +1,17 @@
 ﻿using System.IO.Compression;
-using System;
-using System.IO;
 using System.Text.Json;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Components;
 
 public class PackageGenerator
 {
+    private const string THUMBNAIL_URI = "thumbnail";
+
     private readonly Mod _mod;
-    private readonly string _tempOutput;
+    private readonly string _outputFolder;
     private readonly string _tempRomfsOutput;
     private readonly string _exportFileLocation;
     private readonly string _SourceRomfsFolder;
@@ -19,74 +20,19 @@ public class PackageGenerator
     {
         _mod = mod;
         _exportFileLocation = tkclExportFileLocation;
-        _tempOutput = Path.Combine(Path.GetTempPath(), mod.Id.ToString());
-        _tempRomfsOutput = Path.Combine(_tempOutput, "romfs");
+        _outputFolder = Path.Combine(Path.GetTempPath(), mod.Id.ToString());
+        _tempRomfsOutput = Path.Combine(_outputFolder, "romfs");
         Directory.CreateDirectory(_tempRomfsOutput);
         _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
     }
 
-    public async Task Build()
+    public async Task Save()
     {
-        if (Directory.Exists(_tempOutput))
-        {
-            Directory.Delete(_tempOutput, true);
+        if (Directory.Exists(_outputFolder)) {
+            Directory.Delete(_outputFolder, true);
         }
-        Directory.CreateDirectory(_tempOutput);
 
-        // Define the file extensions and subfolders to exclude
-        var excludedExtensions = new HashSet<string> { ".rsizetable.zs", ".rstbl.byml.zs", ".pack.zs", ".sarc.zs", ".blarc.zs" };
-
-        string exefsPath = Path.Combine(_mod.SourceFolder, "exefs");
-        string destinationDir = Path.Combine(_tempOutput, "exefs");
-
-        if (Directory.Exists(exefsPath))
-
-        {
-            Directory.CreateDirectory(destinationDir);
-
-
-            foreach (var file in Directory.EnumerateFiles(exefsPath, "*.*", SearchOption.AllDirectories))
-            {
-                // Calculate the relative path
-                string relativePath = file.Substring(exefsPath.Length + 1);
-
-                // Construct the destination file path
-                string destFile = Path.Combine(destinationDir, relativePath);
-
-                // Create the directory if it doesn't exist
-                string destDir = Path.GetDirectoryName(destFile);
-                if (!Directory.Exists(destDir))
-                {
-                    Directory.CreateDirectory(destDir);
-                }
-
-                // Copy the file
-                File.Copy(file, destFile, true);
-            }
-        }
-        // Enumerate all files in the source folder and its subfolders
-        foreach (var file in Directory.EnumerateFiles(_mod.SourceFolder, "*.*", SearchOption.AllDirectories))
-        {   
-            var fileInfo = new FileInfo(file);
-
-            // Compute the relative directory path
-
-            // Skip the file if its name ends with any of the excluded extensions
-            if (excludedExtensions.Any(ex => fileInfo.Name.EndsWith(ex)))
-                continue;
-
-            // Compute the destination path
-            var relativePath = fileInfo.FullName.Substring(_mod.SourceFolder.Length + 1);
-            var destinationPath = Path.Combine(_tempOutput, relativePath);
-
-            // Create the destination directory if it doesn't exist
-            var destinationDirectory = Path.GetDirectoryName(destinationPath);
-            if (!Directory.Exists(destinationDirectory))
-                Directory.CreateDirectory(destinationDirectory);
-
-            // Copy the file
-            File.Copy(file, destinationPath, true);
-        }
+        DirectoryOperations.CopyDirectory(_mod.SourceFolder, _outputFolder, true);
 
         await ToolHelper.Call("MalsMerger", "gen", _SourceRomfsFolder, _tempRomfsOutput)
             .WaitForExitAsync();
@@ -95,28 +41,23 @@ public class PackageGenerator
 
         // Generate changelog for each mod
         await ToolHelper.Call("RsdbMerge",
-            "--generate-changelog", rsdbFolderPath,
-            "--output", _tempOutput)
-                .WaitForExitAsync();
+                "--generate-changelog", rsdbFolderPath,
+                "--output", _outputFolder
+            ).WaitForExitAsync();
 
         // Generate changelog for each mod
         await ToolHelper.Call("SarcTool",
-            "package", 
-            "--mod", _mod.SourceFolder,
-            "--output", _tempOutput)
-                .WaitForExitAsync();
-
-        if (File.Exists(Path.Combine(_tempOutput, "thumbnail")))
-        {
-            File.Delete(Path.Combine(_tempOutput, "thumbnail"));
-        }
+                "package",
+                "--mod", _mod.SourceFolder,
+                "--output", _outputFolder
+            ).WaitForExitAsync();
 
         if (File.Exists(_mod.ThumbnailUri)) {
-            File.Copy(_mod.ThumbnailUri, Path.Combine(_tempOutput, "thumbnail"));
-            _mod.ThumbnailUri = "thumbnail";
+            File.Copy(_mod.ThumbnailUri, Path.Combine(_outputFolder, THUMBNAIL_URI), true);
+            _mod.ThumbnailUri = THUMBNAIL_URI;
         }
 
-        using (FileStream fs = File.Create(Path.Combine(_tempOutput, "info.json"))) {
+        using (FileStream fs = File.Create(Path.Combine(_outputFolder, "info.json"))) {
             JsonSerializer.Serialize(fs, _mod);
         }
 
@@ -125,8 +66,8 @@ public class PackageGenerator
         }
 
         using FileStream tkcl = File.Create(_exportFileLocation);
-        ZipFile.CreateFromDirectory(_tempOutput, tkcl);
+        ZipFile.CreateFromDirectory(_outputFolder, tkcl);
 
-        Directory.Delete(_tempOutput, true);
+        Directory.Delete(_outputFolder, true);
     }
 }

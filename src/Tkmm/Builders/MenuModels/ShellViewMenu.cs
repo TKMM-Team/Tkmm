@@ -3,9 +3,6 @@ using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Attributes;
 using Tkmm.Core.Components;
-using Tkmm.Core.Models.Mods;
-using Tkmm.Helpers;
-using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Builders.MenuModels;
 
