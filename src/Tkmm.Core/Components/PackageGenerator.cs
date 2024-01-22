@@ -26,7 +26,7 @@ public class PackageGenerator
         _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
     }
 
-    public async Task Save()
+    public async Task Build()
     {
         if (Directory.Exists(_outputFolder)) {
             Directory.Delete(_outputFolder, true);

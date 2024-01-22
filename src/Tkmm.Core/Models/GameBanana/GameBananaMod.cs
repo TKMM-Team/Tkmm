@@ -12,4 +12,7 @@ public class GameBananaMod
 
     [JsonPropertyName("_aFiles")]
     public List<GameBananaFile> Files { get; set; } = [];
+
+    [JsonPropertyName("_sText")]
+    public string Text { get; set; } = string.Empty;
 }

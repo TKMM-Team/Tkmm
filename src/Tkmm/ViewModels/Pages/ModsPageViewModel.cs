@@ -83,7 +83,9 @@ public partial class ModsPageViewModel : ObservableObject
 
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
             if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
+                AppStatus.Set("Installing", "fa-solid fa-download", isWorkingStatus: true);
                 await mod.Install(file);
+                AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
             }
         }
     }

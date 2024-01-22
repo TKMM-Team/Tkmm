@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Models.GameBanana;
 
@@ -41,9 +44,32 @@ public partial class GameBananaModInfo : ObservableObject
     public GameBananaMod Info { get; set; } = new();
 
     [RelayCommand]
-    public Task Install(GameBananaFile file)
+    public async Task Install(GameBananaFile file)
     {
-        throw new NotImplementedException();
+        using HttpClient client = new();
+        using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
+        using ZipArchive archive = new(stream);
+        string tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        archive.ExtractToDirectory(tmp);
+
+        Mod mod = new() {
+            Author = Submitter.Name,
+            Description = new ReverseMarkdown.Converter().Convert(Info.Text),
+            SourceFolder = tmp,
+            Name = Name,
+            ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}",
+            Version = Version
+        };
+
+        foreach (var folder in Directory.EnumerateDirectories(tmp, "**", SearchOption.AllDirectories)) {
+            if (Directory.Exists(Path.Combine(folder, "romfs"))) {
+                mod.SourceFolder = folder;
+                break;
+            }
+        }
+
+        PackageGenerator generator = new(mod, "D:\\bin\\mods\\debug.tkcl");
+        await generator.Build();
     }
 
     [RelayCommand]

@@ -47,7 +47,7 @@ public partial class ToolsPageViewModel : ObservableObject
     {
         AppStatus.Set("Package building...");
         PackageGenerator packageGenerator = new(Mod, ExportFile);
-        await packageGenerator.Save();
+        await packageGenerator.Build();
 
         AppStatus.Set("Package built");
     }
