@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\Pages\ShopParamView.axaml.cs">
-      <DependentUpon>ShopParamView.axaml</DependentUpon>
+    <Compile Update="Views\Pages\ShopParamPageView.axaml.cs">
+      <DependentUpon>ShopParamPageView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

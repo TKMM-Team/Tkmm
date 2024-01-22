@@ -1,0 +1,54 @@
+<UserControl
+    x:Class="Tkmm.Views.Pages.ShopParamPageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Tkmm.Core.Models"
+    xmlns:pages="using:Tkmm.ViewModels.Pages"
+    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+    Name="root"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="pages:ShopParamPageViewModel"
+    mc:Ignorable="d">
+
+    <Grid
+        Margin="15"
+        ColumnDefinitions="*,Auto,0.4*"
+        RowDefinitions="*,Auto">
+        <Grid Name="ModListGrid" Grid.Column="2" Margin="0,0,0,15">
+            <ListBox ItemsSource="{Binding Shops}" SelectedItem="{Binding CurrentShop}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Shop}">
+                        <TextBlock
+                            Background="Transparent"
+                            TextTrimming="CharacterEllipsis"
+                            ToolTip.Tip="{Binding ShopName}">
+                            <Run Text="{Binding ShopName}" />
+                            <Run Text="{Binding Location, StringFormat=' ({0})'}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
+                    <pi:Icon Value="fa-solid fa-caret-up" />
+                </Button>
+                <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
+                    <pi:Icon Value="fa-solid fa-caret-down" />
+                </Button>
+                <Button Command="{Binding ApplyCommand}">
+                    <pi:Icon Value="fa-solid fa-list-check" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</UserControl>

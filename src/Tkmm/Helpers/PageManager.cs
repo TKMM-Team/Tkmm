@@ -10,6 +10,7 @@ public enum Page
 {
     Home,
     Tools,
+    ShopParam,
     Mods,
 
     About,
