@@ -95,7 +95,7 @@ public partial class ModManager : ObservableObject
     {
         // If there are no mods, skip merging
         if (Mods.Count <= 0) {
-            Trace.WriteLine("[INFO] No mods to merge!");
+            Trace.WriteLine("[Info] No mods to merge!");
         }
 
         Apply();
