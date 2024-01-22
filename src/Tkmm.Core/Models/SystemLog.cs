@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Tkmm.Core.Models;
 
@@ -7,6 +6,7 @@ public enum LogLevel
 {
     Default,
     Info,
+    Debug,
     Warning,
     Error
 }
