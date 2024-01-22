@@ -9,5 +9,5 @@ public class GameBananaFeed
     public GameBananaMetadata Metadata { get; set; } = new();
 
     [JsonPropertyName("_aRecords")]
-    public ObservableCollection<GameBananaMod> Records { get; set; } = [];
+    public ObservableCollection<GameBananaModInfo> Records { get; set; } = [];
 }

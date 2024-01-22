@@ -1,6 +1,8 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using System.Text.Json;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.GameBanana;
@@ -12,9 +14,7 @@ public partial class ModsPageViewModel : ObservableObject
     private static readonly HttpClient _client = new();
 
     private const string GAME_ID = "7617";
-    private const string ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort=new&_csvModelInclusions=Mod";
-
-    private GameBananaFeed? _nextFeed;
+    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort=new&_csvModelInclusions=Mod";
 
     [ObservableProperty]
     private int _page = 0;
@@ -28,17 +28,64 @@ public partial class ModsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task NextPage()
+    public async Task NextPage(ScrollViewer modsViewer)
     {
         Page++;
         await UpdatePage();
+        modsViewer.ScrollToHome();
     }
 
     [RelayCommand]
-    public async Task PrevPage()
+    public async Task PrevPage(ScrollViewer modsViewer)
     {
         Page--;
         await UpdatePage();
+        modsViewer.ScrollToHome();
+    }
+
+    [RelayCommand]
+    public static async Task InstallMod(GameBananaModInfo mod)
+    {
+        StackPanel panel = new() {
+            Spacing = 5
+        };
+
+        panel.Children.Add(new TextBlock {
+            Text = mod.Name,
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap
+        });
+
+        panel.Children.Add(new TextBlock {
+            Text = "Choose a file to install:",
+            FontSize = 11,
+            Margin = new(15,10,0,0),
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap
+        });
+
+        bool first = true;
+        foreach (var file in mod.Info.Files) {
+            panel.Children.Add(new RadioButton {
+                GroupName = "@",
+                Content = file.Name,
+                IsChecked = first,
+                Tag = file
+            });
+
+            first = false;
+        }
+
+        ContentDialog dialog = new() {
+            Title = "Install GameBanana Mod?",
+            Content = panel,
+            SecondaryButtonText = "No",
+            PrimaryButtonText = "Yes"
+        };
+
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
+            if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
+                await mod.Install(file);
+            }
+        }
     }
 
     private async void InitLoad()
@@ -48,14 +95,18 @@ public partial class ModsPageViewModel : ObservableObject
 
     private async Task UpdatePage()
     {
-        Feed = _nextFeed ?? await Fetch(Page + 1);
+        Feed = await Fetch(Page + 1);
     }
 
     private static async Task<GameBananaFeed> Fetch(int page)
     {
-        using Stream stream = await GameBanana.Get(string.Format(ENDPOINT, page));
+        using Stream stream = await GameBananaHelper.Get(string.Format(FEED_ENDPOINT, page));
         GameBananaFeed feed = JsonSerializer.Deserialize<GameBananaFeed>(stream)
-            ?? throw new InvalidOperationException($"Could not parse feed from '{ENDPOINT}'");
+            ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
+
+        await Task.WhenAll(feed.Records.Select(x => x.DownloadMod()));
+        feed.Records = [.. feed.Records.Where(x => !x.Info.IsTrashed && !x.Info.IsFlagged && !x.IsObsolete && !x.IsContentRated)];
+
         _ = Task.Run(() => DownloadThumbnails(feed));
         return feed;
     }

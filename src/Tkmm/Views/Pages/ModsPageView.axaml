@@ -9,10 +9,14 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
+             x:CompileBindings="False"
              x:DataType="pages:ModsPageViewModel"
              mc:Ignorable="d">
+    <UserControl.DataContext>
+        <pages:ModsPageViewModel />
+    </UserControl.DataContext>
     <Grid Margin="15" RowDefinitions="*,Auto">
-        <ScrollViewer IsScrollInertiaEnabled="True">
+        <ScrollViewer Name="ModsViewer" IsScrollInertiaEnabled="True">
             <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -20,7 +24,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:GameBananaMod}">
+                    <DataTemplate DataType="{x:Type models:GameBananaModInfo}">
                         <Grid>
                             <Border Width="300"
                                     Margin="13"
@@ -31,13 +35,25 @@
                                     BoxShadow="2 2 20 0 #13000000"
                                     CornerRadius="3">
                                 <StackPanel>
-                                    <ui:HyperlinkButton Margin="0,0,15,0"
-                                                        NavigateUri="{Binding Url}"
-                                                        ToolTip.Tip="{Binding Name}">
-                                        <TextBlock FontWeight="Medium"
-                                                   Text="{Binding Name}"
-                                                   TextTrimming="CharacterEllipsis" />
-                                    </ui:HyperlinkButton>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Button Margin="0,0,15,0"
+                                                HorizontalAlignment="Stretch"
+                                                Command="{Binding Path=DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip.Tip="{Binding Name}">
+                                            <TextBlock FontWeight="Medium"
+                                                       Text="{Binding Name}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </Button>
+                                        <ui:HyperlinkButton Grid.Column="1"
+                                                            Width="30"
+                                                            Height="30"
+                                                            Padding="0"
+                                                            NavigateUri="{Binding Url}"
+                                                            ToolTip.Tip="{Binding Name}">
+                                            <pi:Icon Value="fa-solid fa-link" />
+                                        </ui:HyperlinkButton>
+                                    </Grid>
                                     <Border Height="1"
                                             Margin="0,10"
                                             Background="{DynamicResource SystemChromeHighColor}" />
@@ -59,12 +75,14 @@
               ColumnDefinitions="Auto,Auto">
             <Button Margin="5"
                     Command="{Binding PrevPageCommand}"
+                    CommandParameter="{Binding #ModsViewer}"
                     IsEnabled="{Binding Page}">
                 <pi:Icon Value="fa-solid fa-chevron-left" />
             </Button>
             <Button Grid.Column="1"
                     Margin="5"
                     Command="{Binding NextPageCommand}"
+                    CommandParameter="{Binding #ModsViewer}"
                     IsEnabled="{Binding !Feed.Metadata.IsCompleted}">
                 <pi:Icon Value="fa-solid fa-chevron-right" />
             </Button>
