@@ -1,42 +1,100 @@
-<UserControl
-    x:Class="Tkmm.Views.Pages.ShopParamPageView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Tkmm.Core.Models"
-    xmlns:pages="using:Tkmm.ViewModels.Pages"
-    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-    Name="root"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="pages:ShopParamPageViewModel"
-    mc:Ignorable="d">
+<UserControl x:Class="Tkmm.Views.Pages.ShopParamPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:Tkmm.Core.Models"
+             xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             Name="root"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="pages:ShopParamPageViewModel"
+             mc:Ignorable="d">
 
-    <Grid
-        Margin="15"
-        ColumnDefinitions="*,Auto,0.4*"
-        RowDefinitions="*,Auto">
-        <Grid Name="ModListGrid" Grid.Column="2" Margin="0,0,0,15">
+    <Grid Margin="15"
+          ColumnDefinitions="*,Auto,0.4*"
+          RowDefinitions="*,Auto">
+
+        <Border Margin="0,0,0,15"
+                Background="{DynamicResource SystemChromeMediumLowColor}"
+                BorderBrush="{DynamicResource SystemChromeHighColor}"
+                BorderThickness="1"
+                ClipToBounds="True"
+                CornerRadius="8">
+            <Border Margin="5"
+                    ClipToBounds="True"
+                    CornerRadius="5">
+                <ZoomBorder Name="ZoomBorder"
+                            ClipToBounds="True"
+                            Stretch="UniformToFill"
+                            ZoomSpeed="1.2">
+                    <Border HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            ClipToBounds="True"
+                            CornerRadius="5">
+                        <Viewbox>
+                            <Grid Width="6000" Height="5000">
+                                <Image Source="/Assets/Maps/Surface.jpg" />
+                                <Border>
+                                    <Grid>
+                                        <Border Width="44"
+                                                Height="44"
+                                                Background="{DynamicResource SystemAccentColor}"
+                                                BorderBrush="{DynamicResource SystemAccentColor}"
+                                                BorderThickness="5"
+                                                BoxShadow="0 0 60 5 #FFFFFF"
+                                                CornerRadius="22" />
+                                        <Ellipse Width="44"
+                                                 Height="44"
+                                                 Fill="{DynamicResource SystemAccentColor}" />
+                                        <Ellipse Width="84"
+                                                 Height="84"
+                                                 Stroke="{DynamicResource SystemAccentColor}"
+                                                 StrokeThickness="10" />
+                                    </Grid>
+                                    <Border.RenderTransform>
+                                        <TranslateTransform X="{Binding CurrentShop.Coordinates.X}" Y="{Binding CurrentShop.Coordinates.Y}" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
+                        </Viewbox>
+                    </Border>
+                </ZoomBorder>
+            </Border>
+        </Border>
+
+        <Grid Grid.Row="1" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <Button Command="{Binding ResetMapCommand}" CommandParameter="{Binding #ZoomBorder}">
+                    <pi:Icon Value="fa-solid fa-arrow-rotate-right" />
+                </Button>
+                <Button Command="{Binding GotoSelectedCommand}" CommandParameter="{Binding #ZoomBorder}">
+                    <pi:Icon Value="fa-solid fa-location-crosshairs" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Name="ModListGrid"
+              Grid.Column="2"
+              Margin="0,0,0,15">
             <ListBox ItemsSource="{Binding Shops}" SelectedItem="{Binding CurrentShop}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:Shop}">
-                        <TextBlock
-                            Background="Transparent"
-                            TextTrimming="CharacterEllipsis"
-                            ToolTip.Tip="{Binding ShopName}">
+                        <TextBlock Background="Transparent"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTip.Tip="{Binding ShopName}">
                             <Run Text="{Binding ShopName}" />
-                            <Run Text="{Binding Location, StringFormat=' ({0})'}" />
+                            <Run Text="{Binding Location, Mode=OneWay, StringFormat=' ({0})'}" />
                         </TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
 
-        <Grid
-            Grid.Row="1"
-            Grid.Column="2"
-            HorizontalAlignment="Right">
+        <Grid Grid.Row="1"
+              Grid.Column="2"
+              HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal" Spacing="5">
                 <Button VerticalAlignment="Stretch" Command="{Binding MoveUpCommand}">
                     <pi:Icon Value="fa-solid fa-caret-up" />

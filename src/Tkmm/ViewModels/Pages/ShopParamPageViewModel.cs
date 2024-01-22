@@ -1,44 +1,28 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls.PanAndZoom;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Tkmm.Core.Components;
-using Tkmm.Core.Models.Mods;
-using System.Windows.Input;
-using Microsoft.Win32;
-using System.IO;
-using Avalonia.Controls;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using Tkmm.Core.Models;
 using Tkmm.Core;
-
-
+using Tkmm.Core.Models;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class ShopParamPageViewModel : ObservableObject
 {
+    private static readonly string _shopsFile = Path.Combine(Config.Shared.StaticStorageFolder, "shops.json");
 
     [ObservableProperty]
     private Shop? _currentShop;
 
-    public ObservableCollection<Shop> Shops { get; set; }
+    [ObservableProperty]
+    private ObservableCollection<Shop> _shops = [];
 
     public ShopParamPageViewModel()
     {
-        LoadShops();
-    }
-
-    private void LoadShops()
-    {
-        string path = Path.Combine(Config.Shared.StaticStorageFolder, "shops.json");
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
-            Shops = JsonSerializer.Deserialize<ObservableCollection<Shop>>(json);
-        }
-        else
-        {
-            Shops = new ObservableCollection<Shop>();
+        if (File.Exists(_shopsFile)) {
+            using FileStream fs = File.OpenRead(_shopsFile);
+            Shops = JsonSerializer.Deserialize<ObservableCollection<Shop>>(fs) ?? [];
         }
     }
 
@@ -56,18 +40,30 @@ public partial class ShopParamPageViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
+    [RelayCommand]
+    private static void ResetMap(ZoomBorder zoomBorder)
+    {
+        zoomBorder.ResetMatrix();
+    }
+
+    [RelayCommand]
+    private Task GotoSelected(ZoomBorder zoomBorder)
+    {
+        // This is beyond broken
+        zoomBorder.Zoom(10, (CurrentShop?.Coordinates.X ?? 0) + 2170, (CurrentShop?.Coordinates.Y ?? 0) + 55);
+        return Task.CompletedTask;
+    }
+
     private void Move(int offset)
     {
-        if (CurrentShop is null)
-        {
+        if (CurrentShop is null) {
             return;
         }
 
         int currentIndex = Shops.IndexOf(CurrentShop);
         int newIndex = currentIndex + offset;
 
-        if (newIndex < 0 || newIndex >= Shops.Count)
-        {
+        if (newIndex < 0 || newIndex >= Shops.Count) {
             return;
         }
 
@@ -81,8 +77,7 @@ public partial class ShopParamPageViewModel : ObservableObject
     [RelayCommand]
     private void Apply()
     {
-        string path = Path.Combine(Config.Shared.StaticStorageFolder, "shops.json");
-        string json = JsonSerializer.Serialize(Shops);
-        File.WriteAllText(path, json);
+        using FileStream fs = File.Create(_shopsFile);
+        JsonSerializer.Serialize(fs, Shops);
     }
 }
