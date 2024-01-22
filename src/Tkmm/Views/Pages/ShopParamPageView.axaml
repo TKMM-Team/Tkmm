@@ -16,7 +16,7 @@
           ColumnDefinitions="*,Auto,0.4*"
           RowDefinitions="*,Auto">
 
-        <Border Margin="0,0,0,15"
+        <Border Margin="0,0,15,15"
                 Background="{DynamicResource SystemChromeMediumLowColor}"
                 BorderBrush="{DynamicResource SystemChromeHighColor}"
                 BorderThickness="1"
@@ -66,10 +66,14 @@
 
         <Grid Grid.Row="1" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal" Spacing="5">
-                <Button Command="{Binding ResetMapCommand}" CommandParameter="{Binding #ZoomBorder}">
+                <Button Command="{Binding ResetMapCommand}"
+                        CommandParameter="{Binding #ZoomBorder}"
+                        ToolTip.Tip="Reset map position">
                     <pi:Icon Value="fa-solid fa-arrow-rotate-right" />
                 </Button>
-                <Button Command="{Binding GotoSelectedCommand}" CommandParameter="{Binding #ZoomBorder}">
+                <Button Command="{Binding GotoSelectedCommand}"
+                        CommandParameter="{Binding #ZoomBorder}"
+                        ToolTip.Tip="Focus selected shop">
                     <pi:Icon Value="fa-solid fa-location-crosshairs" />
                 </Button>
             </StackPanel>

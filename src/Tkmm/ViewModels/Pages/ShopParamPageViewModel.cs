@@ -23,6 +23,7 @@ public partial class ShopParamPageViewModel : ObservableObject
         if (File.Exists(_shopsFile)) {
             using FileStream fs = File.OpenRead(_shopsFile);
             Shops = JsonSerializer.Deserialize<ObservableCollection<Shop>>(fs) ?? [];
+            CurrentShop = Shops.FirstOrDefault();
         }
     }
 
