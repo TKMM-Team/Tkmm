@@ -15,4 +15,7 @@ public class GameBananaMod
 
     [JsonPropertyName("_sText")]
     public string Text { get; set; } = string.Empty;
+
+    [JsonPropertyName("_aCredits")]
+    public List<GameBananaCreditGroup> Credits { get; set; } = [];
 }

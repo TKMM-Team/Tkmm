@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -52,12 +53,23 @@ public partial class GameBananaModInfo : ObservableObject
         string tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         archive.ExtractToDirectory(tmp);
 
+        ObservableCollection<ModContributor> contributors = [];
+        foreach (var group in Info.Credits) {
+            foreach (var author in group.Authors) {
+                contributors.Add(new() {
+                    Name = author.Name,
+                    Contributions = [author.Role]
+                });
+            }
+        }
+
         Mod mod = new() {
             Author = Submitter.Name,
             Description = new ReverseMarkdown.Converter().Convert(Info.Text),
             SourceFolder = tmp,
             Name = Name,
             ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}",
+            Contributors = contributors,
             Version = Version
         };
 
