@@ -8,6 +8,6 @@ public partial class ShopParamPageView : UserControl
     public ShopParamPageView()
     {
         InitializeComponent();
-        DataContext = new ShopParamPageViewModel();
+        DataContext = new ShopParamPageViewModel(ZoomBorder);
     }
 }

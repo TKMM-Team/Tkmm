@@ -12,14 +12,18 @@ public partial class ShopParamPageViewModel : ObservableObject
 {
     private static readonly string _shopsFile = Path.Combine(Config.Shared.StaticStorageFolder, "shops.json");
 
+    private readonly ZoomBorder _zoomBorder;
+
     [ObservableProperty]
     private Shop? _currentShop;
 
     [ObservableProperty]
     private ObservableCollection<Shop> _shops = [];
 
-    public ShopParamPageViewModel()
+    public ShopParamPageViewModel(ZoomBorder zoomBorder)
     {
+        _zoomBorder = zoomBorder;
+
         if (File.Exists(_shopsFile)) {
             using FileStream fs = File.OpenRead(_shopsFile);
             Shops = JsonSerializer.Deserialize<ObservableCollection<Shop>>(fs) ?? [];
@@ -42,16 +46,16 @@ public partial class ShopParamPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static void ResetMap(ZoomBorder zoomBorder)
+    private void ResetMap()
     {
-        zoomBorder.ResetMatrix();
+        _zoomBorder.ResetMatrix();
     }
 
     [RelayCommand]
-    private void GotoSelected(ZoomBorder zoomBorder)
+    private void GotoSelected()
     {
         if (CurrentShop is not null) {
-            zoomBorder.Zoom(8, CurrentShop.Coordinates.X + 6000, CurrentShop.Coordinates.Y + 5000);
+            _zoomBorder.Zoom(8, CurrentShop.Coordinates.X + 6000, CurrentShop.Coordinates.Y + 5000);
         }
     }
 
@@ -80,5 +84,10 @@ public partial class ShopParamPageViewModel : ObservableObject
     {
         using FileStream fs = File.Create(_shopsFile);
         JsonSerializer.Serialize(fs, Shops);
+    }
+
+    partial void OnCurrentShopChanged(Shop? value)
+    {
+        GotoSelected();
     }
 }
