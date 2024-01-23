@@ -118,7 +118,7 @@ public partial class ModsPageViewModel : ObservableObject
         foreach (var mod in feed.Records) {
             if (mod.Media.Images.FirstOrDefault() is GameBananaImage img) {
                 byte[] image = await _client
-                    .GetByteArrayAsync($"{img.BaseUrl}/{img.File}");
+                    .GetByteArrayAsync($"{img.BaseUrl}/{img.SmallFile}");
                 using MemoryStream ms = new(image);
                 mod.Thumbnail = new Bitmap(ms);
             }
