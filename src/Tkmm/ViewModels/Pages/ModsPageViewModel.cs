@@ -64,7 +64,7 @@ public partial class ModsPageViewModel : ObservableObject
         });
 
         bool first = true;
-        foreach (var file in mod.Info.Files) {
+        foreach (var file in mod.Full.Files) {
             panel.Children.Add(new RadioButton {
                 GroupName = "@",
                 Content = file.Name,
@@ -85,7 +85,7 @@ public partial class ModsPageViewModel : ObservableObject
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
             if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
                 AppStatus.Set("Installing", "fa-solid fa-download", isWorkingStatus: true);
-                await mod.Install(file);
+                await mod.Full.Install(file);
                 AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
             }
         }
@@ -108,7 +108,13 @@ public partial class ModsPageViewModel : ObservableObject
             ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
 
         await Task.WhenAll(feed.Records.Select(x => x.DownloadMod()));
-        feed.Records = [.. feed.Records.Where(x => !x.Info.IsTrashed && !x.Info.IsFlagged && !x.IsObsolete && !x.IsContentRated)];
+        feed.Records = [.. feed.Records.Where(x =>
+            !x.Full.IsTrashed &&
+            !x.Full.IsFlagged &&
+            !x.IsObsolete &&
+            !x.IsContentRated &&
+            !x.Full.IsPrivate
+        )];
 
         _ = Task.Run(() => DownloadThumbnails(feed));
         return feed;

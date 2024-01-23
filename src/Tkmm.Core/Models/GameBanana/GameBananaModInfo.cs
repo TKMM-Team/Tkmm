@@ -12,8 +12,6 @@ namespace Tkmm.Core.Models.GameBanana;
 
 public partial class GameBananaModInfo : ObservableObject
 {
-    private const string ENDPOINT = $"/Mod/{{0}}/ProfilePage";
-
     [JsonPropertyName("_idRow")]
     public int Id { get; set; }
 
@@ -42,57 +40,11 @@ public partial class GameBananaModInfo : ObservableObject
     private object? _thumbnail = null;
 
     [JsonIgnore]
-    public GameBananaMod Info { get; set; } = new();
-
-    [RelayCommand]
-    public async Task Install(GameBananaFile file)
-    {
-        using HttpClient client = new();
-        using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        using ZipArchive archive = new(stream);
-        string tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        archive.ExtractToDirectory(tmp);
-
-        ObservableCollection<ModContributor> contributors = [];
-        foreach (var group in Info.Credits) {
-            foreach (var author in group.Authors) {
-                contributors.Add(new() {
-                    Name = author.Name,
-                    Contributions = [author.Role]
-                });
-            }
-        }
-
-        Mod mod = new() {
-            Author = Submitter.Name,
-            Description = new ReverseMarkdown.Converter().Convert(Info.Text),
-            SourceFolder = tmp,
-            Name = Name,
-            ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}",
-            Contributors = contributors,
-            Version = Version
-        };
-
-        foreach (var folder in Directory.EnumerateDirectories(tmp, "**", SearchOption.AllDirectories)) {
-            if (Directory.Exists(Path.Combine(folder, "romfs"))) {
-                mod.SourceFolder = folder;
-                break;
-            }
-        }
-
-        PackageGenerator generator = new(mod, ModManager.GetModFolder(mod));
-        await generator.Build();
-
-        ModManager.Shared.Mods.Add(mod);
-    }
+    public GameBananaMod Full { get; set; } = new();
 
     [RelayCommand]
     public async Task DownloadMod()
     {
-        using Stream stream = await GameBananaHelper.Get(string.Format(ENDPOINT, Id.ToString()));
-        Info = JsonSerializer.Deserialize<GameBananaMod>(stream)
-            ?? throw new InvalidOperationException("""
-                Could not deserialize GameBananaMod
-                """);
+        Full = await GameBananaMod.Download(Id.ToString());
     }
 }
