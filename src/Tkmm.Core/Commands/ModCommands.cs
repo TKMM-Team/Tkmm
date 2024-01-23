@@ -19,12 +19,14 @@ public class ModCommands
     }
 
     [Command("list", Aliases = ["ls"], Description = "Print information about each installed mod")]
-    public static void ListMods()
+    public static Task ListMods()
     {
         foreach (var mod in ModManager.Shared.Mods) {
             Console.WriteLine($"""
                     - {mod.Name} ({mod.Version}) by {mod.Author}
                     """);
         }
+
+        return Task.CompletedTask;
     }
 }
