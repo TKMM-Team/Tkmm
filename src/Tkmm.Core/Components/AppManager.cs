@@ -35,7 +35,7 @@ public static class AppManager
 
     public static async Task StartServerListener()
     {
-        NamedPipeServerStream server = new(ID);
+        using NamedPipeServerStream server = new(ID);
         server.WaitForConnection();
 
         using (var reader = new BinaryReader(server, Encoding.UTF8)) {
@@ -48,9 +48,10 @@ public static class AppManager
             if (_attach?.Invoke(args) is Task task) {
                 await task;
             }
+
+            server.WriteByte(0);
         }
 
-        server.WriteByte(0);
         await StartServerListener();
     }
 }
