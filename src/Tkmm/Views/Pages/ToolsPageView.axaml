@@ -79,6 +79,22 @@
                                Text="Create Package" />
                 </StackPanel>
             </Button>
+            <Button Width="30"
+                    Height="30"
+                    Margin="15,0,0,0"
+                    Padding="0"
+                    Command="{Binding ImportInfoCommand}"
+                    ToolTip.Tip="Imports mod info from an info.json or tkcl file">
+                <pi:Icon Value="fa-solid fa-file-import" />
+            </Button>
+            <Button Width="30"
+                    Height="30"
+                    Margin="15,0,0,0"
+                    Padding="0"
+                    Command="{Binding ExportInfoCommand}"
+                    ToolTip.Tip="Exports the mod info as an info.json file">
+                <pi:Icon Value="fa-solid fa-file-export" />
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>
