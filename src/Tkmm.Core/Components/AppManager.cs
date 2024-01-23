@@ -28,6 +28,8 @@ public static class AppManager
             writer.Write(args[i]);
         }
 
+        Console.WriteLine($"[Info] Waiting for '{ID}'...");
+        client.ReadByte();
         return false;
     }
 
@@ -48,6 +50,7 @@ public static class AppManager
             }
         }
 
+        server.WriteByte(0);
         await StartServerListener();
     }
 }

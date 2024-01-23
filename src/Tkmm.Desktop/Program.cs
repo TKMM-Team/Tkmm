@@ -18,8 +18,7 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        if (!AppManager.Start(args, Attach)) {
-            Console.WriteLine("[Info] Output redirected...");
+        if (AppManager.Start(args, Attach) == false) {
             return;
         }
 
