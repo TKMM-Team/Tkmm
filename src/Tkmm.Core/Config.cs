@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core.Attributes;
 using ConfigFactory.Core;
+using Tkmm.Core.Helpers.Win32;
 
 namespace Tkmm.Core;
 
@@ -8,8 +9,10 @@ public partial class Config : ConfigModule<Config>
 {
     private static readonly string _defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm");
 
+    public override string Name { get; } = "tkmm";
+
     public string StaticStorageFolder { get; }
-    = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tkmm");
+        = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tkmm");
 
     public static Action<string>? SetTheme { get; set; }
 
@@ -20,6 +23,13 @@ public partial class Config : ConfigModule<Config>
         Group = "Application")]
     [property: ConfigFactory.Core.Attributes.DropdownConfig("Dark", "Light")]
     private string _theme = "Dark";
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Show Console",
+        Description = "Show the console window for additional information (restart required)",
+        Group = "Application")]
+    private bool _showConsole = false;
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(

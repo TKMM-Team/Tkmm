@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using Tkmm.Core;
+using Tkmm.Core.Helpers.Win32;
 
 namespace Tkmm.Desktop;
 
@@ -18,6 +20,12 @@ class Program
     {
         IconProvider.Current
             .Register<FontAwesomeIconProvider>();
+
+#if DEBUG
+        if (OperatingSystem.IsWindows() && Config.Shared.ShowConsole == false) {
+            WindowsOperations.SetWindowMode(WindowMode.Hidden);
+        }
+#endif
 
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()

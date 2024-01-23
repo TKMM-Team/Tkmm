@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -45,6 +46,9 @@ public partial class App : Application
             };
 
             desktop.MainWindow = shellView;
+            shellView.Closed += (s, e) => {
+                Config.Shared.Save();
+            };
 
             MenuFactory = new MenuFactory(desktop.MainWindow);
             MenuFactory.Append<ShellViewMenu>(new());
@@ -69,5 +73,13 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    public static void Focus()
+    {
+        if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow is not null) {
+            desktop.MainWindow.WindowState = WindowState.Normal;
+            desktop.MainWindow.Activate();
+        }
     }
 }
