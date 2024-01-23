@@ -41,7 +41,6 @@
             <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
             <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
             <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
-            <TextBox Text="{Binding Mod.Description}" Watermark="Description" />
 
             <Grid ColumnDefinitions="*,Auto">
                 <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />
@@ -52,6 +51,13 @@
             </Grid>
         </StackPanel>
 
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 Margin="15,0,0,0"
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 Text="{Binding Mod.Description}"
+                 Watermark="Description (accepts markdown)" />
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button BorderBrush="{DynamicResource SystemAccentColor}"
