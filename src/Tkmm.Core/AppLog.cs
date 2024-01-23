@@ -20,6 +20,6 @@ public static class AppLog
 
     public static void Log(string message, LogLevel level)
     {
-        Trace.WriteLine($"[{level}] {message}");
+        Trace.WriteLine(level == LogLevel.Default ? message : $"[{level}] {message}");
     }
 }
