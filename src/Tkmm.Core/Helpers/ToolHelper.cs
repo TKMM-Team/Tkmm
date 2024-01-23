@@ -25,6 +25,21 @@ public class ToolHelper
         string absoluePath = Path.Combine(Config.Shared.StaticStorageFolder, tool);
         AppLog.Log(absoluePath, LogLevel.Debug);
         AppLog.Log($"\"{string.Join("\" \"", args)}\"", LogLevel.Debug);
-        return Process.Start(absoluePath, args);
+
+        Process proc = new() {
+            StartInfo = new(absoluePath, args) {
+                RedirectStandardOutput = true
+            }
+        };
+
+        proc.OutputDataReceived += (s, e) => {
+            if (e.Data is string msg) {
+                AppLog.Log(msg, LogLevel.Default);
+            }
+        };
+
+        proc.Start();
+        proc.BeginOutputReadLine();
+        return proc;
     }
 }

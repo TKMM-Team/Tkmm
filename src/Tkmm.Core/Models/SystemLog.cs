@@ -31,7 +31,7 @@ public partial class SystemLog : ObservableObject
         int startIndex = message.IndexOf('[');
         int endIndex = message.IndexOf(']');
 
-        if (startIndex > -1 && endIndex > -1 && Enum.TryParse(message[++startIndex..endIndex], ignoreCase: false, out LogLevel logLevel)) {
+        if (startIndex > -1 && endIndex > -1 && Enum.TryParse(message[++startIndex..endIndex], ignoreCase: true, out LogLevel logLevel)) {
             _logLevel = logLevel;
         }
     }
