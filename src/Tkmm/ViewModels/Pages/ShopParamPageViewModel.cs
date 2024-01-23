@@ -48,11 +48,11 @@ public partial class ShopParamPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task GotoSelected(ZoomBorder zoomBorder)
+    private void GotoSelected(ZoomBorder zoomBorder)
     {
-        // This is beyond broken
-        zoomBorder.Zoom(10, (CurrentShop?.Coordinates.X ?? 0) + 2170, (CurrentShop?.Coordinates.Y ?? 0) + 55);
-        return Task.CompletedTask;
+        if (CurrentShop is not null) {
+            zoomBorder.Zoom(8, CurrentShop.Coordinates.X + 6000, CurrentShop.Coordinates.Y + 5000);
+        }
     }
 
     private void Move(int offset)

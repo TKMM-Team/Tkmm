@@ -13,54 +13,61 @@
              mc:Ignorable="d">
 
     <Grid Margin="15"
-          ColumnDefinitions="*,Auto,0.4*"
+          ColumnDefinitions="*,Auto,0.5*"
           RowDefinitions="*,Auto">
 
         <Border Margin="0,0,15,15"
+                HorizontalAlignment="Left"
                 Background="{DynamicResource SystemChromeMediumLowColor}"
                 BorderBrush="{DynamicResource SystemChromeHighColor}"
                 BorderThickness="1"
                 ClipToBounds="True"
                 CornerRadius="8">
             <Border Margin="5"
+                    HorizontalAlignment="Left"
                     ClipToBounds="True"
                     CornerRadius="5">
-                <ZoomBorder Name="ZoomBorder"
-                            ClipToBounds="True"
-                            Stretch="UniformToFill"
-                            ZoomSpeed="1.2">
-                    <Border HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            ClipToBounds="True"
-                            CornerRadius="5">
-                        <Viewbox>
-                            <Grid Width="6000" Height="5000">
-                                <Image Source="/Assets/Maps/Surface.jpg" />
-                                <Border>
-                                    <Grid>
-                                        <Border Width="44"
-                                                Height="44"
-                                                Background="{DynamicResource SystemAccentColor}"
-                                                BorderBrush="{DynamicResource SystemAccentColor}"
-                                                BorderThickness="5"
-                                                BoxShadow="0 0 60 5 #FFFFFF"
-                                                CornerRadius="22" />
-                                        <Ellipse Width="44"
-                                                 Height="44"
-                                                 Fill="{DynamicResource SystemAccentColor}" />
-                                        <Ellipse Width="84"
-                                                 Height="84"
-                                                 Stroke="{DynamicResource SystemAccentColor}"
-                                                 StrokeThickness="10" />
-                                    </Grid>
-                                    <Border.RenderTransform>
-                                        <TranslateTransform X="{Binding CurrentShop.Coordinates.X}" Y="{Binding CurrentShop.Coordinates.Y}" />
-                                    </Border.RenderTransform>
-                                </Border>
-                            </Grid>
-                        </Viewbox>
-                    </Border>
-                </ZoomBorder>
+                <Viewbox>
+                    <ZoomBorder Name="ZoomBorder"
+                                Width="12000"
+                                Height="10000"
+                                HorizontalAlignment="Stretch"
+                                ClipToBounds="True"
+                                Stretch="UniformToFill"
+                                ZoomSpeed="1.2">
+                        <Border HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ClipToBounds="True"
+                                CornerRadius="5">
+                            <Viewbox>
+                                <Grid Width="12000" Height="10000">
+                                    <Image Source="/Assets/Maps/Surface.jpg" />
+                                    <Border>
+                                        <Grid>
+                                            <Border Width="44"
+                                                    Height="44"
+                                                    Background="{DynamicResource SystemAccentColor}"
+                                                    BorderBrush="{DynamicResource SystemAccentColor}"
+                                                    BorderThickness="5"
+                                                    BoxShadow="0 0 60 5 #FFFFFF"
+                                                    CornerRadius="22" />
+                                            <Ellipse Width="44"
+                                                     Height="44"
+                                                     Fill="{DynamicResource SystemAccentColor}" />
+                                            <Ellipse Width="84"
+                                                     Height="84"
+                                                     Stroke="{DynamicResource SystemAccentColor}"
+                                                     StrokeThickness="10" />
+                                        </Grid>
+                                        <Border.RenderTransform>
+                                            <TranslateTransform X="{Binding CurrentShop.Coordinates.X}" Y="{Binding CurrentShop.Coordinates.Y}" />
+                                        </Border.RenderTransform>
+                                    </Border>
+                                </Grid>
+                            </Viewbox>
+                        </Border>
+                    </ZoomBorder>
+                </Viewbox>
             </Border>
         </Border>
 
