@@ -24,7 +24,7 @@ public partial class WikiSourceManager : ObservableObject
         // Fill Items
         try {
             byte[] data = await GitHubOperations.GetAsset(
-                "TCML-Team", ".github", "/docs/wiki.json");
+                "TKMM-Team", ".github", "/docs/wiki.json");
 
             Items = JsonSerializer.Deserialize<ObservableCollection<WikiItem>>(data)
                 ?? throw new InvalidOperationException("Could not deserialize WikiItems");
