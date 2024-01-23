@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
@@ -11,7 +12,7 @@
              x:DataType="pages:ToolsPageViewModel"
              mc:Ignorable="d">
     <Grid Margin="25"
-          ColumnDefinitions="*,*"
+          ColumnDefinitions="*,1.5*"
           RowDefinitions="Auto,*,Auto">
         <TextBlock Grid.Row="0"
                    Grid.ColumnSpan="2"
@@ -22,14 +23,6 @@
                    Text="Developer Tools | TKCL Packager" />
 
         <StackPanel Grid.Row="1" Spacing="5">
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBox Text="{Binding ExportFile}" Watermark="Export File" />
-                <Button Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Command="{Binding BrowseExportFileCommand}"
-                        Content="Browse..." />
-            </Grid>
-
             <Grid ColumnDefinitions="*,Auto">
                 <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
                 <Button Grid.Column="1"
@@ -49,15 +42,31 @@
                         Command="{Binding BrowseThumbnailCommand}"
                         Content="Browse..." />
             </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Text="{Binding ExportFile}" Watermark="Output File" />
+                <Button Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Command="{Binding BrowseExportFileCommand}"
+                        Content="Browse..." />
+            </Grid>
         </StackPanel>
 
-        <TextBox Grid.Row="1"
-                 Grid.Column="1"
-                 Margin="15,0,0,0"
-                 AcceptsReturn="True"
-                 AcceptsTab="True"
-                 Text="{Binding Mod.Description}"
-                 Watermark="Description (accepts markdown)" />
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Margin="15,0,0,0">
+            <TabControl>
+                <TabItem Header="Edit">
+                    <TextBox AcceptsReturn="True"
+                             AcceptsTab="True"
+                             Text="{Binding Mod.Description}"
+                             Watermark="Description (accepts markdown)" />
+                </TabItem>
+                <TabItem Header="Preview">
+                    <md:MarkdownScrollViewer Markdown="{Binding Mod.Description}" />
+                </TabItem>
+            </TabControl>
+        </Grid>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button BorderBrush="{DynamicResource SystemAccentColor}"
