@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Attributes;
@@ -19,7 +18,7 @@ public class ShellViewMenu
     }
 
     [Menu("Import", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
-    public static async Task Mod_Import()
+    public static async Task ModImport()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
         string? selectedFolder = await dialog.ShowDialog();
@@ -32,7 +31,7 @@ public class ShellViewMenu
     }
 
     [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge")]
-    public static async Task Mod_Merge()
+    public static async Task ModMerge()
     {
         AppStatus.Set("Merging", "fa-solid fa-code-merge", isWorkingStatus: true);
         await ModManager.Shared.Merge();
