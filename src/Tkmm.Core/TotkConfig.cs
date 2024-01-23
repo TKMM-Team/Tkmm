@@ -17,8 +17,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
             The absolute path to your TotK RomFS game dump
             (e.g. F:\Games\Totk\RomFS)
     
-            Required Files:
-            - 'Pack/ZsDic.pack.zs'
+            *Required for merging!
             """,
         Category = "TotK")]
     [property:  ConfigFactory.Core.Attributes.BrowserConfig(
