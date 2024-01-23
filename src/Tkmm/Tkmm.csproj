@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Include="..\Tkmm.Desktop\icon.ico" Link="Assets\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.7" />
     <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.0.0.2" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
