@@ -2,6 +2,7 @@
                xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:app="using:Tkmm"
+               xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:helper-models="using:Tkmm.Helpers.Models"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,12 +46,12 @@
               ColumnDefinitions="Auto,Auto,*,Auto,Auto"
               IsHitTestVisible="False">
             <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
-            <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static app:AppStatus.Shared}}" />
+            <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static core:AppStatus.Shared}}" />
             <TextBlock Grid.Column="1"
                        Margin="5,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource UbuntuMono}"
-                       Text="{Binding Status, Source={x:Static app:AppStatus.Shared}}" />
+                       Text="{Binding Status, Source={x:Static core:AppStatus.Shared}}" />
             <TextBlock Grid.Column="3"
                        Margin="5,0"
                        VerticalAlignment="Center"

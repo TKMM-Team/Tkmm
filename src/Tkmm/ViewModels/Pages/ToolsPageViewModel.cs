@@ -4,6 +4,7 @@ using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using System.IO.Compression;
 using System.Text.Json;
+using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 

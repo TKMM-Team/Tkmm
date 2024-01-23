@@ -2,6 +2,7 @@
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Attributes;
+using Tkmm.Core;
 using Tkmm.Core.Components;
 
 namespace Tkmm.Builders.MenuModels;

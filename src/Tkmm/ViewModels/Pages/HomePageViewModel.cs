@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
 using System.Diagnostics;
+using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 

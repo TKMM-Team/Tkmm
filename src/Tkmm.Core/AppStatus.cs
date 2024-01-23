@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Tkmm.Core.Models;
 
-namespace Tkmm;
+namespace Tkmm.Core;
 
 public partial class AppStatus : ObservableObject
 {
