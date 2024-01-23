@@ -1,6 +1,7 @@
 <UserControl x:Class="Tkmm.Views.Pages.ShopParamPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Tkmm.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:Tkmm.Core.Models"
@@ -41,7 +42,7 @@
                                 CornerRadius="5">
                             <Viewbox>
                                 <Grid Width="12000" Height="10000">
-                                    <Image Source="/Assets/Maps/Surface.jpg" />
+                                    <Image Source="{Binding CurrentShop.Map, Converter={x:Static converters:MapImageConverter.Shared}}" />
                                     <Border>
                                         <Grid>
                                             <Border Width="44"

@@ -19,6 +19,9 @@ namespace Tkmm.Core.Models
         [JsonPropertyName("NPC ActorName")]
         public string NPCActorName { get; set; } = string.Empty;
 
+        [JsonPropertyName("Map")]
+        public string Map { get; set; } = "Surface";
+
         [JsonPropertyName("Coordinates")]
         public Coordinates Coordinates { get; set; } = new();
     }
