@@ -65,7 +65,7 @@
               Margin="25"
               ColumnDefinitions="*,Auto,0.4*"
               IsVisible="{Binding Mods.Count, Source={x:Static comp:ModManager.Shared}}"
-              RowDefinitions="Auto,*,0.4*,Auto">
+              RowDefinitions="Auto,*,0.7*,Auto">
             <Grid Name="TitleGrid"
                   Margin="0,0,0,15"
                   ColumnDefinitions="*,Auto,Auto">
