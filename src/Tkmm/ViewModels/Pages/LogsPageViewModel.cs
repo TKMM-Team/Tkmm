@@ -63,6 +63,8 @@ public partial class LogsPageViewModel : ObservableObject
         }
 
         public override void WriteLine(string? message)
-            => Write(message);
+        {
+            Write(message);
+        }
     }
 }

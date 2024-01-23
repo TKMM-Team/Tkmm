@@ -2,15 +2,6 @@
 
 namespace Tkmm.Core.Models;
 
-public enum LogLevel
-{
-    Default,
-    Info,
-    Debug,
-    Warning,
-    Error
-}
-
 public partial class SystemLog : ObservableObject
 {
     [ObservableProperty]

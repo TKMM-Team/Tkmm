@@ -23,8 +23,8 @@ public class ToolHelper
         }
 
         string absoluePath = Path.Combine(Config.Shared.StaticStorageFolder, tool);
-        Trace.WriteLine($"[Debug] {absoluePath}");
-        Trace.WriteLine($"[Debug] \"{string.Join("\" \"", args)}\"");
+        AppLog.Log(absoluePath, LogLevel.Debug);
+        AppLog.Log($"\"{string.Join("\" \"", args)}\"", LogLevel.Debug);
         return Process.Start(absoluePath, args);
     }
 }

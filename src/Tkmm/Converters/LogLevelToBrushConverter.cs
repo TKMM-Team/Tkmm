@@ -1,7 +1,7 @@
 ﻿using Avalonia.Data.Converters;
 using Avalonia.Media;
 using System.Globalization;
-using Tkmm.Core.Models;
+using Tkmm.Core;
 
 namespace Tkmm.Converters;
 
