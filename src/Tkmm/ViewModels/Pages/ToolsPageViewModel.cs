@@ -43,7 +43,7 @@ public partial class ToolsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task BrowseThumbnail()
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail", "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.tif");
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail", "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.png;*.tif");
         if (await dialog.ShowDialog() is string result) {
             Mod.ThumbnailUri = result;
         }
