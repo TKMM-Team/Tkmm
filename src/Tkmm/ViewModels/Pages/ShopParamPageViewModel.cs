@@ -55,7 +55,11 @@ public partial class ShopParamPageViewModel : ObservableObject
     private void GotoSelected()
     {
         if (CurrentShop is not null) {
-            _zoomBorder.Zoom(8, CurrentShop.Coordinates.X + 6000, CurrentShop.Coordinates.Y + 5000);
+            const int zoom = 6;
+            _zoomBorder.Zoom(zoom,
+                CurrentShop.Coordinates.X + (CurrentShop.Coordinates.X / zoom) + 6000,
+                CurrentShop.Coordinates.Y + (CurrentShop.Coordinates.Y / zoom) + 5000
+            );
         }
     }
 
