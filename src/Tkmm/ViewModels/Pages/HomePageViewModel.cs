@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
 using System.Diagnostics;
-using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
 
@@ -37,11 +36,9 @@ public partial class HomePageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task Apply()
+    private static async Task Merge()
     {
-        ModManager.Shared.Apply();
-        AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
-        return Task.CompletedTask;
+        await ModManager.Shared.Merge();
     }
 
     [RelayCommand]
@@ -98,6 +95,7 @@ public partial class HomePageViewModel : ObservableObject
         ModManager.Shared.Mods[currentIndex] = store;
 
         CurrentMod = ModManager.Shared.Mods[newIndex];
+        ModManager.Shared.Apply(import: false);
     }
 
     public HomePageViewModel()
