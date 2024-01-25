@@ -1,4 +1,4 @@
-<UserControl x:Class="Tkmm.Views.Pages.ToolsPageView"
+<UserControl x:Class="Tkmm.Views.Pages.PackagingPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             x:DataType="pages:ToolsPageViewModel"
+             x:DataType="pages:PackagingPageViewModel"
              mc:Ignorable="d">
     <Grid Margin="25"
           ColumnDefinitions="*,1.5*"
@@ -20,7 +20,7 @@
                    FontFamily="{StaticResource HyliaGlyph}"
                    FontSize="30"
                    Foreground="{DynamicResource SystemAccentColor}"
-                   Text="Developer Tools | TKCL Packager" />
+                   Text="TKCL Packager" />
 
         <StackPanel Grid.Row="1" Spacing="5">
             <Grid ColumnDefinitions="*,Auto">
@@ -51,12 +51,11 @@
                         Content="Browse..." />
             </Grid>
 
-			<Button
-		        Margin="0,0,0,0"
-		        Command="{Binding ModOptionsCommand}"
-		        Content="Mod Options..." />
+            <Button Margin="0,0,0,0"
+                    Command="{Binding ModOptionsCommand}"
+                    Content="Mod Options..." />
 
-		</StackPanel>
+        </StackPanel>
 
         <Grid Grid.Row="1"
               Grid.Column="1"

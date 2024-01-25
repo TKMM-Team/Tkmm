@@ -6,7 +6,7 @@ namespace Tkmm.Views.Dialogs;
 
 public partial class ModOptionsView : UserControl
 {
-    public ModOptionsView(ToolsPageViewModel toolsPageViewModel)
+    public ModOptionsView(PackagingPageViewModel toolsPageViewModel)
     {
         InitializeComponent();
         DataContext = new ModOptionsViewModel(toolsPageViewModel);

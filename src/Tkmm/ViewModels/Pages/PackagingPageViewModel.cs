@@ -12,7 +12,7 @@ using Tkmm.Views.Dialogs;
 
 namespace Tkmm.ViewModels.Pages;
 
-public partial class ToolsPageViewModel : ObservableObject
+public partial class PackagingPageViewModel : ObservableObject
 {
     private static readonly JsonSerializerOptions _jsonOptions = new() {
         WriteIndented = true

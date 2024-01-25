@@ -36,6 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\Pages\PackagingPageView.axaml.cs">
+      <DependentUpon>PackagingPageView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Windows\ModOptionsView.axaml.cs">
       <DependentUpon>ModOptionsView.axaml</DependentUpon>
     </Compile>

@@ -4,9 +4,9 @@ using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.ViewModels.Dialogs;
 
-public partial class ModOptionsViewModel(ToolsPageViewModel toolsPageViewModel) : ObservableObject
+public partial class ModOptionsViewModel(PackagingPageViewModel toolsPageViewModel) : ObservableObject
 {
-    private readonly ToolsPageViewModel _toolsPageViewModel = toolsPageViewModel;
+    private readonly PackagingPageViewModel _toolsPageViewModel = toolsPageViewModel;
 
     [RelayCommand]
     private Task Add()
