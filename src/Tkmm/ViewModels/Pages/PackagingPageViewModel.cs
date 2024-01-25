@@ -103,14 +103,20 @@ public partial class PackagingPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-
-    private async Task ModOptions()
+    private async Task ImportOptionGroup()
     {
-        TaskDialog dialog = new() {
-            XamlRoot = App.XamlRoot,
-            Content = new ModOptionsView(this)
-        };
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option Group");
+        if (await dialog.ShowDialog() is string result) {
+            Mod.OptionGroups.Add(ModOptionGroup.FromFolder(result));
+        }
+    }
 
-        await dialog.ShowAsync();
+    [RelayCommand]
+    private Task RefreshOptions()
+    {
+        string store = Mod.SourceFolder;
+        Mod.SourceFolder = string.Empty;
+        Mod.SourceFolder = store;
+        return Task.CompletedTask;
     }
 }

@@ -1,11 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Components.Models;
+using Tkmm.Core.Helpers;
 
 namespace Tkmm.Core.Models.Mods;
 
@@ -36,11 +35,18 @@ public partial class Mod : ObservableObject
     private object? _thumbnail;
 
     [ObservableProperty]
+    private ObservableCollection<Guid> _optionGroupReferences = [];
+
+    [ObservableProperty]
+    [property: JsonIgnore]
     private bool _isEnabled = true;
 
     [ObservableProperty]
     [property: JsonIgnore]
     private string _sourceFolder = string.Empty;
+
+    [JsonIgnore]
+    public ObservableCollection<ModOptionGroup> OptionGroups { get; } = [];
 
     [JsonIgnore]
     public bool IsFromStorage { get; private set; } = false;
@@ -92,6 +98,15 @@ public partial class Mod : ObservableObject
         return result;
     }
 
+    public Mod()
+    {
+        OptionGroups.CollectionChanged += (_, e)
+            => ReferenceCollectionHelper.ResolveCollectionChanged(OptionGroupReferences, e);
+
+        // TODO: remove this before releasing xD
+        SourceFolder = "D:\\bin\\mods\\master-mode";
+    }
+
     public void Import()
     {
         if (IsFromStorage || _importer is null) {
@@ -107,5 +122,17 @@ public partial class Mod : ObservableObject
     {
         IsFromStorage = false;
         SourceFolder = path;
+    }
+
+    partial void OnSourceFolderChanged(string value)
+    {
+        OptionGroups.Clear();
+
+        string optionsPath = Path.Combine(value, "options");
+        if (Directory.Exists(optionsPath)) {
+            foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
+                OptionGroups.Add(ModOptionGroup.FromFolder(folder));
+            }
+        }
     }
 }

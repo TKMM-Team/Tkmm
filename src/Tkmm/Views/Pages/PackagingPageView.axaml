@@ -22,44 +22,84 @@
                    Foreground="{DynamicResource SystemAccentColor}"
                    Text="TKCL Packager" />
 
-        <StackPanel Grid.Row="1" Spacing="5">
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
-                <Button Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Command="{Binding BrowseSourceFolderCommand}"
-                        Content="Browse..." />
-            </Grid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="0,0,15,0" Spacing="5">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
+                    <Button Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Command="{Binding BrowseSourceFolderCommand}"
+                            Content="Browse..." />
+                </Grid>
 
-            <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
-            <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
-            <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
+                <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
+                <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
+                <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
 
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />
-                <Button Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Command="{Binding BrowseThumbnailCommand}"
-                        Content="Browse..." />
-            </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />
+                    <Button Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Command="{Binding BrowseThumbnailCommand}"
+                            Content="Browse..." />
+                </Grid>
 
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBox Text="{Binding ExportFile}" Watermark="Output File" />
-                <Button Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Command="{Binding BrowseExportFileCommand}"
-                        Content="Browse..." />
-            </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Text="{Binding ExportFile}" Watermark="Output File" />
+                    <Button Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Command="{Binding BrowseExportFileCommand}"
+                            Content="Browse..." />
+                </Grid>
 
-            <Button Margin="0,0,0,0"
-                    Command="{Binding ModOptionsCommand}"
-                    Content="Mod Options..." />
+                <Border Height="1"
+                        Margin="0,10"
+                        Background="{DynamicResource SystemAccentColor}" />
 
-        </StackPanel>
+                <StackPanel HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Spacing="5">
+                    <Button Command="{Binding ImportOptionGroupCommand}" Content="Import" />
+                    <Button Command="{Binding RefreshOptionsCommand}" Content="Refresh" />
+                </StackPanel>
+
+
+                <ItemsControl ItemsSource="{Binding Mod.OptionGroups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:ModOptionGroup}">
+                            <Expander Margin="0,0,0,5" Header="{Binding Name}">
+                                <StackPanel Spacing="5">
+                                    <TextBox Text="{Binding Name}" Watermark="Name" />
+                                    <TextBox Text="{Binding Description}" Watermark="Description" />
+                                    <ComboBox HorizontalAlignment="Stretch"
+                                              ItemsSource="{x:Static models:ModOptionGroup.OptionGroupTypes}"
+                                              SelectedItem="{Binding Type}" />
+                                    <TextBox Text="{Binding Icon}" Watermark="Icon" />
+                                    <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+
+                                    <ItemsControl ItemsSource="{Binding Options}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type models:ModOption}">
+                                                <Expander Margin="0,0,0,5" Header="{Binding Name}">
+                                                    <StackPanel Spacing="5">
+                                                        <TextBox Text="{Binding Name}" Watermark="Name" />
+                                                        <TextBox Text="{Binding Description}" Watermark="Description" />
+                                                    </StackPanel>
+                                                </Expander>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
 
         <Grid Grid.Row="1"
               Grid.Column="1"
-              Margin="15,-13,0,0">
+              Margin="5,-13,0,0">
             <TabControl Padding="0,10,0,0">
                 <TabItem Header="Edit">
                     <TextBox AcceptsReturn="True"
@@ -100,7 +140,7 @@
                     Padding="0"
                     Command="{Binding ExportInfoCommand}"
                     ToolTip.Tip="Exports the mod info as an info.json file">
-                <pi:Icon Value="fa-solid fa-file-export" />
+                <pi:Icon Value="fa-regular fa-folder-open" />
             </Button>
         </StackPanel>
     </Grid>
