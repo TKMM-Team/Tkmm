@@ -81,15 +81,19 @@ public partial class ModManager : ObservableObject
     /// Apply the load order and save the current profile
     /// </summary>
     /// <returns></returns>
-    public void Apply()
+    public void Apply(bool import = true)
     {
-        foreach (var mod in Mods) {
-            mod.Import();
+        if (import) {
+            foreach (var mod in Mods) {
+                mod.Import();
+            }
         }
 
         string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
         using FileStream fs = File.Create(modList);
         JsonSerializer.Serialize(fs, Mods.Select(x => x.Id));
+
+        AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
     /// <summary>
@@ -100,11 +104,15 @@ public partial class ModManager : ObservableObject
     {
         // If there are no mods, skip merging
         if (Mods.Count <= 0) {
+            AppStatus.Set("Nothing to Merge", "fa-solid fa-code-merge", isWorkingStatus: false, temporaryStatusTime: 1.5);
             Trace.WriteLine("[Info] No mods to merge!");
         }
 
+
+        AppStatus.Set("Applying", "fa-solid fa-file-lines", isWorkingStatus: true);
         Apply();
 
+        AppStatus.Set("Merging", "fa-solid fa-code-merge", isWorkingStatus: true);
         string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "merged");
 
         if (Directory.Exists(mergedOutput)) {
@@ -170,6 +178,7 @@ public partial class ModManager : ObservableObject
                 "--compress"
             ).WaitForExitAsync();
 
+        AppStatus.Set("Merge Completed", "fa-solid fa-list-check", isWorkingStatus: false, 1.5);
         Trace.WriteLine("[Info] Merge completed successfully");
     }
 }

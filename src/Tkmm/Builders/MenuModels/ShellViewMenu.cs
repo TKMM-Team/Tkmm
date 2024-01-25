@@ -33,9 +33,7 @@ public class ShellViewMenu
     [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge")]
     public static async Task ModMerge()
     {
-        AppStatus.Set("Merging", "fa-solid fa-code-merge", isWorkingStatus: true);
         await ModManager.Shared.Merge();
-        AppStatus.Set("Merge Completed", "fa-solid fa-list-check", isWorkingStatus: false, 1.5);
     }
 
     [Menu("Show/Hide Console", "View", "Ctrl + F11", "fa-solid fa-terminal")]

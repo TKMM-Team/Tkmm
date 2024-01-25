@@ -59,7 +59,7 @@ public partial class ModsPageViewModel : ObservableObject
         panel.Children.Add(new TextBlock {
             Text = "Choose a file to install:",
             FontSize = 11,
-            Margin = new(15,10,0,0),
+            Margin = new(15, 10, 0, 0),
             TextWrapping = Avalonia.Media.TextWrapping.Wrap
         });
 

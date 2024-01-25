@@ -13,7 +13,7 @@ public partial class LogsPageViewModel : ObservableObject
 {
     [ObservableProperty]
     private ObservableCollection<SystemLog> _logs = [];
-    
+
     [ObservableProperty]
     private SystemLog? _selected = null;
 
