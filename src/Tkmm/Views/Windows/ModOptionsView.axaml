@@ -1,0 +1,18 @@
+<UserControl x:Class="Tkmm.Views.Dialogs.ModOptionsView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dialogs="using:Tkmm.ViewModels.Dialogs"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="dialogs:ModOptionsViewModel"
+             mc:Ignorable="d">
+    <Grid>
+        <Button Margin="15"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding AddCommand}"
+                Content="Add" />
+    </Grid>
+</UserControl>

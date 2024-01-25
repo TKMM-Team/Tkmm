@@ -106,13 +106,11 @@ public partial class ToolsPageViewModel : ObservableObject
 
     private async Task ModOptions()
     {
-
         TaskDialog dialog = new() {
             XamlRoot = App.XamlRoot,
-            Content = new ModOptionDialogView()
+            Content = new ModOptionsView(this)
         };
 
         await dialog.ShowAsync();
-
     }
 }
