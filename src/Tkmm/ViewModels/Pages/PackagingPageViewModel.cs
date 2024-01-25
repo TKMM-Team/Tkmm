@@ -2,13 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
-using FluentAvalonia.UI.Controls;
 using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
-using Tkmm.Views.Dialogs;
 
 namespace Tkmm.ViewModels.Pages;
 
