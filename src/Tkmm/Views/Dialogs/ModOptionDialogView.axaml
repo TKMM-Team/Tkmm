@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Tkmm.Views.Dialogs.ModOptionDialogView">
+
 	<Grid>
-		
+		<Button Content="Add" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15" Command="{Binding AddCommand}"/>
 	</Grid>
 </UserControl>
