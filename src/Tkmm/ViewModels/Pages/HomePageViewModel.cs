@@ -114,8 +114,10 @@ public partial class HomePageViewModel : ObservableObject
     {
         if (e.NewItems is IList mods) {
             foreach (Mod mod in mods) {
-                await ResolveThumbnail(mod);
-                CurrentMod = mod;
+                if (!ModManager.Shared.Mods.Contains(mod)) {
+                    await ResolveThumbnail(mod);
+                    CurrentMod = mod;
+                }
             }
         }
     }
