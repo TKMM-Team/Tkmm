@@ -23,6 +23,7 @@ public partial class App : Application
     public static string Title { get; } = $"TotK Mod Manager";
     public static string ShortTitle { get; } = $"TKMM v{Version}";
     public static string ReleaseUrl { get; } = $"https://github.com/TKMM-Team/Tkmm/releases/{Version}";
+    public static TopLevel? XamlRoot { get; private set; }
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
@@ -49,6 +50,8 @@ public partial class App : Application
             shellView.Closed += (s, e) => {
                 Config.Shared.Save();
             };
+
+            XamlRoot = shellView;
 
             MenuFactory = new MenuFactory(desktop.MainWindow);
             MenuFactory.Append<ShellViewMenu>(new());

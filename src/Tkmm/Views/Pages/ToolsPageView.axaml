@@ -50,7 +50,13 @@
                         Command="{Binding BrowseExportFileCommand}"
                         Content="Browse..." />
             </Grid>
-        </StackPanel>
+
+			<Button
+		        Margin="0,0,0,0"
+		        Command="{Binding ModOptionsCommand}"
+		        Content="Mod Options..." />
+
+		</StackPanel>
 
         <Grid Grid.Row="1"
               Grid.Column="1"

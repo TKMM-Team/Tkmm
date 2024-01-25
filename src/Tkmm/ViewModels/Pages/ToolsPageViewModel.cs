@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
+using FluentAvalonia.UI.Controls;
 using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
+using Tkmm.Views.Dialogs;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -98,5 +100,20 @@ public partial class ToolsPageViewModel : ObservableObject
 
             AppStatus.Set("Exported mod metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
+    }
+
+    [RelayCommand]
+
+    private async Task ModOptions()
+    {
+
+        TaskDialog dialog1 = new()
+        {
+            XamlRoot = App.XamlRoot,
+            Content = new ModOptionDialogView()
+        };
+
+        await dialog1.ShowAsync();
+
     }
 }
