@@ -10,6 +10,7 @@ using System.Reflection;
 using Tkmm.Builders;
 using Tkmm.Builders.MenuModels;
 using Tkmm.Core;
+using Tkmm.Core.Components;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
@@ -48,6 +49,7 @@ public partial class App : Application
 
             desktop.MainWindow = shellView;
             shellView.Closed += (s, e) => {
+                ModManager.Shared.Apply();
                 Config.Shared.Save();
             };
 

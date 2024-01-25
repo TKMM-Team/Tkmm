@@ -81,12 +81,10 @@ public partial class ModManager : ObservableObject
     /// Apply the load order and save the current profile
     /// </summary>
     /// <returns></returns>
-    public void Apply(bool import = true)
+    public void Apply()
     {
-        if (import) {
-            foreach (var mod in Mods) {
-                mod.Import();
-            }
+        foreach (var mod in Mods) {
+            mod.Import();
         }
 
         string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");

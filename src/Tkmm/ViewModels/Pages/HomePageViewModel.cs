@@ -95,7 +95,6 @@ public partial class HomePageViewModel : ObservableObject
         ModManager.Shared.Mods[currentIndex] = store;
 
         CurrentMod = ModManager.Shared.Mods[newIndex];
-        ModManager.Shared.Apply(import: false);
     }
 
     public HomePageViewModel()
