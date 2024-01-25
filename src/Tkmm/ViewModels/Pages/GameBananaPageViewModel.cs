@@ -10,7 +10,7 @@ using Tkmm.Core.Models.GameBanana;
 
 namespace Tkmm.ViewModels.Pages;
 
-public partial class ModsPageViewModel : ObservableObject
+public partial class GameBananaPageViewModel : ObservableObject
 {
     private static readonly HttpClient _client = new();
 
@@ -23,7 +23,7 @@ public partial class ModsPageViewModel : ObservableObject
     [ObservableProperty]
     private GameBananaFeed _feed = new();
 
-    public ModsPageViewModel()
+    public GameBananaPageViewModel()
     {
         InitLoad();
     }
