@@ -7,7 +7,7 @@
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-             d:DesignHeight="450"
+             d:DesignHeight="650"
              d:DesignWidth="800"
              x:DataType="pages:PackagingPageViewModel"
              mc:Ignorable="d">
@@ -23,7 +23,7 @@
                    Text="TKCL Packager" />
 
         <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="0,0,15,0" Spacing="5">
+            <StackPanel Margin="0,0,18,0" Spacing="5">
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
                     <Button Grid.Column="1"
@@ -67,7 +67,22 @@
                 <ItemsControl ItemsSource="{Binding Mod.OptionGroups}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:ModOptionGroup}">
-                            <Expander Margin="0,0,0,5" Header="{Binding Name}">
+                            <Expander Margin="0,0,0,5">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Width="24"
+                                                Height="24"
+                                                Padding="0"
+                                                ToolTip.Tip="Remove">
+                                            <pi:Icon Width="16"
+                                                     Height="16"
+                                                     Value="fa-solid fa-trash" />
+                                        </Button>
+                                        <TextBlock Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Name}" />
+                                    </StackPanel>
+                                </Expander.Header>
                                 <StackPanel Spacing="5">
                                     <TextBox Text="{Binding Name}" Watermark="Name" />
                                     <TextBox Text="{Binding Description}" Watermark="Description" />
@@ -80,7 +95,22 @@
                                     <ItemsControl ItemsSource="{Binding Options}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type models:ModOption}">
-                                                <Expander Margin="0,0,0,5" Header="{Binding Name}">
+                                                <Expander Margin="0,0,0,5">
+                                                    <Expander.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Width="24"
+                                                                    Height="24"
+                                                                    Padding="0"
+                                                                    ToolTip.Tip="Remove">
+                                                                <pi:Icon Width="16"
+                                                                         Height="16"
+                                                                         Value="fa-solid fa-trash" />
+                                                            </Button>
+                                                            <TextBlock Margin="10,0,0,0"
+                                                                       VerticalAlignment="Center"
+                                                                       Text="{Binding Name}" />
+                                                        </StackPanel>
+                                                    </Expander.Header>
                                                     <StackPanel Spacing="5">
                                                         <TextBox Text="{Binding Name}" Watermark="Name" />
                                                         <TextBox Text="{Binding Description}" Watermark="Description" />
