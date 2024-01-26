@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 
@@ -14,7 +15,7 @@ public enum ModOptionGroupType
     SingleRequired
 }
 
-public partial class ModOptionGroup : ObservableObject, IReferenceItem
+public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
 {
     public static readonly ModOptionGroupType[] OptionGroupTypes = Enum.GetValues<ModOptionGroupType>();
 
@@ -42,7 +43,11 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem
     [ObservableProperty]
     private ObservableCollection<Guid> _optionReferences = [];
 
+    [JsonIgnore]
     public ObservableCollection<ModOption> Options { get; } = [];
+
+    [JsonIgnore]
+    public string SourceFolder { get; private set; } = string.Empty;
 
     public ModOptionGroup()
     {
@@ -69,6 +74,7 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem
             group.Options.Add(ModOption.FromFolder(folder));
         }
 
+        group.SourceFolder = path;
         return group;
     }
 

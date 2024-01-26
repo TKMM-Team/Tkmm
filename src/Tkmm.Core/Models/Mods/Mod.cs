@@ -4,11 +4,12 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components.Models;
+using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 
 namespace Tkmm.Core.Models.Mods;
 
-public partial class Mod : ObservableObject
+public partial class Mod : ObservableObject, IModItem
 {
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();

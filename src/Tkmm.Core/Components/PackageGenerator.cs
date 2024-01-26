@@ -1,5 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Text.Json;
+using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
@@ -12,39 +13,53 @@ public class PackageGenerator
 
     private readonly Mod _mod;
     private readonly string _outputFolder;
-    private readonly string _tempRomfsOutput;
-    private readonly string _SourceRomfsFolder;
 
     public PackageGenerator(Mod mod)
     {
         _mod = mod;
         _outputFolder = Path.Combine(Path.GetTempPath(), mod.Id.ToString());
-        _tempRomfsOutput = Path.Combine(_outputFolder, "romfs");
-        Directory.CreateDirectory(_tempRomfsOutput);
-        _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
     }
 
     public PackageGenerator(Mod mod, string outputFolder)
     {
         _mod = mod;
         _outputFolder = outputFolder;
-        _tempRomfsOutput = Path.Combine(_outputFolder, "romfs");
-        Directory.CreateDirectory(_tempRomfsOutput);
-        _SourceRomfsFolder = Path.Combine(_mod.SourceFolder, "romfs");
     }
 
     public async Task Build()
     {
-        if (Directory.Exists(_outputFolder)) {
-            Directory.Delete(_outputFolder, true);
+        AppStatus.Set("Building package", "fa-solid fa-boxes-packing");
+        await Build(_mod, _mod.SourceFolder, _outputFolder);
+
+        foreach (var group in _mod.OptionGroups) {
+            string groupOutputFolder = Path.Combine(_outputFolder, "options", group.Id.ToString());
+            await Build(group, group.SourceFolder, groupOutputFolder);
+
+            foreach (var option in group.Options) {
+                await Build(option, option.SourceFolder, Path.Combine(groupOutputFolder, option.Id.ToString()));
+            }
         }
 
-        DirectoryOperations.CopyDirectory(_mod.SourceFolder, _outputFolder, true);
+        AppStatus.Set("Package built", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+    }
 
-        await ToolHelper.Call("MalsMerger", "gen", _SourceRomfsFolder, _tempRomfsOutput)
+    private async Task Build<T>(T modItem, string sourceFolder, string outputFolder) where T : IModItem
+    {
+        if (Directory.Exists(outputFolder)) {
+            Directory.Delete(outputFolder, true);
+        }
+
+        // TODO: Certain files should
+        // be excluded from this
+        DirectoryOperations.CopyDirectory(sourceFolder, outputFolder, true);
+
+        string romfsOutput = Path.Combine(outputFolder, "romfs");
+        Directory.CreateDirectory(romfsOutput);
+
+        await ToolHelper.Call("MalsMerger", "gen", Path.Combine(sourceFolder, "romfs"), romfsOutput)
             .WaitForExitAsync();
 
-        string rsdbFolderPath = Path.Combine(_mod.SourceFolder, "romfs", "RSDB");
+        string rsdbFolderPath = Path.Combine(sourceFolder, "romfs", "RSDB");
 
         // Generate changelog for each mod
         await ToolHelper.Call("RsdbMerge",
@@ -55,17 +70,17 @@ public class PackageGenerator
         // Generate changelog for each mod
         await ToolHelper.Call("SarcTool",
                 "package",
-                "--mod", _mod.SourceFolder,
+                "--mod", sourceFolder,
                 "--output", _outputFolder
             ).WaitForExitAsync();
 
-        if (File.Exists(_mod.ThumbnailUri)) {
-            File.Copy(_mod.ThumbnailUri, Path.Combine(_outputFolder, THUMBNAIL_URI), true);
-            _mod.ThumbnailUri = THUMBNAIL_URI;
+        if (File.Exists(modItem.ThumbnailUri)) {
+            File.Copy(modItem.ThumbnailUri, Path.Combine(outputFolder, THUMBNAIL_URI), true);
+            modItem.ThumbnailUri = THUMBNAIL_URI;
         }
 
-        using FileStream fs = File.Create(Path.Combine(_outputFolder, "info.json"));
-        JsonSerializer.Serialize(fs, _mod);
+        using FileStream fs = File.Create(Path.Combine(outputFolder, "info.json"));
+        JsonSerializer.Serialize(fs, modItem);
     }
 
     public void Save(string exportFile, bool clearOutputFolder = false)

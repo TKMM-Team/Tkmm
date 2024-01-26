@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Tkmm.Core.Generics;
 
 namespace Tkmm.Core.Models.Mods;
 
-public partial class ModOption : ObservableObject, IReferenceItem
+public partial class ModOption : ObservableObject, IReferenceItem, IModItem
 {
     [ObservableProperty]
     private Guid _id;
@@ -14,6 +15,12 @@ public partial class ModOption : ObservableObject, IReferenceItem
 
     [ObservableProperty]
     private string _description = string.Empty;
+
+    [ObservableProperty]
+    private string? thumbnailUri;
+
+    [JsonIgnore]
+    public string SourceFolder { get; private set; } = string.Empty;
 
     public static ModOption FromFolder(string path)
     {
@@ -30,6 +37,7 @@ public partial class ModOption : ObservableObject, IReferenceItem
             };
         }
 
+        option.SourceFolder = path;
         return option;
     }
 
