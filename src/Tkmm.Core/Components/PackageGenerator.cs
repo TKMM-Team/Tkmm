@@ -43,7 +43,6 @@ public class PackageGenerator
         AppStatus.Set("Package built", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
-<<<<<<< HEAD
     private async Task Build<T>(T modItem, string sourceFolder, string outputFolder) where T : IModItem
     {
         if (Directory.Exists(outputFolder)) {
@@ -58,19 +57,6 @@ public class PackageGenerator
         Directory.CreateDirectory(romfsOutput);
 
         await ToolHelper.Call("MalsMerger", "gen", Path.Combine(sourceFolder, "romfs"), romfsOutput)
-=======
-        if (Directory.Exists(Path.Combine(_outputFolder, "GameData")))
-        {
-            Directory.Delete(Path.Combine(_outputFolder, "GameData"), true);
-            Directory.CreateDirectory(Path.Combine(_outputFolder, "GameData"));
-            Console.WriteLine("Cleared GameData Folder!");
-        }
-        else {
-            Console.WriteLine("No GameData Folder Found...");
-        }
-
-        await ToolHelper.Call("MalsMerger", "gen", _SourceRomfsFolder, _tempRomfsOutput)
->>>>>>> e0473463743187a970504905eeb397a2f5e76819
             .WaitForExitAsync();
 
         string rsdbFolderPath = Path.Combine(sourceFolder, "romfs", "RSDB");
@@ -94,16 +80,9 @@ public class PackageGenerator
                 "--output", _outputFolder
             ).WaitForExitAsync();
 
-<<<<<<< HEAD
         if (File.Exists(modItem.ThumbnailUri)) {
             File.Copy(modItem.ThumbnailUri, Path.Combine(outputFolder, THUMBNAIL_URI), true);
             modItem.ThumbnailUri = THUMBNAIL_URI;
-=======
-
-        if (File.Exists(_mod.ThumbnailUri)) {
-            File.Copy(_mod.ThumbnailUri, Path.Combine(_outputFolder, THUMBNAIL_URI), true);
-            _mod.ThumbnailUri = THUMBNAIL_URI;
->>>>>>> e0473463743187a970504905eeb397a2f5e76819
         }
 
         using FileStream fs = File.Create(Path.Combine(outputFolder, "info.json"));
