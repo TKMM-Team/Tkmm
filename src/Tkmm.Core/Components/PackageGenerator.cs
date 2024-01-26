@@ -64,6 +64,12 @@ public class PackageGenerator
 
         // Generate changelog for each mod
         await ToolHelper.Call("SarcTool",
+                "assemble",
+                "--mod", _mod.SourceFolder
+            ).WaitForExitAsync();
+
+        // Generate changelog for each mod
+        await ToolHelper.Call("SarcTool",
                 "package",
                 "--mod", _mod.SourceFolder,
                 "--output", _outputFolder
