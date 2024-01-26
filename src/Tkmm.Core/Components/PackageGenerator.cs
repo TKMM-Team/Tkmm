@@ -41,6 +41,16 @@ public class PackageGenerator
 
         DirectoryOperations.CopyDirectory(_mod.SourceFolder, _outputFolder, true);
 
+        if (Directory.Exists(Path.Combine(_outputFolder, "GameData")))
+        {
+            Directory.Delete(Path.Combine(_outputFolder, "GameData"), true);
+            Directory.CreateDirectory(Path.Combine(_outputFolder, "GameData"));
+            Console.WriteLine("Cleared GameData Folder!");
+        }
+        else {
+            Console.WriteLine("No GameData Folder Found...");
+        }
+
         await ToolHelper.Call("MalsMerger", "gen", _SourceRomfsFolder, _tempRomfsOutput)
             .WaitForExitAsync();
 
@@ -58,6 +68,7 @@ public class PackageGenerator
                 "--mod", _mod.SourceFolder,
                 "--output", _outputFolder
             ).WaitForExitAsync();
+
 
         if (File.Exists(_mod.ThumbnailUri)) {
             File.Copy(_mod.ThumbnailUri, Path.Combine(_outputFolder, THUMBNAIL_URI), true);
