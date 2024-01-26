@@ -2,6 +2,7 @@
 
 namespace Tkmm.Launcher.ViewModels;
 
-public class ViewModelBase : ObservableObject
+public class ShellViewModel : ObservableObject
 {
+
 }
