@@ -56,25 +56,25 @@ public class PackageGenerator
         string romfsOutput = Path.Combine(outputFolder, "romfs");
         Directory.CreateDirectory(romfsOutput);
 
-        await ToolHelper.Call("MalsMerger", "gen", Path.Combine(sourceFolder, "romfs"), romfsOutput)
+        await ToolHelper.Call(Tool.MalsMerger, "gen", Path.Combine(sourceFolder, "romfs"), romfsOutput)
             .WaitForExitAsync();
 
         string rsdbFolderPath = Path.Combine(sourceFolder, "romfs", "RSDB");
 
         // Generate changelog for each mod
-        await ToolHelper.Call("RsdbMerge",
+        await ToolHelper.Call(Tool.RsdbMerger,
                 "--generate-changelog", rsdbFolderPath,
                 "--output", _outputFolder
             ).WaitForExitAsync();
 
         // Generate changelog for each mod
-        await ToolHelper.Call("SarcTool",
+        await ToolHelper.Call(Tool.SarcTool,
                 "assemble",
                 "--mod", _mod.SourceFolder
             ).WaitForExitAsync();
 
         // Generate changelog for each mod
-        await ToolHelper.Call("SarcTool",
+        await ToolHelper.Call(Tool.SarcTool,
                 "package",
                 "--mod", sourceFolder,
                 "--output", _outputFolder
