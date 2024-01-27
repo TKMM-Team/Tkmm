@@ -76,7 +76,7 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: "zip"
-          filename: ../TKMM-Launcher-${{ matrix.config.runtime }}.zip
+          filename: ../../TKMM-Launcher-${{ matrix.config.runtime }}.zip
           directory: Launcher/${{ matrix.config.name }}
           path: ./**
 
