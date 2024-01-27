@@ -19,16 +19,36 @@
         SystemDecorations="BorderOnly"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
-
-	<Grid Name="Client" Background="Transparent">
-		<Image VerticalAlignment="Top"
-               Source="/Assets/not blurred.png"
+    <Grid Name="Client" Background="Transparent">
+        <Image VerticalAlignment="Top"
+               Source="/Assets/Background.png"
                Stretch="UniformToFill" />
 
-		<TextBlock Text="TKMM Launcher" FontFamily="{StaticResource HyliaGlyph}" Margin="20,27,0,0" FontSize="40" Foreground="Black" Effect="blur(15)"/>
-		<TextBlock Text="TKMM Launcher" FontFamily="{StaticResource HyliaGlyph}" Margin="20,27,0,0" FontSize="40"/>
-		<Button Content="Install" FontFamily="{StaticResource UbuntuMono}" FontWeight="SemiBold" Command="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15"/>
-		<Button Content="Exit" FontFamily="{StaticResource UbuntuMono}" FontWeight="SemiBold" Command="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15"/>
-		<Image Source="avares://Tkmm.Launcher/Assets/icon.ico" HorizontalAlignment="Right" VerticalAlignment="Top" Width="70" Margin="15"/>
-	</Grid>
+        <TextBlock Margin="20,27,0,0"
+                   Effect="blur(15)"
+                   FontFamily="{StaticResource HyliaGlyph}"
+                   FontSize="40"
+                   Foreground="Black"
+                   Text="TKMM Launcher" />
+        <TextBlock Margin="20,27,0,0"
+                   FontFamily="{StaticResource HyliaGlyph}"
+                   FontSize="40"
+                   Text="TKMM Launcher" />
+        <Button Margin="15"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding UpdateCommand}"
+                Content="{Binding PrimaryText}"
+                FontWeight="Medium" />
+        <Button Margin="15"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Command="{Binding ExitCommand}"
+                Content="Exit" />
+        <Image Width="70"
+               Margin="15"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+               Source="avares://Tkmm.Launcher/Assets/icon.ico" />
+    </Grid>
 </Window>

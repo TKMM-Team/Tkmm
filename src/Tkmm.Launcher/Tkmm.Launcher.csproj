@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -9,16 +9,6 @@
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Remove="Assets\Fonts\blurred.png" />
-    <None Remove="Assets\Fonts\Nin-ZeldaGlyphs-v2\Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf" />
-    <None Remove="Assets\Fonts\UbuntuMono\UbuntuMono-Bold.ttf" />
-    <None Remove="Assets\Fonts\UbuntuMono\UbuntuMono-BoldItalic.ttf" />
-    <None Remove="Assets\Fonts\UbuntuMono\UbuntuMono-Italic.ttf" />
-    <None Remove="Assets\Fonts\UbuntuMono\UbuntuMono-Regular.ttf" />
-    <None Remove="Assets\not blurred.png" />
   </ItemGroup>
     
   <ItemGroup>
@@ -30,9 +20,13 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
   </ItemGroup>
 </Project>
