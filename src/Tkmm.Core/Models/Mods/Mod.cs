@@ -33,6 +33,7 @@ public partial class Mod : ObservableObject, IModItem
     private string? _thumbnailUri;
 
     [ObservableProperty]
+    [property: JsonIgnore]
     private object? _thumbnail;
 
     [ObservableProperty]
