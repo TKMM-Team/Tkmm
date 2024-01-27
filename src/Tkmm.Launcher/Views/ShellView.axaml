@@ -2,11 +2,33 @@
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="using:Tkmm.Launcher.ViewModels"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="ShellView"
-        d:DesignHeight="450"
-        d:DesignWidth="800"
+        xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+        Title="NX Editor Launcher"
+        Width="650"
+        Height="400"
+        d:DesignHeight="400"
+        d:DesignWidth="650"
+        x:CompileBindings="True"
+        x:DataType="local:ShellViewModel"
+        CanResize="False"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
         Icon="/Assets/icon.ico"
+        SystemDecorations="BorderOnly"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
-    Welcome to Avalonia!
+
+	<Grid Name="Client" Background="Transparent">
+		<Image VerticalAlignment="Top"
+               Source="/Assets/not blurred.png"
+               Stretch="UniformToFill" />
+
+		<TextBlock Text="TKMM Launcher" FontFamily="{StaticResource HyliaGlyph}" Margin="20,27,0,0" FontSize="40" Foreground="Black" Effect="blur(15)"/>
+		<TextBlock Text="TKMM Launcher" FontFamily="{StaticResource HyliaGlyph}" Margin="20,27,0,0" FontSize="40"/>
+		<Button Content="Install" FontFamily="{StaticResource UbuntuMono}" FontWeight="SemiBold" Command="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15"/>
+		<Button Content="Exit" FontFamily="{StaticResource UbuntuMono}" FontWeight="SemiBold" Command="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15"/>
+		<Image Source="avares://Tkmm.Launcher/Assets/icon.ico" HorizontalAlignment="Right" VerticalAlignment="Top" Width="70" Margin="15"/>
+	</Grid>
 </Window>
