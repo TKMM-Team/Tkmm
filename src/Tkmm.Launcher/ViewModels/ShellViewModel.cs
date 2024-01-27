@@ -27,6 +27,7 @@ public partial class ShellViewModel : ObservableObject
         if (PrimaryText is INSTALL or UPDATE) {
             await AppManager.Update();
             await ToolHelper.DownloadDependencies();
+            PrimaryText = LAUNCH;
         }
         else {
             AppManager.Start();
