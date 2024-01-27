@@ -1,6 +1,7 @@
 <Window x:Class="Tkmm.Launcher.Views.ShellView"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="using:Tkmm.Launcher.ViewModels"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,31 +21,103 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">
-        <Image VerticalAlignment="Top"
-               Source="/Assets/Background.png"
-               Stretch="UniformToFill" />
 
-        <TextBlock Margin="20,27,0,0"
-                   Effect="blur(15)"
-                   FontFamily="{StaticResource HyliaGlyph}"
-                   FontSize="40"
-                   Foreground="Black"
-                   Text="TKMM Launcher" />
-        <TextBlock Margin="20,27,0,0"
-                   FontFamily="{StaticResource HyliaGlyph}"
-                   FontSize="40"
-                   Text="TKMM Launcher" />
-        <Button Margin="15"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Command="{Binding PrimaryCommand}"
-                Content="{Binding PrimaryText}"
-                FontWeight="Medium" />
-        <Button Margin="15"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Command="{Binding ExitCommand}"
-                Content="Exit" />
+        <Grid IsVisible="{Binding !ShowStatusBar}">
+            <Image VerticalAlignment="Top"
+                   Source="/Assets/Background.jpg"
+                   Stretch="UniformToFill" />
+
+            <Image VerticalAlignment="Top"
+                   Source="/Assets/Background-Blur.jpg"
+                   Stretch="UniformToFill">
+                <Image.Styles>
+                    <Style Selector="Image">
+                        <Style.Animations>
+                            <Animation Easing="SineEaseOut"
+                                       IterationCount="INFINITE"
+                                       Duration="0:0:25">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="Opacity" Value="0.1" />
+                                    <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
+                                    <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="50%">
+                                    <Setter Property="Opacity" Value="1.0" />
+                                    <Setter Property="ScaleTransform.ScaleX" Value="1.1" />
+                                    <Setter Property="ScaleTransform.ScaleY" Value="1.1" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="Opacity" Value="0.1" />
+                                    <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
+                                    <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Image.Styles>
+            </Image>
+        </Grid>
+
+        <Border Background="Black" Opacity="0.4" />
+
+        <Grid RowDefinitions="*,Auto">
+            <TextBlock Margin="20,27,0,0"
+                       Effect="blur(15)"
+                       FontFamily="{StaticResource HyliaGlyph}"
+                       FontSize="40"
+                       Foreground="Black"
+                       Text="TKMM Launcher" />
+            <TextBlock Margin="20,27,0,0"
+                       FontFamily="{StaticResource HyliaGlyph}"
+                       FontSize="40"
+                       Text="TKMM Launcher" />
+            <Image Width="70"
+                   Margin="15"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   Source="avares://Tkmm.Launcher/Assets/icon.ico" />
+
+            <Button Margin="15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding PrimaryCommand}"
+                    Content="{Binding PrimaryText}"
+                    FontWeight="Medium">
+                <Button.Styles>
+                    <Style Selector="Button">
+                        <Style.Animations>
+                            <Animation Easing="SineEaseOut"
+                                       IterationCount="INFINITE"
+                                       Duration="0:0:4">
+                                <KeyFrame Cue="45%">
+                                    <Setter Property="TranslateTransform.Y" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="50%">
+                                    <Setter Property="TranslateTransform.Y" Value="-9" />
+                                </KeyFrame>
+                                <KeyFrame Cue="55%">
+                                    <Setter Property="TranslateTransform.Y" Value="3" />
+                                </KeyFrame>
+                                <KeyFrame Cue="60%">
+                                    <Setter Property="TranslateTransform.Y" Value="-6" />
+                                </KeyFrame>
+                                <KeyFrame Cue="65%">
+                                    <Setter Property="TranslateTransform.Y" Value="2" />
+                                </KeyFrame>
+                                <KeyFrame Cue="70%">
+                                    <Setter Property="TranslateTransform.Y" Value="0" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+            <Button Margin="15"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding ExitCommand}"
+                    Content="Exit" />
 
             <StackPanel Grid.Row="1"
                         Margin="15,0,15,15"
