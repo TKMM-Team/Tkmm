@@ -11,6 +11,7 @@ using Tkmm.Builders;
 using Tkmm.Builders.MenuModels;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Helpers;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
@@ -36,7 +37,7 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
@@ -75,6 +76,8 @@ public partial class App : Application
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
 
             shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
+
+            await ToolHelper.LoadDeps();
         }
 
         base.OnFrameworkInitializationCompleted();

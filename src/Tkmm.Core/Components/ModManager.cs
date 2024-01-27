@@ -143,13 +143,13 @@ public partial class ModManager : ObservableObject
 
         // 
         // Merge Mals archives
-        await ToolHelper.Call("MalsMerger",
+        await ToolHelper.Call(Tool.MalsMerger,
                 "merge", string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
                 Path.Combine(mergedOutput, "romfs")
             ).WaitForExitAsync();
 
         // Merge Sarc and BYML
-        await ToolHelper.Call("SarcTool", [
+        await ToolHelper.Call(Tool.SarcTool, [
                 "merge",
                 "--base", _modsPath,
                 "--mods", .. Mods.Select(x => x.Id.ToString()),
@@ -161,14 +161,14 @@ public partial class ModManager : ObservableObject
         string outputRsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
         Directory.CreateDirectory(outputRsdbFolder);
 
-        await ToolHelper.Call("RsdbMerge",
+        await ToolHelper.Call(Tool.RsdbMerger,
                 "--apply-changelogs", string.Join('|', Mods.Select(x => x.SourceFolder)),
                 "--output", outputRsdbFolder,
                 "--version", TotkConfig.Shared.Version.ToString()
             ).WaitForExitAsync();
 
         // After merging, execute Restbl on the merged mod folder
-        await ToolHelper.Call("Restbl",
+        await ToolHelper.Call(Tool.RestblMerger,
                 "--action", "single-mod",
                 "--use-checksums",
                 "--version", TotkConfig.Shared.Version.ToString(),
