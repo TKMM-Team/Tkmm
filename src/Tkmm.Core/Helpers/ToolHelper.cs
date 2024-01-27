@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
+using Tkmm.Core.Helpers.Models;
 using Tkmm.Core.Helpers.Operations;
-using Tkmm.Core.Models.Tools;
 
 namespace Tkmm.Core.Helpers;
 
@@ -19,6 +19,7 @@ public enum Tool
 public class ToolHelper
 {
     private static readonly string _depsPath = Path.Combine(Config.Shared.StaticStorageFolder, "deps.json");
+    private static readonly string _appsDir = Path.Combine(Config.Shared.StaticStorageFolder, "apps");
 
     public static Dictionary<Tool, Dependency> Deps { get; private set; } = [];
 
@@ -52,7 +53,7 @@ public class ToolHelper
                 """);
         }
 
-        string absoluePath = Path.Combine(Config.Shared.StaticStorageFolder, dependency.Files[Dependency.GetOSName()]);
+        string absoluePath = Path.Combine(_appsDir, dependency.Files[Dependency.GetOSName()]);
         AppLog.Log(absoluePath, LogLevel.Debug);
         AppLog.Log($"\"{string.Join("\" \"", args)}\"", LogLevel.Debug);
 
@@ -71,5 +72,21 @@ public class ToolHelper
         proc.Start();
         proc.BeginOutputReadLine();
         return proc;
+    }
+
+    public static async Task DownloadDependencies()
+    {
+        AppStatus.Set("Downloading dependencies", "fa-solid fa-download", isWorkingStatus: true);
+
+        if (Deps.Count <= 0) {
+            await LoadDeps();
+        }
+
+        Directory.CreateDirectory(_appsDir);
+        foreach ((_, var dep) in Deps) {
+            await dep.Download();
+        }
+
+        AppStatus.Set("Dependencies restored!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 }

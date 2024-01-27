@@ -1,9 +1,12 @@
 ﻿using Avalonia.Controls;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
+using FluentAvalonia.UI.Controls;
+using System.Diagnostics;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Win32;
 
 namespace Tkmm.Builders.MenuModels;
@@ -47,5 +50,30 @@ public class ShellViewMenu
             AppStatus.Set("This action is only supported on Win32 platforms", "fa-brands fa-windows",
                 isWorkingStatus: false, temporaryStatusTime: 1.5);
         }
+    }
+
+    [Menu("Check for Update", "Help", "Ctrl + I", "fa-solid fa-cloud-arrow-up")]
+    public static async Task CheckForUpdate()
+    {
+        ContentDialog dialog = new() {
+            Title = "Update",
+            Content = $"Update {await AppManager.HasUpdate()} (finish this later)",
+            PrimaryButtonText = "OK"
+        };
+
+        await dialog.ShowAsync();
+    }
+
+    [Menu("Download Dependencies", "Help", "Ctrl + Shift + I", "fa-solid fa-screwdriver-wrench")]
+    public static async Task DownloadDependencies()
+    {
+        await ToolHelper.DownloadDependencies();
+    }
+
+    [Menu("About", "Help", "Ctrl + Shift + I", "fa-solid fa-circle-info", IsSeparator = true)]
+    public static Task About()
+    {
+        AppLog.Log("Haha", LogLevel.Default);
+        return Task.CompletedTask;
     }
 }
