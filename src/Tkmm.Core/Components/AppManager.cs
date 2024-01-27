@@ -86,7 +86,7 @@ public static class AppManager
     public static async Task Update()
     {
         (Stream stream, string tag) = await GitHubOperations
-            .GetLatestRelease("TKMM-Team", "Tkmm", Dependency.GetOSName());
+            .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-{Dependency.GetOSName()}.zip");
 
         File.WriteAllText(_appVersionFile, tag);
 

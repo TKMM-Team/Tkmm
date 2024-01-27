@@ -21,13 +21,10 @@ jobs:
             os: windows-latest
             runtime: win-x64
             ext: ".exe"
-          - name: MacOS
-            os: macos-latest
-            runtime: osx-x64
-            ext: ~
 
     env:
       proj: "Tkmm.Desktop"
+      launcher: "Tkmm.Launcher"
 
     steps:
       - uses: actions/checkout@master
@@ -53,13 +50,38 @@ jobs:
       - name: Archive Build Files
         uses: TheDoctor0/zip-release@0.7.1
         with:
-          type: 'zip'
+          type: "zip"
           filename: ../TKMM-${{ matrix.config.runtime }}.zip
           directory: ${{ matrix.config.name }}
           path: ./**
-          
+
       - name: Upload artifacts
         uses: AButler/upload-release-assets@v2.0
         with:
           files: TKMM-${{ matrix.config.runtime }}.zip
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish TKMM Launcher
+        shell: bash
+        run: |
+          dotnet publish src/${{ env.launcher }}/${{ env.launcher }}.csproj \
+          -r ${{ matrix.config.runtime }} \
+          -c Release \
+          --sc false \
+          --version-suffix ${{ github.event.release.tag_name }} \
+          -o Launcher/${{ matrix.config.name }} \
+          -p:Version=${{ github.event.release.tag_name }}
+
+      - name: Archive Build Files
+        uses: TheDoctor0/zip-release@0.7.1
+        with:
+          type: "zip"
+          filename: ../TKMM-Launcher-${{ matrix.config.runtime }}.zip
+          directory: Launcher/${{ matrix.config.name }}
+          path: ./**
+
+      - name: Upload artifacts
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: TKMM-Launcher-${{ matrix.config.runtime }}.zip
           repo-token: ${{ secrets.GITHUB_TOKEN }}
