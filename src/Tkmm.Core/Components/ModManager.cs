@@ -145,6 +145,7 @@ public partial class ModManager : ObservableObject
         // Merge Mals archives
         await ToolHelper.Call(Tool.MalsMerger,
                 "merge", string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
+                "--target", Config.Shared.GameLanguage,
                 Path.Combine(mergedOutput, "romfs")
             ).WaitForExitAsync();
 

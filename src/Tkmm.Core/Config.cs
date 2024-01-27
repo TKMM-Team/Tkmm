@@ -26,6 +26,14 @@ public partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(
+    Header = "Target Language",
+    Description = "The target language that MalsMerger should create an archive for.",
+    Group = "Application")]
+    [property: ConfigFactory.Core.Attributes.DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
+    private string _gameLanguage = "USen";
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
         Header = "Show Console",
         Description = "Show the console window for additional information (restart required)",
         Group = "Application")]
