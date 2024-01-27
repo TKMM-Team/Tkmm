@@ -9,8 +9,12 @@ namespace Tkmm.Launcher.ViewModels;
 
 public partial class ShellViewModel : ObservableObject
 {
+    private const string INSTALL = "Install";
+    private const string UPDATE = "Update";
+    private const string LAUNCH = "Launch";
+
     [ObservableProperty]
-    private string _primaryText = "Install";
+    private string _primaryText = INSTALL;
 
     public ShellViewModel()
     {
@@ -18,10 +22,15 @@ public partial class ShellViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static async Task Update()
+    private async Task Primary()
     {
-        await AppManager.Update();
-        await ToolHelper.DownloadDependencies();
+        if (PrimaryText is INSTALL or UPDATE) {
+            await AppManager.Update();
+            await ToolHelper.DownloadDependencies();
+        }
+        else {
+            AppManager.Start();
+        }
     }
 
     [RelayCommand]
@@ -32,11 +41,14 @@ public partial class ShellViewModel : ObservableObject
 
     private async void Init()
     {
-        if (await AppManager.HasUpdate()) {
-            PrimaryText = "Update";
+        if (!AppManager.IsInstalled()) {
+            PrimaryText = INSTALL;
+        }
+        else if (await AppManager.HasUpdate()) {
+            PrimaryText = UPDATE;
         }
         else {
-            PrimaryText = "Launch";
+            PrimaryText = LAUNCH;
         }
     }
 }

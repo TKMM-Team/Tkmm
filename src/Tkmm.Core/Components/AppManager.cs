@@ -9,6 +9,7 @@ namespace Tkmm.Core.Components;
 
 public static class AppManager
 {
+    private static readonly string _appPath = Path.Combine(Config.Shared.StaticStorageFolder, "bin", "Tkmm.Desktop.exe");
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
     private static readonly string _appVersionFile = Path.Combine(Config.Shared.StaticStorageFolder, "version");
 
@@ -60,6 +61,16 @@ public static class AppManager
         }
 
         await StartServerListener();
+    }
+
+    public static void Start()
+    {
+        Process.Start(_appPath);
+    }
+
+    public static bool IsInstalled()
+    {
+        return File.Exists(_appVersionFile);
     }
 
     public static async Task<bool> HasUpdate()

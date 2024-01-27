@@ -37,7 +37,7 @@
         <Button Margin="15"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                Command="{Binding UpdateCommand}"
+                Command="{Binding PrimaryCommand}"
                 Content="{Binding PrimaryText}"
                 FontWeight="Medium" />
         <Button Margin="15"
