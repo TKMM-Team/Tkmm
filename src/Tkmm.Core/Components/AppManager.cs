@@ -85,12 +85,18 @@ public static class AppManager
 
     public static async Task Update()
     {
+        AppStatus.Set("Downloading app", "fa-solid fa-download", isWorkingStatus: true);
+
         (Stream stream, string tag) = await GitHubOperations
             .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-{Dependency.GetOSName()}.zip");
 
+        AppStatus.Set("Extracting release", "fa-solid fa-file-zipper", isWorkingStatus: true);
+        using ZipArchive archive = new(stream);
+        archive.ExtractToDirectory(_appFolder, true);
+
+        AppStatus.Set("Updating version", "fa-solid fa-code-commit", isWorkingStatus: true);
         File.WriteAllText(_appVersionFile, tag);
 
-        using ZipArchive archive = new(stream);
-        archive.ExtractToDirectory(_appFolder);
+        AppStatus.Set("Application installed!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 }

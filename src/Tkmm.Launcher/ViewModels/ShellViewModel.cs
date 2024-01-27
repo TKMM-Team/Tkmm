@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Threading.Tasks;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 
@@ -16,6 +14,15 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private string _primaryText = INSTALL;
 
+    [ObservableProperty]
+    private string _status = "Ready";
+
+    [ObservableProperty]
+    private double _progress = 0.0;
+
+    [ObservableProperty]
+    private bool _showStatusBar = true;
+
     public ShellViewModel()
     {
         Init();
@@ -25,8 +32,14 @@ public partial class ShellViewModel : ObservableObject
     private async Task Primary()
     {
         if (PrimaryText is INSTALL or UPDATE) {
-            await AppManager.Update();
-            await ToolHelper.DownloadDependencies();
+            await Task.Run(async () => {
+                Progress = 10;
+                await AppManager.Update();
+                Progress = 20;
+                await ToolHelper.DownloadDependencies(UpdateProgress);
+                Progress = 100;
+            });
+
             PrimaryText = LAUNCH;
         }
         else {
@@ -50,6 +63,12 @@ public partial class ShellViewModel : ObservableObject
         }
         else {
             PrimaryText = LAUNCH;
+            ShowStatusBar = false;
         }
+    }
+
+    private void UpdateProgress(double value)
+    {
+        Progress += value;
     }
 }

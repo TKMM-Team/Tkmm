@@ -45,10 +45,24 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding ExitCommand}"
                 Content="Exit" />
-        <Image Width="70"
-               Margin="15"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Top"
-               Source="avares://Tkmm.Launcher/Assets/icon.ico" />
+
+            <StackPanel Grid.Row="1"
+                        Margin="15,0,15,15"
+                        IsVisible="{Binding ShowStatusBar}">
+
+                <StackPanel Margin="0,0,0,10"
+                            IsHitTestVisible="False"
+                            Orientation="Horizontal">
+                    <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static core:AppStatus.Shared}}" />
+                    <TextBlock Grid.Column="1"
+                               Margin="5,0"
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource UbuntuMono}"
+                               Text="{Binding Status, Source={x:Static core:AppStatus.Shared}}" />
+                </StackPanel>
+
+                <ProgressBar Value="{Binding Progress}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

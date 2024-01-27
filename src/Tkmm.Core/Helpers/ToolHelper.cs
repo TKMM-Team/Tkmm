@@ -74,7 +74,7 @@ public class ToolHelper
         return proc;
     }
 
-    public static async Task DownloadDependencies()
+    public static async Task DownloadDependencies(Action<double>? updateProgress = null)
     {
         AppStatus.Set("Downloading dependencies", "fa-solid fa-download", isWorkingStatus: true);
 
@@ -82,9 +82,14 @@ public class ToolHelper
             await LoadDeps();
         }
 
+        double inc = 70 / Deps.Count;
+
         Directory.CreateDirectory(_appsDir);
         foreach ((_, var dep) in Deps) {
+            AppStatus.Set($"Downloading '{dep.Owner}/{dep.Repo}", "fa-solid fa-download", isWorkingStatus: true);
             await dep.Download();
+
+            updateProgress?.Invoke(inc);
         }
 
         AppStatus.Set("Dependencies restored!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
