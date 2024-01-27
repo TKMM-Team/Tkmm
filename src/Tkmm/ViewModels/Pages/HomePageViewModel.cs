@@ -99,15 +99,10 @@ public partial class HomePageViewModel : ObservableObject
 
     public HomePageViewModel()
     {
-        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
-
         // Listen to when the mod list changes
         // and update the view accordingly
         ModManager.Shared.Mods.CollectionChanged += ModsUpdated;
-
-        foreach (var mod in ModManager.Shared.Mods) {
-            _ = ResolveThumbnail(mod);
-        }
+        _ = Init();
     }
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -122,8 +117,21 @@ public partial class HomePageViewModel : ObservableObject
         }
     }
 
+    private async Task Init()
+    {
+        foreach (var mod in ModManager.Shared.Mods) {
+            await ResolveThumbnail(mod);
+        }
+
+        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
+    }
+
     private static async Task ResolveThumbnail(Mod mod)
     {
+        if (mod.Thumbnail is not null) {
+            return;
+        }
+
         if (mod.ThumbnailUri is string uri) {
             string localPath = Path.Combine(mod.SourceFolder, uri);
             if (File.Exists(localPath)) {
