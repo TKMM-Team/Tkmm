@@ -10,6 +10,7 @@ public class Dependency
     public required string Tag { get; set; }
     public required Dictionary<string, string> Assets { get; set; }
     public required Dictionary<string, string> Files { get; set; }
+    public required List<string> Exclude { get; set; }
 
     public static string GetOSName()
     {

@@ -22,6 +22,8 @@ public class ToolHelper
     private static readonly string _appsDir = Path.Combine(Config.Shared.StaticStorageFolder, "apps");
 
     public static Dictionary<Tool, Dependency> Deps { get; private set; } = [];
+    public static List<string> ExcludeFolders { get; private set; } = [];
+    public static List<string> ExcludeFiles { get; private set; } = [];
 
     public static async Task LoadDeps()
     {
@@ -32,7 +34,7 @@ public class ToolHelper
                     Could not parse deps, the JsonDeserializer returned null
                     """);
 
-            return;
+            goto FillExcude;
         }
 
         byte[] data = await GitHubOperations.GetAsset("TKMM-Team", ".github", "deps.json");
@@ -41,8 +43,26 @@ public class ToolHelper
                 Could not parse deps, the JsonDeserializer returned null
                 """);
 
-        using FileStream writer = File.Create(_depsPath);
-        writer.Write(data);
+        using (FileStream writer = File.Create(_depsPath)) {
+            writer.Write(data);
+        }
+
+    FillExcude:
+        var exclude = Deps
+            .Select(x => x.Value.Exclude)
+            .Aggregate<IEnumerable<string>>((x, y) => x.Concat(y))
+            .ToArray();
+
+        ExcludeFolders = exclude
+            .Where(x => x.StartsWith('/'))
+            .Select(x => x[1..])
+            .ToList();
+
+        ExcludeFiles = exclude
+            .Where(x => x.StartsWith('.'))
+            .Select<string, string[]>(x => [x, $"{x}.zs"])
+            .Aggregate<IEnumerable<string>>((x, y) => x.Concat(y))
+            .ToList();
     }
 
     public static Process Call(Tool tool, params string[] args)

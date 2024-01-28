@@ -14,9 +14,11 @@ namespace Tkmm.Core.Components;
 /// </summary>
 public partial class ModManager : ObservableObject
 {
-    private const string EXEFS = "exefs";
+    public const string ROMFS = "romfs";
+    public const string EXEFS = "exefs";
 
-    private static readonly string _modsPath = Path.Combine(Config.Shared.StorageFolder, "mods");
+    public static readonly string ModsPath = Path.Combine(Config.Shared.StorageFolder, "mods");
+
     private static readonly string[] _excludedExtensions = [
         ".rsizetable.zs",
         ".byml.zs",
@@ -55,7 +57,7 @@ public partial class ModManager : ObservableObject
 
     public static string GetModFolder(Mod mod)
     {
-        return Path.Combine(_modsPath, mod.Id.ToString());
+        return Path.Combine(ModsPath, mod.Id.ToString());
     }
 
     /// <summary>
@@ -152,7 +154,7 @@ public partial class ModManager : ObservableObject
         // Merge Sarc and BYML
         await ToolHelper.Call(Tool.SarcTool, [
                 "merge",
-                "--base", _modsPath,
+                "--base", ModsPath,
                 "--mods", .. Mods.Select(x => x.Id.ToString()),
                 "--process", "All",
                 "--output", Path.Combine(mergedOutput, "romfs")

@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components.Models;
+using Tkmm.Core.Components.ModParsers;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 
@@ -54,29 +55,22 @@ public partial class Mod : ObservableObject, IModItem
     public bool IsFromStorage { get; private set; } = false;
 
     [JsonIgnore]
-    private IModImporter? _importer;
+    internal IModImporter? Importer { get; set; }
 
     public static Mod FromFile(string file)
     {
-        FileStream fs = File.OpenRead(file);
-        ZipArchive archive = new(fs, mode: ZipArchiveMode.Read, leaveOpen: true);
+        using FileStream fs = File.OpenRead(file);
+        return FromFile(fs, file);
+    }
 
-        if (archive.Entries.FirstOrDefault(x => x.Name == "info.json")?.Open() is Stream stream) {
-            if (JsonSerializer.Deserialize<Mod>(stream) is Mod mod) {
-                if (archive.Entries.FirstOrDefault(x => x.Name == mod.ThumbnailUri)?.Open() is Stream thumbnailStream) {
-                    string tmpThumbnailPath = Path.GetTempFileName();
-                    using FileStream tmpThumbnail = File.Create(tmpThumbnailPath);
-                    thumbnailStream.CopyTo(tmpThumbnail);
-                    mod.ThumbnailUri = tmpThumbnailPath;
-                }
-
-                mod._importer = new ArchiveModImporter(archive);
-                return mod;
-            }
+    public static Mod FromFile(Stream input, string file)
+    {
+        if (ModParserService.GetParser(file) is IModParser parser) {
+            return parser.Parse(input, file);
         }
 
-        throw new InvalidOperationException("""
-            Error parsing tkcl file
+        throw new NotSupportedException($"""
+            The provided file '{file}' is not a supported file type.
             """);
     }
 
@@ -93,7 +87,7 @@ public partial class Mod : ObservableObject, IModItem
             ?? throw new InvalidOperationException(
                 "Could not parse ModInfo");
 
-        result._importer = new FolderModImporter(folder);
+        result.Importer = new FolderModImporter(folder);
         result.SourceFolder = folder;
         result.IsFromStorage = isFromStorage;
 
@@ -111,12 +105,12 @@ public partial class Mod : ObservableObject, IModItem
 
     public void Import()
     {
-        if (IsFromStorage || _importer is null) {
+        if (IsFromStorage || Importer is null) {
             return;
         }
 
-        _importer.Import(SourceFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString()));
-        _importer = null;
+        Importer.Import(SourceFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString()));
+        Importer = null;
         IsFromStorage = true;
     }
 

@@ -17,17 +17,17 @@ public partial class PackagingPageViewModel : ObservableObject
     };
 
     [ObservableProperty]
-    private string _exportFile = string.Empty;
+    private string _exportPath = string.Empty;
 
     [ObservableProperty]
     private Mod _mod = new();
 
     [RelayCommand]
-    private async Task BrowseExportFile()
+    private async Task BrowseExportPath()
     {
         BrowserDialog dialog = new(BrowserMode.SaveFile, "Export Location", "TKCL Files:*.tkcl");
         if (await dialog.ShowDialog() is string result) {
-            ExportFile = result;
+            ExportPath = result;
         }
     }
 
@@ -52,9 +52,23 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task Create()
     {
-        PackageGenerator packageGenerator = new(Mod);
-        await packageGenerator.Build();
-        packageGenerator.Save(ExportFile, clearOutputFolder: true);
+        if (string.IsNullOrEmpty(Mod.Name)) {
+            Mod.Name = Path.GetFileName(Mod.SourceFolder);
+        }
+
+        if (string.IsNullOrEmpty(ExportPath)) {
+            ExportPath = Path.Combine(Path.GetDirectoryName(Mod.SourceFolder) ?? string.Empty, $"{Path.GetFileName(Mod.SourceFolder)}.tkcl");
+        }
+
+        string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
+
+        await Task.Run(() => {
+            PackageBuilder.CreateMetaData(Mod, tmpOutput);
+            PackageBuilder.CopyContents(Mod, tmpOutput);
+            PackageBuilder.Package(tmpOutput, ExportPath);
+
+            Directory.Delete(tmpOutput, true);
+        });
     }
 
     [RelayCommand]
@@ -88,11 +102,9 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ExportInfo()
     {
-        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export Mod Info", "JSON Metadata:info.json", "info.json");
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Export Mod Info");
         if (await dialog.ShowDialog() is string result) {
-            using FileStream fs = File.Create(result);
-            JsonSerializer.Serialize(fs, Mod, _jsonOptions);
-
+            PackageBuilder.CreateMetaData(Mod, result);
             AppStatus.Set("Exported mod metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
     }

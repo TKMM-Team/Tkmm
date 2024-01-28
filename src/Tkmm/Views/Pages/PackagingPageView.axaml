@@ -45,10 +45,10 @@
                 </Grid>
 
                 <Grid ColumnDefinitions="*,Auto">
-                    <TextBox Text="{Binding ExportFile}" Watermark="Output File" />
+                    <TextBox Text="{Binding ExportPath}" Watermark="Output Path" />
                     <Button Grid.Column="1"
                             Margin="5,0,0,0"
-                            Command="{Binding BrowseExportFileCommand}"
+                            Command="{Binding BrowseExportPathCommand}"
                             Content="Browse..." />
                 </Grid>
 

@@ -63,9 +63,7 @@ public partial class GameBananaMod : ObservableObject
     {
         using HttpClient client = new();
         using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        using ZipArchive archive = new(stream);
-        string tmp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        archive.ExtractToDirectory(tmp);
+        Mod mod = Mod.FromFile(stream, file.Name);
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {
@@ -77,25 +75,14 @@ public partial class GameBananaMod : ObservableObject
             }
         }
 
-        Mod mod = new() {
-            Author = Submitter.Name,
-            Description = new ReverseMarkdown.Converter().Convert(Text),
-            SourceFolder = tmp,
-            Name = Name,
-            ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}",
-            Contributors = contributors,
-            Version = Version
-        };
+        mod.Name = Name;
+        mod.Author = Submitter.Name;
+        mod.Description = new ReverseMarkdown.Converter().Convert(Text);
+        mod.ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}";
+        mod.Contributors = contributors;
+        mod.Version = Version;
 
-        foreach (var folder in Directory.EnumerateDirectories(tmp, "**", SearchOption.AllDirectories)) {
-            if (Directory.Exists(Path.Combine(folder, "romfs"))) {
-                mod.SourceFolder = folder;
-                break;
-            }
-        }
-
-        PackageGenerator generator = new(mod, ModManager.GetModFolder(mod));
-        await generator.Build();
+        PackageBuilder.CreateMetaData(mod, mod.SourceFolder);
 
         ModManager.Shared.Mods.Add(mod);
     }
