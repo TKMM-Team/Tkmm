@@ -22,7 +22,7 @@
         mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">
 
-        <Grid IsVisible="{Binding !ShowStatusBar}">
+        <Grid>
             <Image VerticalAlignment="Top"
                    Source="/Assets/Background.jpg"
                    Stretch="UniformToFill" />
