@@ -33,8 +33,9 @@ public partial class ShellView : Window
         Client.PointerPressed += (s, e) => BeginMoveDrag(e);
 
         Background.Source = _backgroundA;
+        StaticBackground.Source = _backgroundB;
 
-        _timer = new((e) => {
+        _timer = new(async (e) => {
             Dispatcher.UIThread.Invoke(() => {
                 if (Background.Source == _backgroundA) {
                     Background.Source = _backgroundB;
@@ -46,6 +47,21 @@ public partial class ShellView : Window
                     Background.Source = _backgroundA;
                 }
             });
+
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
+            Dispatcher.UIThread.Invoke(() => {
+                if (Background.Source == _backgroundA) {
+                    StaticBackground.Source = _backgroundB;
+                }
+                else if (Background.Source == _backgroundB) {
+                    StaticBackground.Source = _backgroundC;
+                }
+                else if (Background.Source == _backgroundC) {
+                    StaticBackground.Source = _backgroundA;
+                }
+            });
+
         });
 
         _timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(20));

@@ -21,11 +21,14 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">
-
         <Grid>
-            <Image Name="Background"
-                   Opacity="0"
+            <Image Name="StaticBackground"
+                   Opacity="1"
                    Source="/Assets/Background-A.jpg"
+                   Stretch="UniformToFill" />
+
+            <Image Name="Background"
+                   Opacity="1"
                    Stretch="UniformToFill">
                 <Image.Styles>
                     <Style Selector="Image">
@@ -38,10 +41,8 @@
                                     <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
                                     <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
                                 </KeyFrame>
-                                <KeyFrame Cue="5%">
-                                    <Setter Property="Opacity" Value="1.0" />
-                                </KeyFrame>
                                 <KeyFrame Cue="50%">
+                                    <Setter Property="Opacity" Value="1.0" />
                                     <Setter Property="ScaleTransform.ScaleX" Value="1.1" />
                                     <Setter Property="ScaleTransform.ScaleY" Value="1.1" />
                                 </KeyFrame>
@@ -59,8 +60,6 @@
                 </Image.Styles>
             </Image>
         </Grid>
-
-        <Border Background="Black" Opacity="0.4" />
 
         <Grid RowDefinitions="*,Auto">
             <TextBlock Margin="20,27,0,0"
