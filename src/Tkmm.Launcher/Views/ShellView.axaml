@@ -6,7 +6,7 @@
         xmlns:local="using:Tkmm.Launcher.ViewModels"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-        Title="NX Editor Launcher"
+        Title="TKMM Launcher"
         Width="650"
         Height="400"
         d:DesignHeight="400"
