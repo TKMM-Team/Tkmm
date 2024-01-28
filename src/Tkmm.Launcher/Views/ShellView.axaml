@@ -23,33 +23,35 @@
     <Grid Name="Client" Background="Transparent">
 
         <Grid>
-            <Image VerticalAlignment="Top"
-                   Source="/Assets/Background.jpg"
-                   Stretch="UniformToFill" />
-
-            <Image VerticalAlignment="Top"
-                   Source="/Assets/Background-Blur.jpg"
+            <Image Name="Background"
+                   Opacity="0"
+                   Source="/Assets/Background-A.jpg"
                    Stretch="UniformToFill">
                 <Image.Styles>
                     <Style Selector="Image">
                         <Style.Animations>
                             <Animation Easing="SineEaseOut"
                                        IterationCount="INFINITE"
-                                       Duration="0:0:25">
+                                       Duration="0:0:20">
                                 <KeyFrame Cue="0%">
-                                    <Setter Property="Opacity" Value="0.1" />
+                                    <Setter Property="Opacity" Value="0.0" />
                                     <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
                                     <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
                                 </KeyFrame>
-                                <KeyFrame Cue="50%">
+                                <KeyFrame Cue="5%">
                                     <Setter Property="Opacity" Value="1.0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="50%">
                                     <Setter Property="ScaleTransform.ScaleX" Value="1.1" />
                                     <Setter Property="ScaleTransform.ScaleY" Value="1.1" />
                                 </KeyFrame>
+                                <KeyFrame Cue="95%">
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </KeyFrame>
                                 <KeyFrame Cue="100%">
-                                    <Setter Property="Opacity" Value="0.1" />
-                                    <Setter Property="ScaleTransform.ScaleX" Value="1.0" />
-                                    <Setter Property="ScaleTransform.ScaleY" Value="1.0" />
+                                    <Setter Property="Opacity" Value="0.0" />
+                                    <Setter Property="ScaleTransform.ScaleX" Value="1.2" />
+                                    <Setter Property="ScaleTransform.ScaleY" Value="1.2" />
                                 </KeyFrame>
                             </Animation>
                         </Style.Animations>
