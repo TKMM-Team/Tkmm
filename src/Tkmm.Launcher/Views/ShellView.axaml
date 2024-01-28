@@ -61,6 +61,8 @@
             </Image>
         </Grid>
 
+        <Border Background="Black" Opacity="0.4" />
+
         <Grid RowDefinitions="*,Auto">
             <TextBlock Margin="20,27,0,0"
                        Effect="blur(15)"
