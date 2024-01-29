@@ -9,9 +9,12 @@ namespace Tkmm.Core.Components;
 
 public static class AppManager
 {
-    private static readonly string _appPath = Path.Combine(Config.Shared.StaticStorageFolder, "bin", "Tkmm.Desktop.exe");
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
+    private static readonly string _appPath = Path.Combine(_appFolder, "Tkmm.Desktop.exe");
     private static readonly string _appVersionFile = Path.Combine(Config.Shared.StaticStorageFolder, "version");
+
+    private static readonly string _launcherFolder = Path.Combine(Config.Shared.StaticStorageFolder, "launcher");
+    private static readonly string _launcherPath = Path.Combine(_launcherFolder, "Tkmm.Launcher.exe");
 
     private const string ID = "Tkmm-[9fcf39df-ec9a-4510-8f56-88b52e85ae01]";
     private static Func<string[], Task>? _attach;
@@ -68,6 +71,11 @@ public static class AppManager
         Process.Start(_appPath);
     }
 
+    public static void StartLauncher()
+    {
+        Process.Start(_launcherPath);
+    }
+
     public static bool IsInstalled()
     {
         return File.Exists(_appVersionFile);
@@ -85,18 +93,32 @@ public static class AppManager
 
     public static async Task Update()
     {
-        AppStatus.Set("Downloading app", "fa-solid fa-download", isWorkingStatus: true);
+        AppStatus.Set("Downloading app", "fa-solid fa-download");
 
         (Stream stream, string tag) = await GitHubOperations
             .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-{Dependency.GetOSName()}.zip");
 
-        AppStatus.Set("Extracting release", "fa-solid fa-file-zipper", isWorkingStatus: true);
+        AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
         using ZipArchive archive = new(stream);
         archive.ExtractToDirectory(_appFolder, true);
 
-        AppStatus.Set("Updating version", "fa-solid fa-code-commit", isWorkingStatus: true);
+        AppStatus.Set("Updating version", "fa-solid fa-code-commit");
         File.WriteAllText(_appVersionFile, tag);
 
         AppStatus.Set("Application installed!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+    }
+
+    public static async Task UpdateLauncher()
+    {
+        AppStatus.Set("Downloading launcher", "fa-solid fa-download");
+
+        (Stream stream, _) = await GitHubOperations
+            .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-Launcher-{Dependency.GetOSName()}.zip");
+
+        AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
+        using ZipArchive archive = new(stream);
+        archive.ExtractToDirectory(_launcherFolder, true);
+
+        AppStatus.Set("Launcher updated!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 }
