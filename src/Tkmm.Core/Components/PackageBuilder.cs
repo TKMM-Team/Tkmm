@@ -23,7 +23,7 @@ public class PackageBuilder
         ModManager.EXEFS
     ];
 
-    public static void CreateMetaData(IModItem item, string outputFolder)
+    public static void CreateMetaData<T>(T item, string outputFolder) where T : IModItem
     {
         AppStatus.Set($"Creating metadata for '{item.Name}'", METADATA_ICON);
         Directory.CreateDirectory(outputFolder);
@@ -53,7 +53,7 @@ public class PackageBuilder
         }
     }
 
-    public static void CopyContents(IModItem item, string outputFolder)
+    public static async Task CopyContents<T>(T item, string outputFolder) where T : IModItem
     {
         AppStatus.Set($"Copying '{item.Name}'", COPY_ICON);
 
