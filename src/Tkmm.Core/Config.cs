@@ -49,6 +49,13 @@ public partial class Config : ConfigModule<Config>
         Title = "Storage Folder")]
     private string _storageFolder = _defaultPath;
 
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Default Author",
+        Description = "The default author used when packaging TKCL mods.",
+        Group = "Packaging")]
+    private string _defaultAuthor = Path.GetFileName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
     partial void OnThemeChanged(string value)
     {
         SetTheme?.Invoke(value);

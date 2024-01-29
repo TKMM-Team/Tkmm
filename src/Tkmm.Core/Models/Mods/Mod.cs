@@ -18,10 +18,10 @@ public partial class Mod : ObservableObject, IModItem
     private string _name = string.Empty;
 
     [ObservableProperty]
-    private string _version = string.Empty;
+    private string _version = "1.0.0";
 
     [ObservableProperty]
-    private string _author = string.Empty;
+    private string _author = Config.Shared.DefaultAuthor;
 
     [ObservableProperty]
     private ObservableCollection<ModContributor> _contributors = [];
