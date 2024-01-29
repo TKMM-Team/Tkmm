@@ -7,7 +7,7 @@ public partial class LogsPageView : UserControl
     public LogsPageView()
     {
         InitializeComponent();
-        DataContext = new LogsPageViewModel()
+        DataContext = new LogsPageViewModel(this)
             .RegisterListener();
     }
 }
