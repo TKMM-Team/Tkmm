@@ -1,9 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Notifications;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using ConfigFactory.Avalonia.Helpers;
 using FluentAvalonia.UI.Controls;
 using System.Reflection;
@@ -21,6 +23,8 @@ namespace Tkmm;
 
 public partial class App : Application
 {
+    private static WindowNotificationManager? _notificationManager;
+
     public static string? Version { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
     public static string Title { get; } = $"TotK Mod Manager";
     public static string ShortTitle { get; } = $"TKMM v{Version}";
@@ -48,18 +52,25 @@ public partial class App : Application
                 DataContext = new ShellViewModel()
             };
 
-            desktop.MainWindow = shellView;
             shellView.Closed += (s, e) => {
                 ModManager.Shared.Apply();
                 Config.Shared.Save();
             };
 
             XamlRoot = shellView;
+            shellView.Loaded += (s, e) => {
+                _notificationManager = new(XamlRoot) {
+                    Position = NotificationPosition.BottomRight,
+                    MaxItems = 3,
+                    Margin = new(0, 0, 4, 0)
+                };
+            };
 
-            MenuFactory = new MenuFactory(desktop.MainWindow);
-            MenuFactory.Append<ShellViewMenu>(new());
+            MenuFactory = new MenuFactory(XamlRoot);
+            MenuFactory.Append<ShellViewMenu>();
 
             shellView.MainMenu.ItemsSource = MenuFactory.Items;
+            desktop.MainWindow = shellView;
 
             // ConfigFactory Configuration
             BrowserDialog.StorageProvider = desktop.MainWindow.StorageProvider;
@@ -75,8 +86,8 @@ public partial class App : Application
             PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
 
-            shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
             Config.SetTheme(Config.Shared.Theme);
+            shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
 
             await ToolHelper.LoadDeps();
         }
@@ -90,5 +101,21 @@ public partial class App : Application
             desktop.MainWindow.WindowState = WindowState.Normal;
             desktop.MainWindow.Activate();
         }
+    }
+
+    public static void Toast(string message, string title = "Notice", NotificationType type = NotificationType.Information, TimeSpan? expiration = null, Action? action = null)
+    {
+        Dispatcher.UIThread.Invoke(() => {
+            _notificationManager?.Show(
+                new Notification(title, message, type, expiration, action));
+        });
+    }
+
+    public static void ToastError(Exception ex)
+    {
+        Dispatcher.UIThread.Invoke(() => {
+            _notificationManager?.Show(new Notification(
+                ex.GetType().Name, ex.Message, NotificationType.Error));
+        });
     }
 }
