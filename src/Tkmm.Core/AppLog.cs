@@ -22,4 +22,9 @@ public static class AppLog
     {
         Trace.WriteLine(level == LogLevel.Default ? message : $"[{level}] {message}");
     }
+
+    public static void Log(Exception ex)
+    {
+        Trace.WriteLine($"[{LogLevel.Error}] {ex}");
+    }
 }
