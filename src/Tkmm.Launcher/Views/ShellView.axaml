@@ -1,25 +1,26 @@
-<Window x:Class="Tkmm.Launcher.Views.ShellView"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="using:Tkmm.Launcher.ViewModels"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-        Title="TKMM Launcher"
-        Width="650"
-        Height="400"
-        d:DesignHeight="400"
-        d:DesignWidth="650"
-        x:CompileBindings="True"
-        x:DataType="local:ShellViewModel"
-        CanResize="False"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaToDecorationsHint="True"
-        Icon="/Assets/icon.ico"
-        SystemDecorations="BorderOnly"
-        WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d">
+<uiw:AppWindow x:Class="Tkmm.Launcher.Views.ShellView"
+               xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:local="using:Tkmm.Launcher.ViewModels"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+               xmlns:uiw="using:FluentAvalonia.UI.Windowing"
+               Title="TKMM Launcher"
+               Width="650"
+               Height="400"
+               d:DesignHeight="400"
+               d:DesignWidth="650"
+               x:CompileBindings="True"
+               x:DataType="local:ShellViewModel"
+               CanResize="False"
+               ExtendClientAreaChromeHints="NoChrome"
+               ExtendClientAreaToDecorationsHint="True"
+               Icon="/Assets/icon.ico"
+               SystemDecorations="BorderOnly"
+               WindowStartupLocation="CenterScreen"
+               mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">
         <Grid>
             <Image Name="StaticBackground"
@@ -193,4 +194,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-</Window>
+</uiw:AppWindow>

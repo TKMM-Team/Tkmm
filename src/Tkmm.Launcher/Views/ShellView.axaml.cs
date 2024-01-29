@@ -1,16 +1,20 @@
-using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using FluentAvalonia.UI.Windowing;
+using Tkmm.Launcher.ViewModels;
 
 namespace Tkmm.Launcher.Views;
-public partial class ShellView : Window
+
+public partial class ShellView : AppWindow
 {
     private static readonly (string, string)[] _images = [
-        ("Background-A.jpg", "#58b98a"),
-        ("Background-B.jpg", "#fdfdfd"),
         ("Background-C.jpg", "#58b98a"),
+        ("Background-D.jpg", "#bb9b45"),
+        ("Background-A.jpg", "#6adfa6"),
+        ("Background-E.jpg", "#a21e16"),
+        ("Background-B.jpg", "#fdfdfd"),
     ];
 
     private static readonly List<(Bitmap Image, IBrush Color)> _backgrounds = [];
@@ -29,7 +33,11 @@ public partial class ShellView : Window
     public ShellView()
     {
         InitializeComponent();
+        DataContext = new ShellViewModel(this);
         Client.PointerPressed += (s, e) => BeginMoveDrag(e);
+
+        TitleBar.ExtendsContentIntoTitleBar = true;
+        TitleBar.Height = 0;
 
         Background.Source = _backgrounds[0].Image;
         StaticBackground.Source = _backgrounds[1].Image;

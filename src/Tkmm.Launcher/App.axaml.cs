@@ -2,7 +2,6 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Tkmm.Launcher.ViewModels;
 using Tkmm.Launcher.Views;
 
 namespace Tkmm.Launcher;
@@ -22,9 +21,7 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new ShellView {
-                DataContext = new ShellViewModel()
-            };
+            desktop.MainWindow = new ShellView();
         }
 
         base.OnFrameworkInitializationCompleted();
