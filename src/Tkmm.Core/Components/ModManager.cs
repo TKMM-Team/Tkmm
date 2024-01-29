@@ -50,7 +50,7 @@ public partial class ModManager : ObservableObject
         foreach (string mod in mods) {
             string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod);
             if (Directory.Exists(modFolder)) {
-                Mods.Add(Mod.FromFolder(modFolder, isFromStorage: true));
+                Mods.Add(Mod.FromFolder(modFolder));
             }
         }
     }
@@ -64,17 +64,9 @@ public partial class ModManager : ObservableObject
     /// Import a mod from a .tkcl file or folder
     /// </summary>
     /// <returns></returns>
-    public Mod Import(string path)
+    public async Task<Mod> Import(string path)
     {
-        Mod mod = File.Exists(path)
-            ? Mod.FromFile(path) : Mod.FromFolder(path);
-
-        // Check for existing mods
-        if (Mods.FirstOrDefault(x => x.Id == mod.Id) is Mod existing) {
-            existing.StageImport(path);
-            return existing;
-        }
-
+        Mod mod = await Mod.FromUri(path);
         Mods.Add(mod);
         return mod;
     }
@@ -85,10 +77,6 @@ public partial class ModManager : ObservableObject
     /// <returns></returns>
     public void Apply()
     {
-        foreach (var mod in Mods) {
-            mod.Import();
-        }
-
         string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
         using FileStream fs = File.Create(modList);
         JsonSerializer.Serialize(fs, Mods.Select(x => x.Id));

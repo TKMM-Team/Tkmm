@@ -45,6 +45,6 @@ public partial class GameBananaModInfo : ObservableObject
     [RelayCommand]
     public async Task DownloadMod()
     {
-        Full = await GameBananaMod.Download(Id.ToString());
+        Full = await GameBananaMod.DownloadMetaData(Id.ToString());
     }
 }

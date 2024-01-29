@@ -19,12 +19,12 @@ public partial class HomePageView : UserControl
         DropTarget.AddHandler(DragDrop.DropEvent, DragDropEvent);
     }
 
-    public void DragDropEvent(object? sender, DragEventArgs e)
+    public async void DragDropEvent(object? sender, DragEventArgs e)
     {
         if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
             foreach (var path in paths.Select(x => x.Path.LocalPath)) {
                 if (DataContext is HomePageViewModel homePage) {
-                    Mod mod = ModManager.Shared.Import(path);
+                    Mod mod = await ModManager.Shared.Import(path);
                     homePage.CurrentMod = mod;
                 }
             }

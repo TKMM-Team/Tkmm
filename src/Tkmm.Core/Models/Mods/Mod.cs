@@ -1,17 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Models.GameBanana;
 using Tkmm.Core.Services;
 
 namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem
 {
+    private const string GB_MODS_URL = "https://gamebanana.com/mods/";
+
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();
 
@@ -51,19 +53,39 @@ public partial class Mod : ObservableObject, IModItem
     [JsonIgnore]
     public ObservableCollection<ModOptionGroup> OptionGroups { get; } = [];
 
-    [JsonIgnore]
-    public bool IsFromStorage { get; private set; } = false;
+    public static async Task<Mod> FromUri(string uri)
+    {
+        if (File.Exists(uri)) {
+            return FromFile(uri);
+        }
+        else if (Directory.Exists(uri)) {
+            return FromFolder(uri);
+        }
 
-    [JsonIgnore]
-    internal IModImporter? Importer { get; set; }
+        string id;
+        if (uri.StartsWith(GB_MODS_URL)) {
+            id = Path.GetRelativePath(GB_MODS_URL, uri)
+                .Replace(Path.DirectorySeparatorChar.ToString(), string.Empty);
+        }
+        else if (int.TryParse(uri, out _)) {
+            id = uri;
+        }
+        else {
+            throw new ArgumentException($"""
+                Invalid path, url, or mod id: '{uri}'
+                """, nameof(uri));
+        }
+
+        return await GameBananaMod.FromId(id);
+    }
 
     public static Mod FromFile(string file)
     {
         using FileStream fs = File.OpenRead(file);
-        return FromFile(fs, file);
+        return FromStream(fs, file);
     }
 
-    public static Mod FromFile(Stream input, string file)
+    public static Mod FromStream(Stream input, string file)
     {
         if (ModReaderProviderService.GetReader(file) is IModReader parser) {
             return parser.Parse(input, file);
@@ -74,7 +96,7 @@ public partial class Mod : ObservableObject, IModItem
             """);
     }
 
-    public static Mod FromFolder(string folder, bool isFromStorage = false)
+    public static Mod FromFolder(string folder)
     {
         string modInfoPath = Path.Combine(folder, "info.json");
         if (!File.Exists(modInfoPath)) {
@@ -87,10 +109,6 @@ public partial class Mod : ObservableObject, IModItem
             ?? throw new InvalidOperationException(
                 "Could not parse ModInfo");
 
-        result.Importer = new FolderModImporter(folder);
-        result.SourceFolder = folder;
-        result.IsFromStorage = isFromStorage;
-
         return result;
     }
 
@@ -101,23 +119,6 @@ public partial class Mod : ObservableObject, IModItem
 
         // TODO: remove this before releasing xD
         SourceFolder = "D:\\bin\\mods\\master-mode";
-    }
-
-    public void Import()
-    {
-        if (IsFromStorage || Importer is null) {
-            return;
-        }
-
-        Importer.Import(SourceFolder = Path.Combine(Config.Shared.StorageFolder, "mods", Id.ToString()));
-        Importer = null;
-        IsFromStorage = true;
-    }
-
-    public void StageImport(string path)
-    {
-        IsFromStorage = false;
-        SourceFolder = path;
     }
 
     partial void OnSourceFolderChanged(string value)

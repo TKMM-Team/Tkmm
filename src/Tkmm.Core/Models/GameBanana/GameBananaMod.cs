@@ -1,9 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
@@ -14,6 +11,7 @@ namespace Tkmm.Core.Models.GameBanana;
 
 public partial class GameBananaMod : ObservableObject
 {
+    private const int GB_TOTK_ID = 7617;
     private const string ENDPOINT = $"/Mod/{{0}}/ProfilePage";
 
     [JsonPropertyName("_sName")]
@@ -49,21 +47,30 @@ public partial class GameBananaMod : ObservableObject
     [JsonPropertyName("_aCredits")]
     public List<GameBananaCreditGroup> Credits { get; set; } = [];
 
-    public static async Task<GameBananaMod> Download(string id)
+    public static async Task<Mod> FromId(string id)
     {
-        using Stream stream = await GameBananaHelper.Get(string.Format(ENDPOINT, id));
-        return JsonSerializer.Deserialize<GameBananaMod>(stream)
-            ?? throw new InvalidOperationException("""
-                Could not parse GameBananaMod, the deserializer returned null
+        GameBananaMod gamebananaMod = await DownloadMetaData(id);
+
+        if (gamebananaMod.Game.Id != GB_TOTK_ID) {
+            throw new InvalidDataException($"""
+                The mod '{gamebananaMod.Name}' is not for TotK
                 """);
+        }
+
+        if (gamebananaMod.Files.FirstOrDefault(x => Path.GetExtension(x.Name) is ".tkcl" or ".zip" or ".rar" or ".7z") is not GameBananaFile file) {
+            throw new InvalidDataException($"""
+                The mod '{gamebananaMod.Name}' has no valid archive (tkcl, zip, rar, 7z) file
+                """);
+        }
+
+        return await gamebananaMod.FromFile(file);
     }
 
-    [RelayCommand]
-    public async Task Install(GameBananaFile file)
+    public async Task<Mod> FromFile(GameBananaFile file)
     {
         using HttpClient client = new();
         using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        Mod mod = Mod.FromFile(stream, file.Name);
+        Mod mod = Mod.FromStream(stream, file.Name);
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {
@@ -84,6 +91,15 @@ public partial class GameBananaMod : ObservableObject
 
         PackageBuilder.CreateMetaData(mod, mod.SourceFolder);
 
-        ModManager.Shared.Mods.Add(mod);
+        return mod;
+    }
+
+    internal static async Task<GameBananaMod> DownloadMetaData(string id)
+    {
+        using Stream stream = await GameBananaHelper.Get(string.Format(ENDPOINT, id));
+        return JsonSerializer.Deserialize<GameBananaMod>(stream)
+            ?? throw new InvalidOperationException("""
+                Could not parse GameBananaMod, the deserializer returned null
+                """);
     }
 }
