@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -6,24 +7,22 @@ using Avalonia.Threading;
 namespace Tkmm.Launcher.Views;
 public partial class ShellView : Window
 {
-    private readonly Timer _timer;
+    private static readonly (string, string)[] _images = [
+        ("Background-A.jpg", "#58b98a"),
+        ("Background-B.jpg", "#fdfdfd"),
+        ("Background-C.jpg", "#58b98a"),
+    ];
 
-    private static readonly Bitmap _backgroundA;
-    private static readonly Bitmap _backgroundB;
-    private static readonly Bitmap _backgroundC;
+    private static readonly List<(Bitmap Image, IBrush Color)> _backgrounds = [];
+
+    private readonly Timer _timer;
 
     static ShellView()
     {
-        using (Stream stream = AssetLoader.Open(new("avares://Tkmm.Launcher/Assets/Background-A.jpg"))) {
-            _backgroundA = new Bitmap(stream);
-        }
-
-        using (Stream stream = AssetLoader.Open(new("avares://Tkmm.Launcher/Assets/Background-B.jpg"))) {
-            _backgroundB = new Bitmap(stream);
-        }
-
-        using (Stream stream = AssetLoader.Open(new("avares://Tkmm.Launcher/Assets/Background-C.jpg"))) {
-            _backgroundC = new Bitmap(stream);
+        foreach ((var image, var color) in _images) {
+            using Stream stream = AssetLoader.Open(new($"avares://Tkmm.Launcher/Assets/{image}"));
+            Bitmap bmp = new(stream);
+            _backgrounds.Add((bmp, Brush.Parse(color)));
         }
     }
 
@@ -32,33 +31,28 @@ public partial class ShellView : Window
         InitializeComponent();
         Client.PointerPressed += (s, e) => BeginMoveDrag(e);
 
-        Background.Source = _backgroundA;
-        StaticBackground.Source = _backgroundB;
+        Background.Source = _backgrounds[0].Image;
+        StaticBackground.Source = _backgrounds[1].Image;
 
         _timer = new(async (e) => {
             Dispatcher.UIThread.Invoke(() => {
-                if (Background.Source == _backgroundA) {
-                    Background.Source = _backgroundB;
-                }
-                else if (Background.Source == _backgroundB) {
-                    Background.Source = _backgroundC;
-                }
-                else if (Background.Source == _backgroundC) {
-                    Background.Source = _backgroundA;
+                for (int i = 0; i < _backgrounds.Count; i++) {
+                    if (Background.Source == _backgrounds[i].Image) {
+                        (var image, var color) = _backgrounds[++i >= _backgrounds.Count ? 0 : i];
+                        Background.Source = image;
+                        IconBack.Fill = color;
+                        IconFront.Fill = color;
+                    }
                 }
             });
 
             await Task.Delay(TimeSpan.FromSeconds(10));
 
             Dispatcher.UIThread.Invoke(() => {
-                if (Background.Source == _backgroundA) {
-                    StaticBackground.Source = _backgroundB;
-                }
-                else if (Background.Source == _backgroundB) {
-                    StaticBackground.Source = _backgroundC;
-                }
-                else if (Background.Source == _backgroundC) {
-                    StaticBackground.Source = _backgroundA;
+                for (int i = 0; i < _backgrounds.Count; i++) {
+                    if (Background.Source == _backgrounds[i].Image) {
+                        StaticBackground.Source = _backgrounds[++i >= _backgrounds.Count ? 0 : i].Image;
+                    }
                 }
             });
 
