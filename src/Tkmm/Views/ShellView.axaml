@@ -21,10 +21,48 @@
                mc:Ignorable="d">
     <Grid RowDefinitions="32,*,25">
         <Grid ColumnDefinitions="Auto,*">
-            <Image Width="26"
-                   Height="26"
-                   Margin="4,2"
-                   Source="/Assets/icon.ico" />
+            <Viewbox Width="26"
+                     Height="26"
+                     Margin="4,2"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Top"
+                     Stretch="Fill">
+                <Grid>
+                    <Viewbox Width="12"
+                             Height="12"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Top">
+                        <Border Padding="25">
+                            <Path Name="IconBack"
+                                  Data="M502.39,246.08l-81.58-6.2c-8.1-83.89-78.8-149.47-164.82-149.47c-85.86,0-156.46,65.35-164.76,149.02   l-81.63,6.2c-12.81,0.98-12.81,19.75,0,20.73l81.63,6.2c8.31,83.68,78.9,149.02,164.76,149.02c85.71,0,156.21-65.11,164.72-148.58   l81.67-6.21C515.2,265.84,515.2,247.06,502.39,246.08z M256,391.98c-75.1,0-135.98-60.88-135.98-135.98S180.9,120.02,256,120.02   S391.98,180.9,391.98,256S331.1,391.98,256,391.98z"
+                                  Effect="drop-shadow(0 0 75 #45000000)"
+                                  Fill="{DynamicResource SystemAccentColor}" />
+                        </Border>
+                    </Viewbox>
+                    <Viewbox Width="12" Height="12">
+                        <Border Padding="145">
+                            <Grid>
+                                <Path Name="IconFront"
+                                      Data="M509.43,494.3l-132.07-169   c11.68-20.43,18.34-44.09,18.34-69.31c0-25.4-6.76-49.22-18.57-69.74L508.85,17.7c8.23-9.97-5.05-23.27-15.04-15.02L325.18,134.44   c-20.46-11.73-44.18-18.43-69.46-18.43c-25.35,0-49.12,6.73-69.62,18.52L17.61,2.86C7.63-5.37-5.66,7.91,2.57,17.9l131.67,168.48   c-11.78,20.51-18.52,44.28-18.52,69.62c0,25.52,6.83,49.43,18.76,70.04L3.16,494.1c-8.25,9.98,5.04,23.27,15.02,15.04   l168.24-131.48c20.43,11.67,44.08,18.33,69.29,18.33c25.43,0,49.26-6.77,69.81-18.62l168.87,131.95   C504.37,517.57,517.66,504.27,509.43,494.3z M255.71,354.73c-54.53,0-98.73-44.2-98.73-98.73c0-54.53,44.2-98.73,98.73-98.73   s98.73,44.2,98.73,98.73C354.45,310.53,310.24,354.73,255.71,354.73z"
+                                      Effect="drop-shadow(0 0 75 #45000000)"
+                                      Fill="{DynamicResource SystemAccentColor}" />
+                            </Grid>
+                        </Border>
+                    </Viewbox>
+                </Grid>
+                <Viewbox.Styles>
+                    <Style Selector="Path">
+                        <Setter Property="Transitions">
+                            <Setter.Value>
+                                <Transitions>
+                                    <BrushTransition Property="Fill" Duration="0:0:0.5" />
+                                </Transitions>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Viewbox.Styles>
+            </Viewbox>
+
             <Menu Name="MainMenu" Grid.Column="1" />
         </Grid>
 
