@@ -76,6 +76,7 @@ public partial class App : Application
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
 
             shellView.MainNavigation.SelectedItem = PageManager.Shared.Pages[0];
+            Config.SetTheme(Config.Shared.Theme);
 
             await ToolHelper.LoadDeps();
         }
