@@ -5,6 +5,7 @@ using FluentAvalonia.UI.Windowing;
 using Tkmm.Core;
 using Tkmm.Helpers;
 using Tkmm.Helpers.Models;
+using Tkmm.Models;
 
 namespace Tkmm.Views;
 
@@ -15,6 +16,7 @@ public partial class ShellView : AppWindow
     public ShellView()
     {
         InitializeComponent();
+        SplashScreen = new SplashScreen();
 
         if (_configPage.DataContext is ConfigPageModel model) {
             model.SecondaryButtonIsEnabled = false;

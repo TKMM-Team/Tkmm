@@ -15,9 +15,6 @@ public partial class HomePageViewModel : ObservableObject
     [ObservableProperty]
     private Mod? _currentMod;
 
-    [ObservableProperty]
-    private bool _isSelected = false;
-
     [RelayCommand]
     private async Task ShowContributors()
     {
@@ -116,10 +113,5 @@ public partial class HomePageViewModel : ObservableObject
                 }
             }
         }
-    }
-
-    partial void OnCurrentModChanged(Mod? value)
-    {
-        IsSelected = value is not null;
     }
 }

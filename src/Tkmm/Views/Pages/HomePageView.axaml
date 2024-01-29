@@ -68,24 +68,7 @@
               IsVisible="{Binding Mods.Count, Source={x:Static comp:ModManager.Shared}}"
               RowDefinitions="*,Auto">
 
-            <StackPanel Grid.RowSpan="2"
-                        VerticalAlignment="Center"
-                        IsVisible="{Binding !IsSelected}"
-                        Spacing="35">
-                <progRing:ProgressRing Width="100"
-                                       Height="100"
-                                       HorizontalAlignment="Center"
-                                       Foreground="{DynamicResource SystemAccentColor}"
-                                       IsActive="True" />
-                <TextBlock HorizontalAlignment="Center"
-                           FontSize="16"
-                           FontWeight="Medium"
-                           Text="Loading Mods . . ." />
-            </StackPanel>
-
-            <Grid Grid.RowSpan="2"
-                  IsVisible="{Binding IsSelected}"
-                  RowDefinitions="Auto,*,Auto,0.7*,Auto">
+            <Grid Grid.RowSpan="2" RowDefinitions="Auto,*,Auto,0.7*,Auto">
                 <Grid Name="TitleGrid"
                       Margin="0,0,0,15"
                       ColumnDefinitions="*"
@@ -153,8 +136,7 @@
 
             <Grid Name="ModListGrid"
                   Grid.RowSpan="4"
-                  Grid.Column="2"
-                  IsEnabled="{Binding IsSelected}">
+                  Grid.Column="2">
                 <ListBox ItemsSource="{Binding Mods, Source={x:Static comp:ModManager.Shared}}" SelectedItem="{Binding CurrentMod}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Mod}">
