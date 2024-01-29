@@ -57,6 +57,7 @@ public class ArchiveModReader : IModReader
             SourceFolder = outputFolder,
         };
 
+        PackageBuilder.CreateMetaData(mod, outputFolder);
         return Task.FromResult(mod);
     }
 
