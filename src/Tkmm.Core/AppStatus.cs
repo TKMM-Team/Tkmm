@@ -58,7 +58,9 @@ public partial class AppStatus : ObservableObject
             };
 
             resetTimer.Elapsed += (s, e) => {
-                Reset();
+                if (Shared.Status == status) {
+                    Reset();
+                }
                 resetTimer.Dispose();
             };
 
