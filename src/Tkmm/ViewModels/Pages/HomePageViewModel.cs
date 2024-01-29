@@ -37,7 +37,7 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static async Task Merge()
     {
-        await ModManager.Shared.Merge();
+        await Task.Run(ModManager.Shared.Merge);
     }
 
     [RelayCommand]
