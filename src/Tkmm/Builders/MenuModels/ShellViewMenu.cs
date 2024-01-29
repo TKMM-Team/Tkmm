@@ -1,7 +1,9 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Platform;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
+using Markdown.Avalonia.Full;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -70,9 +72,23 @@ public class ShellViewMenu
     }
 
     [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
-    public static Task About()
+    public static async Task About()
     {
-        AppLog.Log("Haha", LogLevel.Default);
-        return Task.CompletedTask;
+        string aboutFile = Path.Combine(Config.Shared.StaticStorageFolder, "Readme.md");
+
+        TaskDialog dialog = new() {
+            XamlRoot = App.XamlRoot,
+            Title = "About",
+            Content = new MarkdownScrollViewer {
+                Markdown = File.Exists(aboutFile) ? File.ReadAllText(aboutFile) : "Invalid Installation"
+            },
+            Buttons = [
+                new TaskDialogButton {
+                    Text = "OK"
+                }
+            ]
+        };
+
+        await dialog.ShowAsync();
     }
 }
