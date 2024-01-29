@@ -13,7 +13,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Remove="Assets\Background-F.png" />
+    <None Remove="Assets\Background-D.png" />
+    <None Remove="Assets\Background-G.png" />
   </ItemGroup>
     
   <ItemGroup>
