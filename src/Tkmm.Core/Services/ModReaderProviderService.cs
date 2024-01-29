@@ -6,6 +6,8 @@ public static class ModReaderProviderService
 {
     private static readonly IModReader[] _readers = [
         new ArchiveModReader(),
+        new FolderModReader(),
+        new GameBananaModReader(),
         new SevenZipModReader(),
         new TkclModReader(),
     ];
