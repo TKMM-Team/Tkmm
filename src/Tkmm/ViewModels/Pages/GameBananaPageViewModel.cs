@@ -76,7 +76,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
 
         ContentDialog dialog = new() {
-            Title = $"Install {mod.Name}",
+            Title = $"Install {mod.Name}?",
             Content = panel,
             SecondaryButtonText = "No",
             PrimaryButtonText = "Yes"
