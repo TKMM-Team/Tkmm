@@ -97,18 +97,16 @@ public partial class ModManager : ObservableObject
             Trace.WriteLine("[Info] No mods to merge!");
         }
 
-
         AppStatus.Set("Applying", "fa-solid fa-file-lines", isWorkingStatus: true);
         Apply();
 
         AppStatus.Set("Merging", "fa-solid fa-code-merge", isWorkingStatus: true);
-        string mergedOutput = Path.Combine(Config.Shared.StorageFolder, "merged");
 
-        if (Directory.Exists(mergedOutput)) {
-            Directory.Delete(mergedOutput, true);
+        if (Directory.Exists(Config.Shared.MergeOutput)) {
+            Directory.Delete(Config.Shared.MergeOutput, true);
         }
 
-        Directory.CreateDirectory(mergedOutput);
+        Directory.CreateDirectory(Config.Shared.MergeOutput);
 
         // 
         // Copy loose files in order of priority
@@ -118,7 +116,7 @@ public partial class ModManager : ObservableObject
                     continue;
                 }
 
-                var destinationFile = Path.Combine(mergedOutput, Path.GetRelativePath(mod.SourceFolder, file));
+                var destinationFile = Path.Combine(Config.Shared.MergeOutput, Path.GetRelativePath(mod.SourceFolder, file));
                 if (Path.GetDirectoryName(destinationFile) is string folder) {
                     Directory.CreateDirectory(folder);
                 }
@@ -128,7 +126,7 @@ public partial class ModManager : ObservableObject
 
             string exefsPath = Path.Combine(mod.SourceFolder, EXEFS);
             if (Directory.Exists(exefsPath)) {
-                DirectoryOperations.CopyDirectory(exefsPath, Path.Combine(mergedOutput, EXEFS), true);
+                DirectoryOperations.CopyDirectory(exefsPath, Path.Combine(Config.Shared.MergeOutput, EXEFS), true);
             }
         }
 
@@ -137,7 +135,7 @@ public partial class ModManager : ObservableObject
         await ToolHelper.Call(Tool.MalsMerger,
                 "merge", string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
                 "--target", Config.Shared.GameLanguage,
-                Path.Combine(mergedOutput, "romfs")
+                Path.Combine(Config.Shared.MergeOutput, "romfs")
             ).WaitForExitAsync();
 
         // Merge Sarc and BYML
@@ -146,11 +144,11 @@ public partial class ModManager : ObservableObject
                 "--base", ModsPath,
                 "--mods", .. Mods.Select(x => x.Id.ToString()),
                 "--process", "All",
-                "--output", Path.Combine(mergedOutput, "romfs")
+                "--output", Path.Combine(Config.Shared.MergeOutput, "romfs")
             ]).WaitForExitAsync();
 
         // Merge RSDB
-        string outputRsdbFolder = Path.Combine(mergedOutput, "romfs", "RSDB");
+        string outputRsdbFolder = Path.Combine(Config.Shared.MergeOutput, "romfs", "RSDB");
         Directory.CreateDirectory(outputRsdbFolder);
 
         await ToolHelper.Call(Tool.RsdbMerger,
@@ -164,7 +162,7 @@ public partial class ModManager : ObservableObject
                 "--action", "single-mod",
                 "--use-checksums",
                 "--version", TotkConfig.Shared.Version.ToString(),
-                "--mod-path", mergedOutput,
+                "--mod-path", Config.Shared.MergeOutput,
                 "--compress"
             ).WaitForExitAsync();
 

@@ -7,6 +7,7 @@ namespace Tkmm.Core;
 public partial class Config : ConfigModule<Config>
 {
     private static readonly string _defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm");
+    private static readonly string _defaultMergedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TotK Mod Manager", "Merged Output");
 
     public override string Name { get; } = "tkmm";
 
@@ -55,6 +56,17 @@ public partial class Config : ConfigModule<Config>
         Description = "The default author used when packaging TKCL mods.",
         Group = "Packaging")]
     private string _defaultAuthor = Path.GetFileName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Merged Mod Output Folder",
+        Description = "The output folder to write the final merged mod to.",
+        Group = "Merging")]
+    [property: ConfigFactory.Core.Attributes.BrowserConfig(
+        BrowserMode = BrowserMode.OpenFolder,
+        InstanceBrowserKey = "config-mrged-output-folder",
+        Title = "Merged Mod Output Folder")]
+    private string _mergeOutput = _defaultMergedPath;
 
     partial void OnThemeChanged(string value)
     {
