@@ -15,10 +15,7 @@
                x:CompileBindings="True"
                x:DataType="local:ShellViewModel"
                CanResize="False"
-               ExtendClientAreaChromeHints="NoChrome"
-               ExtendClientAreaToDecorationsHint="True"
                Icon="/Assets/icon.ico"
-               SystemDecorations="BorderOnly"
                WindowStartupLocation="CenterScreen"
                mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">

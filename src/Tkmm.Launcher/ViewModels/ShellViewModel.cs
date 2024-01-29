@@ -43,7 +43,7 @@ public partial class ShellViewModel : ObservableObject
 
             await Task.Run(async () => {
                 Progress = 10;
-                // await AppManager.Update();
+                await AppManager.Update();
                 Progress = 20;
                 await ToolHelper.DownloadDependencies(UpdateProgress);
                 Progress = 100;
