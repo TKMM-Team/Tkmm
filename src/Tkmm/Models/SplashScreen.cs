@@ -5,7 +5,6 @@ using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core.Components;
 using Tkmm.Helpers;
-using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Models;
 
@@ -26,7 +25,7 @@ public class SplashScreen : IApplicationSplashScreen
         Stretch = Stretch.UniformToFill
     };
 
-    public int MinimumShowTime { get; } = 1000;
+    public int MinimumShowTime { get; } = 1500;
 
     public async Task RunTasks(CancellationToken cancellationToken)
     {
