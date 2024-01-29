@@ -31,7 +31,7 @@ public class ShellViewMenu
             return;
         }
 
-        ModManager.Shared.Import(selectedFolder);
+        await ModManager.Shared.Import(selectedFolder);
     }
 
     [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge")]

@@ -53,72 +53,38 @@ public partial class Mod : ObservableObject, IModItem
     [JsonIgnore]
     public ObservableCollection<ModOptionGroup> OptionGroups { get; } = [];
 
-    public static async Task<Mod> FromUri(string uri)
+    public static async Task<Mod> FromPath(string path)
     {
-        if (File.Exists(uri)) {
-            return FromFile(uri);
-        }
-        else if (Directory.Exists(uri)) {
-            return FromFolder(uri);
-        }
-
-        string id;
-        if (uri.StartsWith(GB_MODS_URL)) {
-            id = Path.GetRelativePath(GB_MODS_URL, uri)
-                .Replace(Path.DirectorySeparatorChar.ToString(), string.Empty);
-        }
-        else if (int.TryParse(uri, out _)) {
-            id = uri;
-        }
-        else {
-            throw new ArgumentException($"""
-                Invalid path, url, or mod id: '{uri}'
-                """, nameof(uri));
-        }
-
-        return await GameBananaMod.FromId(id);
-    }
-
-    public static Mod FromFile(string file)
-    {
-        using FileStream fs = File.OpenRead(file);
-        return FromStream(fs, file);
-    }
-
-    public static Mod FromStream(Stream input, string file)
-    {
-        if (ModReaderProviderService.GetReader(file) is IModReader parser) {
-            return parser.Parse(input, file);
+        if (ModReaderProviderService.GetReader(path) is IModReader parser) {
+            if (File.Exists(path)) {
+                using FileStream fs = File.OpenRead(path);
+                return await parser.Read(fs, path);
+            }
+            else {
+                return await parser.Read(null, path);
+            }
         }
 
         throw new NotSupportedException($"""
-            The provided file '{file}' is not a supported file type.
+            The provided input '{path}' is not supported.
             """);
     }
 
-    public static Mod FromFolder(string folder)
+    public static async Task<Mod> FromStream(Stream stream, string path)
     {
-        string modInfoPath = Path.Combine(folder, "info.json");
-        if (!File.Exists(modInfoPath)) {
-            throw new NotSupportedException(
-                "Please use the packager to prep your mod for use in TKMM!");
+        if (ModReaderProviderService.GetReader(path) is IModReader parser) {
+            return await parser.Read(stream, path);
         }
 
-        using FileStream fs = File.OpenRead(modInfoPath);
-        Mod result = JsonSerializer.Deserialize<Mod>(fs)
-            ?? throw new InvalidOperationException(
-                "Could not parse ModInfo");
-
-        return result;
+        throw new NotSupportedException($"""
+            The provided file '{path}' is not supported.
+            """);
     }
 
     public Mod()
     {
         OptionGroups.CollectionChanged += (_, e)
             => ReferenceCollectionHelper.ResolveCollectionChanged(OptionGroupReferences, e);
-
-        // TODO: remove this before releasing xD
-        SourceFolder = "D:\\bin\\mods\\master-mode";
     }
 
     partial void OnSourceFolderChanged(string value)

@@ -12,7 +12,7 @@ public class ModCommands
     public static async Task InstallMod([Argument] string path)
     {
         ModManager.Shared.Mods.Add(
-            await Mod.FromUri(path)
+            await Mod.FromPath(path)
         );
 
         ModManager.Shared.Apply();

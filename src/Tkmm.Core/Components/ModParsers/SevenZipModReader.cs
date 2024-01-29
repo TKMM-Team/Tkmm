@@ -1,7 +1,6 @@
 ﻿using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
-using System.Buffers;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
@@ -20,8 +19,10 @@ public class SevenZipModReader : IModReader
         return Path.GetExtension(file) == ".7z";
     }
 
-    public Mod Parse(Stream input, string file)
+    public Task<Mod> Read(Stream? input, string file)
     {
+        ArgumentNullException.ThrowIfNull(input);
+
         using MemoryStream ms = new();
         input.CopyTo(ms);
 
@@ -61,6 +62,6 @@ public class SevenZipModReader : IModReader
             SourceFolder = outputFolder,
         };
 
-        return mod;
+        return Task.FromResult(mod);
     }
 }

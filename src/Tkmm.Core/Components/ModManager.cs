@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
+using Tkmm.Core.Components.ModParsers;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
@@ -50,7 +51,7 @@ public partial class ModManager : ObservableObject
         foreach (string mod in mods) {
             string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod);
             if (Directory.Exists(modFolder)) {
-                Mods.Add(Mod.FromFolder(modFolder));
+                Mods.Add(FolderModReader.FromInternal(modFolder));
             }
         }
     }
@@ -66,7 +67,7 @@ public partial class ModManager : ObservableObject
     /// <returns></returns>
     public async Task<Mod> Import(string path)
     {
-        Mod mod = await Mod.FromUri(path);
+        Mod mod = await Mod.FromPath(path);
         Mods.Add(mod);
         return mod;
     }

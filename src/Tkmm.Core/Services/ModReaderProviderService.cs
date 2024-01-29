@@ -4,14 +4,14 @@ namespace Tkmm.Core.Services;
 
 public static class ModReaderProviderService
 {
-    private static readonly IModReader[] _parsers = [
+    private static readonly IModReader[] _readers = [
         new ArchiveModReader(),
         new SevenZipModReader(),
         new TkclModReader(),
     ];
 
-    public static IModReader? GetReader(string file)
+    public static IModReader? GetReader(string path)
     {
-        return _parsers.FirstOrDefault(x => x.IsValid(file));
+        return _readers.FirstOrDefault(x => x.IsValid(path));
     }
 }

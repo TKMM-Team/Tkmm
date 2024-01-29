@@ -18,8 +18,10 @@ public class ArchiveModReader : IModReader
         return Path.GetExtension(file) is ".rar" or ".zip";
     }
 
-    public Mod Parse(Stream input, string file)
+    public Task<Mod> Read(Stream? input, string file)
     {
+        ArgumentNullException.ThrowIfNull(input);
+
         using IReader reader = ReaderFactory.Open(input);
 
         Guid id = Guid.NewGuid();
@@ -35,7 +37,7 @@ public class ArchiveModReader : IModReader
                 }
 
                 reader.WriteEntryToFile(output, new ExtractionOptions {
-                    PreserveAttributes = true,
+                    PreserveAttributes = false,
                     PreserveFileTime = true,
                     ExtractFullPath = false,
                     Overwrite = true
@@ -55,7 +57,7 @@ public class ArchiveModReader : IModReader
             SourceFolder = outputFolder,
         };
 
-        return mod;
+        return Task.FromResult(mod);
     }
 
     internal static bool ProcessArchiveEntry(IEntry entry, ref string? root)

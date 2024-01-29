@@ -70,7 +70,7 @@ public partial class GameBananaMod : ObservableObject
     {
         using HttpClient client = new();
         using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        Mod mod = Mod.FromStream(stream, file.Name);
+        Mod mod = await Mod.FromStream(stream, file.Name);
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {

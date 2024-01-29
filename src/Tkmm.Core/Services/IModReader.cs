@@ -4,6 +4,6 @@ namespace Tkmm.Core.Services;
 
 public interface IModReader
 {
-    public Mod Parse(Stream input, string file);
-    public bool IsValid(string file);
+    public bool IsValid(string path);
+    public Task<Mod> Read(Stream? input, string path);
 }
