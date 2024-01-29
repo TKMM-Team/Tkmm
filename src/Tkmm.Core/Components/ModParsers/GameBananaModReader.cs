@@ -15,8 +15,6 @@ public class GameBananaModReader : IModReader
 
     public async Task<Mod> Read(Stream? input, string path)
     {
-        ArgumentNullException.ThrowIfNull(input);
-
         string id;
 
         if (path.StartsWith(GB_MODS_URL)) {
