@@ -55,60 +55,73 @@ public class PackageBuilder
 
     public static async Task CopyContents<T>(T item, string outputFolder) where T : IModItem
     {
+        await Task.WhenAll(CopyContentsInternal(item, outputFolder));
+        AppStatus.Set($"Packaged '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
+    }
+
+    private static List<Task> CopyContentsInternal<T>(T item, string outputFolder) where T : IModItem
+    {
         AppStatus.Set($"Copying '{item.Name}'", COPY_ICON);
 
-        AppStatus.Set("Generating Mals", COPY_ICON);
-        ToolHelper.Call(Tool.MalsMerger,
-                "gen", item.SourceFolder,
-                Path.Combine(outputFolder, "romfs")
-            ).WaitForExit();
+        List<Task> tasks = [
 
-        AppStatus.Set("Generating RSDB", COPY_ICON);
-        ToolHelper.Call(Tool.RsdbMerger,
-                "--generate-changelog", Path.Combine(item.SourceFolder, "romfs", "RSDB"),
-                "--output", outputFolder
-            ).WaitForExit();
+            // Mals
+            ToolHelper.Call(Tool.MalsMerger,
+                    "gen", item.SourceFolder,
+                    Path.Combine(outputFolder, "romfs")
+                ).WaitForExitAsync(),
 
-        AppStatus.Set("Assembling SARC", COPY_ICON);
-        ToolHelper.Call(Tool.SarcTool,
-                "assemble",
-                "--mod", item.SourceFolder
-            ).WaitForExit();
+            // RSDB
+            ToolHelper.Call(Tool.RsdbMerger,
+                    "--generate-changelog", Path.Combine(item.SourceFolder, "romfs", "RSDB"),
+                    "--output", outputFolder
+                ).WaitForExitAsync(),
 
-        AppStatus.Set("Packing SARC", COPY_ICON);
-        ToolHelper.Call(Tool.SarcTool,
-                "package",
-                "--mod", item.SourceFolder,
-                "--output", outputFolder
-            ).WaitForExit();
+            // SARC
+            Task.Run(async () => {
+                await ToolHelper.Call(Tool.SarcTool,
+                        "assemble",
+                        "--mod", item.SourceFolder
+                    ).WaitForExitAsync();
 
-        AppStatus.Set("Copying file-system folders", COPY_ICON);
-        foreach (var folder in _fileSystemFolders) {
-            string inputFsFolder = Path.Combine(item.SourceFolder, folder);
+                await ToolHelper.Call(Tool.SarcTool,
+                        "package",
+                        "--mod", item.SourceFolder,
+                        "--output", outputFolder
+                    ).WaitForExitAsync();
+            }),
 
-            if (Directory.Exists(inputFsFolder)) {
-                DirectoryOperations.CopyDirectory(
-                    inputFsFolder, Path.Combine(outputFolder, folder),
-                    ToolHelper.ExcludeFiles, ToolHelper.ExcludeFolders,
-                    overwrite: true
-                );
-            }
-        }
+            // General
+            Task.Run(() => {
+                AppStatus.Set("Copying file-system folders", COPY_ICON);
+                foreach (var folder in _fileSystemFolders) {
+                    string inputFsFolder = Path.Combine(item.SourceFolder, folder);
+
+                    if (Directory.Exists(inputFsFolder)) {
+                        DirectoryOperations.CopyDirectory(
+                            inputFsFolder, Path.Combine(outputFolder, folder),
+                            ToolHelper.ExcludeFiles, ToolHelper.ExcludeFolders,
+                            overwrite: true
+                        );
+                    }
+                }
+            })
+        ];
 
         if (item is Mod mod) {
             AppStatus.Set("Copying options", COPY_ICON);
 
             foreach (var group in mod.OptionGroups) {
                 string groupOutputFolder = Path.Combine(outputFolder, OPTIONS, group.Id.ToString());
-                
+
                 foreach (var option in group.Options) {
                     string optionOutputFolder = Path.Combine(groupOutputFolder, option.Id.ToString());
-                    CopyContents(option, optionOutputFolder);
+                    tasks.AddRange(CopyContentsInternal(option, optionOutputFolder));
                 }
             }
         }
 
-        AppStatus.Set($"Copied '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
+        return tasks;
     }
 
     public static void Package(string inputFolder, string outputFile)

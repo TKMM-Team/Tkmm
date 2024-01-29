@@ -62,9 +62,9 @@ public partial class PackagingPageViewModel : ObservableObject
 
         string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
 
-        await Task.Run(() => {
+        await Task.Run(async () => {
             PackageBuilder.CreateMetaData(Mod, tmpOutput);
-            PackageBuilder.CopyContents(Mod, tmpOutput);
+            await PackageBuilder.CopyContents(Mod, tmpOutput);
             PackageBuilder.Package(tmpOutput, ExportPath);
 
             Directory.Delete(tmpOutput, true);

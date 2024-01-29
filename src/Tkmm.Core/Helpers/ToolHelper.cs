@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Humanizer;
+using System.Diagnostics;
 using System.Text.Json;
 using Tkmm.Core.Helpers.Models;
 using Tkmm.Core.Helpers.Operations;
@@ -70,6 +71,8 @@ public class ToolHelper
                 The tool {tool} could not be found!
                 """);
         }
+
+        AppStatus.Set($"Running '{tool.Humanize()}'", "fa-solid fa-microchip");
 
         string absoluePath = Path.Combine(_appsDir, dependency.Files[Dependency.GetOSName()]);
         AppLog.Log(absoluePath, LogLevel.Debug);
