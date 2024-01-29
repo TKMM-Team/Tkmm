@@ -26,9 +26,9 @@ public class ToolHelper
     public static List<string> ExcludeFolders { get; private set; } = [];
     public static List<string> ExcludeFiles { get; private set; } = [];
 
-    public static async Task LoadDeps()
+    public static async Task LoadDeps(bool forceRefresh = false)
     {
-        if (File.Exists(_depsPath)) {
+        if (File.Exists(_depsPath) && !forceRefresh) {
             using FileStream fs = File.OpenRead(_depsPath);
             Deps = JsonSerializer.Deserialize<Dictionary<Tool, Dependency>>(fs)
                 ?? throw new InvalidOperationException("""
@@ -95,12 +95,12 @@ public class ToolHelper
         return proc;
     }
 
-    public static async Task DownloadDependencies(Action<double>? updateProgress = null)
+    public static async Task DownloadDependencies(Action<double>? updateProgress = null, bool forceRefresh = false)
     {
         AppStatus.Set("Downloading dependencies", "fa-solid fa-download", isWorkingStatus: true);
 
         if (Deps.Count <= 0) {
-            await LoadDeps();
+            await LoadDeps(forceRefresh);
         }
 
         double inc = 70 / Deps.Count;
