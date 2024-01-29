@@ -1,27 +1,17 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
-using System.Diagnostics;
 using Tkmm.Core.Components;
 using Tkmm.Core.Models.Mods;
+using Tkmm.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class HomePageViewModel : ObservableObject
 {
-    private static readonly Bitmap _defaultThumbnail;
-
-    static HomePageViewModel()
-    {
-        using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/EmptyThumbnail.jpg"));
-        _defaultThumbnail = new Bitmap(stream);
-    }
-
     [ObservableProperty]
     private Mod? _currentMod;
 
@@ -111,70 +101,21 @@ public partial class HomePageViewModel : ObservableObject
 
     public HomePageViewModel()
     {
-        // Listen to when the mod list changes
-        // and update the view accordingly
         ModManager.Shared.Mods.CollectionChanged += ModsUpdated;
-        _ = Init();
+        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
     }
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is IList mods) {
             foreach (Mod mod in mods) {
-                await ResolveThumbnail(mod);
+                await ModHelper.ResolveThumbnail(mod);
 
                 if (!ModManager.Shared.Mods.Contains(mod)) {
                     CurrentMod = mod;
                 }
             }
         }
-    }
-
-    private async Task Init()
-    {
-        foreach (var mod in ModManager.Shared.Mods) {
-            await ResolveThumbnail(mod);
-        }
-
-        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
-    }
-
-    private static async Task ResolveThumbnail(Mod mod)
-    {
-        if (mod.Thumbnail is not null) {
-            return;
-        }
-
-        if (mod.ThumbnailUri is string uri) {
-            string localPath = Path.Combine(mod.SourceFolder, uri);
-            if (File.Exists(localPath)) {
-                mod.Thumbnail = new Bitmap(localPath);
-            }
-            else if (uri.StartsWith("https://")) {
-                try {
-                    using HttpClient client = new();
-                    byte[] data = await client.GetByteArrayAsync(uri);
-                    using MemoryStream ms = new(data);
-                    mod.Thumbnail = new Bitmap(ms);
-                }
-                catch (Exception ex) {
-                    Trace.WriteLine($"""
-                        Error reading thumbnail URL: '{uri}'
-
-                        Exception:
-                        {ex}
-                        """);
-                }
-            }
-            else {
-                goto Default;
-            }
-
-            return;
-        }
-
-    Default:
-        mod.Thumbnail = _defaultThumbnail;
     }
 
     partial void OnCurrentModChanged(Mod? value)
