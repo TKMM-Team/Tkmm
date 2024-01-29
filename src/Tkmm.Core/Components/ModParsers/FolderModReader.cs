@@ -29,7 +29,7 @@ public class FolderModReader : IModReader
         };
 
         if (Path.GetFullPath(ModManager.ModsPath) != Path.GetDirectoryName(path)) {
-            string output = Path.Combine(ModManager.ModsPath, mod.Id.ToString());
+            string output = ModManager.GetModFolder(mod);
             await PackageBuilder.CopyContents(mod, output);
             PackageBuilder.CreateMetaData(mod, output);
         }
