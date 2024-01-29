@@ -70,7 +70,7 @@ public class ShellViewMenu
         await ToolHelper.DownloadDependencies();
     }
 
-    [Menu("About", "Help", "Ctrl + Shift + I", "fa-solid fa-circle-info", IsSeparator = true)]
+    [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
     public static Task About()
     {
         AppLog.Log("Haha", LogLevel.Default);
