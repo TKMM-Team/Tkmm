@@ -11,6 +11,7 @@ public interface IMenuFactory
 
     public IMenuFactory Prepend<T>() where T : class;
     public IMenuFactory Prepend(Type type);
+    public IMenuFactory Append<T>() where T : class, new() => Append(new T());
     public IMenuFactory Append<T>(T source) where T : class;
     public IMenuFactory Append(object source);
 }

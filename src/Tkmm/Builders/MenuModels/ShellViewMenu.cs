@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Platform;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
@@ -9,6 +8,7 @@ using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Win32;
+using Tkmm.Helpers;
 
 namespace Tkmm.Builders.MenuModels;
 
@@ -17,12 +17,25 @@ public class ShellViewMenu
     [Menu("Exit", "File", "Alt + F4", "fa-solid fa-right-from-bracket")]
     public static void File_Exit()
     {
-        // Handle exit cleanup here
+        ModManager.Shared.Apply();
         Environment.Exit(0);
     }
 
-    [Menu("Import", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
-    public static async Task ModImport()
+    [Menu("Import File", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
+    public static async Task ImportModFile()
+    {
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "TKCL:*.tkcl|All Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
+        string? selectedFile = await dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(selectedFile)) {
+            return;
+        }
+
+        await ModHelper.Import(selectedFile);
+    }
+
+    [Menu("Import Folder", "Mod", "Ctrl + Shift + I", "fa-regular fa-folder-open")]
+    public static async Task ImportModFolder()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
         string? selectedFolder = await dialog.ShowDialog();
@@ -31,11 +44,32 @@ public class ShellViewMenu
             return;
         }
 
-        await ModManager.Shared.Import(selectedFolder);
+        await ModHelper.Import(selectedFolder);
     }
 
-    [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge")]
-    public static async Task ModMerge()
+    [Menu("Import Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-folder-open")]
+    public static async Task ImportArgument()
+    {
+        ContentDialog dialog = new() {
+            Title = "Improt Argument",
+            Content = new TextBox {
+                Watermark = "Argument (File, Folder, URL, Mod ID)"
+            },
+            PrimaryButtonText = "Import",
+            SecondaryButtonText = "Cancel",
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
+            return;
+        }
+
+        if (dialog.Content is TextBox tb && tb.Text is not null) {
+            await ModHelper.Import(tb.Text.Replace("\"", string.Empty));
+        }
+    }
+
+    [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge", IsSeparator = true)]
+    public static async Task MergeMods()
     {
         await ModManager.Shared.Merge();
     }

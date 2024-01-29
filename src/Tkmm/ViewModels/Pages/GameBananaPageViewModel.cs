@@ -85,15 +85,22 @@ public partial class GameBananaPageViewModel : ObservableObject
 
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
             if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
-                AppStatus.Set("Installing", "fa-solid fa-download", isWorkingStatus: true);
+                AppStatus.Set($"Installing '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
 
-                await Task.Run(async () => {
-                    ModManager.Shared.Mods.Add(
-                        await mod.Full.FromFile(file)
-                    );
-                });
+                try {
+                    await Task.Run(async () => {
+                        ModManager.Shared.Mods.Add(
+                            await mod.Full.FromFile(file)
+                        );
+                    });
 
-                AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+                    AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+                }
+                catch (Exception ex) {
+                    AppLog.Log(ex);
+                    App.ToastError(ex);
+                    AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
+                }
             }
         }
     }
