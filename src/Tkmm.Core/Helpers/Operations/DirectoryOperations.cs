@@ -2,6 +2,8 @@
 
 public static class DirectoryOperations
 {
+    private const string ZS_EXT = ".zs";
+    
     public static void CopyDirectory(string src, string dst, bool overwrite = false)
     {
         Directory.CreateDirectory(dst);
@@ -19,10 +21,14 @@ public static class DirectoryOperations
 
     public static void CopyDirectory(string src, string dst, List<string> excludeFiles, List<string> excludeFolders, bool overwrite = false)
     {
-        Directory.CreateDirectory(dst);
-
         foreach (var file in Directory.EnumerateFiles(src)) {
-            if (!excludeFiles.Contains(Path.GetExtension(file))) {
+            string ext = Path.GetExtension(file);
+            if (ext == ZS_EXT) {
+                ext = Path.GetExtension(file[..^3]);
+            }
+
+            if (!excludeFiles.Contains(ext)) {
+                Directory.CreateDirectory(dst);
                 File.Copy(file, Path.Combine(dst, Path.GetFileName(file)), overwrite);
             }
         }
@@ -31,7 +37,7 @@ public static class DirectoryOperations
             string folderName = Path.GetFileName(folder);
             if (!excludeFolders.Contains(folderName)) {
                 string dstFolder = Path.Combine(dst, folderName);
-                CopyDirectory(folder, dstFolder, overwrite);
+                CopyDirectory(folder, dstFolder, excludeFiles, excludeFolders, overwrite);
             }
         }
     }

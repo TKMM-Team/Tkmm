@@ -60,8 +60,6 @@ public class ToolHelper
 
         ExcludeFiles = exclude
             .Where(x => x.StartsWith('.'))
-            .Select<string, string[]>(x => [x, $"{x}.zs"])
-            .Aggregate<IEnumerable<string>>((x, y) => x.Concat(y))
             .ToList();
     }
 
