@@ -1,6 +1,6 @@
 ﻿using Tkmm.Core.Models.Mods;
 
-namespace Tkmm.Core.Components.ModParsers;
+namespace Tkmm.Core.Services;
 
 public interface IModParser
 {

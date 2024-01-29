@@ -1,4 +1,6 @@
-﻿namespace Tkmm.Core.Components.ModParsers;
+﻿using Tkmm.Core.Components.ModParsers;
+
+namespace Tkmm.Core.Services;
 
 public static class ModParserService
 {
