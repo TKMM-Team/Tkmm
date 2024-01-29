@@ -10,18 +10,13 @@ namespace Tkmm.Core.Components;
 public class PackageBuilder
 {
     public const string METADATA = "info.json";
-    public const string THUMBNAIL = "thumbnail";
+    public const string THUMBNAIL = ".thumbnail";
     public const string OPTIONS = "options";
 
     private const string CHECK_ICON = "fa-solid fa-circle-check";
     private const string METADATA_ICON = "fa-regular fa-file-code";
     private const string COPY_ICON = "fa-solid fa-object-group";
     private const string PACKAGE_ICON = "fa-solid fa-boxes-packing";
-
-    private static readonly string[] _fileSystemFolders = [
-        ModManager.ROMFS,
-        ModManager.EXEFS
-    ];
 
     public static void CreateMetaData<T>(T item, string outputFolder) where T : IModItem
     {
@@ -94,7 +89,7 @@ public class PackageBuilder
             // General
             Task.Run(() => {
                 AppStatus.Set("Copying file-system folders", COPY_ICON);
-                foreach (var folder in _fileSystemFolders) {
+                foreach (var folder in ModManager.FileSystemFolders) {
                     string inputFsFolder = Path.Combine(item.SourceFolder, folder);
 
                     if (Directory.Exists(inputFsFolder)) {

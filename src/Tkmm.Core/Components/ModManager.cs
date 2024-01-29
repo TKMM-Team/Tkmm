@@ -20,15 +20,15 @@ public partial class ModManager : ObservableObject
 
     public static readonly string ModsPath = Path.Combine(Config.Shared.StorageFolder, "mods");
 
-    private static readonly string[] _excludedExtensions = [
-        ".rsizetable.zs",
-        ".byml.zs",
-        ".bgyml",
-        ".pack.zs",
-        ".sarc.zs",
-        ".blarc.zs",
+    public static readonly string[] FileSystemFolders = [
+        ROMFS,
+        EXEFS
+    ];
+
+    private static List<string> ExcludeFiles => [
+        .. ToolHelper.ExcludeFiles,
         ".json",
-        "thumbnail",
+        ".thumbnail"
     ];
 
     private static readonly Lazy<ModManager> _shared = new(() => new());
@@ -97,10 +97,10 @@ public partial class ModManager : ObservableObject
             Trace.WriteLine("[Info] No mods to merge!");
         }
 
-        AppStatus.Set("Applying", "fa-solid fa-file-lines", isWorkingStatus: true);
+        AppStatus.Set("Applying", "fa-solid fa-file-lines");
         Apply();
 
-        AppStatus.Set("Merging", "fa-solid fa-code-merge", isWorkingStatus: true);
+        AppStatus.Set("Merging", "fa-solid fa-code-merge");
 
         if (Directory.Exists(Config.Shared.MergeOutput)) {
             Directory.Delete(Config.Shared.MergeOutput, true);
@@ -108,54 +108,34 @@ public partial class ModManager : ObservableObject
 
         Directory.CreateDirectory(Config.Shared.MergeOutput);
 
-        // 
-        // Copy loose files in order of priority
-        foreach (var mod in Mods.Reverse()) {
-            foreach (var file in Directory.EnumerateFiles(mod.SourceFolder, "*.*", SearchOption.AllDirectories)) {
-                if (_excludedExtensions.Any(file.EndsWith)) {
-                    continue;
-                }
+        Task[] tasks = [
+            Task.Run(CopyContents),
 
-                var destinationFile = Path.Combine(Config.Shared.MergeOutput, Path.GetRelativePath(mod.SourceFolder, file));
-                if (Path.GetDirectoryName(destinationFile) is string folder) {
-                    Directory.CreateDirectory(folder);
-                }
-
-                File.Copy(file, destinationFile, true);
-            }
-
-            string exefsPath = Path.Combine(mod.SourceFolder, EXEFS);
-            if (Directory.Exists(exefsPath)) {
-                DirectoryOperations.CopyDirectory(exefsPath, Path.Combine(Config.Shared.MergeOutput, EXEFS), true);
-            }
-        }
-
-        // 
-        // Merge Mals archives
-        await ToolHelper.Call(Tool.MalsMerger,
+            // Mals
+            ToolHelper.Call(Tool.MalsMerger,
                 "merge", string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
-                "--target", Config.Shared.GameLanguage,
-                Path.Combine(Config.Shared.MergeOutput, "romfs")
-            ).WaitForExitAsync();
+                Path.Combine(Config.Shared.MergeOutput, "romfs"),
+                "--target", Config.Shared.GameLanguage
+            ).WaitForExitAsync(),
 
-        // Merge Sarc and BYML
-        await ToolHelper.Call(Tool.SarcTool, [
+            // Sarc
+            ToolHelper.Call(Tool.SarcTool, [
                 "merge",
                 "--base", ModsPath,
                 "--mods", .. Mods.Select(x => x.Id.ToString()),
                 "--process", "All",
                 "--output", Path.Combine(Config.Shared.MergeOutput, "romfs")
-            ]).WaitForExitAsync();
+            ]).WaitForExitAsync(),
 
-        // Merge RSDB
-        string outputRsdbFolder = Path.Combine(Config.Shared.MergeOutput, "romfs", "RSDB");
-        Directory.CreateDirectory(outputRsdbFolder);
-
-        await ToolHelper.Call(Tool.RsdbMerger,
+            // RSDB
+            ToolHelper.Call(Tool.RsdbMerger,
                 "--apply-changelogs", string.Join('|', Mods.Select(x => x.SourceFolder)),
-                "--output", outputRsdbFolder,
+                "--output", Path.Combine(Config.Shared.MergeOutput, "romfs", "RSDB"),
                 "--version", TotkConfig.Shared.Version.ToString()
-            ).WaitForExitAsync();
+            ).WaitForExitAsync()
+        ];
+
+        await Task.WhenAll(tasks);
 
         // After merging, execute Restbl on the merged mod folder
         await ToolHelper.Call(Tool.RestblMerger,
@@ -168,5 +148,27 @@ public partial class ModManager : ObservableObject
 
         AppStatus.Set("Merge Completed", "fa-solid fa-list-check", isWorkingStatus: false, 1.5);
         Trace.WriteLine("[Info] Merge completed successfully");
+    }
+
+    private void CopyContents()
+    {
+        foreach (var mod in Mods.Reverse()) {
+            CopyContents(mod.SourceFolder);
+            foreach (var group in mod.OptionGroups.Reverse()) {
+                foreach (var option in group.Options) {
+                    CopyContents(option.SourceFolder);
+                }
+            }
+        }
+    }
+
+    private static void CopyContents(string sourceFolder)
+    {
+        foreach (var folder in FileSystemFolders) {
+            string srcFolder = Path.Combine(sourceFolder, folder);
+            if (Directory.Exists(srcFolder)) {
+                DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(Config.Shared.MergeOutput, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);
+            }
+        }
     }
 }
