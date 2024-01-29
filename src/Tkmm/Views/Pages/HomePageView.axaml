@@ -9,6 +9,7 @@
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:progRing="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -65,63 +66,83 @@
               Margin="25"
               ColumnDefinitions="*,Auto,0.5*"
               IsVisible="{Binding Mods.Count, Source={x:Static comp:ModManager.Shared}}"
-              RowDefinitions="Auto,*,Auto,0.7*,Auto">
-            <Grid Name="TitleGrid"
-                  Margin="0,0,0,15"
-                  ColumnDefinitions="*"
-                  RowDefinitions="Auto,Auto">
-                <TextBlock Grid.ColumnSpan="3"
-                           VerticalAlignment="Center"
-                           FontSize="18"
-                           FontWeight="Medium"
-                           Text="{Binding CurrentMod.Name}"
-                           TextTrimming="CharacterEllipsis"
-                           ToolTip.Tip="{Binding CurrentMod.Name}" />
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center"
-                               FontSize="14"
-                               Text="{Binding CurrentMod.Author, StringFormat='By {0} and'}" />
-                    <ui:HyperlinkButton Margin="3,0,0,0"
-                                        Padding="1"
-                                        Command="{Binding ShowContributorsCommand}"
-                                        Content="Contributors"
-                                        FontSize="12" />
-                </StackPanel>
-            </Grid>
-            <Grid Name="ContentGrid"
-                  Grid.Row="1"
-                  Margin="0,0,0,10">
-                <Border HorizontalAlignment="Left"
+              RowDefinitions="*,Auto">
+
+            <StackPanel Grid.RowSpan="2"
                         VerticalAlignment="Center"
-                        BoxShadow="2 2 30 1 #30000000"
-                        CornerRadius="5">
-                    <Border ClipToBounds="True" CornerRadius="5">
-                        <Image Source="{Binding CurrentMod.Thumbnail}" />
+                        IsVisible="{Binding !IsSelected}"
+                        Spacing="35">
+                <progRing:ProgressRing Width="100"
+                                       Height="100"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource SystemAccentColor}"
+                                       IsActive="True" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="16"
+                           FontWeight="Medium"
+                           Text="Loading Mods . . ." />
+            </StackPanel>
+
+            <Grid Grid.RowSpan="2"
+                  IsVisible="{Binding IsSelected}"
+                  RowDefinitions="Auto,*,Auto,0.7*,Auto">
+                <Grid Name="TitleGrid"
+                      Margin="0,0,0,15"
+                      ColumnDefinitions="*"
+                      RowDefinitions="Auto,Auto">
+                    <TextBlock Grid.ColumnSpan="3"
+                               VerticalAlignment="Center"
+                               FontSize="18"
+                               FontWeight="Medium"
+                               Text="{Binding CurrentMod.Name}"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip.Tip="{Binding CurrentMod.Name}" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="14"
+                                   Text="{Binding CurrentMod.Author, StringFormat='By {0} and'}" />
+                        <ui:HyperlinkButton Margin="3,0,0,0"
+                                            Padding="1"
+                                            Command="{Binding ShowContributorsCommand}"
+                                            Content="Contributors"
+                                            FontSize="12" />
+                    </StackPanel>
+                </Grid>
+                <Grid Name="ContentGrid"
+                      Grid.Row="1"
+                      Margin="0,0,0,10">
+                    <Border HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            BoxShadow="2 2 30 1 #30000000"
+                            CornerRadius="5">
+                        <Border ClipToBounds="True" CornerRadius="5">
+                            <Image Source="{Binding CurrentMod.Thumbnail}" />
+                        </Border>
                     </Border>
-                </Border>
+                </Grid>
+
+                <GridSplitter Grid.Row="2"
+                              Height="2"
+                              MinHeight="2"
+                              VerticalAlignment="Center"
+                              BorderThickness="0"
+                              CornerRadius="1" />
+
+                <Grid Grid.Row="2">
+                    <Viewbox Width="24" Height="24">
+                        <Grid>
+                            <pi:Icon Margin="0,0,0,16"
+                                     Foreground="{DynamicResource SystemAccentColor}"
+                                     Value="fa-solid fa-angle-up" />
+                            <pi:Icon Margin="0,18,0,0"
+                                     Foreground="{DynamicResource SystemAccentColor}"
+                                     Value="fa-solid fa-angle-down" />
+                        </Grid>
+                    </Viewbox>
+                </Grid>
+
+                <md:MarkdownScrollViewer Grid.Row="3" Markdown="{Binding CurrentMod.Description}" />
             </Grid>
-
-            <GridSplitter Grid.Row="2"
-                          Height="2"
-                          MinHeight="2"
-                          VerticalAlignment="Center"
-                          BorderThickness="0"
-                          CornerRadius="1" />
-
-            <Grid Grid.Row="2">
-                <Viewbox Width="24" Height="24">
-                    <Grid>
-                        <pi:Icon Margin="0,0,0,16"
-                                 Foreground="{DynamicResource SystemAccentColor}"
-                                 Value="fa-solid fa-angle-up" />
-                        <pi:Icon Margin="0,18,0,0"
-                                 Foreground="{DynamicResource SystemAccentColor}"
-                                 Value="fa-solid fa-angle-down" />
-                    </Grid>
-                </Viewbox>
-            </Grid>
-
-            <md:MarkdownScrollViewer Grid.Row="3" Markdown="{Binding CurrentMod.Description}" />
 
             <Border Grid.RowSpan="5"
                     Grid.Column="1"
@@ -132,7 +153,8 @@
 
             <Grid Name="ModListGrid"
                   Grid.RowSpan="4"
-                  Grid.Column="2">
+                  Grid.Column="2"
+                  IsEnabled="{Binding IsSelected}">
                 <ListBox ItemsSource="{Binding Mods, Source={x:Static comp:ModManager.Shared}}" SelectedItem="{Binding CurrentMod}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Mod}">
