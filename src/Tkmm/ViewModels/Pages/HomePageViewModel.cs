@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -13,6 +14,14 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class HomePageViewModel : ObservableObject
 {
+    private static readonly Bitmap _defaultThumbnail;
+
+    static HomePageViewModel()
+    {
+        using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/EmptyThumbnail.jpg"));
+        _defaultThumbnail = new Bitmap(stream);
+    }
+
     [ObservableProperty]
     private Mod? _currentMod;
 
@@ -154,6 +163,14 @@ public partial class HomePageViewModel : ObservableObject
                         """);
                 }
             }
+            else {
+                goto Default;
+            }
+
+            return;
         }
+
+    Default:
+        mod.Thumbnail = _defaultThumbnail;
     }
 }
