@@ -12,10 +12,6 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class PackagingPageViewModel : ObservableObject
 {
-    private static readonly JsonSerializerOptions _jsonOptions = new() {
-        WriteIndented = true
-    };
-
     [ObservableProperty]
     private string _exportPath = string.Empty;
 
