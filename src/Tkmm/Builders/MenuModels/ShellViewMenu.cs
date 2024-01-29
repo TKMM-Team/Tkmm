@@ -2,7 +2,6 @@
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
-using System.Diagnostics;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -52,7 +51,7 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Check for Update", "Help", "Ctrl + I", "fa-solid fa-cloud-arrow-up")]
+    [Menu("Check for Update", "Help", "Ctrl + U", "fa-solid fa-cloud-arrow-up")]
     public static async Task CheckForUpdate()
     {
         ContentDialog dialog = new() {
@@ -64,7 +63,7 @@ public class ShellViewMenu
         await dialog.ShowAsync();
     }
 
-    [Menu("Download Dependencies", "Help", "Ctrl + Shift + I", "fa-solid fa-screwdriver-wrench")]
+    [Menu("Download Dependencies", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
     public static async Task DownloadDependencies()
     {
         await ToolHelper.DownloadDependencies();
