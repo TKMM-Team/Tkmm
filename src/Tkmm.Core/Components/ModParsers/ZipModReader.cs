@@ -4,7 +4,7 @@ using Tkmm.Core.Services;
 
 namespace Tkmm.Core.Components.ModParsers;
 
-public class ZipModParser : IModParser
+public class ZipModReader : IModReader
 {
     private static readonly string[] _validFolders = [
         ModManager.ROMFS,

@@ -65,7 +65,7 @@ public partial class Mod : ObservableObject, IModItem
 
     public static Mod FromFile(Stream input, string file)
     {
-        if (ModParserService.GetParser(file) is IModParser parser) {
+        if (ModReaderProviderService.GetReader(file) is IModReader parser) {
             return parser.Parse(input, file);
         }
 

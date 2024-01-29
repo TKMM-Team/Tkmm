@@ -5,7 +5,7 @@ using Tkmm.Core.Services;
 
 namespace Tkmm.Core.Components.ModParsers;
 
-public class TkclModParser : IModParser
+public class TkclModReader : IModReader
 {
     public bool IsValid(string file)
     {
