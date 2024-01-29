@@ -11,6 +11,10 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Assets\Background-F.png" />
+  </ItemGroup>
     
   <ItemGroup>
     <AvaloniaResource Include="..\Tkmm.Desktop\icon.ico" Link="Assets\icon.ico" />

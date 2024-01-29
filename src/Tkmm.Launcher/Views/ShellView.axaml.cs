@@ -15,6 +15,7 @@ public partial class ShellView : AppWindow
         ("Background-C.jpg", "#58b98a"),
         ("Background-D.jpg", "#bb9b45"),
         ("Background-E.jpg", "#a21e16"),
+        ("Background-F.png", "#c71916"),
     ];
 
     private static readonly List<(Bitmap Image, IBrush Color)> _backgrounds = [];
