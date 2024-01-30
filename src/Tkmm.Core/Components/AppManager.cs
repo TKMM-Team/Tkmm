@@ -96,6 +96,12 @@ public static class AppManager
 
     public static async Task Update()
     {
+        foreach (var process in Process.GetProcessesByName("Tkmm.Desktop"))
+        {
+            process.Kill();
+            Console.WriteLine("Process terminated: " + process.ProcessName);
+        }
+
         AppStatus.Set("Downloading app", "fa-solid fa-download");
 
         (Stream stream, string tag) = await GitHubOperations

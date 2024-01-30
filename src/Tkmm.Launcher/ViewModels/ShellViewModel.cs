@@ -39,6 +39,7 @@ public partial class ShellViewModel : ObservableObject
         if (PrimaryText is INSTALL or UPDATE) {
             if (OperatingSystem.IsWindows()) {
                 _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
+
             }
 
             await Task.Run(async () => {
