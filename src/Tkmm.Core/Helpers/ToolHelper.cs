@@ -105,14 +105,18 @@ public class ToolHelper
 
         double inc = 70 / Deps.Count;
 
+        List<Task> tasks = [];
+
         Directory.CreateDirectory(_appsDir);
         foreach ((_, var dep) in Deps) {
-            AppStatus.Set($"Downloading '{dep.Owner}/{dep.Repo}", "fa-solid fa-download", isWorkingStatus: true);
-            await dep.Download();
-
-            updateProgress?.Invoke(inc);
+            tasks.Add(Task.Run(async () => {
+                AppStatus.Set($"Downloading '{dep.Owner}/{dep.Repo}", "fa-solid fa-download", isWorkingStatus: true);
+                await dep.Download();
+                updateProgress?.Invoke(inc);
+            }));
         }
 
+        await Task.WhenAll(tasks);
         AppStatus.Set("Dependencies restored!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 }
