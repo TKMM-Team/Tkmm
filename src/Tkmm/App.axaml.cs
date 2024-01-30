@@ -113,6 +113,8 @@ public partial class App : Application
 
     public static void ToastError(Exception ex)
     {
+        AppLog.Log(ex);
+
         Dispatcher.UIThread.Invoke(() => {
             _notificationManager?.Show(new Notification(
                 ex.GetType().Name, ex.Message, NotificationType.Error));

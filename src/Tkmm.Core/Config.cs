@@ -6,8 +6,11 @@ namespace Tkmm.Core;
 
 public partial class Config : ConfigModule<Config>
 {
+    public static string DocumentsFolder { get; }
+        = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TotK Mod Manager");
+
     private static readonly string _defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm");
-    private static readonly string _defaultMergedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TotK Mod Manager", "Merged Output");
+    private static readonly string _defaultMergedPath = Path.Combine(DocumentsFolder, "TotK Mod Manager", "Merged Output");
 
     public override string Name { get; } = "tkmm";
 
