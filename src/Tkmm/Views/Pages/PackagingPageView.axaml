@@ -168,9 +168,17 @@
                     Height="30"
                     Margin="15,0,0,0"
                     Padding="0"
-                    Command="{Binding ExportInfoCommand}"
-                    ToolTip.Tip="Exports the mod info as an info.json file">
+                    Command="{Binding ExportMetadataCommand}"
+                    ToolTip.Tip="Exports the metadata to a mod folder">
                 <pi:Icon Value="fa-regular fa-folder-open" />
+            </Button>
+            <Button Width="30"
+                    Height="30"
+                    Margin="15,0,0,0"
+                    Padding="0"
+                    Command="{Binding WriteMetadataCommand}"
+                    ToolTip.Tip="Write the metadata to the input mod folder">
+                <pi:Icon Value="fa-regular fa-floppy-disk" />
             </Button>
         </StackPanel>
     </Grid>

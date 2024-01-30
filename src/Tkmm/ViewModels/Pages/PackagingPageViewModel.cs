@@ -12,6 +12,8 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class PackagingPageViewModel : ObservableObject
 {
+    private string? _previousSourceFolder = null;
+
     [ObservableProperty]
     private string _exportPath = string.Empty;
 
@@ -59,6 +61,7 @@ public partial class PackagingPageViewModel : ObservableObject
         string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
 
         await Task.Run(async () => {
+            CheckId();
             PackageBuilder.CreateMetaData(Mod, tmpOutput);
             await PackageBuilder.CopyContents(Mod, tmpOutput);
             PackageBuilder.Package(tmpOutput, ExportPath);
@@ -96,13 +99,26 @@ public partial class PackagingPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ExportInfo()
+    private async Task ExportMetadata()
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Export Mod Info");
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Export Mod Metadata");
         if (await dialog.ShowDialog() is string result) {
+            CheckId();
             PackageBuilder.CreateMetaData(Mod, result);
-            AppStatus.Set("Exported mod metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
+            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
+    }
+
+    [RelayCommand]
+    private Task WriteMetadata()
+    {
+        if (!string.IsNullOrEmpty(Mod.SourceFolder) && Directory.Exists(Mod.SourceFolder)) {
+            CheckId();
+            PackageBuilder.CreateMetaData(Mod, Mod.SourceFolder);
+            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
+        }
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -121,5 +137,14 @@ public partial class PackagingPageViewModel : ObservableObject
         Mod.SourceFolder = string.Empty;
         Mod.SourceFolder = store;
         return Task.CompletedTask;
+    }
+
+    private void CheckId()
+    {
+        if (_previousSourceFolder is null || Mod.SourceFolder != _previousSourceFolder) {
+            Console.WriteLine("SET GUID");
+            _previousSourceFolder = Mod.SourceFolder;
+            Mod.Id = Guid.NewGuid();
+        }
     }
 }
