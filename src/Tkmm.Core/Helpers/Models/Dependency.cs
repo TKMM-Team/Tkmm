@@ -28,7 +28,7 @@ public class Dependency
 
         if (Path.GetExtension(assetName) == ".zip") {
             using ZipArchive archive = new(stream);
-            archive.ExtractToDirectory(outputFolder);
+            archive.ExtractToDirectory(outputFolder, true);
             return;
         }
 
