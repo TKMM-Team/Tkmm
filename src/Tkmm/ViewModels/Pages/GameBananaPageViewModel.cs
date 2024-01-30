@@ -97,7 +97,6 @@ public partial class GameBananaPageViewModel : ObservableObject
                     AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
                 }
                 catch (Exception ex) {
-                    AppLog.Log(ex);
                     App.ToastError(ex);
                     AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
                 }

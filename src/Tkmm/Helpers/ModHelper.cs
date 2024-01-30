@@ -30,7 +30,6 @@ public class ModHelper
             return result;
         }
         catch (Exception ex) {
-            AppLog.Log(ex);
             App.ToastError(ex);
             AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
         }
