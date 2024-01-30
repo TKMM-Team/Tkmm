@@ -49,7 +49,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
 
     partial void OnGamePathChanged(string value)
     {
-        SetValidation(() => GamePath, value => {
+        Validate(() => GamePath, value => {
             return value is not null
                 && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"));
         });
