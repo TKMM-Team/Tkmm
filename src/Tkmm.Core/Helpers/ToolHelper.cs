@@ -74,7 +74,7 @@ public class ToolHelper
 
         AppStatus.Set($"Running '{tool.Humanize()}'", "fa-solid fa-microchip");
 
-        string absoluePath = Path.Combine(_appsDir, dependency.Files[Dependency.GetOSName()]);
+        string absoluePath = Path.Combine(_appsDir, dependency.Repo, dependency.Files[Dependency.GetOSName()]);
         AppLog.Log(absoluePath, LogLevel.Debug);
         AppLog.Log($"\"{string.Join("\" \"", args)}\"", LogLevel.Debug);
 

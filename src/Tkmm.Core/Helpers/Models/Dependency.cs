@@ -22,17 +22,19 @@ public class Dependency
         string osName = GetOSName();
 
         string assetName = Assets[osName];
-        Stream? stream = await GitHubOperations.GetRelease(Owner, Repo, assetName, Tag);
+        using Stream stream = await GitHubOperations.GetRelease(Owner, Repo, assetName, Tag);
 
-        string fileName = Files[osName];
+        string outputFolder = Path.Combine(Config.Shared.StaticStorageFolder, "apps", Repo);
+
         if (Path.GetExtension(assetName) == ".zip") {
-            ZipArchive archive = new(stream);
-            stream = archive.Entries.Where(x => x.Name == fileName).FirstOrDefault()?.Open();
+            using ZipArchive archive = new(stream);
+            archive.ExtractToDirectory(outputFolder);
+            return;
         }
 
-        string outputFile = Path.Combine(Config.Shared.StaticStorageFolder, "apps", fileName);
+        Directory.CreateDirectory(outputFolder);
+        string outputFile = Path.Combine(outputFolder, Files[osName]);
         using FileStream fs = File.Create(outputFile);
-        stream?.CopyTo(fs);
-        stream?.Dispose();
+        stream.CopyTo(fs);
     }
 }
