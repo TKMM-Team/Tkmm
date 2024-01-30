@@ -50,17 +50,6 @@
                         </Border>
                     </Viewbox>
                 </Grid>
-                <Viewbox.Styles>
-                    <Style Selector="Path">
-                        <Setter Property="Transitions">
-                            <Setter.Value>
-                                <Transitions>
-                                    <BrushTransition Property="Fill" Duration="0:0:0.5" />
-                                </Transitions>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Viewbox.Styles>
             </Viewbox>
 
             <Menu Name="MainMenu" Grid.Column="1" />

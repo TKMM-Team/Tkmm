@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\Common\SplashScreenView.axaml.cs">
+      <DependentUpon>SplashScreenView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Pages\GameBananaPageView.axaml.cs">
       <DependentUpon>GameBananaPageView.axaml</DependentUpon>
     </Compile>
