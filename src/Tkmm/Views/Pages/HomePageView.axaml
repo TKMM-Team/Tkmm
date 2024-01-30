@@ -140,10 +140,16 @@
                 <ListBox ItemsSource="{Binding Mods, Source={x:Static comp:ModManager.Shared}}" SelectedItem="{Binding CurrentMod}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Mod}">
-                            <TextBlock Background="Transparent"
-                                       Text="{Binding Name}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip.Tip="{Binding Name}" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock VerticalAlignment="Center"
+                                           Background="Transparent"
+                                           Text="{Binding Name}"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip.Tip="{Binding Name}" />
+                                <CheckBox Grid.Column="1"
+                                          Margin="10,0,0,0"
+                                          IsChecked="{Binding IsEnabled}" />
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

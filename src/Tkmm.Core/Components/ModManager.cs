@@ -45,13 +45,15 @@ public partial class ModManager : ObservableObject
         }
 
         using FileStream fs = File.OpenRead(modList);
-        List<string> mods = JsonSerializer.Deserialize<List<string>>(fs)
+        Dictionary<string, bool> mods = JsonSerializer.Deserialize<Dictionary<string, bool>>(fs)
             ?? [];
 
-        foreach (string mod in mods) {
-            string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod);
+        foreach ((string modId, bool isEnabled) in mods) {
+            string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", modId);
             if (Directory.Exists(modFolder)) {
-                Mods.Add(FolderModReader.FromInternal(modFolder));
+                Mod mod = FolderModReader.FromInternal(modFolder);
+                mod.IsEnabled = isEnabled;
+                Mods.Add(mod);
             }
         }
     }
@@ -80,7 +82,7 @@ public partial class ModManager : ObservableObject
     {
         string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
         using FileStream fs = File.Create(modList);
-        JsonSerializer.Serialize(fs, Mods.Select(x => x.Id));
+        JsonSerializer.Serialize(fs, Mods.ToDictionary(x => x.Id, x => x.IsEnabled));
 
         AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
