@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Data;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
@@ -7,6 +8,7 @@ using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Helpers.Win32;
 using Tkmm.Helpers;
 
@@ -14,8 +16,55 @@ namespace Tkmm.Builders.MenuModels;
 
 public class ShellViewMenu
 {
-    [Menu("Exit", "File", "Alt + F4", "fa-solid fa-right-from-bracket")]
-    public static void File_Exit()
+    [Menu("Export to SD Card", "File", "Ctrl + E", "fa-solid fa-sd-card")]
+    public static async Task ExportToSdCard()
+    {
+        const string GAME_ID = "0100F2C0115B6000";
+
+        DriveInfo[] disks = DriveInfo.GetDrives()
+            .Where(drive => {
+                try {
+                    return drive.DriveType == DriveType.Removable && drive.DriveFormat == "FAT32";
+                }
+                catch {
+                    return false;
+                }
+            })
+            .ToArray();
+
+        if (disks.Length == 0) {
+            App.ToastError(new InvalidOperationException("""
+                No removable disks found!
+                """));
+
+            return;
+        }
+
+        ContentDialog dialog = new() {
+            Title = "Select SD Card",
+            Content = new ComboBox {
+                ItemsSource = disks,
+                SelectedIndex = 0,
+                DisplayMemberBinding = new Binding("VolumeLabel")
+            },
+            PrimaryButtonText = "Export",
+            SecondaryButtonText = "Cancel"
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary || dialog.Content is not ComboBox selector) {
+            return;
+        }
+
+        if (selector.SelectedItem is DriveInfo drive) {
+            await ModManager.Shared.Merge();
+
+            string output = Path.Combine(drive.Name, "atmosphere", "contents", GAME_ID);
+            DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output);
+        }
+    }
+
+    [Menu("Exit", "File", "Alt + F4", "fa-solid fa-right-from-bracket", IsSeparator = true)]
+    public static void Exit()
     {
         ModManager.Shared.Apply();
         Environment.Exit(0);
