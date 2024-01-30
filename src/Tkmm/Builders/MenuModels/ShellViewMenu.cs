@@ -177,6 +177,13 @@ public class ShellViewMenu
         await AssetHelper.Download();
     }
 
+    [Menu("Create Desktop Shortcuts", "Help", "Ctrl + Alt + L", "fa-solid fa-link")]
+    public static Task CreateDesktopShortcuts()
+    {
+        AppManager.CreateDesktopShortcuts();
+        return Task.CompletedTask;
+    }
+
     [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
     public static async Task About()
     {

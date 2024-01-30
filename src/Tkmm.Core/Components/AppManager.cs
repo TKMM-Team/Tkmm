@@ -9,6 +9,9 @@ namespace Tkmm.Core.Components;
 
 public static class AppManager
 {
+    private const string APP_NAME = "TKMM";
+    private const string LAUNCHER_NAME = "TKMM Launcher";
+
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
     private static readonly string _appPath = Path.Combine(_appFolder, "Tkmm.Desktop.exe");
     private static readonly string _appVersionFile = Path.Combine(Config.Shared.StaticStorageFolder, "version");
@@ -120,5 +123,19 @@ public static class AppManager
         archive.ExtractToDirectory(_launcherFolder, true);
 
         AppStatus.Set("Launcher updated!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+    }
+
+    public static void CreateDesktopShortcuts()
+    {
+        Shortcut.Create(APP_NAME, Location.Application, _appPath, "nxe");
+        Shortcut.Create(LAUNCHER_NAME, Location.Application, _launcherPath, "nxe");
+        Shortcut.Create(APP_NAME, Location.Desktop, _appPath, "nxe");
+    }
+
+    public static void DeleteDesktopShortcuts()
+    {
+        Shortcut.Remove(APP_NAME, Location.Application);
+        Shortcut.Remove(LAUNCHER_NAME, Location.Application);
+        Shortcut.Remove(APP_NAME, Location.Desktop);
     }
 }
