@@ -20,7 +20,6 @@ public enum Tool
 public class ToolHelper
 {
     private static readonly string _depsPath = Path.Combine(Config.Shared.StaticStorageFolder, "deps.json");
-    private static readonly string _assetsPath = Path.Combine(Config.Shared.StaticStorageFolder, "assets.json");
     private static readonly string _appsDir = Path.Combine(Config.Shared.StaticStorageFolder, "apps");
 
     public static Dictionary<Tool, Dependency> Deps { get; private set; } = [];
@@ -39,27 +38,10 @@ public class ToolHelper
             goto FillExcude;
         }
 
-        if (File.Exists(_assetsPath) && !forceRefresh)
-        {
-            using FileStream fs = File.OpenRead(_assetsPath);
-            Deps = JsonSerializer.Deserialize<Dictionary<Tool, Dependency>>(fs)
-                ?? throw new InvalidOperationException("""
-                    Could not parse assets, the JsonDeserializer returned null
-                    """);
-
-            goto FillExcude;
-        }
-
         byte[] data = await GitHubOperations.GetAsset("TKMM-Team", ".github", "deps.json");
         Deps = JsonSerializer.Deserialize<Dictionary<Tool, Dependency>>(data)
             ?? throw new InvalidOperationException("""
                 Could not parse deps, the JsonDeserializer returned null
-                """);
-
-        byte[] assetData = await GitHubOperations.GetAsset("TKMM-Team", ".github", "assets.json");
-        Deps = JsonSerializer.Deserialize<Dictionary<Tool, Dependency>>(data)
-            ?? throw new InvalidOperationException("""
-                Could not parse assets, the JsonDeserializer returned null
                 """);
 
         using (FileStream writer = File.Create(_depsPath)) {

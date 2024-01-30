@@ -45,6 +45,8 @@ public partial class ShellViewModel : ObservableObject
                 Progress = 10;
                 await AppManager.Update();
                 Progress = 20;
+                await AssetHelper.Download();
+                Progress = 30;
                 await ToolHelper.DownloadDependencies(UpdateProgress, forceRefresh: true);
                 Progress = 100;
             });

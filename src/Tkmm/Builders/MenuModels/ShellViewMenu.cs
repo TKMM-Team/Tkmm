@@ -125,6 +125,7 @@ public class ShellViewMenu
     public static async Task DownloadDependencies()
     {
         await ToolHelper.DownloadDependencies();
+        await AssetHelper.Download();
     }
 
     [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
