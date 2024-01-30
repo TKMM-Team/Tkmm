@@ -15,7 +15,7 @@ public class GithubAsset
     {
         byte[] data = await GitHubOperations.GetAsset(Owner, Repo, Asset);
         string outputFile = Path.GetFullPath(
-            Asset.Replace(LOCALAPPDATA_VAR, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
+            FilePath.Replace(LOCALAPPDATA_VAR, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
         );
 
         File.WriteAllBytes(outputFile, data);
