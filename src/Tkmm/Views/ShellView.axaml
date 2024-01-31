@@ -5,6 +5,7 @@
                xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:helper-models="using:Tkmm.Helpers.Models"
+               xmlns:helpers="using:Tkmm.Helpers"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -57,8 +58,11 @@
 
         <ui:NavigationView Name="MainNavigation"
                            Grid.Row="1"
+                           FooterMenuItemsSource="{Binding FooterPages, Source={x:Static helpers:PageManager.Shared}}"
+                           MenuItemsSource="{Binding Pages, Source={x:Static helpers:PageManager.Shared}}"
                            PaneDisplayMode="LeftCompact"
-                           PaneTitle="{x:Static app:App.ShortTitle}">
+                           PaneTitle="{x:Static app:App.ShortTitle}"
+                           SelectedItem="{Binding Current, Mode=TwoWay, Source={x:Static helpers:PageManager.Shared}}">
             <ui:NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="helper-models:PageModel">
                     <ui:NavigationViewItem Content="{Binding Title}"

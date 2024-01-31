@@ -4,7 +4,6 @@ using ConfigFactory.Models;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core;
 using Tkmm.Helpers;
-using Tkmm.Helpers.Models;
 using Tkmm.Models;
 
 namespace Tkmm.Views;
@@ -27,14 +26,9 @@ public partial class ShellView : AppWindow
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
-        MainNavigation.MenuItemsSource = PageManager.Shared.Pages;
-        MainNavigation.FooterMenuItemsSource = PageManager.Shared.FooterPages;
-        MainNavigation.SelectionChanged += (s, e) => {
-            if (e.IsSettingsSelected) {
-                MainNavigation.Content = _configPage;
-            }
-            else if (e.SelectedItem is PageModel page) {
-                MainNavigation.Content = page.Content;
+        PageManager.Shared.PropertyChanged += (s, e) => {
+            if (e.PropertyName == nameof(PageManager.Current)) {
+                MainNavigation.Content = PageManager.Shared.Current?.Content;
             }
         };
     }
