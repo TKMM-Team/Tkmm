@@ -6,11 +6,11 @@ namespace Tkmm.Core.Components.Mergers;
 
 public class MalsMergerShell : IMerger
 {
-    public Task Merge(IModItem[] mods)
+    public Task Merge(IModItem[] mods, string output)
     {
         return ToolHelper.Call(Tool.MalsMerger,
             "merge", string.Join('|', mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
-            Path.Combine(Config.Shared.MergeOutput, "romfs"),
+            Path.Combine(output, "romfs"),
             "--target", Config.Shared.GameLanguage
         ).WaitForExitAsync();
     }

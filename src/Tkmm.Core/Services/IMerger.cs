@@ -4,5 +4,5 @@ namespace Tkmm.Core.Services;
 
 public interface IMerger
 {
-    public Task Merge(IModItem[] mods);
+    public Task Merge(IModItem[] mods, string output);
 }

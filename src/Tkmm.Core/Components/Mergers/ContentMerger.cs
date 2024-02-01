@@ -14,15 +14,15 @@ public class ContentMerger : IMerger
         ".thumbnail"
     ];
 
-    public Task Merge(IModItem[] mods)
+    public Task Merge(IModItem[] mods, string output)
     {
         foreach (var item in mods) {
-            CopyContents(item.SourceFolder);
+            CopyContents(item.SourceFolder, output);
 
             if (item is Mod mod) {
                 foreach (var group in mod.OptionGroups.Reverse()) {
                     foreach (var option in group.Options.Reverse()) {
-                        CopyContents(option.SourceFolder);
+                        CopyContents(option.SourceFolder, output);
                     }
                 }
             }
@@ -31,12 +31,12 @@ public class ContentMerger : IMerger
         return Task.CompletedTask;
     }
 
-    private static void CopyContents(string sourceFolder)
+    private static void CopyContents(string sourceFolder, string output)
     {
         foreach (var folder in TotkConfig.FileSystemFolders) {
             string srcFolder = Path.Combine(sourceFolder, folder);
             if (Directory.Exists(srcFolder)) {
-                DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(Config.Shared.MergeOutput, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);
+                DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(output, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);
             }
         }
     }
