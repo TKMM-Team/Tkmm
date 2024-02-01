@@ -23,7 +23,9 @@ public class ModHelper
             AppStatus.Set($"Installing '{arg}'", "fa-solid fa-download", isWorkingStatus: true);
 
             Mod result = await Task.Run(async () => {
-                return await ModManager.Shared.Import(arg);
+                Mod mod = await Mod.FromPath(arg);
+                ProfileManager.Shared.Current.Mods.Add(mod);
+                return mod;
             });
 
             AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);

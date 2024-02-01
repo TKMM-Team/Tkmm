@@ -34,5 +34,6 @@
         <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml" />
         <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
         <StyleInclude Source="/Styles/MenuItem.axaml" />
+        <StyleInclude Source="/Styles/ListBoxStyles.axaml" />
     </Application.Styles>
 </Application>

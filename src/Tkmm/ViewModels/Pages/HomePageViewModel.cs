@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
 using Tkmm.Core.Components;
+using Tkmm.Core.Components.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
 
@@ -13,7 +14,7 @@ namespace Tkmm.ViewModels.Pages;
 public partial class HomePageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private Mod? _currentMod;
+    private ProfileMod? _current;
 
     [RelayCommand]
     private async Task ShowContributors()
@@ -22,7 +23,7 @@ public partial class HomePageViewModel : ObservableObject
             Title = "Contributors",
             Content = new TextBlock {
                 Text = $"""
-                {string.Join("\n", CurrentMod?.Contributors
+                {string.Join("\n", Current?.Mod.Contributors
                     .Select(x => $"{x.Name}: {string.Join(", ", x.Contributions)}") ?? [])}
                 """,
                 TextWrapping = TextWrapping.WrapWithOverflow
@@ -37,7 +38,7 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static async Task Merge()
     {
-        await Task.Run(ModManager.Shared.Merge);
+        await Task.Run(ProfileManager.Shared.Merge);
     }
 
     [RelayCommand]
@@ -57,59 +58,61 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private Task Remove()
     {
-        if (CurrentMod is null) {
+        if (Current is null) {
             return Task.CompletedTask;
         }
 
-        int removeIndex = ModManager.Shared.Mods.IndexOf(CurrentMod);
-        ModManager.Shared.Mods.RemoveAt(removeIndex);
+        int removeIndex = ProfileManager.Shared.Current.Mods.IndexOf(Current);
+        ProfileManager.Shared.Current.Mods.RemoveAt(removeIndex);
 
-        if (ModManager.Shared.Mods.Count == 0) {
+        if (ProfileManager.Shared.Current.Mods.Count == 0) {
             return Task.CompletedTask;
         }
 
-        while (removeIndex >= ModManager.Shared.Mods.Count) {
+        while (removeIndex >= ProfileManager.Shared.Current.Mods.Count) {
             removeIndex--;
         }
 
-        CurrentMod = ModManager.Shared.Mods[removeIndex];
+        Current = ProfileManager.Shared.Current.Mods[removeIndex];
         return Task.CompletedTask;
     }
 
     private void Move(int offset)
     {
-        if (CurrentMod is null) {
+        if (Current is null) {
             return;
         }
 
-        int currentIndex = ModManager.Shared.Mods.IndexOf(CurrentMod);
+        int currentIndex = ProfileManager.Shared.Current.Mods.IndexOf(Current);
         int newIndex = currentIndex + offset;
 
-        if (newIndex < 0 || newIndex >= ModManager.Shared.Mods.Count) {
+        if (newIndex < 0 || newIndex >= ProfileManager.Shared.Current.Mods.Count) {
             return;
         }
 
-        Mod store = ModManager.Shared.Mods[newIndex];
-        ModManager.Shared.Mods[newIndex] = CurrentMod;
-        ModManager.Shared.Mods[currentIndex] = store;
+        ProfileMod store = ProfileManager.Shared.Current.Mods[newIndex];
+        ProfileManager.Shared.Current.Mods[newIndex] = Current;
+        ProfileManager.Shared.Current.Mods[currentIndex] = store;
 
-        CurrentMod = ModManager.Shared.Mods[newIndex];
+        Current = ProfileManager.Shared.Current.Mods[newIndex];
     }
 
     public HomePageViewModel()
     {
-        ModManager.Shared.Mods.CollectionChanged += ModsUpdated;
-        CurrentMod = ModManager.Shared.Mods.FirstOrDefault();
+        ProfileManager.Shared.Current.Mods.CollectionChanged += ModsUpdated;
+        Current = ProfileManager.Shared.Current.Mods.FirstOrDefault();
     }
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is IList mods) {
-            foreach (Mod mod in mods) {
-                await ModHelper.ResolveThumbnail(mod);
+            foreach (ProfileMod profileMod in mods) {
+                if (profileMod.Mod is not null) {
+                    await ModHelper.ResolveThumbnail(profileMod.Mod);
 
-                if (!ModManager.Shared.Mods.Contains(mod)) {
-                    CurrentMod = mod;
+                    if (!ProfileManager.Shared.Current.Mods.Contains(profileMod)) {
+                        Current = profileMod;
+                    }
                 }
             }
         }

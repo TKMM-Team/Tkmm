@@ -25,14 +25,14 @@ public partial class HomePageView : UserControl
             foreach (var path in paths.Select(x => x.Path.LocalPath)) {
                 if (DataContext is HomePageViewModel homePage) {
                     if (await ModHelper.Import(path) is Mod mod) {
-                        homePage.CurrentMod = mod;
+                        homePage.Current = mod;
                     }
                 }
             }
         }
         else if (e.Data.GetText() is string arg && DataContext is HomePageViewModel homePage) {
             if (await ModHelper.Import(arg) is Mod mod) {
-                homePage.CurrentMod = mod;
+                homePage.Current = mod;
             }
         }
 

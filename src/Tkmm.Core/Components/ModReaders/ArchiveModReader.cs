@@ -3,14 +3,14 @@ using SharpCompress.Readers;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
-namespace Tkmm.Core.Components.ModParsers;
+namespace Tkmm.Core.Components.ModReaders;
 
 public class ArchiveModReader : IModReader
 {
     private static readonly string[] _folders = [
         PackageBuilder.OPTIONS,
-        ModManager.ROMFS,
-        ModManager.EXEFS
+        TotkConfig.ROMFS,
+        TotkConfig.EXEFS
     ];
 
     public bool IsValid(string file)
@@ -25,7 +25,7 @@ public class ArchiveModReader : IModReader
         using IReader reader = ReaderFactory.Open(input);
 
         Guid id = Guid.NewGuid();
-        string outputFolder = Path.Combine(ModManager.ModsPath, id.ToString());
+        string outputFolder = Path.Combine(ProfileManager.ModsFolder, id.ToString());
         string? root = null;
 
         while (reader.MoveToNextEntry()) {

@@ -1,108 +1,103 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.Json;
-using Tkmm.Core.Components.ModParsers;
+using Tkmm.Core.Components.Models;
+using Tkmm.Core.Components.ModReaders;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Components;
 
-/// <summary>
-/// This class will handle all of the
-/// operations regarding loading the mod list
-/// </summary>
-public partial class ModManager : ObservableObject
+public partial class ProfileManager : ObservableObject
 {
-    public const string ROMFS = "romfs";
-    public const string EXEFS = "exefs";
+    private static readonly string _profilesMetadata = Path.Combine(Config.Shared.StorageFolder, "profiles.json");
 
-    public static readonly string ModsPath = Path.Combine(Config.Shared.StorageFolder, "mods");
+    private static readonly Lazy<ProfileManager> _shared = new(() => new());
+    public static ProfileManager Shared => _shared.Value;
 
-    public static readonly string[] FileSystemFolders = [
-        ROMFS,
-        EXEFS
-    ];
-
-    private static List<string> ExcludeFiles => [
+    public static readonly string ModsFolder = Path.Combine(Config.Shared.StorageFolder, "mods");
+    public static List<string> ExcludeFiles => [
         .. ToolHelper.ExcludeFiles,
         ".json",
         ".thumbnail"
     ];
 
-    private static readonly Lazy<ModManager> _shared = new(() => new());
-    public static ModManager Shared => _shared.Value;
-
     [ObservableProperty]
-    private ObservableCollection<Mod> _mods = [];
+    private Profile _current;
 
-    public ModManager()
+    public ObservableCollection<Profile> Profiles { get; }
+    public ObservableCollection<Mod> Mods { get; } = [];
+
+    public ProfileManager()
     {
-        string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
-        if (!File.Exists(modList)) {
-            return;
-        }
-
-        using FileStream fs = File.OpenRead(modList);
-        Dictionary<string, bool> mods = JsonSerializer.Deserialize<Dictionary<string, bool>>(fs)
-            ?? [];
-
-        foreach ((string modId, bool isEnabled) in mods) {
-            string modFolder = Path.Combine(Config.Shared.StorageFolder, "mods", modId);
-            if (Directory.Exists(modFolder)) {
-                Mod mod = FolderModReader.FromInternal(modFolder);
-                mod.IsEnabled = isEnabled;
+        foreach (var modFolder in Directory.EnumerateDirectories(ModsFolder)) {
+            if (FolderModReader.FromInternal(modFolder) is Mod mod) {
                 Mods.Add(mod);
             }
         }
+
+        ProfileCollection? profileCollection = null;
+
+        if (File.Exists(_profilesMetadata)) {
+            using FileStream fs = File.OpenRead(_profilesMetadata);
+            profileCollection = JsonSerializer.Deserialize<ProfileCollection>(fs);
+        }
+
+        Profiles = profileCollection?.Profiles ?? [new Profile("Default")];
+        Current = Profiles[profileCollection?.CurrentIndex ?? 0];
+
+        Profiles.CollectionChanged += (s, e) => {
+            Apply();
+        };
+    }
+
+    [RelayCommand]
+    public void CreateNew()
+    {
+        Profile profile = new($"Profile {Profiles.Count + 1}");
+        Profiles.Add(profile);
+        Current = profile;
     }
 
     public static string GetModFolder(Mod mod)
     {
-        return Path.Combine(ModsPath, mod.Id.ToString());
+        return Path.Combine(ModsFolder, mod.Id.ToString());
     }
 
-    /// <summary>
-    /// Import a mod from a .tkcl file or folder
-    /// </summary>
-    /// <returns></returns>
-    public async Task<Mod> Import(string path)
+    public static string GetModFolder(Guid id)
     {
-        Mod mod = await Mod.FromPath(path);
-        Mods.Add(mod);
-        return mod;
+        return Path.Combine(ModsFolder, id.ToString());
     }
 
-    /// <summary>
-    /// Apply the load order and save the current profile
-    /// </summary>
-    /// <returns></returns>
     public void Apply()
     {
-        string modList = Path.Combine(Config.Shared.StorageFolder, "mods.json");
-        using FileStream fs = File.Create(modList);
-        JsonSerializer.Serialize(fs, Mods.ToDictionary(x => x.Id, x => x.IsEnabled));
+        using FileStream fs = File.Create(_profilesMetadata);
+        JsonSerializer.Serialize(fs, new ProfileCollection() {
+            CurrentIndex = Profiles.IndexOf(Current),
+            Profiles = Profiles
+        });
 
-        AppStatus.Set("Saved mods profile!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+        AppStatus.Set("Saved profiles!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
-    /// <summary>
-    /// Merge all mods :D
-    /// </summary>
-    /// <returns></returns>
     public async Task Merge()
     {
+        Mod[] mods = Current.Mods
+            .Where(x => x.IsEnabled && x.Mod is not null)
+            .Select(x => x.Mod!)
+            .Reverse()
+            .ToArray();
+
         // If there are no mods, skip merging
-        if (Mods.Count <= 0) {
+        if (mods.Length <= 0) {
             AppStatus.Set("Nothing to Merge", "fa-solid fa-code-merge", isWorkingStatus: false, temporaryStatusTime: 1.5);
-            Trace.WriteLine("[Info] No mods to merge!");
+            AppLog.Log("No mods to merge!", LogLevel.Info);
+            return;
         }
 
-        AppStatus.Set("Applying", "fa-solid fa-file-lines");
-        Apply();
-
-        AppStatus.Set("Merging", "fa-solid fa-code-merge");
+        AppStatus.Set($"Merging '{Current.Name}'", "fa-solid fa-code-merge");
 
         if (Directory.Exists(Config.Shared.MergeOutput)) {
             Directory.Delete(Config.Shared.MergeOutput, true);
@@ -115,7 +110,7 @@ public partial class ModManager : ObservableObject
 
             // Mals
             ToolHelper.Call(Tool.MalsMerger,
-                "merge", string.Join('|', Mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
+                "merge", string.Join('|', mods.Select(x => Path.Combine(x.SourceFolder, "romfs"))),
                 Path.Combine(Config.Shared.MergeOutput, "romfs"),
                 "--target", Config.Shared.GameLanguage
             ).WaitForExitAsync(),
@@ -123,15 +118,15 @@ public partial class ModManager : ObservableObject
             // Sarc
             ToolHelper.Call(Tool.SarcTool, [
                 "merge",
-                "--base", ModsPath,
-                "--mods", .. Mods.Select(x => x.Id.ToString()),
+                "--base", ModsFolder,
+                "--mods", .. mods.Select(x => x.Id.ToString()),
                 "--process", "All",
                 "--output", Path.Combine(Config.Shared.MergeOutput, "romfs")
             ]).WaitForExitAsync(),
 
             // RSDB
             ToolHelper.Call(Tool.RsdbMerger,
-                "--apply-changelogs", string.Join('|', Mods.Select(x => x.SourceFolder)),
+                "--apply-changelogs", string.Join('|', mods.Select(x => x.SourceFolder)),
                 "--output", Path.Combine(Config.Shared.MergeOutput, "romfs", "RSDB"),
                 "--version", TotkConfig.Shared.Version.ToString()
             ).WaitForExitAsync()
@@ -149,7 +144,7 @@ public partial class ModManager : ObservableObject
             ).WaitForExitAsync();
 
         AppStatus.Set("Merge Completed", "fa-solid fa-list-check", isWorkingStatus: false, 1.5);
-        Trace.WriteLine("[Info] Merge completed successfully");
+        AppLog.Log("Merge completed successfully", LogLevel.Info);
     }
 
     private void CopyContents()
@@ -166,7 +161,7 @@ public partial class ModManager : ObservableObject
 
     private static void CopyContents(string sourceFolder)
     {
-        foreach (var folder in FileSystemFolders) {
+        foreach (var folder in TotkConfig.FileSystemFolders) {
             string srcFolder = Path.Combine(sourceFolder, folder);
             if (Directory.Exists(srcFolder)) {
                 DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(Config.Shared.MergeOutput, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);

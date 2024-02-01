@@ -89,7 +89,7 @@ public class PackageBuilder
             // General
             Task.Run(() => {
                 AppStatus.Set("Copying file-system folders", COPY_ICON);
-                foreach (var folder in ModManager.FileSystemFolders) {
+                foreach (var folder in TotkConfig.FileSystemFolders) {
                     string inputFsFolder = Path.Combine(item.SourceFolder, folder);
 
                     if (Directory.Exists(inputFsFolder)) {

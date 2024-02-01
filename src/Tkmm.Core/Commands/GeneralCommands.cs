@@ -9,6 +9,6 @@ public class GeneralCommands
     [Command("merge", Description = "Merge the mods into an output folder")]
     public async Task Merge([Option("output", ['o'])] string? output)
     {
-        await ModManager.Shared.Merge();
+        await ProfileManager.Shared.Merge();
     }
 }

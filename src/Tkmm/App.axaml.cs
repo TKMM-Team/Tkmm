@@ -54,7 +54,7 @@ public partial class App : Application
             };
 
             shellView.Closed += (s, e) => {
-                ModManager.Shared.Apply();
+                ProfileManager.Shared.Apply();
                 Config.Shared.Save();
             };
 
@@ -80,6 +80,7 @@ public partial class App : Application
             };
 
             PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home", isDefault: true);
+            PageManager.Shared.Register(Page.Profiles, "Profiles", new ProfilesPageView(), Symbol.OtherUser, "Manage mod profiles");
             PageManager.Shared.Register(Page.Tools, "TKCL Packager", new PackagingPageView(), Symbol.CodeHTML, "Mod developer tools");
             PageManager.Shared.Register(Page.ShopParam, "ShopParam Overflow Editor", new ShopParamPageView(), Symbol.Sort, "ShopParam overflow ordering tools");
             PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");

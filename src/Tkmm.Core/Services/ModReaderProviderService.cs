@@ -1,4 +1,4 @@
-﻿using Tkmm.Core.Components.ModParsers;
+﻿using Tkmm.Core.Components.ModReaders;
 
 namespace Tkmm.Core.Services;
 

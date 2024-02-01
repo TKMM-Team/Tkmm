@@ -7,6 +7,14 @@ namespace Tkmm.Core;
 
 public partial class TotkConfig : ConfigModule<TotkConfig>
 {
+    public const string ROMFS = "romfs";
+    public const string EXEFS = "exefs";
+
+    public static readonly string[] FileSystemFolders = [
+        ROMFS,
+        EXEFS
+    ];
+
     public override string LocalPath
         => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Totk", "config.json");
 

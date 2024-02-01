@@ -2,7 +2,7 @@
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
-namespace Tkmm.Core.Components.ModParsers;
+namespace Tkmm.Core.Components.ModReaders;
 
 public class GameBananaModReader : IModReader
 {

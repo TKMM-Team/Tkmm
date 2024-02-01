@@ -41,10 +41,6 @@ public partial class Mod : ObservableObject, IModItem
 
     [ObservableProperty]
     [property: JsonIgnore]
-    private bool _isEnabled = true;
-
-    [ObservableProperty]
-    [property: JsonIgnore]
     private string _sourceFolder = string.Empty;
 
     [JsonIgnore]

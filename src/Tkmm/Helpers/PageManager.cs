@@ -9,6 +9,7 @@ namespace Tkmm.Helpers;
 public enum Page
 {
     Home,
+    Profiles,
     Tools,
     ShopParam,
     Mods,
