@@ -1,5 +1,5 @@
 ﻿using Cocona;
-using Tkmm.Core.Components;
+using Tkmm.Core.Services;
 
 namespace Tkmm.Core.Commands;
 
@@ -9,6 +9,6 @@ public class GeneralCommands
     [Command("merge", Description = "Merge the mods into an output folder")]
     public async Task Merge([Option("output", ['o'])] string? output)
     {
-        await ProfileManager.Shared.Merge();
+        await MergerService.Merge();
     }
 }

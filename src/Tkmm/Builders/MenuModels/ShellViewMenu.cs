@@ -10,6 +10,7 @@ using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Helpers.Win32;
+using Tkmm.Core.Services;
 using Tkmm.Helpers;
 
 namespace Tkmm.Builders.MenuModels;
@@ -56,7 +57,7 @@ public class ShellViewMenu
         }
 
         if (selector.SelectedItem is DriveInfo drive) {
-            await ProfileManager.Shared.Merge();
+            await MergerService.Merge();
 
             string output = Path.Combine(drive.Name, "atmosphere", "contents", GAME_ID);
             DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output);
@@ -120,7 +121,7 @@ public class ShellViewMenu
     [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge", IsSeparator = true)]
     public static async Task MergeMods()
     {
-        await ProfileManager.Shared.Merge();
+        await MergerService.Merge();
     }
 
     [Menu("Show/Hide Console", "View", "Ctrl + F11", "fa-solid fa-terminal")]

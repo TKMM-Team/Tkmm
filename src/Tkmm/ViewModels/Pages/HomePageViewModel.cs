@@ -7,6 +7,7 @@ using System.Collections;
 using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Models.Mods;
+using Tkmm.Core.Services;
 using Tkmm.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
@@ -38,7 +39,7 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static async Task Merge()
     {
-        await Task.Run(ProfileManager.Shared.Merge);
+        await MergerService.Merge();
     }
 
     [RelayCommand]
