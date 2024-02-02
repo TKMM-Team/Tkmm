@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics;
-using Tkmm.Core.Models;
 
 namespace Tkmm.Core;
 

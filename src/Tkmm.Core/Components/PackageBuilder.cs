@@ -43,7 +43,7 @@ public class PackageBuilder
                     CreateMetaData(option, optionOutputFolder);
                 }
             }
-            
+
             AppStatus.Set($"Metadata generated for mod '{item.Name}'", CHECK_ICON);
         }
     }

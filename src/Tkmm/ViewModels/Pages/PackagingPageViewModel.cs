@@ -54,8 +54,7 @@ public partial class PackagingPageViewModel : ObservableObject
             Mod.Name = Path.GetFileName(Mod.SourceFolder);
         }
 
-        if (string.IsNullOrEmpty(Mod.SourceFolder))
-        {
+        if (string.IsNullOrEmpty(Mod.SourceFolder)) {
             App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
 
             return;

@@ -10,10 +10,14 @@ public class SarcMergerShell : IMerger
     {
         return ToolHelper.Call(Tool.SarcTool, [
             "merge",
-            "--base", ProfileManager.ModsFolder,
-            "--mods", .. mods.Select(x => Path.GetRelativePath(ProfileManager.ModsFolder, x.SourceFolder)),
-            "--process", "All",
-            "--output", Path.Combine(output, "romfs")
+            "--base",
+            ProfileManager.ModsFolder,
+            "--mods",
+            .. mods.Select(x => Path.GetRelativePath(ProfileManager.ModsFolder, x.SourceFolder)),
+            "--process",
+            "All",
+            "--output",
+            Path.Combine(output, "romfs")
         ]).WaitForExitAsync();
     }
 }

@@ -9,13 +9,13 @@ namespace Tkmm.Core.Models
 
         [JsonPropertyName("NPC Name")]
         public string NPCName { get; set; } = string.Empty;
-        
+
         [JsonPropertyName("Location")]
         public string Location { get; set; } = string.Empty;
-        
+
         [JsonPropertyName("Required Quest")]
         public string RequiredQuest { get; set; } = string.Empty;
-        
+
         [JsonPropertyName("NPC ActorName")]
         public string NPCActorName { get; set; } = string.Empty;
 

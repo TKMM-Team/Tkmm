@@ -96,8 +96,7 @@ public static class AppManager
 
     public static async Task Update()
     {
-        foreach (var process in Process.GetProcessesByName("Tkmm.Desktop"))
-        {
+        foreach (var process in Process.GetProcessesByName("Tkmm.Desktop")) {
             process.Kill();
             Console.WriteLine("Process terminated: " + process.ProcessName);
         }

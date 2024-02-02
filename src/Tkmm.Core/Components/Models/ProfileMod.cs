@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Octokit;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Models.Mods;

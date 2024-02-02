@@ -28,7 +28,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
             *Required for merging!
             """,
         Category = "TotK")]
-    [property:  ConfigFactory.Core.Attributes.BrowserConfig(
+    [property: ConfigFactory.Core.Attributes.BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
@@ -37,11 +37,9 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     public static int GetVersion(string romfsFolder, int @default = 100)
     {
         string regionLangMask = Path.Combine(romfsFolder, "System", "RegionLangMask.txt");
-        if (File.Exists(regionLangMask))
-        {
+        if (File.Exists(regionLangMask)) {
             string[] lines = File.ReadAllLines(regionLangMask);
-            if (lines.Length >= 3 && int.TryParse(lines[2], out int value))
-            {
+            if (lines.Length >= 3 && int.TryParse(lines[2], out int value)) {
                 return value;
             }
         }

@@ -6,7 +6,6 @@ using FluentAvalonia.UI.Controls;
 using System.Collections;
 using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
-using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 using Tkmm.Helpers;
 
@@ -24,7 +23,7 @@ public partial class HomePageViewModel : ObservableObject
             Title = "Contributors",
             Content = new TextBlock {
                 Text = $"""
-                {string.Join("\n", Current?.Mod.Contributors
+                {string.Join("\n", Current?.Mod?.Contributors
                     .Select(x => $"{x.Name}: {string.Join(", ", x.Contributions)}") ?? [])}
                 """,
                 TextWrapping = TextWrapping.WrapWithOverflow
