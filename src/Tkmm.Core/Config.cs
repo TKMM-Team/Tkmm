@@ -6,6 +6,11 @@ namespace Tkmm.Core;
 
 public partial class Config : ConfigModule<Config>
 {
+    static Config()
+    {
+        Directory.CreateDirectory(DocumentsFolder);
+    }
+
     public static string DocumentsFolder { get; }
         = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TotK Mod Manager");
 
