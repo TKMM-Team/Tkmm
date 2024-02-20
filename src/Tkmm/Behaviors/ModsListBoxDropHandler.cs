@@ -19,7 +19,7 @@ public class ModsListBoxDropHandler : DropHandlerBase
                 int currentIndex = list.IndexOf(sourceContext);
                 int targetIndex = list.IndexOf(control.DataContext);
 
-                if (currentIndex != targetIndex) {
+                if (currentIndex != -1 && targetIndex != -1 && currentIndex != targetIndex) {
                     (list[currentIndex], list[targetIndex]) = (list[targetIndex], list[currentIndex]);
                     listBox.SelectedIndex = targetIndex;
                 }
