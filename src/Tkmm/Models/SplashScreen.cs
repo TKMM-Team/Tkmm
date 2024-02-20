@@ -18,7 +18,7 @@ public class SplashScreen : IApplicationSplashScreen
     {
         List<Task> tasks = [];
 
-        foreach (var mod in ModManager.Shared.Mods) {
+        foreach (var mod in ProfileManager.Shared.Mods) {
             tasks.Add(ModHelper.ResolveThumbnail(mod));
         }
 

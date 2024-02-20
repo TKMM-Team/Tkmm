@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
@@ -19,20 +20,28 @@ public partial class HomePageView : UserControl
         DropTarget.AddHandler(DragDrop.DropEvent, DragDropEvent);
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        // Re-initialize to set behaviors 
+        InitializeComponent();
+
+        base.OnAttachedToVisualTree(e);
+    }
+
     public async void DragDropEvent(object? sender, DragEventArgs e)
     {
         if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
             foreach (var path in paths.Select(x => x.Path.LocalPath)) {
                 if (DataContext is HomePageViewModel homePage) {
                     if (await ModHelper.Import(path) is Mod mod) {
-                        homePage.CurrentMod = mod;
+                        homePage.Current = mod;
                     }
                 }
             }
         }
         else if (e.Data.GetText() is string arg && DataContext is HomePageViewModel homePage) {
             if (await ModHelper.Import(arg) is Mod mod) {
-                homePage.CurrentMod = mod;
+                homePage.Current = mod;
             }
         }
 

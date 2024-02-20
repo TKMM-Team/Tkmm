@@ -2,14 +2,14 @@
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
-namespace Tkmm.Core.Components.ModParsers;
+namespace Tkmm.Core.Components.ModReaders;
 
 public class FolderModReader : IModReader
 {
     public bool IsValid(string path)
     {
         return Directory.Exists(path) && (
-            Directory.Exists(Path.Combine(path, ModManager.ROMFS)) || Directory.Exists(Path.Combine(path, ModManager.EXEFS))
+            Directory.Exists(Path.Combine(path, TotkConfig.ROMFS)) || Directory.Exists(Path.Combine(path, TotkConfig.EXEFS))
         );
     }
 
@@ -28,8 +28,8 @@ public class FolderModReader : IModReader
             SourceFolder = path
         };
 
-        if (Path.GetFullPath(ModManager.ModsPath) != Path.GetDirectoryName(path)) {
-            string output = ModManager.GetModFolder(mod);
+        if (Path.GetFullPath(ProfileManager.ModsFolder) != Path.GetDirectoryName(path)) {
+            string output = ProfileManager.GetModFolder(mod);
             await PackageBuilder.CopyContents(mod, output);
             PackageBuilder.CreateMetaData(mod, output);
         }
@@ -37,7 +37,7 @@ public class FolderModReader : IModReader
         return mod;
     }
 
-    internal static Mod FromInternal(string path)
+    internal static Mod? FromInternal(string path)
     {
         Mod? mod = null;
         string metadataPath = Path.Combine(path, PackageBuilder.METADATA);
@@ -47,11 +47,10 @@ public class FolderModReader : IModReader
             mod = JsonSerializer.Deserialize<Mod>(fs);
         }
 
-        mod ??= new() {
-            Name = Path.GetFileName(path),
-        };
+        if (mod is not null) {
+            mod.SourceFolder = path;
+        }
 
-        mod.SourceFolder = path;
         return mod;
     }
 }

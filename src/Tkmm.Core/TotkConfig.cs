@@ -1,12 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
-using ConfigFactory.Core.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Tkmm.Core;
 
 public partial class TotkConfig : ConfigModule<TotkConfig>
 {
+    public const string ROMFS = "romfs";
+    public const string EXEFS = "exefs";
+
+    public static readonly string[] FileSystemFolders = [
+        ROMFS,
+        EXEFS
+    ];
+
     public override string LocalPath
         => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Totk", "config.json");
 
@@ -20,8 +27,8 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
             *Required for merging!
             """,
         Category = "TotK")]
-    [property:  ConfigFactory.Core.Attributes.BrowserConfig(
-        BrowserMode = BrowserMode.OpenFolder,
+    [property: ConfigFactory.Core.Attributes.BrowserConfig(
+        BrowserMode = ConfigFactory.Core.Attributes.BrowserMode.OpenFolder,
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
     private string _gamePath = string.Empty;
@@ -29,11 +36,9 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     public static int GetVersion(string romfsFolder, int @default = 100)
     {
         string regionLangMask = Path.Combine(romfsFolder, "System", "RegionLangMask.txt");
-        if (File.Exists(regionLangMask))
-        {
+        if (File.Exists(regionLangMask)) {
             string[] lines = File.ReadAllLines(regionLangMask);
-            if (lines.Length >= 3 && int.TryParse(lines[2], out int value))
-            {
+            if (lines.Length >= 3 && int.TryParse(lines[2], out int value)) {
                 return value;
             }
         }

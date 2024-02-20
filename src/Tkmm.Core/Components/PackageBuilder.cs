@@ -16,7 +16,6 @@ public class PackageBuilder
     private const string CHECK_ICON = "fa-solid fa-circle-check";
     private const string METADATA_ICON = "fa-regular fa-file-code";
     private const string COPY_ICON = "fa-solid fa-object-group";
-    private const string PACKAGE_ICON = "fa-solid fa-boxes-packing";
 
     public static void CreateMetaData<T>(T item, string outputFolder) where T : IModItem
     {
@@ -43,7 +42,7 @@ public class PackageBuilder
                     CreateMetaData(option, optionOutputFolder);
                 }
             }
-            
+
             AppStatus.Set($"Metadata generated for mod '{item.Name}'", CHECK_ICON);
         }
     }
@@ -89,7 +88,7 @@ public class PackageBuilder
             // General
             Task.Run(() => {
                 AppStatus.Set("Copying file-system folders", COPY_ICON);
-                foreach (var folder in ModManager.FileSystemFolders) {
+                foreach (var folder in TotkConfig.FileSystemFolders) {
                     string inputFsFolder = Path.Combine(item.SourceFolder, folder);
 
                     if (Directory.Exists(inputFsFolder)) {

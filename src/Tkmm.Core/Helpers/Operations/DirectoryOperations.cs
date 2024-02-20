@@ -3,7 +3,7 @@
 public static class DirectoryOperations
 {
     private const string ZS_EXT = ".zs";
-    
+
     public static void CopyDirectory(string src, string dst, bool overwrite = false)
     {
         Directory.CreateDirectory(dst);

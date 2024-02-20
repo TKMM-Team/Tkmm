@@ -4,14 +4,14 @@ using SharpCompress.Common;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
-namespace Tkmm.Core.Components.ModParsers;
+namespace Tkmm.Core.Components.ModReaders;
 
 public class SevenZipModReader : IModReader
 {
     private static readonly string[] _folders = [
         PackageBuilder.OPTIONS,
-        ModManager.ROMFS,
-        ModManager.EXEFS
+        TotkConfig.ROMFS,
+        TotkConfig.EXEFS
     ];
 
     public bool IsValid(string file)
@@ -29,7 +29,7 @@ public class SevenZipModReader : IModReader
         using SevenZipArchive archive = SevenZipArchive.Open(ms);
 
         Guid id = Guid.NewGuid();
-        string outputFolder = Path.Combine(ModManager.ModsPath, id.ToString());
+        string outputFolder = ProfileManager.GetModFolder(id);
         string? root = null;
 
         foreach (var entry in archive.Entries) {

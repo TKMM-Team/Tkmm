@@ -41,15 +41,15 @@ public partial class ShellView : AppWindow
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.Height = 0;
 
-        Background.Source = _backgrounds[^1].Image;
-        StaticBackground.Source = _backgrounds[0].Image;
+        BackgroundWallpaper.Source = _backgrounds[^1].Image;
+        StaticBackgroundWallpaper.Source = _backgrounds[0].Image;
 
         _timer = new(async (e) => {
             Dispatcher.UIThread.Invoke(() => {
                 for (int i = 0; i < _backgrounds.Count; i++) {
-                    if (Background.Source == _backgrounds[i].Image) {
+                    if (BackgroundWallpaper.Source == _backgrounds[i].Image) {
                         (var image, var color) = _backgrounds[++i >= _backgrounds.Count ? 0 : i];
-                        Background.Source = image;
+                        BackgroundWallpaper.Source = image;
                         IconBack.Fill = color;
                         IconFront.Fill = color;
                     }
@@ -60,8 +60,8 @@ public partial class ShellView : AppWindow
 
             Dispatcher.UIThread.Invoke(() => {
                 for (int i = 0; i < _backgrounds.Count; i++) {
-                    if (Background.Source == _backgrounds[i].Image) {
-                        StaticBackground.Source = _backgrounds[++i >= _backgrounds.Count ? 0 : i].Image;
+                    if (BackgroundWallpaper.Source == _backgrounds[i].Image) {
+                        StaticBackgroundWallpaper.Source = _backgrounds[++i >= _backgrounds.Count ? 0 : i].Image;
                     }
                 }
             });

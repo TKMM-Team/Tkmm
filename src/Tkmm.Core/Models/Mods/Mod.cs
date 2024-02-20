@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
+using Tkmm.Core.Components;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Services;
@@ -9,8 +11,6 @@ namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem
 {
-    private const string GB_MODS_URL = "https://gamebanana.com/mods/";
-
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();
 
@@ -38,10 +38,6 @@ public partial class Mod : ObservableObject, IModItem
 
     [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
-
-    [ObservableProperty]
-    [property: JsonIgnore]
-    private bool _isEnabled = true;
 
     [ObservableProperty]
     [property: JsonIgnore]
@@ -82,6 +78,31 @@ public partial class Mod : ObservableObject, IModItem
     {
         OptionGroups.CollectionChanged += (_, e)
             => ReferenceCollectionHelper.ResolveCollectionChanged(OptionGroupReferences, e);
+    }
+
+    [RelayCommand]
+    public void AddToCurrentProfile()
+    {
+        if (!ProfileManager.Shared.Current.Mods.Contains(this)) {
+            ProfileManager.Shared.Current.Mods.Add(this);
+        }
+    }
+
+    [RelayCommand]
+    public void Uninstall()
+    {
+        ProfileManager.Shared.Mods.Remove(this);
+        foreach (var profile in ProfileManager.Shared.Profiles) {
+            profile.Mods.Remove(this);
+        }
+
+        // Only delete the mod folder if
+        // it is in the system directory
+        if (Path.GetDirectoryName(SourceFolder) is string folder && folder == ProfileManager.ModsFolder) {
+            Directory.Delete(SourceFolder, true);
+        }
+
+        ProfileManager.Shared.Apply();
     }
 
     partial void OnSourceFolderChanged(string value)

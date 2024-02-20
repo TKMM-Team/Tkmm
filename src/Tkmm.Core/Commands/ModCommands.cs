@@ -11,17 +11,17 @@ public class ModCommands
     [Command("import", Aliases = ["add", "install"], Description = INSTALL)]
     public static async Task InstallMod([Argument] string path)
     {
-        ModManager.Shared.Mods.Add(
+        ProfileManager.Shared.Mods.Add(
             await Mod.FromPath(path)
         );
 
-        ModManager.Shared.Apply();
+        ProfileManager.Shared.Apply();
     }
 
     [Command("list", Aliases = ["ls"], Description = "Print information about each installed mod")]
     public static Task ListMods()
     {
-        foreach (var mod in ModManager.Shared.Mods) {
+        foreach (var mod in ProfileManager.Shared.Mods) {
             Console.WriteLine($"""
                 - {mod.Name} ({mod.Version}) by {mod.Author}
                 """);

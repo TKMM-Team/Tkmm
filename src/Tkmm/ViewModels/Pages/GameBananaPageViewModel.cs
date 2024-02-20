@@ -89,7 +89,7 @@ public partial class GameBananaPageViewModel : ObservableObject
 
                 try {
                     await Task.Run(async () => {
-                        ModManager.Shared.Mods.Add(
+                        ProfileManager.Shared.Mods.Add(
                             await mod.Full.FromFile(file)
                         );
                     });

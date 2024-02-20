@@ -20,12 +20,12 @@
                mc:Ignorable="d">
     <Grid Name="Client" Background="Transparent">
         <Grid>
-            <Image Name="StaticBackground"
+            <Image Name="StaticBackgroundWallpaper"
                    Opacity="1"
                    Source="/Assets/Background-A.jpg"
                    Stretch="UniformToFill" />
 
-            <Image Name="Background"
+            <Image Name="BackgroundWallpaper"
                    Opacity="1"
                    Stretch="UniformToFill">
                 <Image.Styles>
