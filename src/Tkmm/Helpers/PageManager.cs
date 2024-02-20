@@ -16,6 +16,7 @@ public enum Page
 
     About,
     Logs,
+    Settings,
 }
 
 public partial class PageManager : ObservableObject

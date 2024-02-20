@@ -6,7 +6,10 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using ConfigFactory;
+using ConfigFactory.Avalonia;
 using ConfigFactory.Avalonia.Helpers;
+using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using System.Reflection;
 using Tkmm.Builders;
@@ -78,6 +81,13 @@ public partial class App : Application
                 RequestedThemeVariant = theme == "Dark" ? ThemeVariant.Dark : ThemeVariant.Light;
             };
 
+            ConfigPage settingsPage = new();
+            if (settingsPage.DataContext is ConfigPageModel settingsModel) {
+                settingsModel.SecondaryButtonIsEnabled = false;
+                settingsModel.Append<Config>();
+                settingsModel.Append<TotkConfig>();
+            }
+
             PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home", isDefault: true);
             PageManager.Shared.Register(Page.Profiles, "Profiles", new ProfilesPageView(), Symbol.OtherUser, "Manage mod profiles");
             PageManager.Shared.Register(Page.Tools, "TKCL Packager", new PackagingPageView(), Symbol.CodeHTML, "Mod developer tools");
@@ -86,6 +96,7 @@ public partial class App : Application
 
             PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
+            PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true);
 
             Config.SetTheme(Config.Shared.Theme);
 
