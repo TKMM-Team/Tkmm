@@ -16,7 +16,6 @@ public class PackageBuilder
     private const string CHECK_ICON = "fa-solid fa-circle-check";
     private const string METADATA_ICON = "fa-regular fa-file-code";
     private const string COPY_ICON = "fa-solid fa-object-group";
-    private const string PACKAGE_ICON = "fa-solid fa-boxes-packing";
 
     public static void CreateMetaData<T>(T item, string outputFolder) where T : IModItem
     {
