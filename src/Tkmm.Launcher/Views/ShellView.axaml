@@ -1,10 +1,10 @@
 <uiw:AppWindow x:Class="Tkmm.Launcher.Views.ShellView"
                xmlns="https://github.com/avaloniaui"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-               xmlns:local="using:Tkmm.Launcher.ViewModels"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
+               xmlns:local="using:Tkmm.Launcher.ViewModels"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
                Title="TKMM Launcher"
@@ -166,11 +166,17 @@
                 </Button.Styles>
             </Button>
 
-            <Button Margin="15"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding ExitCommand}"
-                    Content="Exit" />
+            <StackPanel Margin="15"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal"
+                        Spacing="10">
+                <Button Command="{Binding ExitCommand}" Content="Exit" />
+                <Button Command="{Binding UninstallCommand}"
+                        Content="Uninstall"
+                        IsVisible="{Binding IsInstalled}" />
+            </StackPanel>
+
 
             <StackPanel Grid.Row="1"
                         Margin="15,0,15,15"

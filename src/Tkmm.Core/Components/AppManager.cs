@@ -10,6 +10,7 @@ namespace Tkmm.Core.Components;
 public static class AppManager
 {
     private const string APP_NAME = "TKMM";
+    private const string PROC_NAME = "tkmm";
     private const string LAUNCHER_NAME = "TKMM Launcher";
 
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
@@ -96,10 +97,8 @@ public static class AppManager
 
     public static async Task Update()
     {
-        foreach (var process in Process.GetProcessesByName("Tkmm.Desktop")) {
-            process.Kill();
-            Console.WriteLine("Process terminated: " + process.ProcessName);
-        }
+        AppStatus.Set("Closing open app instances", "fa-solid fa-download");
+        Kill();
 
         AppStatus.Set("Downloading app", "fa-solid fa-download");
 
@@ -130,6 +129,17 @@ public static class AppManager
         AppStatus.Set("Launcher updated!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
+    public static void Uninstall()
+    {
+        Kill();
+
+        if (Directory.Exists(_appFolder)) {
+            Directory.Delete(_appFolder, true);
+        }
+
+        DeleteDesktopShortcuts();
+    }
+
     public static void CreateDesktopShortcuts()
     {
         Shortcut.Create(APP_NAME, Location.Application, _appPath, "nxe");
@@ -142,5 +152,12 @@ public static class AppManager
         Shortcut.Remove(APP_NAME, Location.Application);
         Shortcut.Remove(LAUNCHER_NAME, Location.Application);
         Shortcut.Remove(APP_NAME, Location.Desktop);
+    }
+
+    private static void Kill()
+    {
+        foreach (var process in Process.GetProcessesByName(PROC_NAME)) {
+            process.Kill();
+        }
     }
 }

@@ -27,6 +27,9 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private bool _showStatusBar = true;
 
+    [ObservableProperty]
+    private bool _isInstalled = false;
+
     public ShellViewModel(ShellView view)
     {
         _view = view;
@@ -65,6 +68,12 @@ public partial class ShellViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private static async Task Uninstall()
+    {
+        await Task.Run(AppManager.Uninstall);
+    }
+
+    [RelayCommand]
     private static void Exit()
     {
         Environment.Exit(0);
@@ -77,10 +86,12 @@ public partial class ShellViewModel : ObservableObject
         }
         else if (await AppManager.HasUpdate()) {
             PrimaryText = UPDATE;
+            IsInstalled = true;
         }
         else {
             PrimaryText = LAUNCH;
             ShowStatusBar = false;
+            IsInstalled = true;
         }
     }
 
