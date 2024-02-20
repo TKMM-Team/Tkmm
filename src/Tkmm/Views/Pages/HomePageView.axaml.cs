@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
@@ -17,6 +18,14 @@ public partial class HomePageView : UserControl
         DropTarget.AddHandler(DragDrop.DragEnterEvent, DragEnterEvent);
         DropTarget.AddHandler(DragDrop.DragLeaveEvent, DragLeaveEvent);
         DropTarget.AddHandler(DragDrop.DropEvent, DragDropEvent);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        // Re-initialize to set behaviors 
+        InitializeComponent();
+
+        base.OnAttachedToVisualTree(e);
     }
 
     public async void DragDropEvent(object? sender, DragEventArgs e)
