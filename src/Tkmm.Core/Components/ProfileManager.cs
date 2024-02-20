@@ -5,7 +5,6 @@ using System.Text.Json;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Components.ModReaders;
 using Tkmm.Core.Models.Mods;
-using System.IO;
 
 namespace Tkmm.Core.Components;
 
@@ -24,12 +23,13 @@ public partial class ProfileManager : ObservableObject
     public ObservableCollection<Profile> Profiles { get; }
     public ObservableCollection<Mod> Mods { get; } = [];
 
+    static ProfileManager()
+    {
+        Directory.CreateDirectory(ModsFolder);
+    }
+
     public ProfileManager()
     {
-        // Ensure necessary directories exist
-        EnsureDirectoryExists(Config.Shared.StorageFolder);
-        EnsureDirectoryExists(ModsFolder);
-
         foreach (var modFolder in Directory.EnumerateDirectories(ModsFolder)) {
             if (FolderModReader.FromInternal(modFolder) is Mod mod) {
                 Mods.Add(mod);
@@ -57,14 +57,6 @@ public partial class ProfileManager : ObservableObject
         Profile profile = new($"Profile {Profiles.Count + 1}");
         Profiles.Add(profile);
         Current = profile;
-    }
-
-    private void EnsureDirectoryExists(string directoryPath)
-    {
-        if (!Directory.Exists(directoryPath))
-        {
-            Directory.CreateDirectory(directoryPath);
-        }
     }
 
     public static string GetModFolder(Mod mod)
