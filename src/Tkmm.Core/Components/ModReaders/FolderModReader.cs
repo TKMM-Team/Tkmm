@@ -24,14 +24,14 @@ public class FolderModReader : IModReader
         }
 
         mod ??= new() {
-            Name = Path.GetFileName(path),
-            SourceFolder = path
+            Name = Path.GetFileName(path)
         };
 
-        if (Path.GetFullPath(ProfileManager.ModsFolder) != Path.GetDirectoryName(path)) {
+        if (Path.GetDirectoryName(path) != ProfileManager.ModsFolder) {
             string output = ProfileManager.GetModFolder(mod);
-            await PackageBuilder.CopyContents(mod, output);
+            await PackageBuilder.CopyContents(mod, path, output);
             PackageBuilder.CreateMetaData(mod, output);
+            path = output;
         }
 
         return mod;
@@ -45,10 +45,6 @@ public class FolderModReader : IModReader
         if (File.Exists(metadataPath)) {
             using FileStream fs = File.OpenRead(metadataPath);
             mod = JsonSerializer.Deserialize<Mod>(fs);
-        }
-
-        if (mod is not null) {
-            mod.SourceFolder = path;
         }
 
         return mod;

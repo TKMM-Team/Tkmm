@@ -58,8 +58,7 @@ public class SevenZipModReader : IModReader
 
         Mod mod = new() {
             Id = id,
-            Name = Path.GetFileNameWithoutExtension(file),
-            SourceFolder = outputFolder,
+            Name = Path.GetFileNameWithoutExtension(file)
         };
 
         return Task.FromResult(mod);

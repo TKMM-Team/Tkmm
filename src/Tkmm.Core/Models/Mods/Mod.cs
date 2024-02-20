@@ -39,9 +39,7 @@ public partial class Mod : ObservableObject, IModItem
     [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
 
-    [ObservableProperty]
-    [property: JsonIgnore]
-    private string _sourceFolder = string.Empty;
+    public string SourceFolder => ProfileManager.GetModFolder(Id);
 
     [JsonIgnore]
     public ObservableCollection<ModOptionGroup> OptionGroups { get; } = [];
@@ -105,17 +103,5 @@ public partial class Mod : ObservableObject, IModItem
         }
 
         ProfileManager.Shared.Apply();
-    }
-
-    partial void OnSourceFolderChanged(string value)
-    {
-        OptionGroups.Clear();
-
-        string optionsPath = Path.Combine(value, "options");
-        if (Directory.Exists(optionsPath)) {
-            foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
-                OptionGroups.Add(ModOptionGroup.FromFolder(folder));
-            }
-        }
     }
 }

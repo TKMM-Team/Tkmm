@@ -53,8 +53,7 @@ public class ArchiveModReader : IModReader
 
         Mod mod = new() {
             Id = id,
-            Name = Path.GetFileNameWithoutExtension(file),
-            SourceFolder = outputFolder,
+            Name = Path.GetFileNameWithoutExtension(file)
         };
 
         PackageBuilder.CreateMetaData(mod, outputFolder);

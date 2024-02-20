@@ -20,6 +20,9 @@ public partial class PackagingPageViewModel : ObservableObject
     [ObservableProperty]
     private Mod _mod = new();
 
+    [ObservableProperty]
+    private string _sourceFolder = string.Empty;
+
     [RelayCommand]
     private async Task BrowseExportPath()
     {
@@ -34,7 +37,7 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Source Folder");
         if (await dialog.ShowDialog() is string result) {
-            Mod.SourceFolder = result;
+            SourceFolder = result;
         }
     }
 
@@ -50,18 +53,24 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task Create()
     {
-        if (string.IsNullOrEmpty(Mod.Name)) {
-            Mod.Name = Path.GetFileName(Mod.SourceFolder);
-        }
-
-        if (string.IsNullOrEmpty(Mod.SourceFolder)) {
+        if (string.IsNullOrEmpty(SourceFolder)) {
             App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
-
             return;
         }
 
+        if (string.IsNullOrEmpty(Mod.Name)) {
+            Mod.Name = Path.GetFileName(SourceFolder);
+        }
+
         if (string.IsNullOrEmpty(ExportPath)) {
-            ExportPath = Path.Combine(Path.GetDirectoryName(Mod.SourceFolder) ?? string.Empty, $"{Path.GetFileName(Mod.SourceFolder)}.tkcl");
+            ExportPath = Path.Combine(Path.GetDirectoryName(SourceFolder) ?? string.Empty, $"{Path.GetFileName(SourceFolder)}.tkcl");
+        }
+
+        if (!string.IsNullOrEmpty(Mod.ThumbnailUri)) {
+            string relativeThumbnailUri = Path.Combine(SourceFolder, Mod.ThumbnailUri);
+            if (File.Exists(relativeThumbnailUri)) {
+                Mod.ThumbnailUri = relativeThumbnailUri;
+            }
         }
 
         string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
@@ -69,7 +78,7 @@ public partial class PackagingPageViewModel : ObservableObject
         await Task.Run(async () => {
             CheckId();
             PackageBuilder.CreateMetaData(Mod, tmpOutput);
-            await PackageBuilder.CopyContents(Mod, tmpOutput);
+            await PackageBuilder.CopyContents(Mod, SourceFolder, tmpOutput);
             PackageBuilder.Package(tmpOutput, ExportPath);
 
             Directory.Delete(tmpOutput, true);
@@ -118,9 +127,9 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private Task WriteMetadata()
     {
-        if (!string.IsNullOrEmpty(Mod.SourceFolder) && Directory.Exists(Mod.SourceFolder)) {
+        if (!string.IsNullOrEmpty(SourceFolder) && Directory.Exists(SourceFolder)) {
             CheckId();
-            PackageBuilder.CreateMetaData(Mod, Mod.SourceFolder);
+            PackageBuilder.CreateMetaData(Mod, SourceFolder);
             AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
 
@@ -139,9 +148,9 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private Task RefreshOptions()
     {
-        string store = Mod.SourceFolder;
-        Mod.SourceFolder = string.Empty;
-        Mod.SourceFolder = store;
+        string store = SourceFolder;
+        SourceFolder = string.Empty;
+        SourceFolder = store;
         return Task.CompletedTask;
     }
 
@@ -151,6 +160,24 @@ public partial class PackagingPageViewModel : ObservableObject
             Console.WriteLine("SET GUID");
             _previousSourceFolder = Mod.SourceFolder;
             Mod.Id = Guid.NewGuid();
+        }
+    }
+
+    partial void OnSourceFolderChanged(string value)
+    {
+        string metadataPath = Path.Combine(value, PackageBuilder.METADATA);
+        if (File.Exists(metadataPath)) {
+            using FileStream fs = File.OpenRead(metadataPath);
+            Mod = JsonSerializer.Deserialize<Mod>(fs) ?? Mod;
+        }
+
+        Mod.OptionGroups.Clear();
+
+        string optionsPath = Path.Combine(value, "options");
+        if (Directory.Exists(optionsPath)) {
+            foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
+                Mod.OptionGroups.Add(ModOptionGroup.FromFolder(folder));
+            }
         }
     }
 }

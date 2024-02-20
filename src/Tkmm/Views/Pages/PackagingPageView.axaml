@@ -25,7 +25,7 @@
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="0,0,18,0" Spacing="5">
                 <Grid ColumnDefinitions="*,Auto">
-                    <TextBox Text="{Binding Mod.SourceFolder}" Watermark="Folder" />
+                    <TextBox Text="{Binding SourceFolder}" Watermark="Folder" />
                     <Button Grid.Column="1"
                             Margin="5,0,0,0"
                             Command="{Binding BrowseSourceFolderCommand}"

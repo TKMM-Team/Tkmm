@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
@@ -43,17 +44,17 @@ public class PackageBuilder
                 }
             }
 
-            AppStatus.Set($"Metadata generated for mod '{item.Name}'", CHECK_ICON);
+            AppStatus.Set($"Metadata generated for mod '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
         }
     }
 
-    public static async Task CopyContents<T>(T item, string outputFolder) where T : IModItem
+    public static async Task CopyContents<T>(T item, string sourceFolder, string outputFolder) where T : IModItem
     {
-        await Task.WhenAll(CopyContentsInternal(item, outputFolder));
+        await Task.WhenAll(CopyContentsInternal(item, sourceFolder, outputFolder));
         AppStatus.Set($"Packaged '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
-    private static List<Task> CopyContentsInternal<T>(T item, string outputFolder) where T : IModItem
+    private static List<Task> CopyContentsInternal<T>(T item, string sourceFolder, string outputFolder) where T : IModItem
     {
         AppStatus.Set($"Copying '{item.Name}'", COPY_ICON);
 
@@ -61,13 +62,13 @@ public class PackageBuilder
 
             // Mals
             ToolHelper.Call(Tool.MalsMerger,
-                    "gen", item.SourceFolder,
+                    "gen", sourceFolder,
                     Path.Combine(outputFolder, "romfs")
                 ).WaitForExitAsync(),
 
             // RSDB
             ToolHelper.Call(Tool.RsdbMerger,
-                    "--generate-changelog", Path.Combine(item.SourceFolder, "romfs", "RSDB"),
+                    "--generate-changelog", Path.Combine(sourceFolder, "romfs", "RSDB"),
                     "--output", outputFolder
                 ).WaitForExitAsync(),
 
@@ -75,12 +76,12 @@ public class PackageBuilder
             Task.Run(async () => {
                 await ToolHelper.Call(Tool.SarcTool,
                         "assemble",
-                        "--mod", item.SourceFolder
+                        "--mod", sourceFolder
                     ).WaitForExitAsync();
 
                 await ToolHelper.Call(Tool.SarcTool,
                         "package",
-                        "--mod", item.SourceFolder,
+                        "--mod", sourceFolder,
                         "--output", outputFolder
                     ).WaitForExitAsync();
             }),
@@ -89,7 +90,7 @@ public class PackageBuilder
             Task.Run(() => {
                 AppStatus.Set("Copying file-system folders", COPY_ICON);
                 foreach (var folder in TotkConfig.FileSystemFolders) {
-                    string inputFsFolder = Path.Combine(item.SourceFolder, folder);
+                    string inputFsFolder = Path.Combine(sourceFolder, folder);
 
                     if (Directory.Exists(inputFsFolder)) {
                         DirectoryOperations.CopyDirectory(
@@ -110,7 +111,7 @@ public class PackageBuilder
 
                 foreach (var option in group.Options) {
                     string optionOutputFolder = Path.Combine(groupOutputFolder, option.Id.ToString());
-                    tasks.AddRange(CopyContentsInternal(option, optionOutputFolder));
+                    tasks.AddRange(CopyContentsInternal(option, option.SourceFolder, optionOutputFolder));
                 }
             }
         }
