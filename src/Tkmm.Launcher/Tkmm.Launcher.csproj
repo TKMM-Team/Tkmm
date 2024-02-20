@@ -9,7 +9,7 @@
     <PublishSingleFile>true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <PublishReadyToRun>true</PublishReadyToRun>
-    <DebugType>embed</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   
   <ItemGroup>
