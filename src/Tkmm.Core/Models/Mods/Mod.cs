@@ -81,6 +81,7 @@ public partial class Mod : ObservableObject, IModItem
     }
 
     [RelayCommand]
+    [property: JsonIgnore]
     public void AddToCurrentProfile()
     {
         if (!ProfileManager.Shared.Current.Mods.Contains(this)) {
@@ -89,6 +90,7 @@ public partial class Mod : ObservableObject, IModItem
     }
 
     [RelayCommand]
+    [property: JsonIgnore]
     public void Uninstall()
     {
         ProfileManager.Shared.Mods.Remove(this);
