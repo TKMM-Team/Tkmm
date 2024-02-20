@@ -8,11 +8,14 @@ using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Services;
 using Tkmm.Helpers;
+using Tkmm.Models;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class HomePageViewModel : ObservableObject
 {
+    public static LayoutConfig Layout { get; } = LayoutConfig.Load("HomePageLayout");
+
     [ObservableProperty]
     private ProfileMod? _current;
 

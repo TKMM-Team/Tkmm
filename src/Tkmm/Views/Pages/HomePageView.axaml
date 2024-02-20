@@ -66,8 +66,14 @@
               ColumnDefinitions="*,Auto,0.5*"
               IsVisible="{Binding Shared.Current.Mods.Count, Source={x:Static comp:ProfileManager.Shared}}"
               RowDefinitions="*,Auto">
+            <Grid Name="ResizeGridTarget" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="{Binding TopPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="{Binding LowerPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
+                </Grid.RowDefinitions>
 
-            <Grid Grid.RowSpan="2" RowDefinitions="Auto,*,Auto,0.7*,Auto">
                 <Grid Name="TitleGrid"
                       Margin="0,0,0,15"
                       ColumnDefinitions="*"
@@ -90,6 +96,7 @@
                                             FontSize="12" />
                     </StackPanel>
                 </Grid>
+
                 <Grid Name="ContentGrid"
                       Grid.Row="1"
                       Margin="0,0,0,10">
@@ -108,7 +115,8 @@
                               MinHeight="2"
                               VerticalAlignment="Center"
                               BorderThickness="0"
-                              CornerRadius="1" />
+                              CornerRadius="1"
+                              DragCompleted="GridSplitter_DragCompleted" />
 
                 <Grid Grid.Row="2">
                     <Viewbox Width="24" Height="24">
