@@ -1,14 +1,14 @@
 <UserControl x:Class="Tkmm.Views.Pages.ProfilesPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:behaviors="using:Tkmm.Behaviors"
+             xmlns:comp="using:Tkmm.Core.Components"
+             xmlns:comp-models="using:Tkmm.Core.Components.Models"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
-             xmlns:comp="using:Tkmm.Core.Components"
-             xmlns:comp-models="using:Tkmm.Core.Components.Models"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
@@ -62,29 +62,52 @@
                 <TextBox Text="{Binding Current.Name, Source={x:Static comp:ProfileManager.Shared}}" Watermark="Profile Name" />
             </StackPanel>
 
-            <ListBox Name="ProfileListBox"
-                     Grid.Row="2"
-                     Margin="0,10,0,0"
-                     Classes="ModDragDropListBox"
-                     DragDrop.AllowDrop="True"
-                     ItemsSource="{Binding Current.Mods, Source={x:Static comp:ProfileManager.Shared}}"
-                     ToolTip.Tip="Mods">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock VerticalAlignment="Center"
-                                       Background="Transparent"
-                                       Text="{Binding Mod.Name}"
-                                       TextTrimming="CharacterEllipsis"
-                                       ToolTip.Tip="{Binding Mod.Name}" />
-                            <CheckBox Grid.Column="1"
-                                      Margin="10,0,0,0"
-                                      IsChecked="{Binding IsEnabled}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Grid Grid.Row="2"
+                  Margin="0,10,0,0"
+                  RowDefinitions="*,Auto">
+                <ListBox Name="ProfileListBox"
+                         Classes="ModDragDropListBox"
+                         DragDrop.AllowDrop="True"
+                         ItemsSource="{Binding Current.Mods, Source={x:Static comp:ProfileManager.Shared}}"
+                         SelectedItem="{Binding Selected}"
+                         ToolTip.Tip="Mods">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock VerticalAlignment="Center"
+                                           Background="Transparent"
+                                           Text="{Binding Mod.Name}"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip.Tip="{Binding Mod.Name}" />
+                                <CheckBox Grid.Column="1"
+                                          Margin="10,0,0,0"
+                                          IsChecked="{Binding IsEnabled}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
+                <Grid Grid.Row="1" HorizontalAlignment="Left">
+                    <WrapPanel>
+                        <Button Margin="2.5"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding RemoveCommand}"
+                                ToolTip.Tip="Remove Mod">
+                            <pi:Icon Value="fa-solid fa-trash" />
+                        </Button>
+                        <Button Margin="2.5"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding MoveUpCommand}">
+                            <pi:Icon Value="fa-solid fa-caret-up" />
+                        </Button>
+                        <Button Margin="2.5"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding MoveDownCommand}">
+                            <pi:Icon Value="fa-solid fa-caret-down" />
+                        </Button>
+                    </WrapPanel>
+                </Grid>
+            </Grid>
         </Grid>
 
         <Border Grid.Column="1"
@@ -97,15 +120,37 @@
                  Classes="ModDragDropListBox"
                  DragDrop.AllowDrop="True"
                  ItemsSource="{Binding Mods, Source={x:Static comp:ProfileManager.Shared}}"
+                 SelectedItem="{Binding MasterSelected}"
                  ToolTip.Tip="All Mods">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Mod}">
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
                         <TextBlock VerticalAlignment="Center"
                                    Background="Transparent"
                                    Text="{Binding Name}"
                                    TextTrimming="CharacterEllipsis"
                                    ToolTip.Tip="{Binding Name}" />
+                        <Button Grid.Column="1"
+                                Width="25"
+                                Height="25"
+                                Padding="0"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding AddToCurrentProfileCommand}"
+                                ToolTip.Tip="Add to current profile">
+                            <pi:Icon Value="fa-solid fa-plus" />
+                        </Button>
+                        <Button Grid.Column="2"
+                                Width="25"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                Padding="0"
+                                VerticalAlignment="Stretch"
+                                x:DataType="pages:ProfilesPageViewModel"
+                                Command="{Binding UninstallCommand}"
+                                DataContext="{Binding $parent[UserControl].DataContext}"
+                                ToolTip.Tip="Uninstall">
+                            <pi:Icon Value="fa-solid fa-trash" />
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
