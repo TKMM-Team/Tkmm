@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
-using ConfigFactory.Core.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Tkmm.Core;
@@ -29,7 +28,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
             """,
         Category = "TotK")]
     [property: ConfigFactory.Core.Attributes.BrowserConfig(
-        BrowserMode = BrowserMode.OpenFolder,
+        BrowserMode = ConfigFactory.Core.Attributes.BrowserMode.OpenFolder,
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
     private string _gamePath = string.Empty;

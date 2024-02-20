@@ -9,8 +9,6 @@ namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem
 {
-    private const string GB_MODS_URL = "https://gamebanana.com/mods/";
-
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();
 

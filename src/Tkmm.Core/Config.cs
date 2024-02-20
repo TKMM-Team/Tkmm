@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ConfigFactory.Core.Attributes;
 using ConfigFactory.Core;
 
 namespace Tkmm.Core;
@@ -34,9 +33,9 @@ public partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(
-    Header = "Target Language",
-    Description = "The target language that MalsMerger should create an archive for.",
-    Group = "Application")]
+        Header = "Target Language",
+        Description = "The target language that MalsMerger should create an archive for.",
+        Group = "Application")]
     [property: ConfigFactory.Core.Attributes.DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
     private string _gameLanguage = "USen";
 
@@ -53,7 +52,7 @@ public partial class Config : ConfigModule<Config>
         Description = "The folder used to store TKMM system files.",
         Group = "Application")]
     [property: ConfigFactory.Core.Attributes.BrowserConfig(
-        BrowserMode = BrowserMode.OpenFolder,
+        BrowserMode = ConfigFactory.Core.Attributes.BrowserMode.OpenFolder,
         InstanceBrowserKey = "config-storage-folder",
         Title = "Storage Folder")]
     private string _storageFolder = _defaultPath;
@@ -71,7 +70,7 @@ public partial class Config : ConfigModule<Config>
         Description = "The output folder to write the final merged mod to.",
         Group = "Merging")]
     [property: ConfigFactory.Core.Attributes.BrowserConfig(
-        BrowserMode = BrowserMode.OpenFolder,
+        BrowserMode = ConfigFactory.Core.Attributes.BrowserMode.OpenFolder,
         InstanceBrowserKey = "config-mrged-output-folder",
         Title = "Merged Mod Output Folder")]
     private string _mergeOutput = _defaultMergedPath;
