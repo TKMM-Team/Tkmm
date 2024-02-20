@@ -16,7 +16,7 @@ jobs:
           - name: Linux
             os: ubuntu-20.04
             runtime: linux-x64
-            ext: ~
+            ext: ""
           - name: Windows
             os: windows-latest
             runtime: win-x64
