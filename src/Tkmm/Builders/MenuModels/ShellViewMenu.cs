@@ -97,7 +97,7 @@ public class ShellViewMenu
         await ModHelper.Import(selectedFolder);
     }
 
-    [Menu("Import Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-folder-open")]
+    [Menu("Import Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-keyboard")]
     public static async Task ImportArgument()
     {
         ContentDialog dialog = new() {
