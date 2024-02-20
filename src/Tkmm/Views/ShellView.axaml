@@ -20,7 +20,10 @@
                d:DesignWidth="800"
                x:DataType="vm:ShellViewModel"
                mc:Ignorable="d">
-    <Grid RowDefinitions="32,*,25">
+    <Grid Background="Transparent"
+          Classes="InstallModDropTarget"
+          DragDrop.AllowDrop="True"
+          RowDefinitions="32,*,25">
         <Grid ColumnDefinitions="Auto,*">
             <Viewbox Width="26"
                      Height="26"

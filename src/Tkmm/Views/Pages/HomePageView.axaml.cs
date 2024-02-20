@@ -1,9 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Platform.Storage;
-using Tkmm.Core.Models.Mods;
-using Tkmm.Helpers;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Views.Pages;
@@ -14,10 +10,6 @@ public partial class HomePageView : UserControl
     {
         InitializeComponent();
         DataContext = new HomePageViewModel();
-
-        DropTarget.AddHandler(DragDrop.DragEnterEvent, DragEnterEvent);
-        DropTarget.AddHandler(DragDrop.DragLeaveEvent, DragLeaveEvent);
-        DropTarget.AddHandler(DragDrop.DropEvent, DragDropEvent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -26,35 +18,5 @@ public partial class HomePageView : UserControl
         InitializeComponent();
 
         base.OnAttachedToVisualTree(e);
-    }
-
-    public async void DragDropEvent(object? sender, DragEventArgs e)
-    {
-        if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
-            foreach (var path in paths.Select(x => x.Path.LocalPath)) {
-                if (DataContext is HomePageViewModel homePage) {
-                    if (await ModHelper.Import(path) is Mod mod) {
-                        homePage.Current = mod;
-                    }
-                }
-            }
-        }
-        else if (e.Data.GetText() is string arg && DataContext is HomePageViewModel homePage) {
-            if (await ModHelper.Import(arg) is Mod mod) {
-                homePage.Current = mod;
-            }
-        }
-
-        DragFadeMask.IsVisible = false;
-    }
-
-    public void DragEnterEvent(object? sender, DragEventArgs e)
-    {
-        DragFadeMask.IsVisible = true;
-    }
-
-    public void DragLeaveEvent(object? sender, DragEventArgs e)
-    {
-        DragFadeMask.IsVisible = false;
     }
 }
