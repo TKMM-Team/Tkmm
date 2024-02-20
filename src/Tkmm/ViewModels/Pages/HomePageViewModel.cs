@@ -44,14 +44,20 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private Task MoveUp()
     {
-        Move(-1);
+        if (Current is not null) {
+            Current = ProfileManager.Shared.Current.Move(Current, -1);
+        }
+
         return Task.CompletedTask;
     }
 
     [RelayCommand]
     private Task MoveDown()
     {
-        Move(1);
+        if (Current is not null) {
+            Current = ProfileManager.Shared.Current.Move(Current, 1);
+        }
+
         return Task.CompletedTask;
     }
 
@@ -75,26 +81,6 @@ public partial class HomePageViewModel : ObservableObject
 
         Current = ProfileManager.Shared.Current.Mods[removeIndex];
         return Task.CompletedTask;
-    }
-
-    private void Move(int offset)
-    {
-        if (Current is null) {
-            return;
-        }
-
-        int currentIndex = ProfileManager.Shared.Current.Mods.IndexOf(Current);
-        int newIndex = currentIndex + offset;
-
-        if (newIndex < 0 || newIndex >= ProfileManager.Shared.Current.Mods.Count) {
-            return;
-        }
-
-        ProfileMod store = ProfileManager.Shared.Current.Mods[newIndex];
-        ProfileManager.Shared.Current.Mods[newIndex] = Current;
-        ProfileManager.Shared.Current.Mods[currentIndex] = store;
-
-        Current = ProfileManager.Shared.Current.Mods[newIndex];
     }
 
     public HomePageViewModel()

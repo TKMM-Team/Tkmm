@@ -15,5 +15,21 @@ public partial class Profile(string name) : ObservableObject
     public Profile(string name, ObservableCollection<ProfileMod> mods) : this(name)
     {
         Mods = mods;
+
+    public ProfileMod Move(ProfileMod target, int offset)
+    {
+        int currentIndex = Mods.IndexOf(target);
+        int newIndex = currentIndex + offset;
+
+        if (newIndex < 0 || newIndex >= ProfileManager.Shared.Current.Mods.Count) {
+            return target;
+        }
+
+        ProfileMod store = ProfileManager.Shared.Current.Mods[newIndex];
+        ProfileManager.Shared.Current.Mods[newIndex] = target;
+        ProfileManager.Shared.Current.Mods[currentIndex] = store;
+
+        return target;
+    }
     }
 }
