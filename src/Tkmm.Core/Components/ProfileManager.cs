@@ -72,6 +72,11 @@ public partial class ProfileManager : ObservableObject
             Profiles = Profiles
         });
 
-        AppStatus.Set("Saved profiles!", "fa-solid fa-list-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
+        AppLog.Log("Profiles updated", LogLevel.Info);
+    }
+
+    partial void OnCurrentChanged(Profile value)
+    {
+        Apply();
     }
 }

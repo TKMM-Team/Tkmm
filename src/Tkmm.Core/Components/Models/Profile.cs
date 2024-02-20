@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace Tkmm.Core.Components.Models;
 
-public partial class Profile(string name) : ObservableObject
+public partial class Profile : ObservableObject
 {
     [ObservableProperty]
-    private string _name = name;
+    private string _name;
 
     public ObservableCollection<ProfileMod> Mods { get; } = [];
 
@@ -15,6 +15,14 @@ public partial class Profile(string name) : ObservableObject
     public Profile(string name, ObservableCollection<ProfileMod> mods) : this(name)
     {
         Mods = mods;
+        Mods.CollectionChanged += CollectionChanged;
+    }
+
+    public Profile(string name)
+    {
+        _name = name;
+        Mods.CollectionChanged += CollectionChanged;
+    }
 
     public ProfileMod Move(ProfileMod target, int offset)
     {
@@ -31,5 +39,14 @@ public partial class Profile(string name) : ObservableObject
 
         return target;
     }
+
+    private void CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        ProfileManager.Shared.Apply();
+    }
+
+    partial void OnNameChanged(string value)
+    {
+        ProfileManager.Shared.Apply();
     }
 }
