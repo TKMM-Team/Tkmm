@@ -24,6 +24,7 @@ public class ModHelper
 
             Mod result = await Task.Run(async () => {
                 Mod mod = await Mod.FromPath(arg);
+                ProfileManager.Shared.Mods.Add(mod);
                 ProfileManager.Shared.Current.Mods.Add(mod);
                 return mod;
             });
