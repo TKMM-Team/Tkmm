@@ -47,6 +47,13 @@ jobs:
           -o ${{ matrix.config.name }} \
           -p:Version=${{ github.event.release.tag_name }}
 
+      - name: Rename executable
+        shell: bash
+        run: |
+          mv \
+          ${{ matrix.config.name }}/Tkmm.Desktop${{ matrix.config.ext }} \
+          ${{ matrix.config.name }}/tkmm${{ matrix.config.ext }}
+
       - name: Archive Build Files
         uses: TheDoctor0/zip-release@0.7.1
         with:
