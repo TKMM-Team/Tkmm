@@ -9,6 +9,8 @@ using Avalonia.Threading;
 using ConfigFactory;
 using ConfigFactory.Avalonia;
 using ConfigFactory.Avalonia.Helpers;
+using ConfigFactory.Core;
+using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using System.Reflection;
@@ -82,10 +84,25 @@ public partial class App : Application
             };
 
             ConfigPage settingsPage = new();
+            bool isValid = false;
+            string? message = string.Empty;
+            ConfigProperty target = new();
+
             if (settingsPage.DataContext is ConfigPageModel settingsModel) {
                 settingsModel.SecondaryButtonIsEnabled = false;
+
+                isValid = ConfigModule<Config>.Shared.Validate(out message, out target);
                 settingsModel.Append<Config>();
+
+                isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out message, out target);
                 settingsModel.Append<TotkConfig>();
+
+                if (target.Attribute is not null) {
+                    settingsModel.SelectedGroup = settingsModel.Categories
+                        .Where(x => x.Header == target.Attribute.Category)
+                        .SelectMany(x => x.Groups)
+                        .FirstOrDefault(x => x.Header == target.Attribute.Group);
+                }
             }
 
             PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home", isDefault: true);
@@ -96,7 +113,7 @@ public partial class App : Application
 
             PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
-            PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true);
+            PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true, isDefault: isValid == false);
 
             Config.SetTheme(Config.Shared.Theme);
 
