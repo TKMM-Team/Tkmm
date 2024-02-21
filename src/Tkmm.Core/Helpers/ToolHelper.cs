@@ -8,10 +8,9 @@ namespace Tkmm.Core.Helpers;
 
 public enum Tool
 {
-    MalsMerger = 0,
-    SarcTool = 1,
-    RsdbMerger = 2,
-    RestblMerger = 3
+    SarcTool = 0,
+    RsdbMerger = 1,
+    RestblMerger = 2
 }
 
 /// <summary>

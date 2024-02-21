@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using MalsMerger.Core;
+using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
@@ -60,10 +61,10 @@ public class PackageBuilder
         List<Task> tasks = [
 
             // Mals
-            ToolHelper.Call(Tool.MalsMerger,
-                    "gen", sourceFolder,
-                    Path.Combine(outputFolder, "romfs")
-                ).WaitForExitAsync(),
+            Task.Run(() => {
+                Merger malsMerger = new([Path.Combine(sourceFolder, "romfs")], Path.Combine(outputFolder, "romfs"), Config.Shared.GameLanguage);
+                malsMerger.GenerateChangelogs(format: false);
+            }),
 
             // RSDB
             ToolHelper.Call(Tool.RsdbMerger,

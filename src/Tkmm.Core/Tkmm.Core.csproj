@@ -16,4 +16,8 @@
     <PackageReference Include="SharpCompress" Version="0.36.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\MalsMerger\src\MalsMerger.Core\MalsMerger.Core.csproj" />
+  </ItemGroup>
+
 </Project>
