@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\MalsMerger\src\MalsMerger.Core\MalsMerger.Core.csproj" />
+    <ProjectReference Include="..\..\lib\TotK-RstbCalculator\src\TotkRstbGenerator.Core\TotkRstbGenerator.Core.csproj" />
   </ItemGroup>
 
 </Project>

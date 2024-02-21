@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MalsMerger", "MalsMerger", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MalsMerger.Core", "..\lib\MalsMerger\src\MalsMerger.Core\MalsMerger.Core.csproj", "{BC009BB4-E869-412F-A06C-9530C28B6AB6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RstbCalculator", "RstbCalculator", "{AA95BD8A-FFB4-46E0-8871-70CB5F4E54DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TotkRstbGenerator.Core", "..\lib\TotK-RstbCalculator\src\TotkRstbGenerator.Core\TotkRstbGenerator.Core.csproj", "{8A914881-DD66-4A58-B8D1-E4D55259F9FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A914881-DD66-4A58-B8D1-E4D55259F9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A914881-DD66-4A58-B8D1-E4D55259F9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A914881-DD66-4A58-B8D1-E4D55259F9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A914881-DD66-4A58-B8D1-E4D55259F9FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +58,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C560F3DA-B393-4379-85E3-62A3511F5EF7} = {1EF81CF1-1A94-46D7-AF67-FD31D1626304}
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6} = {C560F3DA-B393-4379-85E3-62A3511F5EF7}
+		{AA95BD8A-FFB4-46E0-8871-70CB5F4E54DC} = {1EF81CF1-1A94-46D7-AF67-FD31D1626304}
+		{8A914881-DD66-4A58-B8D1-E4D55259F9FD} = {AA95BD8A-FFB4-46E0-8871-70CB5F4E54DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E3CBDD9-5DDE-459B-AAA6-90CAD61F9EA4}
