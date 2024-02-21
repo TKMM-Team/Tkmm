@@ -11,7 +11,7 @@ public class RstbMergerShell : IMerger
 
     public async Task Merge(IModItem[] mods, string output)
     {
-        RstbGenerator generator = new(output);
+        RstbGenerator generator = new(Path.Combine(output, TotkConfig.ROMFS));
         await generator.GenerateAsync();
     }
 }
