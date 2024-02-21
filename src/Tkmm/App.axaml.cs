@@ -41,6 +41,13 @@ public partial class App : Application
     /// </summary>
     public static IMenuFactory MenuFactory { get; private set; } = null!;
 
+    public App()
+    {
+        TaskScheduler.UnobservedTaskException += (s, e) => {
+            ToastError(e.Exception);
+        };
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
