@@ -148,10 +148,13 @@
                                 <DataTemplate DataType="{x:Type models:ModOptionGroup}">
                                     <Expander Padding="5">
                                         <Expander.Header>
-                                            <TextBlock>
+                                            <StackPanel Orientation="Horizontal">
+                                                <pi:Icon Value="{Binding Icon}" />
+                                                <TextBlock Margin="5,0,0,0">
                                                 <Run Text="{Binding Name}" />
                                                 <Run Text="{Binding Type, Mode=OneWay, StringFormat='({0})'}" />
                                             </TextBlock>
+                                            </StackPanel>
                                         </Expander.Header>
                                         <ListBox ItemsSource="{Binding Options}"
                                                  SelectedItems="{Binding SelectedOptions}"
