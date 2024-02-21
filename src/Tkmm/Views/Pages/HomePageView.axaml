@@ -145,7 +145,7 @@
                         <ItemsControl ItemsSource="{Binding Current.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:ModOptionGroup}">
-                                    <Expander Margin="0,0,0,5" Header="{Binding Name}">
+                                    <Expander Padding="5" Header="{Binding Name}">
                                         <ListBox ItemsSource="{Binding Options}"
                                                  SelectedItems="{Binding SelectedOptions}"
                                                  SelectionMode="{Binding Type, Mode=OneWay, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
@@ -154,6 +154,12 @@
                                                     <TextBlock Text="{Binding Name}" />
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
+                                            <ListBox.Styles>
+                                                <Style Selector="ListBoxItem">
+                                                    <Setter Property="Padding" Value="10,3,5,4" />
+                                                    <Setter Property="MinHeight" Value="0" />
+                                                </Style>
+                                            </ListBox.Styles>
                                         </ListBox>
                                     </Expander>
                                 </DataTemplate>
