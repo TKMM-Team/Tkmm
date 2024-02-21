@@ -90,9 +90,10 @@
                                             FontSize="12" />
                     </StackPanel>
                     <ToggleButton Grid.RowSpan="2"
-                                  Padding="6,3"
+                                  Padding="8,4"
                                   HorizontalAlignment="Right"
                                   Content="Show Options"
+                                  FontWeight="Medium"
                                   IsChecked="{Binding ShowOptions}" />
                 </Grid>
 
