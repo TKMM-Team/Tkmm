@@ -33,28 +33,6 @@ public partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(
-        Header = "Target Language",
-        Description = "The target language that MalsMerger should create an archive for.",
-        Group = "Merging")]
-    [property: ConfigFactory.Core.Attributes.DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
-    private string _gameLanguage = "USen";
-
-    [ObservableProperty]
-    [property: ConfigFactory.Core.Attributes.Config(
-        Header = "Use Yuzu",
-        Description = "Automatically export to your Yuzu mod folder.",
-        Group = "Merging")]
-    private bool _useYuzu = false;
-
-    [ObservableProperty]
-    [property: ConfigFactory.Core.Attributes.Config(
-        Header = "Use Ryujinx",
-        Description = "Automatically export to your Ryujinx mod folder.",
-        Group = "Merging")]
-    private bool _useRyu = false;
-
-    [ObservableProperty]
-    [property: ConfigFactory.Core.Attributes.Config(
         Header = "Show Console",
         Description = "Show the console window for additional information (restart required)",
         Group = "Application")]
@@ -88,6 +66,28 @@ public partial class Config : ConfigModule<Config>
         InstanceBrowserKey = "config-mrged-output-folder",
         Title = "Merged Mod Output Folder")]
     private string _mergeOutput = _defaultMergedPath;
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Target Language",
+        Description = "The target language that MalsMerger should create an archive for.",
+        Group = "Merging")]
+    [property: ConfigFactory.Core.Attributes.DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
+    private string _gameLanguage = "USen";
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Use Ryujinx",
+        Description = "Automatically export to your Ryujinx mod folder.",
+        Group = "Merging")]
+    private bool _useRyu = false;
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Use Yuzu",
+        Description = "Automatically export to your Yuzu mod folder.",
+        Group = "Merging")]
+    private bool _useYuzu = false;
 
     partial void OnThemeChanged(string value)
     {

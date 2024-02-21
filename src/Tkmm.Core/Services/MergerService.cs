@@ -65,14 +65,12 @@ public class MergerService
         await Task.WhenAll(tasks);
         await RstbMergerShell.Shared.Merge(mods, output);
 
-        if (Config.Shared.UseRyu)
-        {
+        if (Config.Shared.UseRyu) {
             Directory.Delete(_ryujinxPath, true);
             Directory.CreateSymbolicLink(_ryujinxPath, output);
         }
 
-        if (Config.Shared.UseYuzu)
-        {
+        if (Config.Shared.UseYuzu) {
             Directory.Delete(_yuzuPath, true);
             Directory.CreateSymbolicLink(_yuzuPath, output);
         }
