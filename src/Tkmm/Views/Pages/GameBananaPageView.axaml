@@ -15,8 +15,36 @@
     <UserControl.DataContext>
         <pages:GameBananaPageViewModel />
     </UserControl.DataContext>
-    <Grid Margin="15" RowDefinitions="*,Auto">
-        <ScrollViewer Name="ModsViewer" IsScrollInertiaEnabled="True">
+    <Grid Margin="15" RowDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="*,3*,Auto,Auto,*">
+            <TextBox Grid.Column="1"
+                     VerticalAlignment="Center"
+                     KeyDown="TextBox_KeyDown"
+                     Text="{Binding SearchArgument}"
+                     Watermark="Search (must be more than 2 characters)" />
+            <Button Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Margin="5,0,0,0"
+                    Padding="0"
+                    Command="{Binding SearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-solid fa-magnifying-glass" />
+            </Button>
+            <Button Grid.Column="3"
+                    Width="30"
+                    Height="30"
+                    Margin="5,0,0,0"
+                    Padding="0"
+                    Command="{Binding ResetSearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-regular fa-circle-xmark" />
+            </Button>
+        </Grid>
+
+        <ScrollViewer Name="ModsViewer"
+                      Grid.Row="1"
+                      IsScrollInertiaEnabled="True">
             <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -70,7 +98,7 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="2"
               HorizontalAlignment="Center"
               ColumnDefinitions="Auto,Auto">
             <Button Margin="5"

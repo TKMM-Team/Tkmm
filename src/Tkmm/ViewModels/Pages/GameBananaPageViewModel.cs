@@ -16,7 +16,11 @@ public partial class GameBananaPageViewModel : ObservableObject
     private static readonly HttpClient _client = new();
 
     private const string GAME_ID = "7617";
-    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort=new&_csvModelInclusions=Mod";
+    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_csvModelInclusions=Mod";
+    private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sName={{1}}&_csvModelInclusions=Mod";
+
+    [ObservableProperty]
+    private string _searchArgument = string.Empty;
 
     [ObservableProperty]
     private int _page = 0;
@@ -27,6 +31,23 @@ public partial class GameBananaPageViewModel : ObservableObject
     public GameBananaPageViewModel()
     {
         InitLoad();
+    }
+
+    [RelayCommand]
+    public async Task Search(ScrollViewer modsViewer)
+    {
+        Page = 0;
+        await UpdatePage();
+        modsViewer.ScrollToHome();
+    }
+
+    [RelayCommand]
+    public async Task ResetSearch(ScrollViewer modsViewer)
+    {
+        Page = 0;
+        SearchArgument = string.Empty;
+        await UpdatePage();
+        modsViewer.ScrollToHome();
     }
 
     [RelayCommand]
@@ -111,12 +132,16 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private async Task UpdatePage()
     {
-        Feed = await Fetch(Page + 1);
+        Feed = await Fetch(Page + 1, SearchArgument);
     }
 
-    private static async Task<GameBananaFeed> Fetch(int page)
+    private static async Task<GameBananaFeed> Fetch(int page, string search)
     {
-        using Stream stream = await GameBananaHelper.Get(string.Format(FEED_ENDPOINT, page));
+        string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
+            ? string.Format(FEED_ENDPOINT_SEARCH, page, search)
+            : string.Format(FEED_ENDPOINT, page);
+
+        using Stream stream = await GameBananaHelper.Get(endpoint);
         GameBananaFeed feed = JsonSerializer.Deserialize<GameBananaFeed>(stream)
             ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
 
