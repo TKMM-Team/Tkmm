@@ -35,9 +35,23 @@ public partial class Config : ConfigModule<Config>
     [property: ConfigFactory.Core.Attributes.Config(
         Header = "Target Language",
         Description = "The target language that MalsMerger should create an archive for.",
-        Group = "Application")]
+        Group = "Merging")]
     [property: ConfigFactory.Core.Attributes.DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
     private string _gameLanguage = "USen";
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Use Yuzu",
+        Description = "Automatically export to your Yuzu mod folder.",
+        Group = "Merging")]
+    private bool _useYuzu = false;
+
+    [ObservableProperty]
+    [property: ConfigFactory.Core.Attributes.Config(
+        Header = "Use Ryujinx",
+        Description = "Automatically export to your Ryujinx mod folder.",
+        Group = "Merging")]
+    private bool _useRyu = false;
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(

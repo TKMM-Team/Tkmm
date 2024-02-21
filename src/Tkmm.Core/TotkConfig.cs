@@ -32,7 +32,6 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         InstanceBrowserKey = "totk-config-game-path",
         Title = "TotK RomFS Game Path")]
     private string _gamePath = string.Empty;
-
     public static int GetVersion(string romfsFolder, int @default = 100)
     {
         string regionLangMask = Path.Combine(romfsFolder, "System", "RegionLangMask.txt");
