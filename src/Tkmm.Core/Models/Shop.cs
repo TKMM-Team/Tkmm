@@ -24,5 +24,15 @@ namespace Tkmm.Core.Models
 
         [JsonPropertyName("Coordinates")]
         public Coordinates Coordinates { get; set; } = new();
+
+        public override string ToString()
+        {
+            return $"""
+                {ShopName}
+                {NPCName} in {Location} after completeing {RequiredQuest}
+                [{Coordinates.X}, {Coordinates.Y}, {Map}]
+                [{NPCActorName}]
+                """;
+        }
     }
 }
