@@ -171,13 +171,6 @@ public partial class PackagingPageViewModel : ObservableObject
             Mod = JsonSerializer.Deserialize<Mod>(fs) ?? Mod;
         }
 
-        Mod.OptionGroups.Clear();
-
-        string optionsPath = Path.Combine(value, "options");
-        if (Directory.Exists(optionsPath)) {
-            foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
-                Mod.OptionGroups.Add(ModOptionGroup.FromFolder(folder));
-            }
-        }
+        Mod.RefreshOptions(value);
     }
 }

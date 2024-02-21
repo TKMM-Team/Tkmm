@@ -46,6 +46,7 @@ public class FolderModReader : IModReader
             mod = JsonSerializer.Deserialize<Mod>(fs);
         }
 
+        mod?.RefreshOptions();
         return mod;
     }
 }

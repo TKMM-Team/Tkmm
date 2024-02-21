@@ -19,6 +19,9 @@ public partial class HomePageViewModel : ObservableObject
     [ObservableProperty]
     private ProfileMod? _current;
 
+    [ObservableProperty]
+    private bool _showOptions = false;
+
     [RelayCommand]
     private async Task ShowContributors()
     {

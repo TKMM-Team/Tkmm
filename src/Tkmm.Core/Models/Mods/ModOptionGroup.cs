@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Tkmm.Core.Components;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 
@@ -43,8 +44,15 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     [ObservableProperty]
     private ObservableCollection<Guid> _optionReferences = [];
 
+    [ObservableProperty]
+    private ObservableCollection<Guid> _selectedOptionReferences = [];
+
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private ObservableCollection<ModOption> _options = [];
+
     [JsonIgnore]
-    public ObservableCollection<ModOption> Options { get; } = [];
+    public ObservableCollection<ModOption> SelectedOptions { get; } = [];
 
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
@@ -53,6 +61,10 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     {
         Options.CollectionChanged += (_, e)
             => ReferenceCollectionHelper.ResolveCollectionChanged(OptionReferences, e);
+        SelectedOptions.CollectionChanged += (_, e) => {
+            ReferenceCollectionHelper.ResolveCollectionChanged(SelectedOptionReferences, e);
+            Save();
+        };
     }
 
     public static ModOptionGroup FromFolder(string path)
@@ -74,8 +86,16 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
             group.Options.Add(ModOption.FromFolder(folder));
         }
 
+        group.Options = [..group.Options.OrderBy(x => x.Name)];
         group.SourceFolder = path;
         return group;
+    }
+
+    public void Save()
+    {
+        string metadata = Path.Combine(SourceFolder, PackageBuilder.METADATA);
+        using FileStream fs = File.Create(metadata);
+        JsonSerializer.Serialize(fs, this);
     }
 
     private static bool TryGetMetadata(string path, out string metadataPath)

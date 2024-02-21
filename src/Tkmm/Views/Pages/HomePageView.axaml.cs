@@ -22,8 +22,8 @@ public partial class HomePageView : UserControl
 
     private void GridSplitter_DragCompleted(object? sender, Avalonia.Input.VectorEventArgs e)
     {
-        HomePageViewModel.Layout.TopPanel = ResizeGridTarget.RowDefinitions[1].Height;
-        HomePageViewModel.Layout.LowerPanel = ResizeGridTarget.RowDefinitions[3].Height;
+        HomePageViewModel.Layout.TopPanel = ResizeGridTarget.RowDefinitions[0].Height;
+        HomePageViewModel.Layout.LowerPanel = ResizeGridTarget.RowDefinitions[2].Height;
         HomePageViewModel.Layout.Save();
     }
 }

@@ -26,6 +26,7 @@ public class ModHelper
                 Mod mod = await Mod.FromPath(arg);
                 ProfileManager.Shared.Mods.Add(mod);
                 ProfileManager.Shared.Current.Mods.Add(mod);
+                mod.RefreshOptions();
                 return mod;
             });
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SharpCompress.Common;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
@@ -39,10 +40,11 @@ public partial class Mod : ObservableObject, IModItem
     [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
 
-    public string SourceFolder => ProfileManager.GetModFolder(Id);
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private ObservableCollection<ModOptionGroup> _optionGroups = [];
 
-    [JsonIgnore]
-    public ObservableCollection<ModOptionGroup> OptionGroups { get; } = [];
+    public string SourceFolder => ProfileManager.GetModFolder(Id);
 
     public static async Task<Mod> FromPath(string path)
     {
@@ -103,5 +105,26 @@ public partial class Mod : ObservableObject, IModItem
         }
 
         ProfileManager.Shared.Apply();
+    }
+
+    [RelayCommand]
+    [property: JsonIgnore]
+    public void RefreshOptions()
+    {
+        RefreshOptions(SourceFolder);
+    }
+
+    public void RefreshOptions(string path)
+    {
+        OptionGroups.Clear();
+
+        string optionsPath = Path.Combine(path, "options");
+        if (Directory.Exists(optionsPath)) {
+            foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
+                OptionGroups.Add(ModOptionGroup.FromFolder(folder));
+            }
+        }
+
+        OptionGroups = [..OptionGroups.OrderBy(x => x.Name)];
     }
 }

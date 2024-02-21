@@ -21,7 +21,7 @@ public class ContentMerger : IMerger
 
             if (item is Mod mod) {
                 foreach (var group in mod.OptionGroups.Reverse()) {
-                    foreach (var option in group.Options.Reverse()) {
+                    foreach (var option in group.SelectedOptions.Reverse()) {
                         CopyContents(option.SourceFolder, output);
                     }
                 }
