@@ -31,7 +31,6 @@ public class FolderModReader : IModReader
             string output = ProfileManager.GetModFolder(mod);
             await PackageBuilder.CopyContents(mod, path, output);
             PackageBuilder.CreateMetaData(mod, output);
-            path = output;
         }
 
         return mod;

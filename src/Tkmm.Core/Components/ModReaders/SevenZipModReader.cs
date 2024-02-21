@@ -8,18 +8,12 @@ namespace Tkmm.Core.Components.ModReaders;
 
 public class SevenZipModReader : IModReader
 {
-    private static readonly string[] _folders = [
-        PackageBuilder.OPTIONS,
-        TotkConfig.ROMFS,
-        TotkConfig.EXEFS
-    ];
-
     public bool IsValid(string file)
     {
         return Path.GetExtension(file) == ".7z";
     }
 
-    public Task<Mod> Read(Stream? input, string file)
+    public async Task<Mod> Read(Stream? input, string file)
     {
         ArgumentNullException.ThrowIfNull(input);
 
@@ -29,12 +23,12 @@ public class SevenZipModReader : IModReader
         using SevenZipArchive archive = SevenZipArchive.Open(ms);
 
         Guid id = Guid.NewGuid();
-        string outputFolder = ProfileManager.GetModFolder(id);
+        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), id.ToString());
         string? root = null;
 
         foreach (var entry in archive.Entries) {
             if (ArchiveModReader.ProcessArchiveEntry(entry, ref root) && root is not null) {
-                string output = Path.Combine(outputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
+                string output = Path.Combine(tmpOutputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
                 if (Path.GetDirectoryName(output) is string absoluteOutputFolder) {
                     Directory.CreateDirectory(absoluteOutputFolder);
                 }
@@ -61,6 +55,12 @@ public class SevenZipModReader : IModReader
             Name = Path.GetFileNameWithoutExtension(file)
         };
 
-        return Task.FromResult(mod);
+        string outputFolder = ProfileManager.GetModFolder(id);
+
+        PackageBuilder.CreateMetaData(mod, outputFolder);
+        await PackageBuilder.CopyContents(mod, tmpOutputFolder, outputFolder);
+        Directory.Delete(tmpOutputFolder, true);
+
+        return mod;
     }
 }

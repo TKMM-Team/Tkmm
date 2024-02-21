@@ -18,20 +18,20 @@ public class ArchiveModReader : IModReader
         return Path.GetExtension(file) is ".rar" or ".zip";
     }
 
-    public Task<Mod> Read(Stream? input, string file)
+    public async Task<Mod> Read(Stream? input, string file)
     {
         ArgumentNullException.ThrowIfNull(input);
 
         using IReader reader = ReaderFactory.Open(input);
 
         Guid id = Guid.NewGuid();
-        string outputFolder = Path.Combine(ProfileManager.ModsFolder, id.ToString());
+        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), id.ToString());
         string? root = null;
 
         while (reader.MoveToNextEntry()) {
             IEntry entry = reader.Entry;
             if (ProcessArchiveEntry(entry, ref root) && root is not null) {
-                string output = Path.Combine(outputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
+                string output = Path.Combine(tmpOutputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
                 if (Path.GetDirectoryName(output) is string absoluteOutputFolder) {
                     Directory.CreateDirectory(absoluteOutputFolder);
                 }
@@ -56,8 +56,13 @@ public class ArchiveModReader : IModReader
             Name = Path.GetFileNameWithoutExtension(file)
         };
 
+        string outputFolder = ProfileManager.GetModFolder(id);
+
         PackageBuilder.CreateMetaData(mod, outputFolder);
-        return Task.FromResult(mod);
+        await PackageBuilder.CopyContents(mod, tmpOutputFolder, outputFolder);
+        Directory.Delete(tmpOutputFolder, true);
+
+        return mod;
     }
 
     internal static bool ProcessArchiveEntry(IEntry entry, ref string? root)
