@@ -62,8 +62,10 @@ public class PackageBuilder
 
             // Mals
             Task.Run(() => {
-                Merger malsMerger = new([Path.Combine(sourceFolder, "romfs")], Path.Combine(outputFolder, "romfs"), Config.Shared.GameLanguage);
-                malsMerger.GenerateChangelogs(format: false);
+                if (Directory.Exists(Path.Combine(sourceFolder, TotkConfig.ROMFS, "Mals"))) {
+                    Merger malsMerger = new([Path.Combine(sourceFolder, TotkConfig.ROMFS)], Path.Combine(outputFolder, TotkConfig.ROMFS), Config.Shared.GameLanguage);
+                    malsMerger.GenerateChangelogs(format: false);
+                }
             }),
 
             // RSDB
