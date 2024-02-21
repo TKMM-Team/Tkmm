@@ -4,6 +4,7 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:app="using:Tkmm"
+               xmlns:comp="using:Tkmm.Core.Components"
                xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
                xmlns:helper-models="using:Tkmm.Helpers.Models"
                xmlns:helpers="using:Tkmm.Helpers"
@@ -92,6 +93,8 @@
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource UbuntuMono}"
                        FontSize="12">
+                <Run Text="{Binding Current.Name, Source={x:Static comp:ProfileManager.Shared}}" />
+                <Run Text=" |" />
                 <Run Text="{x:Static app:App.Title}" />
                 <Run Text=" |" />
                 <Run Text="{Binding, Source={x:Static app:App.Version}, StringFormat=' v{0}'}" />
