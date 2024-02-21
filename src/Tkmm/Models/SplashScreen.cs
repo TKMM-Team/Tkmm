@@ -2,6 +2,7 @@
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core.Components;
 using Tkmm.Helpers;
+using Tkmm.Helpers.Models;
 using Tkmm.Views.Common;
 
 namespace Tkmm.Models;
@@ -23,5 +24,9 @@ public class SplashScreen : IApplicationSplashScreen
         }
 
         await Task.WhenAll(tasks);
+
+        PageModel? store = PageManager.Shared.Current;
+        PageManager.Shared.Focus(Page.Settings);
+        PageManager.Shared.Current = store;
     }
 }
