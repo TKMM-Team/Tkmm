@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SharpCompress.Common;
 using System.Collections.ObjectModel;
-using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
@@ -34,14 +32,14 @@ public partial class Mod : ObservableObject, IModItem
     private string? _thumbnailUri;
 
     [ObservableProperty]
-    [property: JsonIgnore]
+    [property: System.Text.Json.Serialization.JsonIgnore]
     private object? _thumbnail;
 
     [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
 
     [ObservableProperty]
-    [property: JsonIgnore]
+    [property: System.Text.Json.Serialization.JsonIgnore]
     private ObservableCollection<ModOptionGroup> _optionGroups = [];
 
     public string SourceFolder => ProfileManager.GetModFolder(Id);
@@ -81,7 +79,7 @@ public partial class Mod : ObservableObject, IModItem
     }
 
     [RelayCommand]
-    [property: JsonIgnore]
+    [property: System.Text.Json.Serialization.JsonIgnore]
     public void AddToCurrentProfile()
     {
         if (!ProfileManager.Shared.Current.Mods.Contains(this)) {
@@ -90,7 +88,7 @@ public partial class Mod : ObservableObject, IModItem
     }
 
     [RelayCommand]
-    [property: JsonIgnore]
+    [property: System.Text.Json.Serialization.JsonIgnore]
     public void Uninstall()
     {
         ProfileManager.Shared.Mods.Remove(this);
@@ -108,7 +106,7 @@ public partial class Mod : ObservableObject, IModItem
     }
 
     [RelayCommand]
-    [property: JsonIgnore]
+    [property: System.Text.Json.Serialization.JsonIgnore]
     public void RefreshOptions()
     {
         RefreshOptions(SourceFolder);
