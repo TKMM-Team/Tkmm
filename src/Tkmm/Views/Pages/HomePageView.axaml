@@ -146,7 +146,13 @@
                         <ItemsControl ItemsSource="{Binding Current.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:ModOptionGroup}">
-                                    <Expander Padding="5" Header="{Binding Name}">
+                                    <Expander Padding="5">
+                                        <Expander.Header>
+                                            <TextBlock>
+                                                <Run Text="{Binding Name}" />
+                                                <Run Text="{Binding Type, Mode=OneWay, StringFormat='({0})'}" />
+                                            </TextBlock>
+                                        </Expander.Header>
                                         <ListBox ItemsSource="{Binding Options}"
                                                  SelectedItems="{Binding SelectedOptions}"
                                                  SelectionMode="{Binding Type, Mode=OneWay, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
