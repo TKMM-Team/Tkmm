@@ -63,7 +63,7 @@ public class PackageBuilder
             // Mals
             Task.Run(() => {
                 if (Directory.Exists(Path.Combine(sourceFolder, TotkConfig.ROMFS, "Mals"))) {
-                    Merger malsMerger = new([Path.Combine(sourceFolder, TotkConfig.ROMFS)], Path.Combine(outputFolder, TotkConfig.ROMFS), Config.Shared.GameLanguage);
+                    Merger malsMerger = new([Path.Combine(sourceFolder, TotkConfig.ROMFS)], Path.Combine(outputFolder, TotkConfig.ROMFS), null);
                     malsMerger.GenerateChangelogs(format: false);
                 }
             }),
