@@ -24,6 +24,12 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="0,0,18,0" Spacing="5">
+                <TextBlock FontSize="12"
+                           FontStyle="Italic"
+                           Text="{Binding Mod.Id}"
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip.Tip="{Binding Mod.Id}" />
+
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBox Text="{Binding SourceFolder}" Watermark="Folder" />
                     <Button Grid.Column="1"

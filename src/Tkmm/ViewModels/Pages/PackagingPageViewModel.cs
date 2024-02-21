@@ -12,8 +12,6 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class PackagingPageViewModel : ObservableObject
 {
-    private string? _previousSourceFolder = null;
-
     [ObservableProperty]
     private string _exportPath = string.Empty;
 
@@ -76,7 +74,6 @@ public partial class PackagingPageViewModel : ObservableObject
         string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
 
         await Task.Run(async () => {
-            CheckId();
             PackageBuilder.CreateMetaData(Mod, tmpOutput);
             await PackageBuilder.CopyContents(Mod, SourceFolder, tmpOutput);
             PackageBuilder.Package(tmpOutput, ExportPath);
@@ -118,7 +115,6 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Export Mod Metadata");
         if (await dialog.ShowDialog() is string result) {
-            CheckId();
             PackageBuilder.CreateMetaData(Mod, result);
             AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
@@ -128,7 +124,6 @@ public partial class PackagingPageViewModel : ObservableObject
     private Task WriteMetadata()
     {
         if (!string.IsNullOrEmpty(SourceFolder) && Directory.Exists(SourceFolder)) {
-            CheckId();
             PackageBuilder.CreateMetaData(Mod, SourceFolder);
             AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
@@ -154,21 +149,15 @@ public partial class PackagingPageViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    private void CheckId()
-    {
-        if (_previousSourceFolder is null || Mod.SourceFolder != _previousSourceFolder) {
-            Console.WriteLine("SET GUID");
-            _previousSourceFolder = Mod.SourceFolder;
-            Mod.Id = Guid.NewGuid();
-        }
-    }
-
     partial void OnSourceFolderChanged(string value)
     {
         string metadataPath = Path.Combine(value, PackageBuilder.METADATA);
         if (File.Exists(metadataPath)) {
             using FileStream fs = File.OpenRead(metadataPath);
             Mod = JsonSerializer.Deserialize<Mod>(fs) ?? Mod;
+        }
+        else {
+            Mod.Id = Guid.NewGuid();
         }
 
         Mod.RefreshOptions(value);
