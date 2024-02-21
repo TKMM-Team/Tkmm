@@ -80,7 +80,7 @@ public partial class Config : ConfigModule<Config>
         Header = "Use Ryujinx",
         Description = "Automatically export to your Ryujinx mod folder.",
         Group = "Merging")]
-    private bool _useRyu = false;
+    private bool _useRyujinx = false;
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(
@@ -92,5 +92,37 @@ public partial class Config : ConfigModule<Config>
     partial void OnThemeChanged(string value)
     {
         SetTheme?.Invoke(value);
+    }
+
+    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "sdcard", "atmosphere", "contents", "0100f2c0115b6000");
+    partial void OnUseRyujinxChanged(bool value)
+    {
+        if (Directory.Exists(_ryujinxPath)) {
+            Directory.Delete(_ryujinxPath, true);
+        }
+
+        if (value == true) {
+            if (Path.GetDirectoryName(_ryujinxPath) is string folder) {
+                Directory.CreateDirectory(folder);
+            }
+
+            Directory.CreateSymbolicLink(_ryujinxPath, MergeOutput);
+        }
+    }
+
+    private static readonly string _yuzuPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load", "0100F2C0115B6000", "TKMM");
+    partial void OnUseYuzuChanged(bool value)
+    {
+        if (Directory.Exists(_yuzuPath)) {
+            Directory.Delete(_yuzuPath, true);
+        }
+
+        if (value == true) {
+            if (Path.GetDirectoryName(_yuzuPath) is string folder) {
+                Directory.CreateDirectory(folder);
+            }
+
+            Directory.CreateSymbolicLink(_yuzuPath, MergeOutput);
+        }
     }
 }

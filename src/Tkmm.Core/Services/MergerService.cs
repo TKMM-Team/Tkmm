@@ -8,10 +8,6 @@ namespace Tkmm.Core.Services;
 
 public class MergerService
 {
-    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "sdcard", "atmosphere", "contents", "0100f2c0115b6000");
-
-    private static readonly string _yuzuPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load", "0100F2C0115B6000", "TKMM");
-
     private static readonly IMerger[] _mergers = [
         new ContentMerger(),
         new MalsMergerShell(),
@@ -64,15 +60,5 @@ public class MergerService
 
         await Task.WhenAll(tasks);
         await RstbMergerShell.Shared.Merge(mods, output);
-
-        if (Config.Shared.UseRyu) {
-            Directory.Delete(_ryujinxPath, true);
-            Directory.CreateSymbolicLink(_ryujinxPath, output);
-        }
-
-        if (Config.Shared.UseYuzu) {
-            Directory.Delete(_yuzuPath, true);
-            Directory.CreateSymbolicLink(_yuzuPath, output);
-        }
     }
 }
