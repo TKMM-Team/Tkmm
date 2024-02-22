@@ -51,15 +51,15 @@ public partial class ProfilesPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task Uninstall()
+    private static async Task Uninstall(Mod? target)
     {
-        if (MasterSelected is not Mod mod) {
+        if (target is null) {
             return;
         }
 
         ContentDialog dialog = new() {
             Content = $"""
-            Are you sure you would like to uninstall '{mod.Name}'?
+            Are you sure you would like to uninstall '{target.Name}'?
 
             This cannot be undone.
             """,
@@ -71,7 +71,7 @@ public partial class ProfilesPageViewModel : ObservableObject
         };
 
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
-            mod.Uninstall();
+            target.Uninstall();
         }
     }
 

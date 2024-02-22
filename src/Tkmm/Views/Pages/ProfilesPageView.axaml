@@ -145,9 +145,9 @@
                                 Margin="5,0,0,0"
                                 Padding="0"
                                 VerticalAlignment="Stretch"
-                                x:DataType="pages:ProfilesPageViewModel"
-                                Command="{Binding UninstallCommand}"
-                                DataContext="{Binding $parent[UserControl].DataContext}"
+                                x:CompileBindings="False"
+                                Command="{Binding $parent[UserControl].DataContext.UninstallCommand}"
+                                CommandParameter="{Binding}"
                                 ToolTip.Tip="Uninstall">
                             <pi:Icon Value="fa-solid fa-trash" />
                         </Button>
