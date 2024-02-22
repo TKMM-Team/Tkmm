@@ -65,8 +65,14 @@
                 <StackPanel HorizontalAlignment="Right"
                             Orientation="Horizontal"
                             Spacing="5">
-                    <Button Command="{Binding ImportOptionGroupCommand}" Content="Import" />
-                    <Button Command="{Binding RefreshOptionsCommand}" Content="Refresh" />
+                    <Button Padding="5,3"
+                            Command="{Binding ImportOptionGroupCommand}"
+                            Content="Import Option Group"
+                            FontSize="12" />
+                    <Button Padding="5,3"
+                            Command="{Binding RefreshOptionsCommand}"
+                            Content="Refresh"
+                            FontSize="12" />
                 </StackPanel>
 
 
