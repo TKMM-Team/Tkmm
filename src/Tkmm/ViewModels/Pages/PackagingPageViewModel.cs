@@ -60,11 +60,11 @@ public partial class PackagingPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task BrowseThumbnail()
+    private static async Task BrowseThumbnail(IModItem item)
     {
         BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail", "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.png;*.tif");
         if (await dialog.ShowDialog() is string result) {
-            Mod.ThumbnailUri = result;
+            item.ThumbnailUri = result;
         }
     }
 

@@ -102,6 +102,7 @@
                     <Button Grid.Column="1"
                             Margin="5,0,0,0"
                             Command="{Binding BrowseThumbnailCommand}"
+                            CommandParameter="{Binding Mod}"
                             Content="Browse..." />
                 </Grid>
 
@@ -161,7 +162,15 @@
                                               ItemsSource="{x:Static models:ModOptionGroup.OptionGroupTypes}"
                                               SelectedItem="{Binding Type}" />
                                     <TextBox Text="{Binding Icon}" Watermark="Icon" />
-                                    <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+                                        <Button Grid.Column="1"
+                                                Margin="5,0,0,0"
+                                                x:CompileBindings="False"
+                                                Command="{Binding $parent[UserControl].DataContext.BrowseThumbnailCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Browse..." />
+                                    </Grid>
 
                                     <Button Padding="5,3"
                                             x:CompileBindings="False"
