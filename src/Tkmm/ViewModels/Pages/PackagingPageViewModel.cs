@@ -124,7 +124,7 @@ public partial class PackagingPageViewModel : ObservableObject
     private Task WriteMetadata()
     {
         if (!string.IsNullOrEmpty(SourceFolder) && Directory.Exists(SourceFolder)) {
-            PackageBuilder.CreateMetaData(Mod, SourceFolder);
+            PackageBuilder.CreateMetaData(Mod, SourceFolder, useSourceFolderName: true);
             AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
         }
 

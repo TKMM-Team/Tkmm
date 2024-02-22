@@ -18,7 +18,7 @@ public class PackageBuilder
     private const string METADATA_ICON = "fa-regular fa-file-code";
     private const string COPY_ICON = "fa-solid fa-object-group";
 
-    public static void CreateMetaData<T>(T item, string outputFolder) where T : IModItem
+    public static void CreateMetaData<T>(T item, string outputFolder, bool useSourceFolderName = false) where T : IModItem
     {
         AppStatus.Set($"Creating metadata for '{item.Name}'", METADATA_ICON);
         Directory.CreateDirectory(outputFolder);
@@ -35,11 +35,15 @@ public class PackageBuilder
 
         if (item is Mod mod) {
             foreach (var group in mod.OptionGroups) {
-                string groupOutputFolder = Path.Combine(outputFolder, OPTIONS, group.Id.ToString());
+                string groupOutputFolder = useSourceFolderName
+                    ? Path.Combine(outputFolder, OPTIONS, Path.GetFileName(group.SourceFolder))
+                    : Path.Combine(outputFolder, OPTIONS, group.Id.ToString());
                 CreateMetaData(group, groupOutputFolder);
 
                 foreach (var option in group.Options) {
-                    string optionOutputFolder = Path.Combine(groupOutputFolder, option.Id.ToString());
+                    string optionOutputFolder = useSourceFolderName
+                        ? Path.Combine(groupOutputFolder, Path.GetFileName(option.SourceFolder))
+                        : Path.Combine(groupOutputFolder, option.Id.ToString());
                     CreateMetaData(option, optionOutputFolder);
                 }
             }
