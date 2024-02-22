@@ -40,7 +40,7 @@ public partial class App : Application
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
     /// </summary>
     public static IMenuFactory MenuFactory { get; private set; } = null!;
-    
+
     public App()
     {
         TaskScheduler.UnobservedTaskException += (s, e) => {

@@ -137,6 +137,6 @@ public partial class Mod : ObservableObject, IModItem
             }
         }
 
-        OptionGroups = [..OptionGroups.OrderBy(x => x.Name)];
+        OptionGroups = [.. OptionGroups.OrderBy(x => x.Name)];
     }
 }

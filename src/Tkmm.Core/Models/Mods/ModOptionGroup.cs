@@ -86,7 +86,7 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
             group.Options.Add(ModOption.FromFolder(folder));
         }
 
-        group.Options = [..group.Options.OrderBy(x => x.Name)];
+        group.Options = [.. group.Options.OrderBy(x => x.Name)];
         group.SourceFolder = path;
         return group;
     }
