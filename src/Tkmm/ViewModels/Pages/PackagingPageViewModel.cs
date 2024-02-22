@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
@@ -134,6 +135,15 @@ public partial class PackagingPageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private Task Refresh()
+    {
+        string store = SourceFolder;
+        SourceFolder = string.Empty;
+        SourceFolder = store;
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
     private async Task ImportOptionGroup()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option Group");
@@ -145,16 +155,45 @@ public partial class PackagingPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task RefreshOptions()
+    private static async Task ImportOption(ModOptionGroup group)
     {
-        string store = SourceFolder;
-        SourceFolder = string.Empty;
-        SourceFolder = store;
-        return Task.CompletedTask;
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option");
+        if (await dialog.ShowDialog() is string result) {
+            string output = Path.Combine(group.SourceFolder, Path.GetFileName(result));
+            DirectoryOperations.CopyDirectory(result, output);
+            group.Options.Add(ModOption.FromFolder(output));
+        }
     }
 
     [RelayCommand]
     private async Task RemoveOptionGroup(ModOptionGroup target)
+    {
+        if (await WarnRemove(target) == false) {
+            return;
+        }
+
+        if (Mod.OptionGroups.Remove(target)) {
+            Directory.Delete(target.SourceFolder, true);
+        }
+    }
+
+    [RelayCommand]
+    private async Task RemoveOption(ModOption target)
+    {
+        if (Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(target)) is not ModOptionGroup group) {
+            return;
+        }
+
+        if (await WarnRemove(target) == false) {
+            return;
+        }
+
+        if (group.Options.Remove(target)) {
+            Directory.Delete(target.SourceFolder, true);
+        }
+    }
+
+    private static async Task<bool> WarnRemove(IModItem target)
     {
         ContentDialog dialog = new() {
             Title = "Warning",
@@ -167,13 +206,7 @@ public partial class PackagingPageViewModel : ObservableObject
             SecondaryButtonText = "Cancel"
         };
 
-        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
-            return;
-        }
-
-        if (Mod.OptionGroups.Remove(target)) {
-            Directory.Delete(target.SourceFolder, true);
-        }
+        return await dialog.ShowAsync() == ContentDialogResult.Primary;
     }
 
     partial void OnSourceFolderChanged(string value)

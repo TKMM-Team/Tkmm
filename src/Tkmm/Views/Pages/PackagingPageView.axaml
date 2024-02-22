@@ -70,9 +70,10 @@
                             Content="Import Option Group"
                             FontSize="12" />
                     <Button Padding="5,3"
-                            Command="{Binding RefreshOptionsCommand}"
+                            Command="{Binding RefreshCommand}"
                             Content="Refresh"
-                            FontSize="12" />
+                            FontSize="12"
+                            ToolTip.Tip="Reload the source folder and all configurations" />
                 </StackPanel>
 
 
@@ -107,6 +108,13 @@
                                     <TextBox Text="{Binding Icon}" Watermark="Icon" />
                                     <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
 
+                                    <Button Padding="5,3"
+                                            x:CompileBindings="False"
+                                            Command="{Binding $parent[UserControl].DataContext.ImportOptionCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="Import Option"
+                                            FontSize="12" />
+
                                     <ItemsControl ItemsSource="{Binding Options}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type models:ModOption}">
@@ -116,6 +124,9 @@
                                                             <Button Width="24"
                                                                     Height="24"
                                                                     Padding="0"
+                                                                    x:CompileBindings="False"
+                                                                    Command="{Binding $parent[UserControl].DataContext.RemoveOptionCommand}"
+                                                                    CommandParameter="{Binding}"
                                                                     ToolTip.Tip="Remove">
                                                                 <pi:Icon Width="16"
                                                                          Height="16"
