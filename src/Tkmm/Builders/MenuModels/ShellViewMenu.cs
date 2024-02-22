@@ -4,12 +4,14 @@ using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
+using System.Diagnostics;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Helpers.Win32;
+using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 using Tkmm.Helpers;
 
@@ -136,6 +138,26 @@ public class ShellViewMenu
                 isWorkingStatus: false, temporaryStatusTime: 1.5);
         }
     }
+
+#if DEBUG
+    [Menu("Open Mod Folder", "Debug", "Alt + O", "fa-solid fa-folder-tree")]
+    public static void OpenModFolder()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
+            return;
+        }
+
+        string folder = ProfileManager.GetModFolder(target);
+        if (OperatingSystem.IsWindows()) {
+            Process.Start("explorer.exe", folder);
+        }
+        else {
+            App.ToastError(new InvalidOperationException("""
+                This operations is only supported on Windows
+                """));
+        }
+    }
+#endif
 
     [Menu("Check for Update", "Help", "Ctrl + U", "fa-solid fa-cloud-arrow-up")]
     public static async Task CheckForUpdate()
