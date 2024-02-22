@@ -85,6 +85,9 @@
                                         <Button Width="24"
                                                 Height="24"
                                                 Padding="0"
+                                                x:CompileBindings="False"
+                                                Command="{Binding $parent[UserControl].DataContext.RemoveOptionGroupCommand}"
+                                                CommandParameter="{Binding}"
                                                 ToolTip.Tip="Remove">
                                             <pi:Icon Width="16"
                                                      Height="16"

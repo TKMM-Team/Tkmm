@@ -2,10 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
+using FluentAvalonia.UI.Controls;
 using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
@@ -149,6 +151,29 @@ public partial class PackagingPageViewModel : ObservableObject
         SourceFolder = string.Empty;
         SourceFolder = store;
         return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private async Task RemoveOptionGroup(ModOptionGroup target)
+    {
+        ContentDialog dialog = new() {
+            Title = "Warning",
+            Content = $"""
+            This action will delete the source folder in '{target.SourceFolder}' and cannot be undone.
+
+            Are you sure you would like to delete '{target.Name}'?
+            """,
+            PrimaryButtonText = "Delete Permanently",
+            SecondaryButtonText = "Cancel"
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
+            return;
+        }
+
+        if (Mod.OptionGroups.Remove(target)) {
+            Directory.Delete(target.SourceFolder, true);
+        }
     }
 
     partial void OnSourceFolderChanged(string value)
