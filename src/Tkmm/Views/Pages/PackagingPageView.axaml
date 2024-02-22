@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="using:Tkmm.Converters"
              xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
@@ -11,6 +12,50 @@
              d:DesignWidth="800"
              x:DataType="pages:PackagingPageViewModel"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ContentControl x:Key="ContributorsEditor"
+                        Name="Root"
+                        x:DataType="models:Mod"
+                        DataContext="{Binding Mod}">
+            <Grid Width="460" RowDefinitions="*,Auto">
+                <ItemsControl ItemsSource="{Binding Contributors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:ModContributor}">
+                            <Grid Margin="0,0,0,5" ColumnDefinitions="Auto,*,1.8*">
+                                <Button Grid.Row="1"
+                                        Width="25"
+                                        Height="25"
+                                        Padding="0"
+                                        x:CompileBindings="False"
+                                        Command="{Binding #Root.DataContext.RemoveContributorCommand}"
+                                        CommandParameter="{Binding}">
+                                    <pi:Icon Value="fa-solid fa-trash" />
+                                </Button>
+                                <TextBox Grid.Column="1"
+                                         Margin="5,0,0,0"
+                                         Text="{Binding Name}"
+                                         ToolTip.Tip="Contributor Name"
+                                         Watermark="Contributor Name" />
+                                <TextBox Grid.Column="2"
+                                         Margin="5,0,0,0"
+                                         Text="{Binding Contributions, Converter={x:Static converters:SemicolonDelimitedListConverter.Shared}}"
+                                         ToolTip.Tip="Semicolon delimited list of contributions"
+                                         Watermark="Semicolon delimited list of contributions" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button Grid.Row="1"
+                        Width="25"
+                        Height="25"
+                        Padding="0"
+                        Command="{Binding NewContributorCommand}">
+                    <pi:Icon Value="fa-solid fa-plus" />
+                </Button>
+            </Grid>
+        </ContentControl>
+    </UserControl.Resources>
     <Grid Margin="25"
           ColumnDefinitions="*,1.5*"
           RowDefinitions="Auto,*,Auto">
@@ -41,6 +86,16 @@
                 <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
                 <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
                 <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
+                    <Button Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Command="{Binding EditContributorsCommand}"
+                            CommandParameter="{StaticResource ContributorsEditor}"
+                            Content="..."
+                            ToolTip.Tip="Edit Contributors" />
+                </Grid>
 
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBox Text="{Binding Mod.ThumbnailUri}" Watermark="Thumbnail" />

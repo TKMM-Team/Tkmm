@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
@@ -23,6 +24,22 @@ public partial class PackagingPageViewModel : ObservableObject
 
     [ObservableProperty]
     private string _sourceFolder = string.Empty;
+
+    [RelayCommand]
+    private async Task EditContributors(ContentControl content)
+    {
+        content.DataContext = Mod;
+
+        ContentDialog dialog = new() {
+            Title = "Contributors",
+            Content = content,
+            IsSecondaryButtonEnabled = false,
+            PrimaryButtonText = "OK"
+        };
+
+        await dialog.ShowAsync();
+        dialog.Content = null;
+    }
 
     [RelayCommand]
     private async Task BrowseExportPath()

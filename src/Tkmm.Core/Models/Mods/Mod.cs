@@ -112,6 +112,20 @@ public partial class Mod : ObservableObject, IModItem
         RefreshOptions(SourceFolder);
     }
 
+    [RelayCommand]
+    [property: System.Text.Json.Serialization.JsonIgnore]
+    public void NewContributor()
+    {
+        Contributors.Add(new());
+    }
+
+    [RelayCommand]
+    [property: System.Text.Json.Serialization.JsonIgnore]
+    public void RemoveContributor(ModContributor contributor)
+    {
+        Contributors.Remove(contributor);
+    }
+
     public void RefreshOptions(string path)
     {
         OptionGroups.Clear();
