@@ -9,6 +9,9 @@ public partial class Profile : ObservableObject
     [ObservableProperty]
     private string _name;
 
+    [ObservableProperty]
+    private ProfileMod? _selected;
+
     public ObservableCollection<ProfileMod> Mods { get; } = [];
 
     [JsonConstructor]

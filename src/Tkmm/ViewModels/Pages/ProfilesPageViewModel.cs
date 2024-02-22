@@ -10,8 +10,14 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class ProfilesPageViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private ProfileMod? _selected;
+    public ProfileMod? Selected {
+        get => ProfileManager.Shared.Current.Selected;
+        set {
+            OnPropertyChanging(nameof(Selected));
+            ProfileManager.Shared.Current.Selected = value;
+            OnPropertyChanged(nameof(Selected));
+        }
+    }
 
     [ObservableProperty]
     private Mod? _masterSelected;

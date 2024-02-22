@@ -16,8 +16,14 @@ public partial class HomePageViewModel : ObservableObject
 {
     public static LayoutConfig Layout { get; } = LayoutConfig.Load("HomePageLayout");
 
-    [ObservableProperty]
-    private ProfileMod? _current;
+    public ProfileMod? Current {
+        get => ProfileManager.Shared.Current.Selected;
+        set {
+            OnPropertyChanging(nameof(Current));
+            ProfileManager.Shared.Current.Selected = value;
+            OnPropertyChanged(nameof(Current));
+        }
+    }
 
     [ObservableProperty]
     private bool _showOptions = false;
