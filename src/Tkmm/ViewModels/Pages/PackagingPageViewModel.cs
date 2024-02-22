@@ -136,7 +136,9 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option Group");
         if (await dialog.ShowDialog() is string result) {
-            Mod.OptionGroups.Add(ModOptionGroup.FromFolder(result));
+            string output = Path.Combine(SourceFolder, PackageBuilder.OPTIONS, Path.GetFileName(result));
+            DirectoryOperations.CopyDirectory(result, output);
+            Mod.OptionGroups.Add(ModOptionGroup.FromFolder(output));
         }
     }
 
