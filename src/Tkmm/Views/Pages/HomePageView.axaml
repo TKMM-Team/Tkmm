@@ -82,12 +82,16 @@
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center"
                                    FontSize="14"
-                                   Text="{Binding Current.Mod.Author, StringFormat='By {0} and'}" />
-                        <ui:HyperlinkButton Margin="3,0,0,0"
-                                            Padding="1"
+                                   Text="{Binding Current.Mod.Author, StringFormat='By {0}'}" />
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="14"
+                                   IsVisible="{Binding Current.Mod.Contributors.Count}"
+                                   Text=" and " />
+                        <ui:HyperlinkButton Padding="1"
                                             Command="{Binding ShowContributorsCommand}"
                                             Content="Contributors"
-                                            FontSize="12" />
+                                            FontSize="12"
+                                            IsVisible="{Binding Current.Mod.Contributors.Count}" />
                     </StackPanel>
                     <ToggleButton Grid.RowSpan="2"
                                   Padding="8,4"
