@@ -73,7 +73,7 @@ public class ShellViewMenu
         Environment.Exit(0);
     }
 
-    [Menu("Import File", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
+    [Menu("Install File", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
     public static async Task ImportModFile()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "TKCL:*.tkcl|All Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
@@ -86,7 +86,7 @@ public class ShellViewMenu
         await ModHelper.Import(selectedFile);
     }
 
-    [Menu("Import Folder", "Mod", "Ctrl + Shift + I", "fa-regular fa-folder-open")]
+    [Menu("Install Folder", "Mod", "Ctrl + Shift + I", "fa-regular fa-folder-open")]
     public static async Task ImportModFolder()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
@@ -99,7 +99,7 @@ public class ShellViewMenu
         await ModHelper.Import(selectedFolder);
     }
 
-    [Menu("Import Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-keyboard")]
+    [Menu("Install from Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-keyboard")]
     public static async Task ImportArgument()
     {
         ContentDialog dialog = new() {
