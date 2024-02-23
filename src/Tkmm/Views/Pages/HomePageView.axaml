@@ -191,9 +191,7 @@
                     VerticalAlignment="Stretch"
                     Background="{DynamicResource SystemAccentColor}" />
 
-            <Grid Name="ModListGrid"
-                  Grid.RowSpan="4"
-                  Grid.Column="2">
+            <Grid Name="ModListGrid" Grid.Column="2">
                 <ListBox Classes="ModDragDropListBox"
                          DragDrop.AllowDrop="True"
                          ItemsSource="{Binding Current.Mods, Source={x:Static comp:ProfileManager.Shared}}"
@@ -216,7 +214,7 @@
                 </ListBox>
             </Grid>
 
-            <Grid Grid.Row="4"
+            <Grid Grid.Row="1"
                   Grid.Column="2"
                   HorizontalAlignment="Left">
                 <WrapPanel>
