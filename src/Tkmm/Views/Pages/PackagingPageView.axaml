@@ -85,7 +85,6 @@
 
                 <TextBox Text="{Binding Mod.Name}" Watermark="Name" />
                 <TextBox Text="{Binding Mod.Version}" Watermark="Version" />
-                <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
 
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBox Text="{Binding Mod.Author}" Watermark="Author" />
