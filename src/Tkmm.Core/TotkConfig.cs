@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
+using ConfigFactory.Core.Models;
 using System.Text.Json.Serialization;
 
 namespace Tkmm.Core;
@@ -51,6 +52,20 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     [JsonIgnore]
     public int Version => GetVersion(GamePath);
 
+    public TotkConfig()
+    {
+        OnSaving += () => {
+            if (Validate(out string? message, out ConfigProperty target) == false) {
+                AppStatus.Set($"Invalid setting, {target.Property.Name} is invalid.",
+                    "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
+                return false;
+            }
+
+            AppStatus.Reset();
+            return true;
+        };
+    }
+
     partial void OnGamePathChanged(string value)
     {
         Validate(() => GamePath, value => {
@@ -58,5 +73,4 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
                 && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"));
         });
     }
-
 }
