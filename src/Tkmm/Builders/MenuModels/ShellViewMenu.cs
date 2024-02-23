@@ -103,7 +103,7 @@ public class ShellViewMenu
     public static async Task ImportArgument()
     {
         ContentDialog dialog = new() {
-            Title = "Improt Argument",
+            Title = "Import Argument",
             Content = new TextBox {
                 Watermark = "Argument (File, Folder, URL, Mod ID)"
             },
