@@ -35,6 +35,7 @@ public partial class App : Application
     public static string ShortTitle { get; } = $"TKMM v{Version}";
     public static string ReleaseUrl { get; } = $"https://github.com/TKMM-Team/Tkmm/releases/{Version}";
     public static TopLevel? XamlRoot { get; private set; }
+    public static Exception? SettingsException { get; private set; }
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
@@ -104,11 +105,14 @@ public partial class App : Application
                 isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out message, out target);
                 settingsModel.Append<TotkConfig>();
 
-                if (target.Attribute is not null) {
+                if (!isValid &&  target.Attribute is not null) {
                     settingsModel.SelectedGroup = settingsModel.Categories
                         .Where(x => x.Header == target.Attribute.Category)
                         .SelectMany(x => x.Groups)
                         .FirstOrDefault(x => x.Header == target.Attribute.Group);
+
+                    AppStatus.Set($"Invalid setting, {target.Property.Name} is invalid.",
+                        "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 }
             }
 
