@@ -13,6 +13,8 @@ public class ModHelper
 
     static ModHelper()
     {
+        Mod.ResolveThumbnail = ResolveThumbnail;
+
         using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
         _defaultThumbnail = new Bitmap(stream);
     }

@@ -229,6 +229,9 @@
                 <TabItem Header="Preview">
                     <md:MarkdownScrollViewer Markdown="{Binding Mod.Description}" />
                 </TabItem>
+                <TabItem Header="Thumbnail">
+                    <Image Source="{Binding Mod.Thumbnail}" />
+                </TabItem>
             </TabControl>
         </Grid>
 

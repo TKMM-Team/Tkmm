@@ -10,6 +10,8 @@ namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem
 {
+    public static Func<Mod, Task>? ResolveThumbnail { get; set; }
+
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();
 
@@ -138,5 +140,12 @@ public partial class Mod : ObservableObject, IModItem
         }
 
         OptionGroups = [.. OptionGroups.OrderBy(x => x.Name)];
+    }
+
+    async partial void OnThumbnailUriChanged(string? value)
+    {
+        if (ResolveThumbnail?.Invoke(this) is Task task) {
+            await task;
+        }
     }
 }
