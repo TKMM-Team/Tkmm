@@ -94,7 +94,8 @@
                                   HorizontalAlignment="Right"
                                   Content="Show/Hide Options"
                                   FontWeight="Medium"
-                                  IsChecked="{Binding ShowOptions}" />
+                                  IsChecked="{Binding ShowOptions}"
+                                  IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
                 </Grid>
 
                 <Grid Name="ResizeGridTarget"
