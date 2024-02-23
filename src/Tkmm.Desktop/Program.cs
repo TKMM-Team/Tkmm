@@ -3,10 +3,9 @@ using Avalonia.Threading;
 using Cocona;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
-using Tkmm.Core;
 using Tkmm.Core.Commands;
 using Tkmm.Core.Components;
-using Tkmm.Core.Helpers.Win32;
+using Tkmm.Helpers;
 
 namespace Tkmm.Desktop;
 
@@ -22,7 +21,7 @@ class Program
             return;
         }
 
-        if (args.Length == 0) {
+        if (CheckArgs(args) == 0) {
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             return;
         }
@@ -34,7 +33,7 @@ class Program
 
     public static async Task Attach(string[] args)
     {
-        if (args.Length == 0) {
+        if (CheckArgs(args) == 0) {
             Dispatcher.UIThread.Invoke(App.Focus);
             return;
         }
@@ -44,6 +43,19 @@ class Program
         await app.RunAsync();
     }
 
+    private static int CheckArgs(string[] args)
+    {
+        int argc = args.Length;
+        foreach (string arg in args.Where(Path.Exists)) {
+            argc--;
+            _ = Task.Run(async () => {
+                await ModHelper.Import(arg);
+            });
+        }
+
+        return argc;
+    }
+
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
@@ -51,8 +63,8 @@ class Program
             .Register<FontAwesomeIconProvider>();
 
 #if DEBUG
-        if (OperatingSystem.IsWindows() && Config.Shared.ShowConsole == false) {
-            WindowsOperations.SetWindowMode(WindowMode.Hidden);
+        if (OperatingSystem.IsWindows() && Core.Config.Shared.ShowConsole == false) {
+            Core.Helpers.Win32.WindowsOperations.SetWindowMode(Core.Helpers.Win32.WindowMode.Hidden);
         }
 #endif
 
