@@ -25,7 +25,7 @@ public class TriviaService
                 }
 
                 int index = _random.Next(_unusedMessages.Count);
-                AppStatus.Set(string.Format(_unusedMessages[index], Config.Shared.DefaultAuthor), "fa-solid fa-code-merge");
+                AppStatus.Set(_unusedMessages[index], "fa-solid fa-code-merge");
                 _unusedMessages.RemoveAt(index);
             }
         }, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(3));
