@@ -74,7 +74,7 @@ public class MergerService
                 // Randomly select a string from the list each time
                 var randomMessage = statusMessages[random.Next(statusMessages.Count)];
                 AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge", logLevel: LogLevel.None);
-                await Task.Delay(5000);
+                await Task.Delay(3000);
             }
         });
 
