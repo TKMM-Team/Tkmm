@@ -1,4 +1,6 @@
-﻿using Tkmm.Core.Components;
+﻿using Octokit;
+using System.Security.Cryptography.X509Certificates;
+using Tkmm.Core.Components;
 using Tkmm.Core.Components.Mergers;
 using Tkmm.Core.Components.Mergers.Special;
 using Tkmm.Core.Components.Models;
@@ -26,7 +28,8 @@ public class MergerService
             .Reverse()
             .ToArray();
 
-        if (mods.Length <= 0) {
+        if (mods.Length <= 0)
+        {
             AppStatus.Set("Nothing to Merge", "fa-solid fa-code-merge",
                 isWorkingStatus: false, temporaryStatusTime: 1.5,
                 logLevel: LogLevel.Info);
@@ -34,22 +37,50 @@ public class MergerService
             return;
         }
 
-        AppStatus.Set($"Merging '{profile.Name}'", "fa-solid fa-code-merge");
+        // Define a list of strings for status messages
+        var statusMessages = new List<string> 
+        {
+        "HGStone Is Adding More Bacon...",
+        "Mind Is Partying With The Bokoblins...",
+        "Collin's headbutt is Super Effective! Need Xray!",
+        "Vintii Broke The Master Sword",
+        "5th Is Watching...",
+        "Bubbles is ensuring all bunnies are accounted for...",
+        "Link Is Running From Gloom Hands...",
+        "Ganondorf is doing the Suavamente...",
+        "Zelda is looming starward..."
+        };
 
-        if (Directory.Exists(output)) {
-            AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
-            Directory.Delete(output, true);
-        }
+        // Create a random object for selecting a random string
+        var random = new Random();
 
-        Directory.CreateDirectory(output);
-        await Task.Run(async () => {
+        // Start the merge process in a separate task
+        var mergeTask = Task.Run(async () => {
+            if (Directory.Exists(output))
+            {
+                AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
+                Directory.Delete(output, true);
+            }
+
+            Directory.CreateDirectory(output);
             await MergeAsync(mods, output);
         });
+
+        // Update the status every 5 seconds while the merge task is running
+        while (!mergeTask.IsCompleted)
+        {
+            // Randomly select a string from the list each time
+            var randomMessage = statusMessages[random.Next(statusMessages.Count)];
+            AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge");
+            await Task.Delay(5000);
+        }
 
         AppStatus.Set("Merge completed successfully", "fa-solid fa-list-check",
             isWorkingStatus: false, temporaryStatusTime: 1.5,
             logLevel: LogLevel.Info);
     }
+
+
 
     private static async Task MergeAsync(Mod[] mods, string output)
     {
