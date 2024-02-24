@@ -40,25 +40,13 @@ public partial class GameBananaPageViewModel : ObservableObject
         InitLoad();
     }
 
-    private void CheckForSecretCode(object sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(UserInput) && UserInput.ToUpper() == "SECRETNSFW")
-        {
-            // Reset the input to prevent repeated triggers
-            UserInput = string.Empty;
-
-            // Reload the mod list without filtering content-rated mods
-            ReloadModList(includeContentRated: true);
-        }
-    }
-
     [RelayCommand]
     public async Task Search(ScrollViewer modsViewer)
     {
         if (SearchArgument.ToUpper() == "SECRETNSFW")
         {
             _includeContentRated = true;
-            SearchArgument = string.Empty; // Optionally clear the search argument or leave it as is
+            SearchArgument = string.Empty;
         }
 
         Page = 0;
@@ -186,18 +174,13 @@ public partial class GameBananaPageViewModel : ObservableObject
                 !x.Full.IsTrashed &&
                 !x.Full.IsFlagged &&
                 !x.IsObsolete &&
-                (_includeContentRated || !x.IsContentRated) && // Use the flag here
+                (_includeContentRated || !x.IsContentRated) &&
                 !x.Full.IsPrivate
             )
         );
 
         _ = Task.Run(() => DownloadThumbnails(feed));
         return feed;
-    }
-
-    private async void ReloadModList(bool includeContentRated)
-    {
-        Feed = await Fetch(Page + 1, SearchArgument, includeContentRated);
     }
 
     private static async Task DownloadThumbnails(GameBananaFeed feed)
