@@ -34,52 +34,18 @@ public class MergerService
             return;
         }
 
-        // Define a list of strings for status messages
-        var statusMessages = new List<string>
-        {
-            "HGStone Is Adding More Bacon...",
-            "Mind Is Partying With The Bokoblins...",
-            "Collin's headbutt is Super Effective! Need Xray!",
-            "Vintii Broke The Master Sword...",
-            "5th Is Watching...",
-            "Bubbles is ensuring all bunnies are accounted for...",
-            "Running From Gloom Hands...",
-            "Dancing With Ganondorf (suavamente)...",
-            "Zelda is looming starward...",
-            "Echo is ranting about spear mult...",
-            "Updating the Purah Pad...",
-            "Roasting Koroks...",
-            "Cleaning up Malice...",
-            "Grinding for Zonaite...",
-            "Eating Dubious Food...",
-            "Taming Lynels"
-        };
+        if (Directory.Exists(output)) {
+            AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
+            Directory.Delete(output, true);
+        }
 
-        // Create a random object for selecting a random string
-        var random = new Random();
-
-        // Start the merge process in a separate task
-        var mergeTask = Task.Run(async () => {
-            if (Directory.Exists(output)) {
-                AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
-                Directory.Delete(output, true);
-            }
-
+        TriviaService.Start();
+        await Task.Run(async () => {
             Directory.CreateDirectory(output);
             await MergeAsync(mods, output);
         });
 
-        _ = Task.Run(async () => {
-            while (!mergeTask.IsCompleted) {
-                // Randomly select a string from the list each time
-                var randomMessage = statusMessages[random.Next(statusMessages.Count)];
-                AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge", logLevel: LogLevel.None);
-                await Task.Delay(3000);
-            }
-        });
-
-        await mergeTask;
-
+        TriviaService.Stop();
         AppStatus.Set("Merge completed successfully", "fa-solid fa-list-check",
             isWorkingStatus: false, temporaryStatusTime: 1.5,
             logLevel: LogLevel.Info);
