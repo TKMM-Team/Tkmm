@@ -37,22 +37,22 @@ public class MergerService
         // Define a list of strings for status messages
         var statusMessages = new List<string>
         {
-        "HGStone Is Adding More Bacon...",
-        "Mind Is Partying With The Bokoblins...",
-        "Collin's headbutt is Super Effective! Need Xray!",
-        "Vintii Broke The Master Sword...",
-        "5th Is Watching...",
-        "Bubbles is ensuring all bunnies are accounted for...",
-        "Running From Gloom Hands...",
-        "Dancing With Ganondorf (suavamente)...",
-        "Zelda is looming starward...",
-        "Echo is ranting about spear mult...",
-        "Updating the Purah Pad...",
-        "Roasting Koroks...",
-        "Cleaning up Malice...",
-        "Grinding for Zonaite...",
-        "Eating Dubious Food...",
-        "Taming Lynels"
+            "HGStone Is Adding More Bacon...",
+            "Mind Is Partying With The Bokoblins...",
+            "Collin's headbutt is Super Effective! Need Xray!",
+            "Vintii Broke The Master Sword...",
+            "5th Is Watching...",
+            "Bubbles is ensuring all bunnies are accounted for...",
+            "Running From Gloom Hands...",
+            "Dancing With Ganondorf (suavamente)...",
+            "Zelda is looming starward...",
+            "Echo is ranting about spear mult...",
+            "Updating the Purah Pad...",
+            "Roasting Koroks...",
+            "Cleaning up Malice...",
+            "Grinding for Zonaite...",
+            "Eating Dubious Food...",
+            "Taming Lynels"
         };
 
         // Create a random object for selecting a random string
@@ -69,13 +69,16 @@ public class MergerService
             await MergeAsync(mods, output);
         });
 
-        // Update the status every 5 seconds while the merge task is running
-        while (!mergeTask.IsCompleted) {
-            // Randomly select a string from the list each time
-            var randomMessage = statusMessages[random.Next(statusMessages.Count)];
-            AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge");
-            await Task.Delay(5000);
-        }
+        _ = Task.Run(async () => {
+            while (!mergeTask.IsCompleted) {
+                // Randomly select a string from the list each time
+                var randomMessage = statusMessages[random.Next(statusMessages.Count)];
+                AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge");
+                await Task.Delay(5000);
+            }
+        });
+
+        await mergeTask;
 
         AppStatus.Set("Merge completed successfully", "fa-solid fa-list-check",
             isWorkingStatus: false, temporaryStatusTime: 1.5,
