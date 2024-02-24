@@ -43,13 +43,19 @@ public class MergerService
         "HGStone Is Adding More Bacon...",
         "Mind Is Partying With The Bokoblins...",
         "Collin's headbutt is Super Effective! Need Xray!",
-        "Vintii Broke The Master Sword",
+        "Vintii Broke The Master Sword...",
         "5th Is Watching...",
         "Bubbles is ensuring all bunnies are accounted for...",
         "Link Is Running From Gloom Hands...",
         "Dancing With Ganondorf (suavamente)...",
         "Zelda is looming starward...",
-        "Echo is ranting about spear mult..."
+        "Echo is ranting about spear mult...",
+        "Updating the Purah Pad...",
+        "Roasting Koroks...",
+        "Cleaning up Malice...",
+        "Grinding for Zonaite...",
+        "Eating Dubious Food...",
+        "Taming Lynels"
         };
 
         // Create a random object for selecting a random string
