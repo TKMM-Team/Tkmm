@@ -47,8 +47,9 @@ public class MergerService
         "5th Is Watching...",
         "Bubbles is ensuring all bunnies are accounted for...",
         "Link Is Running From Gloom Hands...",
-        "Ganondorf is doing the Suavamente...",
-        "Zelda is looming starward..."
+        "Dancing With Ganondorf (suavamente)...",
+        "Zelda is looming starward...",
+        "Echo is ranting about spear mult..."
         };
 
         // Create a random object for selecting a random string
