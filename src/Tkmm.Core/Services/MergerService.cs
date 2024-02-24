@@ -1,6 +1,4 @@
-﻿using Octokit;
-using System.Security.Cryptography.X509Certificates;
-using Tkmm.Core.Components;
+﻿using Tkmm.Core.Components;
 using Tkmm.Core.Components.Mergers;
 using Tkmm.Core.Components.Mergers.Special;
 using Tkmm.Core.Components.Models;
@@ -28,8 +26,7 @@ public class MergerService
             .Reverse()
             .ToArray();
 
-        if (mods.Length <= 0)
-        {
+        if (mods.Length <= 0) {
             AppStatus.Set("Nothing to Merge", "fa-solid fa-code-merge",
                 isWorkingStatus: false, temporaryStatusTime: 1.5,
                 logLevel: LogLevel.Info);
@@ -38,7 +35,7 @@ public class MergerService
         }
 
         // Define a list of strings for status messages
-        var statusMessages = new List<string> 
+        var statusMessages = new List<string>
         {
         "HGStone Is Adding More Bacon...",
         "Mind Is Partying With The Bokoblins...",
@@ -63,8 +60,7 @@ public class MergerService
 
         // Start the merge process in a separate task
         var mergeTask = Task.Run(async () => {
-            if (Directory.Exists(output))
-            {
+            if (Directory.Exists(output)) {
                 AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
                 Directory.Delete(output, true);
             }
@@ -74,8 +70,7 @@ public class MergerService
         });
 
         // Update the status every 5 seconds while the merge task is running
-        while (!mergeTask.IsCompleted)
-        {
+        while (!mergeTask.IsCompleted) {
             // Randomly select a string from the list each time
             var randomMessage = statusMessages[random.Next(statusMessages.Count)];
             AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge");

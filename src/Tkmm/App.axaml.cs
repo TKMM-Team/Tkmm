@@ -105,7 +105,7 @@ public partial class App : Application
                 isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out message, out target);
                 settingsModel.Append<TotkConfig>();
 
-                if (!isValid &&  target.Attribute is not null) {
+                if (!isValid && target.Attribute is not null) {
                     settingsModel.SelectedGroup = settingsModel.Categories
                         .Where(x => x.Header == target.Attribute.Category)
                         .SelectMany(x => x.Groups)
