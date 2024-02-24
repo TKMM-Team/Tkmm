@@ -21,7 +21,7 @@ public class TkclModReader : IModReader
         if (archive.Entries.FirstOrDefault(x => x.Name == "info.json")?.Open() is Stream stream) {
             if (JsonSerializer.Deserialize<Mod>(stream) is Mod mod) {
                 string outputFolder = Path.Combine(Config.Shared.StorageFolder, "mods", mod.Id.ToString());
-                archive.ExtractToDirectory(outputFolder);
+                archive.ExtractToDirectory(outputFolder, overwriteFiles: true);
                 return Task.FromResult(mod);
             }
         }
