@@ -8,8 +8,6 @@ using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.GameBanana;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -30,11 +28,6 @@ public partial class GameBananaPageViewModel : ObservableObject
     [ObservableProperty]
     private GameBananaFeed _feed = new();
 
-    [ObservableProperty]
-    private string _userInput = string.Empty;
-
-    private bool _includeContentRated = false;
-
     public GameBananaPageViewModel()
     {
         InitLoad();
@@ -43,12 +36,6 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task Search(ScrollViewer modsViewer)
     {
-        if (SearchArgument.ToUpper() == "SECRETNSFW")
-        {
-            _includeContentRated = true;
-            SearchArgument = string.Empty;
-        }
-
         Page = 0;
         await UpdatePage();
         modsViewer.ScrollToHome();
@@ -82,19 +69,16 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public static async Task InstallMod(GameBananaModInfo mod)
     {
-        StackPanel panel = new()
-        {
+        StackPanel panel = new() {
             Spacing = 5
         };
 
-        panel.Children.Add(new TextBlock
-        {
+        panel.Children.Add(new TextBlock {
             Text = mod.Name,
             TextWrapping = Avalonia.Media.TextWrapping.Wrap
         });
 
-        panel.Children.Add(new TextBlock
-        {
+        panel.Children.Add(new TextBlock {
             Text = "Choose a file to install:",
             FontSize = 11,
             Margin = new(15, 10, 0, 0),
@@ -102,10 +86,8 @@ public partial class GameBananaPageViewModel : ObservableObject
         });
 
         bool first = true;
-        foreach (var file in mod.Full.Files)
-        {
-            panel.Children.Add(new RadioButton
-            {
+        foreach (var file in mod.Full.Files) {
+            panel.Children.Add(new RadioButton {
                 GroupName = "@",
                 Content = file.Name,
                 IsChecked = first,
@@ -115,22 +97,18 @@ public partial class GameBananaPageViewModel : ObservableObject
             first = false;
         }
 
-        ContentDialog dialog = new()
-        {
+        ContentDialog dialog = new() {
             Title = $"Install {mod.Name}?",
             Content = panel,
             SecondaryButtonText = "No",
             PrimaryButtonText = "Yes"
         };
 
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-        {
-            if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file)
-            {
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
+            if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
                 AppStatus.Set($"Installing '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
 
-                try
-                {
+                try {
                     await Task.Run(async () => {
                         ProfileManager.Shared.Mods.Add(
                             await mod.Full.FromFile(file)
@@ -139,8 +117,7 @@ public partial class GameBananaPageViewModel : ObservableObject
 
                     AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     App.ToastError(ex);
                     AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
                 }
@@ -155,10 +132,10 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private async Task UpdatePage()
     {
-        Feed = await Fetch(Page + 1, SearchArgument, _includeContentRated);
+        Feed = await Fetch(Page + 1, SearchArgument);
     }
 
-    private async Task<GameBananaFeed> Fetch(int page, string search, bool includeContentRated = false)
+    private static async Task<GameBananaFeed> Fetch(int page, string search)
     {
         string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
             ? string.Format(FEED_ENDPOINT_SEARCH, page, search)
@@ -169,15 +146,13 @@ public partial class GameBananaPageViewModel : ObservableObject
             ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
 
         await Task.WhenAll(feed.Records.Select(x => x.DownloadMod()));
-        feed.Records = new ObservableCollection<GameBananaModInfo>(
-            feed.Records.Where(x =>
-                !x.Full.IsTrashed &&
-                !x.Full.IsFlagged &&
-                !x.IsObsolete &&
-                (_includeContentRated || !x.IsContentRated) &&
-                !x.Full.IsPrivate
-            )
-        );
+        feed.Records = [.. feed.Records.Where(x =>
+            !x.Full.IsTrashed &&
+            !x.Full.IsFlagged &&
+            !x.IsObsolete &&
+            !x.IsContentRated &&
+            !x.Full.IsPrivate
+        )];
 
         _ = Task.Run(() => DownloadThumbnails(feed));
         return feed;
@@ -185,10 +160,8 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private static async Task DownloadThumbnails(GameBananaFeed feed)
     {
-        foreach (var mod in feed.Records)
-        {
-            if (mod.Media.Images.FirstOrDefault() is GameBananaImage img)
-            {
+        foreach (var mod in feed.Records) {
+            if (mod.Media.Images.FirstOrDefault() is GameBananaImage img) {
                 byte[] image = await _client
                     .GetByteArrayAsync($"{img.BaseUrl}/{img.SmallFile}");
                 using MemoryStream ms = new(image);
@@ -197,5 +170,3 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
     }
 }
-
-
