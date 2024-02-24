@@ -46,7 +46,7 @@ public class MergerService
         "Vintii Broke The Master Sword...",
         "5th Is Watching...",
         "Bubbles is ensuring all bunnies are accounted for...",
-        "Link Is Running From Gloom Hands...",
+        "Running From Gloom Hands...",
         "Dancing With Ganondorf (suavamente)...",
         "Zelda is looming starward...",
         "Echo is ranting about spear mult...",
