@@ -66,7 +66,7 @@ public partial class AppStatus : ObservableObject
             resetTimer.Start();
         }
 
-        if (!isResetStatus) {
+        if (!isResetStatus && logLevel is not LogLevel.None) {
             Trace.WriteLine($"[{logLevel}] {status}");
         }
     }

@@ -4,6 +4,7 @@ namespace Tkmm.Core;
 
 public enum LogLevel
 {
+    None,
     Default,
     Info,
     Debug,

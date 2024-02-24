@@ -73,7 +73,7 @@ public class MergerService
             while (!mergeTask.IsCompleted) {
                 // Randomly select a string from the list each time
                 var randomMessage = statusMessages[random.Next(statusMessages.Count)];
-                AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge");
+                AppStatus.Set($"{randomMessage}", "fa-solid fa-code-merge", logLevel: LogLevel.None);
                 await Task.Delay(5000);
             }
         });
