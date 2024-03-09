@@ -17,7 +17,7 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
     private string _description = string.Empty;
 
     [ObservableProperty]
-    private string? thumbnailUri;
+    private string? _thumbnailUri;
 
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
