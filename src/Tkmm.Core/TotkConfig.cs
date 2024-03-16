@@ -15,8 +15,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         EXEFS
     ];
 
-    public override string LocalPath
-        => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Totk", "config.json");
+    public override string Name => "totk";
 
     [ObservableProperty]
     [property: ConfigFactory.Core.Attributes.Config(
