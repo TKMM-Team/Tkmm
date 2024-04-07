@@ -13,6 +13,7 @@
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
                xmlns:vm="using:Tkmm.ViewModels"
                Title="{x:Static app:App.ShortTitle}"
+               Icon="avares://Tkmm/Assets/icon.ico"
                Width="850"
                Height="450"
                MinWidth="650"
