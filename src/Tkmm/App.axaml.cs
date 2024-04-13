@@ -94,18 +94,17 @@ public partial class App : Application
             ConfigPage settingsPage = new();
             bool isValid = false;
             string? message = string.Empty;
-            ConfigProperty target = new();
 
             if (settingsPage.DataContext is ConfigPageModel settingsModel) {
                 settingsModel.SecondaryButtonIsEnabled = false;
 
-                isValid = ConfigModule<Config>.Shared.Validate(out message, out target);
+                isValid = ConfigModule<Config>.Shared.Validate(out message, out ConfigProperty? target);
                 settingsModel.Append<Config>();
 
                 isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out message, out target);
                 settingsModel.Append<TotkConfig>();
 
-                if (!isValid && target.Attribute is not null) {
+                if (!isValid && target?.Attribute is not null) {
                     settingsModel.SelectedGroup = settingsModel.Categories
                         .Where(x => x.Header == target.Attribute.Category)
                         .SelectMany(x => x.Groups)
