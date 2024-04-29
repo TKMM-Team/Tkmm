@@ -33,7 +33,7 @@ public class ToolHelper
                     Could not parse deps, the JsonDeserializer returned null
                     """);
 
-            goto FillExcude;
+            goto FillExclude;
         }
 
         byte[] data = await GitHubOperations.GetAsset("TKMM-Team", ".github", "deps.json");
@@ -46,7 +46,7 @@ public class ToolHelper
             writer.Write(data);
         }
 
-    FillExcude:
+    FillExclude:
         var exclude = Deps
             .Select(x => x.Value.Exclude)
             .Aggregate<IEnumerable<string>>((x, y) => x.Concat(y))
@@ -95,7 +95,7 @@ public class ToolHelper
     {
         AppStatus.Set("Downloading dependencies", "fa-solid fa-download", isWorkingStatus: true);
 
-        if (Deps.Count <= 0) {
+        if (Deps.Count <= 0 || forceRefresh) {
             await LoadDeps(forceRefresh);
         }
 
