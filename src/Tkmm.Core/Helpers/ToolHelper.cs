@@ -106,7 +106,7 @@ public class ToolHelper
         Directory.CreateDirectory(_appsDir);
         foreach ((_, var dep) in Deps) {
             tasks.Add(Task.Run(async () => {
-                AppStatus.Set($"Downloading '{dep.Owner}/{dep.Repo}", "fa-solid fa-download", isWorkingStatus: true);
+                AppStatus.Set($"Downloading '{dep.Owner}/{dep.Repo}'", "fa-solid fa-download", isWorkingStatus: true);
                 await dep.Download();
                 updateProgress?.Invoke(inc);
             }));
