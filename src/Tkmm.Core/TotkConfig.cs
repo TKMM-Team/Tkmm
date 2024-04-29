@@ -54,7 +54,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     public TotkConfig()
     {
         OnSaving += () => {
-            if (Validate(out string? message, out ConfigProperty target) == false) {
+            if (Validate(out string? message, out ConfigProperty? target) == false) {
                 AppStatus.Set($"Invalid setting, {target.Property.Name} is invalid.",
                     "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 return false;

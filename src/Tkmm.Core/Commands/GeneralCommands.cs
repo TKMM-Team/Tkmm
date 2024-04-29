@@ -9,7 +9,7 @@ namespace Tkmm.Core.Commands;
 public class GeneralCommands
 {
     [Command("merge", Description = "Merge the mods from a profile into an output folder")]
-    public async Task Merge([Option("profile", ['p'])] string? profile, [Option("output", ['o'])] string? output)
+    public static async Task Merge([Option("profile", ['p'])] string? profile, [Option("output", ['o'])] string? output)
     {
         Profile? target = null;
         if (profile is not null) {
