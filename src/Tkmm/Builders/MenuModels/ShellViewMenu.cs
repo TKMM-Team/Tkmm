@@ -196,7 +196,7 @@ public class ShellViewMenu
     [Menu("Download Dependencies", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
     public static async Task DownloadDependencies()
     {
-        await ToolHelper.DownloadDependencies();
+        await ToolHelper.DownloadDependencies(forceRefresh: true);
         await AssetHelper.Download();
     }
 
