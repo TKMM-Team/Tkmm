@@ -8,7 +8,7 @@ using Tkmm.Core.Services;
 
 namespace Tkmm.Core.Models.Mods;
 
-public partial class Mod : ObservableObject, IModItem
+public partial class Mod : ObservableObject, IModItem, IReferenceItem
 {
     public static Func<Mod, Task>? ResolveThumbnail { get; set; }
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Components.Models;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Models.Mods;
 
@@ -82,18 +83,17 @@ public static class ModHelper
     private static async Task<Mod> ImportAsync(string arg)
     {
         Mod mod = await Mod.FromPath(arg);
-        if (!ProfileManager.Shared.Mods.TryInsert(mod)) {
-            ProfileManager.Shared.Current.Mods.Add(mod);
-        }
+        ProfileManager.Shared.Current.Mods.TryInsert(mod);
+        ProfileManager.Shared.Mods.TryInsert(mod);
 
         mod.RefreshOptions();
         return mod;
     }
 
-    private static bool TryInsert<T>(this ObservableCollection<T> items, T item) where T : IModItem
+    private static bool TryInsert<T>(this ObservableCollection<T> items, T item) where T : IReferenceItem
     {
         if (items.FirstOrDefault(x => x.Id == item.Id) is T match && items.IndexOf(match) is int index && index > -1) {
-            items.Insert(index, item);
+            items[index] = item;
             return true;
         }
 
