@@ -59,7 +59,7 @@ public class ShellViewMenu
         }
 
         if (selector.SelectedItem is DriveInfo drive) {
-            await MergerService.Merge();
+            await MergerOperations.Merge();
 
             string output = Path.Combine(drive.Name, "atmosphere", "contents", GAME_ID);
             DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output);
@@ -123,7 +123,7 @@ public class ShellViewMenu
     [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge", IsSeparator = true)]
     public static async Task MergeMods()
     {
-        await MergerService.Merge();
+        await MergerOperations.Merge();
     }
 
     [Menu("Show/Hide Console", "View", "Ctrl + F11", "fa-solid fa-terminal")]

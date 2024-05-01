@@ -50,7 +50,7 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static async Task Merge()
     {
-        await MergerService.Merge();
+        await MergerOperations.Merge();
     }
 
     [RelayCommand]
