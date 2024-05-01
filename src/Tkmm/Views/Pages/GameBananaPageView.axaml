@@ -16,71 +16,53 @@
         <pages:GameBananaPageViewModel />
     </UserControl.DataContext>
     <Grid Margin="15" RowDefinitions="Auto,*,Auto">
-		<Grid Margin="15" RowDefinitions="Auto,*,Auto">
-			<Grid.ColumnDefinitions>
-				<!-- Define columns with specific widths -->
-				<ColumnDefinition Width="Auto" />
-				<!-- For the TextBox -->
-				<ColumnDefinition Width="Auto" />
-				<!-- For the Search Button -->
-				<ColumnDefinition Width="Auto" />
-				<!-- For the Reset Button -->
-				<ColumnDefinition Width="*" />
-				<!-- Remaining space -->
-				<ColumnDefinition Width="Auto" />
-				<!-- For the Suggested Mods Button -->
-			</Grid.ColumnDefinitions>
+        <Grid Margin="15"
+              ColumnDefinitions="*,Auto,Auto,Auto"
+              RowDefinitions="Auto,*,Auto">
 
-			<!-- TextBox for search -->
-			<TextBox Grid.Column="0"
-					 VerticalAlignment="Center"
-					 KeyDown="TextBox_KeyDown"
-					 Text="{Binding SearchArgument}"
-					 Watermark="Search (must be more than 2 characters)"
-					 Margin="0,0,5,0" />
-			<!-- Added margin to separate from the search button -->
+            <TextBox Grid.Column="0"
+                     Margin="0,0,5,0"
+                     VerticalAlignment="Center"
+                     KeyDown="TextBox_KeyDown"
+                     Text="{Binding SearchArgument}"
+                     Watermark="Search (must be more than 2 characters)" />
 
-			<!-- Search Button -->
-			<Button Grid.Column="1"
-					Width="30"
-					Height="30"
-					Padding="0"
-					VerticalAlignment="Center"
-					Command="{Binding SearchCommand}"
-					CommandParameter="{Binding #ModsViewer}">
-				<pi:Icon Value="fa-solid fa-magnifying-glass" />
-			</Button>
+            <Button Grid.Column="1"
+                    Width="30"
+                    Height="30"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding SearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-solid fa-magnifying-glass" />
+            </Button>
 
-			<!-- Reset Button -->
-			<Button Grid.Column="2"
-					Width="30"
-					Height="30"
-					Padding="0"
-					Margin="5,0,5,0"
-				    VerticalAlignment="Center"
-				    Command="{Binding ResetSearchCommand}"
-				    CommandParameter="{Binding #ModsViewer}">
-				<pi:Icon Value="fa-regular fa-circle-xmark" />
-			</Button>
+            <Button Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Margin="5,0,5,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding ResetSearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-regular fa-circle-xmark" />
+            </Button>
 
-			<!-- Suggested Mods Button -->
-			<Button Grid.Column="4"
-				    Width="160"
-				    Height="35"
-				    HorizontalAlignment="Right"
-				    Margin="0,0,15,0"
-				    VerticalAlignment="Center"
-				    Command="{Binding ResetSearchCommand}"
-				    CommandParameter="{Binding #ModsViewer}">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Suggested Mods" Margin="5,0,6,0"/>
-					<pi:Icon Value="fa-solid fa-gift" Margin="0,0,6,0"/>
-				</StackPanel>
-			</Button>
-		</Grid>
+            <ToggleButton Grid.Column="4"
+                          Height="30"
+                          Padding="0"
+                          Command="{Binding ShowSuggestedCommand}"
+                          CommandParameter="{Binding #ModsViewer}"
+                          IsChecked="{Binding IsShowingSuggested}">
+                <StackPanel Margin="7,0" Orientation="Horizontal">
+                    <TextBlock Margin="0,0,7,0" Text="Suggested Mods" />
+                    <pi:Icon Value="fa-solid fa-gift" />
+                </StackPanel>
+            </ToggleButton>
+        </Grid>
 
 
-		<ScrollViewer Name="ModsViewer"
+        <ScrollViewer Name="ModsViewer"
                       Grid.Row="1"
                       IsScrollInertiaEnabled="True">
             <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">

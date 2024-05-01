@@ -34,10 +34,10 @@ public partial class GameBananaModInfo : ObservableObject
     private object? _thumbnail = null;
 
     [JsonIgnore]
-    public GameBananaMod Full { get; set; } = new();
+    public GameBananaMod? Full { get; set; } = new();
 
     [RelayCommand]
-    public async Task DownloadMod()
+    public async Task FetchMetadata()
     {
         Full = await GameBananaMod.DownloadMetaData(Id.ToString());
     }

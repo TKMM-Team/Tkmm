@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using System.Diagnostics;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -19,11 +20,24 @@ public partial class GameBananaPageViewModel : ObservableObject
     private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_csvModelInclusions=Mod";
     private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sName={{1}}&_csvModelInclusions=Mod";
 
+    private static readonly GameBananaFeed _sugesstedModsFeed;
+
+    static GameBananaPageViewModel()
+    {
+        string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
+        using FileStream fs = File.OpenRead(path);
+        _sugesstedModsFeed = JsonSerializer.Deserialize<GameBananaFeed>(fs)
+            ?? new();
+    }
+
     [ObservableProperty]
     private string _searchArgument = string.Empty;
 
     [ObservableProperty]
     private int _page = 0;
+
+    [ObservableProperty]
+    private bool _isShowingSuggested = false;
 
     [ObservableProperty]
     private GameBananaFeed _feed = new();
@@ -67,6 +81,18 @@ public partial class GameBananaPageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task ShowSuggested(ScrollViewer modsViewer)
+    {
+        if (IsShowingSuggested == false) {
+            await UpdatePage();
+            modsViewer.ScrollToHome();
+            return;
+        }
+
+        await UpdatePage(_sugesstedModsFeed);
+    }
+
+    [RelayCommand]
     public static async Task InstallMod(GameBananaModInfo mod)
     {
         StackPanel panel = new() {
@@ -84,6 +110,8 @@ public partial class GameBananaPageViewModel : ObservableObject
             Margin = new(15, 10, 0, 0),
             TextWrapping = Avalonia.Media.TextWrapping.Wrap
         });
+
+        ArgumentNullException.ThrowIfNull(mod.Full);
 
         bool first = true;
         foreach (var file in mod.Full.Files) {
@@ -130,28 +158,28 @@ public partial class GameBananaPageViewModel : ObservableObject
         await UpdatePage();
     }
 
-    private async Task UpdatePage()
+    private async Task UpdatePage(GameBananaFeed? customFeed = null)
     {
-        Feed = await Fetch(Page + 1, SearchArgument);
+        Feed = await Fetch(Page + 1, SearchArgument, customFeed);
     }
 
-    private static async Task<GameBananaFeed> Fetch(int page, string search)
+    private static async Task<GameBananaFeed> Fetch(int page, string search, GameBananaFeed? customFeed = null)
     {
         string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
             ? string.Format(FEED_ENDPOINT_SEARCH, page, search)
             : string.Format(FEED_ENDPOINT, page);
 
         using Stream stream = await GameBananaHelper.Get(endpoint);
-        GameBananaFeed feed = JsonSerializer.Deserialize<GameBananaFeed>(stream)
+        GameBananaFeed feed = customFeed ?? JsonSerializer.Deserialize<GameBananaFeed>(stream)
             ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
 
-        await Task.WhenAll(feed.Records.Select(x => x.DownloadMod()));
+        await Task.WhenAll(feed.Records.Select(x => x.FetchMetadata()));
         feed.Records = [.. feed.Records.Where(x =>
-            !x.Full.IsTrashed &&
-            !x.Full.IsFlagged &&
-            !x.IsObsolete &&
-            !x.IsContentRated &&
-            !x.Full.IsPrivate
+            x.Full?.IsTrashed == false &&
+            x.Full?.IsFlagged == false &&
+            x.IsObsolete == false &&
+            x.IsContentRated == false &&
+            x.Full?.IsPrivate == false
         )];
 
         _ = Task.Run(() => DownloadThumbnails(feed));
