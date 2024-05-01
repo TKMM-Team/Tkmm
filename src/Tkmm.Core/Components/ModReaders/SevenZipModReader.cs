@@ -27,7 +27,7 @@ public class SevenZipModReader : IModReader
         string? root = null;
 
         foreach (var entry in archive.Entries) {
-            if (ArchiveModReader.ProcessArchiveEntry(entry, ref root) && root is not null) {
+            if (ArchiveModReader.ProcessArchiveEntry(entry, ref root) && root is not null && entry.Key is not null) {
                 string output = Path.Combine(tmpOutputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
                 if (Path.GetDirectoryName(output) is string absoluteOutputFolder) {
                     Directory.CreateDirectory(absoluteOutputFolder);
