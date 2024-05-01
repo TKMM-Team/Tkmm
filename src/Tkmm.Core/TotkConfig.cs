@@ -2,6 +2,7 @@
 using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
 using System.Text.Json.Serialization;
+using TotkCommon;
 
 namespace Tkmm.Core;
 
@@ -68,8 +69,12 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     partial void OnGamePathChanged(string value)
     {
         Validate(() => GamePath, value => {
-            return value is not null
-                && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"));
+            if (value is not null && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"))) {
+                Totk.Zstd.LoadDictionaries(ZsDicPath);
+                return true;
+            }
+
+            return false;
         });
     }
 }
