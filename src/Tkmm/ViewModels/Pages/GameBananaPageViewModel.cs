@@ -20,14 +20,17 @@ public partial class GameBananaPageViewModel : ObservableObject
     private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_csvModelInclusions=Mod";
     private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sName={{1}}&_csvModelInclusions=Mod";
 
-    private static readonly GameBananaFeed _sugesstedModsFeed;
+    private static readonly GameBananaFeed? _sugesstedModsFeed;
 
     static GameBananaPageViewModel()
     {
         string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
-        using FileStream fs = File.OpenRead(path);
-        _sugesstedModsFeed = JsonSerializer.Deserialize<GameBananaFeed>(fs)
-            ?? new();
+        if (File.Exists(path)) {
+            using FileStream fs = File.OpenRead(path);
+            _sugesstedModsFeed = JsonSerializer.Deserialize<GameBananaFeed>(fs);
+        }
+
+        _sugesstedModsFeed ??= new();
     }
 
     [ObservableProperty]
