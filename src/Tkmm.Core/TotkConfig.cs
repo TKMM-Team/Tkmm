@@ -16,6 +16,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         EXEFS
     ];
 
+    [JsonIgnore]
     public override string Name => "totk";
 
     [ObservableProperty]
