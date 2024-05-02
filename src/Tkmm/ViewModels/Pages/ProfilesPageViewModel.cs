@@ -101,7 +101,7 @@ public partial class ProfilesPageViewModel : ObservableObject
         int currentIndex = ProfileManager.Shared.Profiles.IndexOf(ProfileManager.Shared.Current);
         ProfileManager.Shared.Profiles.RemoveAt(currentIndex);
         ProfileManager.Shared.Current = ProfileManager.Shared.Profiles[currentIndex == ProfileManager.Shared.Profiles.Count
-            ? --currentIndex : ++currentIndex
+            ? --currentIndex : currentIndex
         ];
     }
 }
