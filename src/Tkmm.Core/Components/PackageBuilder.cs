@@ -5,6 +5,7 @@ using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
+using TKMM.SarcTool.Core;
 
 namespace Tkmm.Core.Components;
 
@@ -79,22 +80,17 @@ public class PackageBuilder
                 ).WaitForExitAsync(),
 
             // SARC
-            Task.Run(async () => {
-                await ToolHelper.Call(Tool.SarcTool,
-                        "assemble",
-                        "--mod", sourceFolder
-                    ).WaitForExitAsync();
+            Task.Run(() => {
+                SarcAssembler assembler = new(sourceFolder);
+                assembler.Assemble();
 
-                await ToolHelper.Call(Tool.SarcTool,
-                        "package",
-                        "--mod", sourceFolder,
-                        "--output", outputFolder
-                    ).WaitForExitAsync();
+                SarcPackager packager = new(outputFolder, sourceFolder);
+                packager.Package();
             }),
 
             // General
             Task.Run(() => {
-                AppStatus.Set("Copying file-system folders", COPY_ICON);
+                AppStatus.Set("Copying ROMFS", COPY_ICON);
                 foreach (var folder in TotkConfig.FileSystemFolders) {
                     string inputFsFolder = Path.Combine(sourceFolder, folder);
 
