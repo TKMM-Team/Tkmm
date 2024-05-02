@@ -105,7 +105,7 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ImportInfo()
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Import Mod Info", "JSON Metadata:info.json|Mod Archive:*.tkcl");
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Import Mod Info", "Mods:info.json;*.tkcl|JSON Metadata:info.json|Mod Archive:*.tkcl");
         if (await dialog.ShowDialog() is string result) {
             Stream? stream;
             if (result.EndsWith("info.json")) {
