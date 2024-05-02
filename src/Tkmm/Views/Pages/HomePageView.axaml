@@ -240,6 +240,12 @@
                             <TextBlock Margin="10,0,0,0" Text="Merge" />
                         </StackPanel>
                     </Button>
+                    <Button Margin="2.5" Command="{Binding InstallCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <pi:Icon Value="fa-solid fa-file-import" />
+                            <TextBlock Margin="10,0,0,0" Text="Install" />
+                        </StackPanel>
+                    </Button>
                 </WrapPanel>
             </Grid>
         </Grid>

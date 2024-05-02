@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using System.Collections;
+using Tkmm.Builders.MenuModels;
 using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Services;
@@ -51,6 +52,12 @@ public partial class HomePageViewModel : ObservableObject
     private static async Task Merge()
     {
         await MergerOperations.Merge();
+    }
+
+    [RelayCommand]
+    private static async Task Install()
+    {
+        await ShellViewMenu.ImportModFile();
     }
 
     [RelayCommand]
