@@ -14,11 +14,11 @@
     <PackageReference Include="Octokit" Version="11.0.1" />
     <PackageReference Include="ReverseMarkdown" Version="4.3.0" />
     <PackageReference Include="SharpCompress" Version="0.37.2" />
-    <PackageReference Include="TKMM.SarcTool.Core" Version="1.0.0-beta.16" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\MalsMerger\src\MalsMerger.Core\MalsMerger.Core.csproj" />
+    <ProjectReference Include="..\..\lib\TKMM-SARC\TKMM.SarcTool.Core\TKMM.SarcTool.Core.csproj" />
     <ProjectReference Include="..\..\lib\TotK-RstbCalculator\src\TotkRstbGenerator.Core\TotkRstbGenerator.Core.csproj" />
   </ItemGroup>
 

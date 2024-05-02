@@ -4,3 +4,6 @@
 [submodule "lib/TotK-RstbCalculator"]
 	path = lib/TotK-RstbCalculator
 	url = https://github.com/ArchLeaders/TotK-RstbCalculator
+[submodule "lib/TKMM-SARC"]
+	path = lib/TKMM-SARC
+	url = https://github.com/okmika/TKMM-SARC
