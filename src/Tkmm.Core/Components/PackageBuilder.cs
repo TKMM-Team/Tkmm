@@ -84,7 +84,7 @@ public class PackageBuilder
                 SarcAssembler assembler = new(sourceFolder);
                 assembler.Assemble();
 
-                SarcPackager packager = new(outputFolder, sourceFolder);
+                SarcPackager packager = new(outputFolder, Path.Combine(sourceFolder, "romfs"));
                 packager.Package();
             }),
 
