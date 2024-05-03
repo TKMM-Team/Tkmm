@@ -9,6 +9,7 @@ using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.GameBanana;
+using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -141,9 +142,9 @@ public partial class GameBananaPageViewModel : ObservableObject
 
                 try {
                     await Task.Run(async () => {
-                        ProfileManager.Shared.Mods.Add(
-                            await mod.Full.FromFile(file)
-                        );
+                        Mod result = await mod.Full.FromFile(file);
+                        ProfileManager.Shared.Mods.Add(result);
+                        ProfileManager.Shared.Current.Mods.Add(result);
                     });
 
                     AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
