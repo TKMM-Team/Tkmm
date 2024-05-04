@@ -61,7 +61,7 @@ public class PackageBuilder
 
     private static List<Task> CopyContentsInternal<T>(T item, string sourceFolder, string outputFolder) where T : IModItem
     {
-        AppStatus.Set($"Copying '{item.Name}'", COPY_ICON);
+        AppStatus.Set($"Generating changelogs for '{item.Name}'", COPY_ICON);
 
         List<Task> tasks = [
 
@@ -90,14 +90,13 @@ public class PackageBuilder
 
             // General
             Task.Run(() => {
-                AppStatus.Set("Copying ROMFS", COPY_ICON);
                 foreach (var folder in TotkConfig.FileSystemFolders) {
                     string inputFsFolder = Path.Combine(sourceFolder, folder);
 
                     if (Directory.Exists(inputFsFolder)) {
                         DirectoryOperations.CopyDirectory(
                             inputFsFolder, Path.Combine(outputFolder, folder),
-                            [..ToolHelper.ExcludeFiles, ".rsizetable"], [..ToolHelper.ExcludeFolders,"Mals"],
+                            [..ToolHelper.ExcludeFiles, ".ini", ".rsizetable"], [..ToolHelper.ExcludeFolders, "Mals"],
                             overwrite: true
                         );
                     }
