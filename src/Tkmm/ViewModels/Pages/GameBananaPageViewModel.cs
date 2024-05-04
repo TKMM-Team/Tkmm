@@ -138,7 +138,7 @@ public partial class GameBananaPageViewModel : ObservableObject
 
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
             if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
-                AppStatus.Set($"Installing '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
+                AppStatus.Set($"Downloading '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
 
                 try {
                     await Task.Run(async () => {
