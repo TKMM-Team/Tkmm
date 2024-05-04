@@ -81,10 +81,10 @@ public class PackageBuilder
 
             // SARC
             Task.Run(() => {
-                SarcAssembler assembler = new(sourceFolder);
+                SarcAssembler assembler = new(Path.Combine(sourceFolder, "romfs"));
                 assembler.Assemble();
 
-                SarcPackager packager = new(outputFolder, sourceFolder);
+                SarcPackager packager = new(Path.Combine(outputFolder, "romfs"), Path.Combine(sourceFolder, "romfs"));
                 packager.Package();
             }),
 
