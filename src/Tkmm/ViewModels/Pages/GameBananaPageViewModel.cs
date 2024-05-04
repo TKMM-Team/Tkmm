@@ -62,6 +62,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task ResetSearch(ScrollViewer modsViewer)
     {
+        IsShowingSuggested = false;
         Page = 0;
         SearchArgument = string.Empty;
         await UpdatePage();
