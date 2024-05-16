@@ -66,7 +66,6 @@ class Program
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseManagedSystemDialogs()
-            .WithInterFont()
-            .LogToTrace();
+            .WithInterFont();
     }
 }
