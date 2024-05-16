@@ -63,12 +63,6 @@ class Program
         IconProvider.Current
             .Register<FontAwesomeIconProvider>();
 
-#if DEBUG
-        if (OperatingSystem.IsWindows() && Core.Config.Shared.ShowConsole == false) {
-            Core.Helpers.Win32.WindowsOperations.SetWindowMode(Core.Helpers.Win32.WindowMode.Hidden);
-        }
-#endif
-
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .UseManagedSystemDialogs()

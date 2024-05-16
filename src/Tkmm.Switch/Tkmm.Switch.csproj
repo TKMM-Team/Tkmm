@@ -5,8 +5,8 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-	  <ApplicationIcon>icon.ico</ApplicationIcon>
-	  <ImplicitUsings>enable</ImplicitUsings>
+	<ApplicationIcon>icon.ico</ApplicationIcon>
+	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
