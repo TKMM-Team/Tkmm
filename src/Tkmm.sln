@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TKMM-SARC", "TKMM-SARC", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TKMM.SarcTool.Core", "..\lib\TKMM-SARC\TKMM.SarcTool.Core\TKMM.SarcTool.Core.csproj", "{9AD4B3F1-C822-4546-88DE-36179D1AFD90}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Switch", "Tkmm.Switch\Tkmm.Switch.csproj", "{E39A7115-A72A-4B4E-9635-BDBA4B08B719}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
