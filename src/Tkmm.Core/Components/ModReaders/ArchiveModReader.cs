@@ -31,7 +31,7 @@ public class ArchiveModReader : IModReader
         while (reader.MoveToNextEntry()) {
             IEntry entry = reader.Entry;
             if (ProcessArchiveEntry(entry, ref root) && root is not null && entry.Key is not null) {
-                string output = Path.Combine(tmpOutputFolder, Path.GetRelativePath(root, entry.Key.Trim('/', '\\')));
+                string output = Path.Combine(tmpOutputFolder, entry.Key[root.Length..].Trim('/', '\\'));
                 if (Path.GetDirectoryName(output) is string absoluteOutputFolder) {
                     Directory.CreateDirectory(absoluteOutputFolder);
                 }
