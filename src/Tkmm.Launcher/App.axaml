@@ -11,7 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <FontFamily x:Key="UbuntuMono">avares://Tkmm.Launcher/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
-                    <FontFamily x:Key="HyliaGlyph">avares://Tkmm.Launcher/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2 Deco</FontFamily>
+                    <FontFamily x:Key="HyliaGlyph">avares://Tkmm.Launcher/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2, Deco</FontFamily>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
