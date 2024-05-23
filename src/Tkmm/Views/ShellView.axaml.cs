@@ -1,3 +1,5 @@
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Helpers;
 using Tkmm.Models;
@@ -13,6 +15,9 @@ public partial class ShellView : AppWindow
 
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
+
+        Bitmap bitmap = new(AssetLoader.Open(new Uri("avares://Tkmm/Assets/icon.ico")));
+        Icon = bitmap.CreateScaledBitmap(new(48, 48), BitmapInterpolationMode.HighQuality);
 
         PageManager.Shared.PropertyChanged += (s, e) => {
             if (e.PropertyName == nameof(PageManager.Current)) {
