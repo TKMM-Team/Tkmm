@@ -1,4 +1,5 @@
 ﻿using MalsMerger.Core;
+using RsdbMerger.Core.Services;
 using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Generics;
@@ -63,27 +64,30 @@ public class PackageBuilder
     {
         AppStatus.Set($"Generating changelogs for '{item.Name}'", COPY_ICON);
 
+        string inputRomfs = Path.Combine(sourceFolder, TotkConfig.ROMFS);
+        string outputRomfs = Path.Combine(outputFolder, TotkConfig.ROMFS);
+
         List<Task> tasks = [
 
             // Mals
             Task.Run(() => {
                 if (Directory.Exists(Path.Combine(sourceFolder, TotkConfig.ROMFS, "Mals"))) {
-                    Merger malsMerger = new([Path.Combine(sourceFolder, TotkConfig.ROMFS)], Path.Combine(outputFolder, TotkConfig.ROMFS), null);
+                    Merger malsMerger = new([inputRomfs], outputRomfs, null);
                     malsMerger.GenerateChangelogs(format: false);
                 }
             }),
 
             // RSDB
-            ToolHelper.Call(Tool.RsdbMerger,
-                    "--generate-changelog", Path.Combine(sourceFolder, "romfs", "RSDB"),
-                    "--output", outputFolder
-                ).WaitForExitAsync(),
+            Task.Run(async () => {
+                RsdbChangelogService changelogService = new(inputRomfs, outputRomfs);
+                await changelogService.CreateChangelogsAsync();
+            }),
 
             // SARC
             Task.Run(() => {
                 SarcAssembler assembler = new(Path.Combine(sourceFolder, "romfs"));
                 assembler.Assemble();
-
+            
                 SarcPackager packager = new(Path.Combine(outputFolder, "romfs"), Path.Combine(sourceFolder, "romfs"));
                 packager.Package();
             }),
@@ -116,6 +120,8 @@ public class PackageBuilder
                 }
             }
         }
+
+        AppStatus.Set("Waiting for build processes", COPY_ICON);
 
         return tasks;
     }
