@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Models.Mods;
@@ -20,6 +21,7 @@ public partial class ProfileMod : ObservableObject, IReferenceItem
     public ProfileMod(Mod mod)
     {
         Id = mod.Id;
+        PropertyChanged += AppWhenPropertyChanged;
     }
 
     [JsonConstructor]
@@ -27,6 +29,7 @@ public partial class ProfileMod : ObservableObject, IReferenceItem
     {
         Id = id;
         IsEnabled = isEnabled;
+        PropertyChanged += AppWhenPropertyChanged;
     }
 
     public override bool Equals(object? obj)
@@ -42,5 +45,12 @@ public partial class ProfileMod : ObservableObject, IReferenceItem
     public override int GetHashCode()
     {
         return Id.GetHashCode();
+    }
+
+    private static void AppWhenPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IsEnabled)) {
+            ProfileManager.Shared.Apply();
+        }
     }
 }
