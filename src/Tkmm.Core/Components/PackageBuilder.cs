@@ -1,7 +1,9 @@
-﻿using MalsMerger.Core;
+﻿using CommunityToolkit.HighPerformance;
+using MalsMerger.Core;
 using RsdbMerger.Core.Services;
 using System.IO.Compression;
 using System.Text.Json;
+using Tkmm.Core.Components.ModReaders;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
@@ -129,6 +131,8 @@ public class PackageBuilder
     public static void Package(string inputFolder, string outputFile)
     {
         using FileStream fs = File.Create(outputFile);
+        fs.Write(TkclModReader.MAGIC);
+        fs.Write(TkclModReader.VERSION);
         ZipFile.CreateFromDirectory(inputFolder, fs);
     }
 }

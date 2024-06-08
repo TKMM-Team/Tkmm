@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using CommunityToolkit.HighPerformance;
+using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
@@ -7,6 +8,9 @@ namespace Tkmm.Core.Components.ModReaders;
 
 public class TkclModReader : IModReader
 {
+    internal const int MAGIC = 0x4C434B54;
+    internal const int VERSION = 1;
+
     public bool IsValid(string file)
     {
         return Path.GetExtension(file) == ".tkcl";
@@ -15,6 +19,18 @@ public class TkclModReader : IModReader
     public Task<Mod> Read(Stream? input, string file)
     {
         ArgumentNullException.ThrowIfNull(input);
+
+        if (input.Read<int>() != MAGIC) {
+            throw new InvalidOperationException("""
+                Invalid TKCL magic.
+                """);
+        }
+
+        if (input.Read<int>() != VERSION) {
+            throw new InvalidOperationException("""
+                Unexpected TKCL version.
+                """);
+        }
 
         using ZipArchive archive = new(input, mode: ZipArchiveMode.Read, leaveOpen: true);
 
