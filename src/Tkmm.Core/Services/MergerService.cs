@@ -2,6 +2,7 @@
 using Tkmm.Core.Components.Mergers;
 using Tkmm.Core.Components.Mergers.Special;
 using Tkmm.Core.Components.Models;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Services;
@@ -36,7 +37,7 @@ public class MergerService
 
         if (Directory.Exists(output)) {
             AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
-            Directory.Delete(output, true);
+            DirectoryOperations.DeleteContents(output, recursive: true);
         }
 
         TriviaService.Start();

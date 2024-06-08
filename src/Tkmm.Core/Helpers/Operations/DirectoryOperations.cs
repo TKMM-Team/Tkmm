@@ -4,6 +4,13 @@ public static class DirectoryOperations
 {
     private const string ZS_EXT = ".zs";
 
+    public static void DeleteContents(string src, bool recursive)
+    {
+        foreach (string directory in Directory.EnumerateDirectories(src)) {
+            Directory.Delete(directory, recursive);
+        }
+    }
+
     public static void CopyDirectory(string src, string dst, bool overwrite = false)
     {
         Directory.CreateDirectory(dst);
