@@ -81,8 +81,6 @@ public partial class ProfileManager : ObservableObject
             CurrentIndex = Profiles.IndexOf(Current),
             Profiles = Profiles
         });
-
-        AppLog.Log("Profiles updated", LogLevel.Info);
     }
 
     partial void OnCurrentChanged(Profile value)
