@@ -33,7 +33,7 @@ public class ContentMerger : IMerger
 
     private static void CopyContents(string sourceFolder, string output)
     {
-        foreach (var folder in TotkConfig.FileSystemFolders) {
+        foreach (string folder in TotkConfig.FileSystemFolders) {
             string srcFolder = Path.Combine(sourceFolder, folder);
             if (Directory.Exists(srcFolder)) {
                 DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(output, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);
