@@ -81,10 +81,18 @@ public partial class GameBananaMod : ObservableObject
             }
         }
 
+        string thumbnailUrl = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}";
+        using Stream thumbnailHttpStream = await client.GetStreamAsync(thumbnailUrl);
+
+        string thumbnailPath = Path.Combine(mod.SourceFolder, PackageBuilder.THUMBNAIL);
+        using (FileStream thumbnailFileStream = File.Create(thumbnailPath)) {
+            await thumbnailHttpStream.CopyToAsync(thumbnailFileStream);
+        }
+
         mod.Name = Name;
         mod.Author = Submitter.Name;
         mod.Description = new ReverseMarkdown.Converter().Convert(Text);
-        mod.ThumbnailUri = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}";
+        mod.ThumbnailUri = PackageBuilder.THUMBNAIL;
         mod.Contributors = contributors;
         mod.Version = Version;
 
