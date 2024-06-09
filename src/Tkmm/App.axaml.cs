@@ -30,7 +30,9 @@ public partial class App : Application
 {
     private static WindowNotificationManager? _notificationManager;
 
-    public static string? Version { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+    public static readonly string Version = typeof(App).Assembly
+        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+        .InformationalVersion.Split('+')[0] ?? "Undefined Version";
     public static string Title { get; } = $"TotK Mod Manager";
     public static string ShortTitle { get; } = $"TKMM v{Version}";
     public static string ReleaseUrl { get; } = $"https://github.com/TKMM-Team/Tkmm/releases/{Version}";
