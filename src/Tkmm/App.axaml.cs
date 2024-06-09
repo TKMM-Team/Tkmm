@@ -23,6 +23,7 @@ using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
+using TotkCommon;
 
 namespace Tkmm;
 
@@ -169,7 +170,11 @@ public partial class App : Application
     public static void LogTkmmInfo()
     {
         AppLog.Log($"App Version: '{Version}'", LogLevel.Info);
+
         AppLog.Log($"Configured GamePath: '{TotkConfig.Shared.GamePath}'", LogLevel.Info);
         AppLog.Log($"ZsDic Exists: '{File.Exists(TotkConfig.Shared.ZsDicPath)}'", LogLevel.Info);
+
+        AppLog.Log($"TotkCommon Configured GamePath: '{Totk.Config.GamePath}'", LogLevel.Info);
+        AppLog.Log($"TotkCommon ZsDic Exists: '{File.Exists(Totk.Config.ZsDicPath)}'", LogLevel.Info);
     }
 }
