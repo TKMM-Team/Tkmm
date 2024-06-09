@@ -119,7 +119,10 @@ public partial class App : Application
             PageManager.Shared.Register(Page.Profiles, "Profiles", new ProfilesPageView(), Symbol.OtherUser, "Manage mod profiles");
             PageManager.Shared.Register(Page.Tools, "TKCL Packager", new PackagingPageView(), Symbol.CodeHTML, "Mod developer tools");
             PageManager.Shared.Register(Page.ShopParam, "ShopParam Overflow Editor", new ShopParamPageView(), Symbol.Sort, "ShopParam overflow ordering tools");
-            PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
+
+            if (GameBananaHelper.IsOnline) {
+                PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
+            }
 
             PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);

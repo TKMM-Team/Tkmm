@@ -1,7 +1,21 @@
-﻿namespace Tkmm.Core.Helpers;
+﻿using System.Net.NetworkInformation;
+
+namespace Tkmm.Core.Helpers;
 
 public static class GameBananaHelper
 {
+    public static bool IsOnline {
+        get {
+            try {
+                return new Ping()
+                    .Send("www.google.com", 500).Status == IPStatus.Success;
+            }
+            catch {
+                return false;
+            }
+        }
+    }
+
     private const string BASE_URL = "https://gamebanana.com/apiv11";
     private static readonly HttpClient _client = new();
 
