@@ -2,8 +2,8 @@
 using Tkmm.Core.Components.Mergers;
 using Tkmm.Core.Components.Mergers.Special;
 using Tkmm.Core.Components.Models;
+using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers.Operations;
-using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Services;
 
@@ -21,9 +21,9 @@ public class MergerService
     public static async Task Merge(Profile profile) => await Merge(profile, Config.Shared.MergeOutput);
     public static async Task Merge(Profile profile, string output)
     {
-        Mod[] mods = profile.Mods
+        IModItem[] mods = profile.Mods
             .Where(x => x.IsEnabled && x.Mod is not null)
-            .Select(x => x.Mod!)
+            .SelectMany(x => x.Mod!.SelectModRecursive())
             .Reverse()
             .ToArray();
 
@@ -52,9 +52,7 @@ public class MergerService
             logLevel: LogLevel.Info);
     }
 
-
-
-    private static async Task MergeAsync(Mod[] mods, string output)
+    private static async Task MergeAsync(IModItem[] mods, string output)
     {
         Task[] tasks = new Task[_mergers.Length];
         for (int i = 0; i < tasks.Length; i++) {

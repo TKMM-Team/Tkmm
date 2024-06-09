@@ -142,6 +142,14 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
         OptionGroups = [.. OptionGroups.OrderBy(x => x.Name)];
     }
 
+    /// <summary>
+    /// Recursively selects the <see cref="Mod"/> and it's selected mod options.
+    /// </summary>
+    public IEnumerable<IModItem> SelectModRecursive()
+    {
+        return [this, ..OptionGroups.SelectMany(x => x.SelectedOptions).Cast<IModItem>()];
+    }
+
     async partial void OnThumbnailUriChanged(string? value)
     {
         if (ResolveThumbnail?.Invoke(this) is Task task) {
