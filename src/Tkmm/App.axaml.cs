@@ -163,4 +163,11 @@ public partial class App : Application
                 }));
         });
     }
+
+    public static void LogTkmmInfo()
+    {
+        AppLog.Log($"App Version: '{Version}'", LogLevel.Info);
+        AppLog.Log($"Configured GamePath: '{TotkConfig.Shared.GamePath}'", LogLevel.Info);
+        AppLog.Log($"ZsDic Exists: '{File.Exists(TotkConfig.Shared.ZsDicPath)}'", LogLevel.Info);
+    }
 }

@@ -7,6 +7,8 @@ public static class MergerOperations
 {
     public static async Task Merge()
     {
+        App.LogTkmmInfo();
+
         try {
             await MergerService.Merge();
         }
