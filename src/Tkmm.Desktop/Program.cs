@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using Cocona;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using System.Diagnostics;
 using Tkmm.Core.Commands;
 using Tkmm.Core.Components;
 using Tkmm.Helpers;
@@ -22,7 +23,13 @@ class Program
         }
 
         if (CheckArgs(args) == 0) {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            try {
+                BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            }
+            catch (Exception ex) {
+                Trace.WriteLine(ex);
+            }
+
             return;
         }
 
