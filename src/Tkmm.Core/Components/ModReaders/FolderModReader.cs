@@ -27,6 +27,8 @@ public class FolderModReader : IModReader
             Name = Path.GetFileName(path)
         };
 
+        mod.RefreshOptions(path);
+
         if (Path.GetDirectoryName(path) != ProfileManager.ModsFolder) {
             string output = ProfileManager.GetModFolder(mod);
             await PackageBuilder.CopyContents(mod, path, output);
