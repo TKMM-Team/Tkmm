@@ -82,8 +82,13 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
             };
         }
 
-        foreach (var folder in Directory.EnumerateDirectories(path)) {
-            group.Options.Add(ModOption.FromFolder(folder));
+        foreach (string folder in Directory.EnumerateDirectories(path)) {
+            ModOption option = ModOption.FromFolder(folder);
+            group.Options.Add(option);
+            
+            if (group.SelectedOptionReferences.Contains(option.Id)) {
+                group.SelectedOptions.Add(option);
+            }
         }
 
         group.Options = [.. group.Options.OrderBy(x => x.Name)];
