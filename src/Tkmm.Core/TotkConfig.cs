@@ -70,6 +70,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     partial void OnGamePathChanged(string value)
     {
         Validate(() => GamePath, value => {
+            Totk.Config.GamePath = GamePath;
             if (value is not null && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"))) {
                 Totk.Zstd.LoadDictionaries(ZsDicPath);
                 return true;
