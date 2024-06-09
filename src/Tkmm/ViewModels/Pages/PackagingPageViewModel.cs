@@ -11,6 +11,7 @@ using Tkmm.Core.Components;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
+using Tkmm.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -71,9 +72,25 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task Create()
     {
+        await Create(clearOutput: true);
+    }
+
+
+    [RelayCommand]
+    private async Task CreateAndInstall()
+    {
+        (bool packageSucceful, string? tmpOutput) = await Create(clearOutput: false);
+        if (packageSucceful && tmpOutput is not null) {
+            await ModHelper.Import(tmpOutput);
+            Directory.Delete(tmpOutput, recursive: true);
+        }
+    }
+
+    private async Task<(bool, string?)> Create(bool clearOutput)
+    {
         if (string.IsNullOrEmpty(SourceFolder)) {
             App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
-            return;
+            return (false, default);
         }
 
         if (string.IsNullOrEmpty(Mod.Name)) {
@@ -98,8 +115,12 @@ public partial class PackagingPageViewModel : ObservableObject
             await PackageBuilder.CopyContents(Mod, SourceFolder, tmpOutput);
             PackageBuilder.Package(tmpOutput, ExportPath);
 
-            Directory.Delete(tmpOutput, true);
+            if (clearOutput) {
+                Directory.Delete(tmpOutput, recursive: true);
+            }
         });
+
+        return (true, tmpOutput);
     }
 
     [RelayCommand]

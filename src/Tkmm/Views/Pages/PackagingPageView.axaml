@@ -218,7 +218,7 @@
 
         <Grid Grid.Row="1"
               Grid.Column="1"
-              Margin="5,-13,0,0">
+              Margin="5,-13,0,15">
             <TabControl Padding="0,10,0,0">
                 <TabItem Header="Edit">
                     <TextBox AcceptsReturn="True"
@@ -236,21 +236,30 @@
         </Grid>
 
         <StackPanel Grid.Row="2"
-                    Margin="0,15,0,0"
-                    Orientation="Horizontal">
-            <Button BorderBrush="{DynamicResource SystemAccentColor}"
+                    Orientation="Horizontal"
+                    Spacing="15">
+            <Button Classes="accent"
                     Command="{Binding CreateCommand}"
-                    ToolTip.Tip="Create TKCL">
+                    ToolTip.Tip="Create a TKCL Package">
+                <StackPanel Orientation="Horizontal">
+                    <pi:Icon Value="fa-solid fa-archive" />
+                    <TextBlock Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="Package" />
+                </StackPanel>
+            </Button>
+            <Button Classes="accent"
+                    Command="{Binding CreateAndInstallCommand}"
+                    ToolTip.Tip="Create and Install a TKCL Package">
                 <StackPanel Orientation="Horizontal">
                     <pi:Icon Value="fa-solid fa-boxes-packing" />
                     <TextBlock Margin="10,0,0,0"
                                VerticalAlignment="Center"
-                               Text="Create Package" />
+                               Text="Package and Install" />
                 </StackPanel>
             </Button>
             <Button Width="30"
                     Height="30"
-                    Margin="15,0,0,0"
                     Padding="0"
                     Command="{Binding ImportInfoCommand}"
                     ToolTip.Tip="Imports mod info from an info.json or tkcl file">
@@ -258,7 +267,6 @@
             </Button>
             <Button Width="30"
                     Height="30"
-                    Margin="15,0,0,0"
                     Padding="0"
                     Command="{Binding ExportMetadataCommand}"
                     ToolTip.Tip="Exports the metadata to a mod folder">
@@ -266,7 +274,6 @@
             </Button>
             <Button Width="30"
                     Height="30"
-                    Margin="15,0,0,0"
                     Padding="0"
                     Command="{Binding WriteMetadataCommand}"
                     ToolTip.Tip="Write the metadata to the input mod folder">
