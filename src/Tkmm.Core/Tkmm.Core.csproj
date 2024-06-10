@@ -14,6 +14,7 @@
     <PackageReference Include="Octokit" Version="11.0.1" />
     <PackageReference Include="ReverseMarkdown" Version="4.4.0" />
     <PackageReference Include="SharpCompress" Version="0.37.2" />
+    <PackageReference Include="TotkCommon" Version="1.2.5" />
   </ItemGroup>
 
   <ItemGroup>
