@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.HighPerformance;
 using System.IO.Compression;
 using System.Text.Json;
+using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
@@ -9,7 +10,12 @@ namespace Tkmm.Core.Components.ModReaders;
 public class TkclModReader : IModReader
 {
     internal const int MAGIC = 0x4C434B54;
-    internal const int VERSION = 1;
+
+    internal static readonly TkclVersion Version = new() {
+        Major = 1,
+        Minor = 0,
+        Revision = 0,
+    };
 
     public bool IsValid(string file)
     {
@@ -26,9 +32,10 @@ public class TkclModReader : IModReader
                 """);
         }
 
-        if (input.Read<int>() != VERSION) {
-            throw new InvalidOperationException("""
-                Unexpected TKCL version.
+        TkclVersion version = input.Read<TkclVersion>();
+        if (version.Value != Version.Value) {
+            throw new InvalidOperationException($"""
+                Unexpected TKCL version {version}.
                 """);
         }
 

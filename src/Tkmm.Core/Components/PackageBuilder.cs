@@ -132,7 +132,7 @@ public class PackageBuilder
     {
         using FileStream fs = File.Create(outputFile);
         fs.Write(TkclModReader.MAGIC);
-        fs.Write(TkclModReader.VERSION);
+        fs.Write(TkclModReader.Version);
         ZipFile.CreateFromDirectory(inputFolder, fs);
     }
 }
