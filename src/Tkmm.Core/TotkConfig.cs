@@ -25,8 +25,6 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
         Description = """
             The absolute path to your TotK RomFS game dump
             (e.g. F:\Games\Totk\RomFS)
-    
-            *Required for merging!
             """,
         Category = "TotK")]
     [property: ConfigFactory.Core.Attributes.BrowserConfig(
