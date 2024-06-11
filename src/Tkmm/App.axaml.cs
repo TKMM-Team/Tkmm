@@ -82,7 +82,7 @@ public partial class App : Application
             shellView.Loaded += (s, e) => {
                 _notificationManager = new(XamlRoot) {
                     Position = NotificationPosition.BottomRight,
-                    MaxItems = 3,
+                    MaxItems = 5,
                     Margin = new(0, 0, 4, 0)
                 };
             };

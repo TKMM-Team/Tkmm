@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls.Notifications;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Humanizer;
 using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -33,8 +34,8 @@ public static class ModHelper
             ProfileManager.Shared.Current.Selected = result;
 
             if (result.OptionGroups.Any()) {
-                App.Toast($"'{result.Name}' has options, click here or go to the home page to configure them.", "Configure Options",
-                    NotificationType.Information, TimeSpan.FromSeconds(3), () => {
+                App.Toast($"'{result.Name}' has configurable options!\n\nClick here to configure them.", "Configure Options",
+                    NotificationType.Information, TimeSpan.FromDays(5), () => {
                         result.IsEditingOptions = true;
                         PageManager.Shared.Focus(Page.Home);
                     });
