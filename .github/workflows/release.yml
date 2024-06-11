@@ -1,94 +1,111 @@
-name: Release
+name: Publish
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*"
 
 jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      release: ${{ steps.release.outputs.upload_url }}
+      version: ${{ steps.version.outputs.version-without-v }}
+
+    steps:
+      - name: Get Version
+        uses: battila7/get-version-action@v2.2.1
+        id: version
+
+      - name: "Generate changelog"
+        uses: heinrichreimer/action-github-changelog-generator@v2.4
+        id: changelog
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
+
   build:
+    needs: release
     permissions: write-all
     name: Build ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
+        target:
+          - project: Tkmm.Desktop
+            name: TKMM-
+          - project: Tkmm.Launcher
+            name: TKMM-Launcher-
         config:
-          - name: Linux
-            os: ubuntu-20.04
-            runtime: linux-x64
-            ext: ""
-          - name: Windows
+          - name: Windows (x64)
             os: windows-latest
             runtime: win-x64
-            ext: ".exe"
-
-    env:
-      proj: "Tkmm.Desktop"
-      launcher: "Tkmm.Launcher"
+          - name: Windows (arm64)
+            os: windows-latest
+            runtime: win-arm64
+          - name: Linux (x64)
+            os: ubuntu-latest
+            runtime: linux-x64
+          - name: Linux (arm64)
+            os: ubuntu-latest
+            runtime: linux-arm64
+          - name: MacOS (x64)
+            os: macos-latest
+            runtime: osx-x64
+          - name: MacOS (arm64)
+            os: macos-latest
+            runtime: osx-arm64
 
     steps:
-      - uses: actions/checkout@master
-        with:
-          submodules: recursive
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
 
-      - name: Install DotNET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: "8.0.x"
 
-      - name: Publish TKMM
+      - name: Build
         shell: bash
         run: |
-          dotnet publish src/${{ env.proj }}/${{ env.proj }}.csproj \
-          -r ${{ matrix.config.runtime }} \
+          dotnet publish src/${{ matrix.target.project }} \
           -c Release \
+          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip \
+          -r ${{ matrix.config.runtime }} \
           --sc false \
-          --version-suffix ${{ github.event.release.tag_name }} \
-          -o ${{ matrix.config.name }} \
-          -p:Version=${{ github.event.release.tag_name }}
+          --version-suffix ${{ needs.release.outputs.version }} \
+          -p:DebugType=none \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -p:PublishSingleFile=true \
+          -p:Version=${{ needs.release.outputs.version }} \
 
-      - name: Rename executable
-        shell: bash
-        run: |
-          mv \
-          ${{ matrix.config.name }}/Tkmm.Desktop${{ matrix.config.ext }} \
-          ${{ matrix.config.name }}/tkmm${{ matrix.config.ext }}
-
-      - name: Archive Build Files
-        uses: TheDoctor0/zip-release@0.7.1
+      - name: Archive Build
+        uses: TheDoctor0/zip-release@0.7.6
         with:
-          type: "zip"
-          filename: ../TKMM-${{ matrix.config.runtime }}.zip
-          directory: ${{ matrix.config.name }}
+          type: zip
+          filename: ../${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
+          directory: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
           path: ./**
 
-      - name: Upload artifacts
-        uses: AButler/upload-release-assets@v2.0
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          files: TKMM-${{ matrix.config.runtime }}.zip
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish TKMM Launcher
-        shell: bash
-        run: |
-          dotnet publish src/${{ env.launcher }}/${{ env.launcher }}.csproj \
-          -r ${{ matrix.config.runtime }} \
-          -c Release \
-          --sc false \
-          --version-suffix ${{ github.event.release.tag_name }} \
-          -o Launcher/${{ matrix.config.name }} \
-          -p:Version=${{ github.event.release.tag_name }}
-
-      - name: Archive Build Files
-        uses: TheDoctor0/zip-release@0.7.1
-        with:
-          type: "zip"
-          filename: ../../TKMM-Launcher-${{ matrix.config.runtime }}.zip
-          directory: Launcher/${{ matrix.config.name }}
-          path: ./**
-
-      - name: Upload artifacts
-        uses: AButler/upload-release-assets@v2.0
-        with:
-          files: TKMM-Launcher-${{ matrix.config.runtime }}.zip
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ needs.release.outputs.release }}
+          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
+          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
+          asset_content_type: application/zip
