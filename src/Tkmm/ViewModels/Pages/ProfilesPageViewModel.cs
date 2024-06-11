@@ -22,6 +22,15 @@ public partial class ProfilesPageViewModel : ObservableObject
     [ObservableProperty]
     private Mod? _masterSelected;
 
+    public ProfilesPageViewModel()
+    {
+        ProfileManager.Shared.Current.PropertyChanged += (s, e) => {
+            if (e.PropertyName == nameof(ProfileManager.Shared.Current.Selected)) {
+                Selected = ProfileManager.Shared.Current.Selected;
+            }
+        };
+    }
+
     [RelayCommand]
     private void Remove()
     {

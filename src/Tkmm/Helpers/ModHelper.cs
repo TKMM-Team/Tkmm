@@ -1,4 +1,5 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Controls.Notifications;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System.Diagnostics;
 using Tkmm.Core;
@@ -28,6 +29,16 @@ public static class ModHelper
             Mod result = await Task.Run(async
                 () => await ImportAsync(arg)
             );
+
+            ProfileManager.Shared.Current.Selected = result;
+
+            if (result.OptionGroups.Any()) {
+                App.Toast($"'{result.Name}' has options, click here or go to the home page to configure them.", "Configure Options",
+                    NotificationType.Information, TimeSpan.FromSeconds(3), () => {
+                        result.IsEditingOptions = true;
+                        PageManager.Shared.Focus(Page.Home);
+                    });
+            }
 
             AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
             return result;

@@ -38,6 +38,10 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     private object? _thumbnail;
 
     [ObservableProperty]
+    [property: System.Text.Json.Serialization.JsonIgnore]
+    private bool _isEditingOptions;
+
+    [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
 
     [ObservableProperty]

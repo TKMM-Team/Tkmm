@@ -76,8 +76,8 @@
                                   Height="25"
                                   Margin="0,0,5,0"
                                   Padding="2"
-                                  IsChecked="{Binding ShowOptions}"
-                                  IsVisible="{Binding ShowOptions}">
+                                  IsChecked="{Binding Current.Mod.IsEditingOptions}"
+                                  IsVisible="{Binding Current.Mod.IsEditingOptions}">
                         <ToggleButton.Styles>
                             <Styles>
                                 <Style Selector="ToggleButton:not(:checked)">
@@ -114,7 +114,7 @@
 
                 <Grid Name="ResizeGridTarget"
                       Grid.Row="1"
-                      IsVisible="{Binding !ShowOptions}">
+                      IsVisible="{Binding !Current.Mod.IsEditingOptions}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="{Binding TopPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
                         <RowDefinition Height="Auto" />
@@ -160,7 +160,7 @@
                                       Padding="8,4"
                                       Content="Configure Options"
                                       FontWeight="Medium"
-                                      IsChecked="{Binding ShowOptions}"
+                                      IsChecked="{Binding Current.Mod.IsEditingOptions}"
                                       IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
 
                         <md:MarkdownScrollViewer Grid.Row="1" Markdown="{Binding Current.Mod.Description}">
@@ -171,7 +171,7 @@
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Row="1" IsVisible="{Binding ShowOptions}">
+                <Grid Grid.Row="1" IsVisible="{Binding Current.Mod.IsEditingOptions}">
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding Current.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
@@ -224,13 +224,28 @@
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
-                            <Grid Background="Transparent" ColumnDefinitions="*,Auto">
+                            <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto">
                                 <TextBlock VerticalAlignment="Center"
                                            Background="Transparent"
                                            Text="{Binding Mod.Name}"
                                            TextTrimming="CharacterEllipsis"
                                            ToolTip.Tip="{Binding Mod.Name}" />
-                                <CheckBox Grid.Column="1"
+                                <ToggleButton Grid.Column="1"
+                                              Width="20"
+                                              Height="20"
+                                              Margin="5,0,0,0"
+                                              Padding="0"
+                                              HorizontalContentAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              IsChecked="{Binding Mod.IsEditingOptions}"
+                                              IsVisible="{Binding Mod.OptionGroups.Count}">
+                                    <ToggleButton.Content>
+                                        <pi:Icon RenderTransform="scale(0.9)" Value="fa-sliders" />
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <CheckBox Grid.Column="2"
+                                          Width="20"
+                                          Height="20"
                                           Margin="5,0,0,0"
                                           Padding="0"
                                           IsChecked="{Binding IsEnabled}" />

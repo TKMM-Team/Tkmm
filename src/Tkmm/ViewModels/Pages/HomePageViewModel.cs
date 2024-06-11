@@ -7,7 +7,6 @@ using System.Collections;
 using Tkmm.Builders.MenuModels;
 using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
-using Tkmm.Core.Services;
 using Tkmm.Helpers;
 using Tkmm.Models;
 
@@ -25,9 +24,6 @@ public partial class HomePageViewModel : ObservableObject
             OnPropertyChanged(nameof(Current));
         }
     }
-
-    [ObservableProperty]
-    private bool _showOptions = false;
 
     [RelayCommand]
     private async Task ShowContributors()
@@ -105,7 +101,11 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
         ProfileManager.Shared.Current.Mods.CollectionChanged += ModsUpdated;
-        Current = ProfileManager.Shared.Current.Mods.FirstOrDefault();
+        ProfileManager.Shared.Current.PropertyChanged += (s, e) => {
+            if (e.PropertyName == nameof(ProfileManager.Shared.Current.Selected)) {
+                Current = ProfileManager.Shared.Current.Selected;
+            }
+        };
     }
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
