@@ -19,6 +19,7 @@ using Tkmm.Builders.MenuModels;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Helpers.Win32;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
@@ -62,6 +63,10 @@ public partial class App : Application
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
+
+        if (OperatingSystem.IsWindows()) {
+            WindowsOperations.SetWindowMode(Config.Shared.ShowConsole ? WindowMode.Visible : WindowMode.Hidden);
+        }
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
             ShellView shellView = new() {
