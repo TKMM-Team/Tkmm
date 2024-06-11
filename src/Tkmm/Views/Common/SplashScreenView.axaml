@@ -45,11 +45,12 @@
             <TextBlock Grid.Row="1"
                        Margin="0,25,0,0"
                        HorizontalAlignment="Center"
+                       xml:space="preserve"
                        Effect="drop-shadow(2 2 35 #35000000)"
                        FontFamily="{StaticResource HyliaGlyph}"
                        FontSize="75"
                        Foreground="#e2e2e2"
-                       Text="T K M M" />
+                       Text="T   K   M   M" />
         </Grid>
 
     </Border>
