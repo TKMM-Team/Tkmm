@@ -70,16 +70,33 @@
             <Grid Grid.RowSpan="2" RowDefinitions="Auto,*">
                 <Grid Name="TitleGrid"
                       Margin="0,0,0,15"
-                      ColumnDefinitions="*"
+                      ColumnDefinitions="Auto,*"
                       RowDefinitions="Auto,Auto">
-                    <TextBlock Grid.ColumnSpan="3"
+                    <ToggleButton Width="25"
+                                  Height="25"
+                                  Margin="0,0,5,0"
+                                  Padding="2"
+                                  IsChecked="{Binding ShowOptions}"
+                                  IsVisible="{Binding ShowOptions}">
+                        <ToggleButton.Styles>
+                            <Styles>
+                                <Style Selector="ToggleButton:not(:checked)">
+                                    <Setter Property="Width" Value="0" />
+                                </Style>
+                            </Styles>
+                        </ToggleButton.Styles>
+                        <pi:Icon Value="fa-chevron-left" />
+                    </ToggleButton>
+                    <TextBlock Grid.Column="1"
                                VerticalAlignment="Center"
                                FontSize="18"
                                FontWeight="Medium"
                                Text="{Binding Current.Mod.Name}"
                                TextTrimming="CharacterEllipsis"
                                ToolTip.Tip="{Binding Current.Mod.Name}" />
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <StackPanel Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center"
                                    FontSize="14"
                                    Text="{Binding Current.Mod.Author, StringFormat='By {0}'}" />
@@ -93,13 +110,6 @@
                                             FontSize="12"
                                             IsVisible="{Binding Current.Mod.Contributors.Count}" />
                     </StackPanel>
-                    <ToggleButton Grid.RowSpan="2"
-                                  Padding="8,4"
-                                  HorizontalAlignment="Right"
-                                  Content="Show/Hide Options"
-                                  FontWeight="Medium"
-                                  IsChecked="{Binding ShowOptions}"
-                                  IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
                 </Grid>
 
                 <Grid Name="ResizeGridTarget"
@@ -107,6 +117,7 @@
                       IsVisible="{Binding !ShowOptions}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="{Binding TopPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="{Binding LowerPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
                     </Grid.RowDefinitions>
@@ -143,7 +154,14 @@
                         </Viewbox>
                     </Grid>
 
-                    <md:MarkdownScrollViewer Grid.Row="2" Markdown="{Binding Current.Mod.Description}" />
+                    <ToggleButton Grid.Row="2"
+                                  Padding="8,4"
+                                  Content="Configure Options"
+                                  FontWeight="Medium"
+                                  IsChecked="{Binding ShowOptions}"
+                                  IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
+
+                    <md:MarkdownScrollViewer Grid.Row="3" Markdown="{Binding Current.Mod.Description}" />
                 </Grid>
 
                 <Grid Grid.Row="1" IsVisible="{Binding ShowOptions}">
