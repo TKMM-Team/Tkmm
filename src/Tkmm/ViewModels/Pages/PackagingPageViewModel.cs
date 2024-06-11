@@ -190,8 +190,29 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option Group");
         if (await dialog.ShowDialog() is string result) {
-            string output = Path.Combine(SourceFolder, PackageBuilder.OPTIONS, Path.GetFileName(result));
-            DirectoryOperations.CopyDirectory(result, output);
+            string name = Path.GetFileName(result);
+            string output = Path.Combine(SourceFolder, PackageBuilder.OPTIONS, name);
+            if (Directory.Exists(output)) {
+                ContentDialog warningDialog = new() {
+                    Title = "Warning",
+                    Content = $"The option group '{name}' already exists, would you like to replace it?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "Cancel",
+                    DefaultButton = ContentDialogButton.Primary,
+                };
+
+                if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
+                    return;
+                }
+
+                Directory.Delete(output, recursive: true);
+
+                if (Mod.OptionGroups.FirstOrDefault(x => x.SourceFolder == output) is ModOptionGroup target) {
+                    Mod.OptionGroups.Remove(target);
+                }
+            }
+
+            DirectoryOperations.CopyDirectory(result, output, overwrite: true);
             Mod.OptionGroups.Add(ModOptionGroup.FromFolder(output));
         }
     }
@@ -201,7 +222,28 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Import Mod Option");
         if (await dialog.ShowDialog() is string result) {
-            string output = Path.Combine(group.SourceFolder, Path.GetFileName(result));
+            string name = Path.GetFileName(result);
+            string output = Path.Combine(group.SourceFolder, name);
+            if (Directory.Exists(output)) {
+                ContentDialog warningDialog = new() {
+                    Title = "Warning",
+                    Content = $"The option '{name}' already exists in the group '{group.Name}', would you like to replace it?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "Cancel",
+                    DefaultButton = ContentDialogButton.Primary,
+                };
+
+                if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
+                    return;
+                }
+
+                Directory.Delete(output, recursive: true);
+
+                if (group.Options.FirstOrDefault(x => x.SourceFolder == output) is ModOption target) {
+                    group.Options.Remove(target);
+                }
+            }
+
             DirectoryOperations.CopyDirectory(result, output);
             group.Options.Add(ModOption.FromFolder(output));
         }
