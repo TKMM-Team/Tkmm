@@ -30,6 +30,9 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private bool _isInstalled = false;
 
+    [ObservableProperty]
+    private bool _installShortcuts = true;
+
     public ShellViewModel(ShellView view)
     {
         _view = view;
@@ -49,8 +52,14 @@ public partial class ShellViewModel : ObservableObject
                 Progress = 10;
                 await AppManager.Update((progress) => Progress = progress);
                 await AssetHelper.Download();
-                Progress = 100;
+                Progress = 98;
             });
+
+            if (InstallShortcuts) {
+                AppManager.CreateDesktopShortcuts();
+            }
+
+            Progress = 100;
 
             if (OperatingSystem.IsWindows()) {
                 _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Normal);

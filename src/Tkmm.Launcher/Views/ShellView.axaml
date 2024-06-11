@@ -175,6 +175,9 @@
                 <Button Command="{Binding UninstallCommand}"
                         Content="Uninstall"
                         IsVisible="{Binding IsInstalled}" />
+                <CheckBox Content="Create Shortcuts"
+                          IsChecked="{Binding InstallShortcuts}"
+                          IsVisible="{Binding !IsInstalled}" />
             </StackPanel>
 
 
