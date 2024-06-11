@@ -95,25 +95,28 @@ public static class AppManager
         }
 
         string currentVersion = File.ReadAllText(_appVersionFile);
-        return await GitHubOperations.HasUpdate("TKMM-Team", "Tkmm", currentVersion);
+        return await GitHubOperations.HasUpdate(ORG, REPO, currentVersion);
     }
 
-    public static async Task Update()
+    public static async Task Update(Action<int> setProgress)
     {
         AppStatus.Set("Closing open app instances", "fa-solid fa-download");
         Kill();
+        setProgress(20);
 
         AppStatus.Set("Downloading app", "fa-solid fa-download");
-
         (Stream stream, string tag) = await GitHubOperations
             .GetLatestRelease(ORG, REPO, assetName: $"TKMM-{RuntimeIdentifier}.zip");
+        setProgress(40);
 
         AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
         using ZipArchive archive = new(stream);
         archive.ExtractToDirectory(_appFolder, overwriteFiles: true);
+        setProgress(60);
 
         AppStatus.Set("Updating version", "fa-solid fa-code-commit");
         File.WriteAllText(_appVersionFile, tag);
+        setProgress(80);
 
         AppStatus.Set("Application installed!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }

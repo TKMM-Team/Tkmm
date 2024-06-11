@@ -47,8 +47,7 @@ public partial class ShellViewModel : ObservableObject
 
             await Task.Run(async () => {
                 Progress = 10;
-                await AppManager.Update();
-                Progress = 50;
+                await AppManager.Update((progress) => Progress = progress);
                 await AssetHelper.Download();
                 Progress = 100;
             });
