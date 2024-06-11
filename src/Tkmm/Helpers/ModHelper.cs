@@ -1,11 +1,9 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
-using Tkmm.Core.Components.Models;
-using Tkmm.Core.Generics;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Helpers;
@@ -88,16 +86,5 @@ public static class ModHelper
 
         mod.RefreshOptions();
         return mod;
-    }
-
-    private static bool TryInsert<T>(this ObservableCollection<T> items, T item) where T : IReferenceItem
-    {
-        if (items.FirstOrDefault(x => x.Id == item.Id) is T match && items.IndexOf(match) is int index && index > -1) {
-            items[index] = item;
-            return true;
-        }
-
-        items.Add(item);
-        return false;
     }
 }

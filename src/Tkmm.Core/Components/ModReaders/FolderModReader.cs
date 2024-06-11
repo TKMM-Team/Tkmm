@@ -38,7 +38,7 @@ public class FolderModReader : IModReader
         return mod;
     }
 
-    internal static Mod? FromInternal(string path)
+    public static Mod? FromInternal(string path)
     {
         Mod? mod = null;
         string metadataPath = Path.Combine(path, PackageBuilder.METADATA);

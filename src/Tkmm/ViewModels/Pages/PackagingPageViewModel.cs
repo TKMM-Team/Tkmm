@@ -8,10 +8,11 @@ using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Components.ModReaders;
 using Tkmm.Core.Generics;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
-using Tkmm.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -72,21 +73,26 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task Create()
     {
-        await Create(clearOutput: true);
+        string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
+        await Create(tmpOutput, cleanOutput: false);
+        Directory.Delete(tmpOutput, recursive: true);
     }
 
 
     [RelayCommand]
     private async Task CreateAndInstall()
     {
-        (bool packageSucceful, string? tmpOutput) = await Create(clearOutput: false);
-        if (packageSucceful && tmpOutput is not null) {
-            await ModHelper.Import(tmpOutput);
-            Directory.Delete(tmpOutput, recursive: true);
+        string output = ProfileManager.GetModFolder(Mod.Id);
+        await Create(output, cleanOutput: true);
+        
+        if (FolderModReader.FromInternal(output) is Mod copy) {
+            ProfileManager.Shared.Mods.TryInsert(copy);
+            ProfileManager.Shared.Current.Mods.TryInsert(copy);
+            ProfileManager.Shared.Current.Selected = copy;
         }
     }
 
-    private async Task<(bool, string?)> Create(bool clearOutput)
+    private async Task<(bool, string?)> Create(string output, bool cleanOutput)
     {
         if (string.IsNullOrEmpty(SourceFolder)) {
             App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
@@ -108,19 +114,17 @@ public partial class PackagingPageViewModel : ObservableObject
             }
         }
 
-        string tmpOutput = Path.Combine(Path.GetTempPath(), "tkmm", Mod.Id.ToString());
+        if (cleanOutput && Directory.Exists(output)) {
+            Directory.Delete(output, recursive: true);
+        }
 
         await Task.Run(async () => {
-            PackageBuilder.CreateMetaData(Mod, tmpOutput);
-            await PackageBuilder.CopyContents(Mod, SourceFolder, tmpOutput);
-            PackageBuilder.Package(tmpOutput, ExportPath);
-
-            if (clearOutput) {
-                Directory.Delete(tmpOutput, recursive: true);
-            }
+            PackageBuilder.CreateMetaData(Mod, output);
+            await PackageBuilder.CopyContents(Mod, SourceFolder, output);
+            PackageBuilder.Package(output, ExportPath);
         });
 
-        return (true, tmpOutput);
+        return (true, output);
     }
 
     [RelayCommand]
