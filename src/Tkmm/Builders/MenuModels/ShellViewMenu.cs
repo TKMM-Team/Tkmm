@@ -1,11 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Platform;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
 using System.Diagnostics;
-using Avalonia.Platform;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -13,7 +14,6 @@ using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Helpers.Win32;
 using Tkmm.Core.Models.Mods;
-using Tkmm.Core.Services;
 using Tkmm.Helpers;
 
 namespace Tkmm.Builders.MenuModels;
@@ -161,7 +161,8 @@ public class ShellViewMenu
 #endif
 
     [Menu("Help", "Help", "F1", "fa-solid fa-circle-question")]
-    public static Task GoToHelp() {
+    public static Task GoToHelp()
+    {
         Process.Start(new ProcessStartInfo("https://totkmods.github.io/tkmm/learn") {
             UseShellExecute = true
         });
@@ -203,7 +204,7 @@ public class ShellViewMenu
         }
     }
 
-    
+
 
     [Menu("Download Dependencies", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
     public static async Task DownloadDependencies()
@@ -220,19 +221,24 @@ public class ShellViewMenu
     }
 
     [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
-    public static async Task About() {
-        await using var aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
-        var contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
-        
+    public static async Task About()
+    {
+        await using Stream aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
+        string contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
+
         // Replace version info
         contents = contents.Replace("@@version@@", App.Version);
-        
 
         TaskDialog dialog = new() {
             XamlRoot = App.XamlRoot,
             Title = "About",
             Content = new MarkdownScrollViewer {
-                Markdown = contents
+                Markdown = contents,
+                Styles = {
+                    new StyleInclude(StyleHelper.MarkdownStyleUri) {
+                        Source = StyleHelper.MarkdownStyleUri
+                    }
+                }
             },
             Buttons = [
                 new TaskDialogButton {

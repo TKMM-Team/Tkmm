@@ -227,7 +227,11 @@
                              Watermark="Description (accepts markdown)" />
                 </TabItem>
                 <TabItem Header="Preview">
-                    <md:MarkdownScrollViewer Markdown="{Binding Mod.Description}" />
+                    <md:MarkdownScrollViewer Markdown="{Binding Mod.Description}">
+                        <md:MarkdownScrollViewer.Styles>
+                            <StyleInclude Source="/Styles/Markdown.axaml" />
+                        </md:MarkdownScrollViewer.Styles>
+                    </md:MarkdownScrollViewer>
                 </TabItem>
                 <TabItem Header="Thumbnail">
                     <Image Source="{Binding Mod.Thumbnail}" />

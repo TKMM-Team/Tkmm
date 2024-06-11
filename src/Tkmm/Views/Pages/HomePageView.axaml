@@ -163,7 +163,11 @@
                                       IsChecked="{Binding ShowOptions}"
                                       IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
 
-                        <md:MarkdownScrollViewer Grid.Row="1" Markdown="{Binding Current.Mod.Description}" />
+                        <md:MarkdownScrollViewer Grid.Row="1" Markdown="{Binding Current.Mod.Description}">
+                            <md:MarkdownScrollViewer.Styles>
+                                <StyleInclude Source="/Styles/Markdown.axaml" />
+                            </md:MarkdownScrollViewer.Styles>
+                        </md:MarkdownScrollViewer>
                     </Grid>
                 </Grid>
 

@@ -1,0 +1,139 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avedit="https://github.com/avaloniaui/avaloniaedit"
+        xmlns:ctxt="clr-namespace:ColorTextBlock.Avalonia;assembly=ColorTextBlock.Avalonia"
+        xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+        xmlns:mdctl="clr-namespace:Markdown.Avalonia.Controls;assembly=Markdown.Avalonia"
+        xmlns:models="using:Tkmm.Models">
+    <Design.PreviewWith>
+        <md:MarkdownScrollViewer Width="1000"
+                                 Height="1000"
+                                 Margin="15">
+            > Test
+        </md:MarkdownScrollViewer>
+    </Design.PreviewWith>
+
+    <Style Selector="ctxt|CTextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.Heading1">
+        <Setter Property="FontSize" Value="40" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.Heading2">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.Heading3">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.Heading4">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.Heading5">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimary}" />
+    </Style>
+
+    <Style Selector="ctxt|CHyperlink">
+        <Setter Property="IsUnderline" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+        <Setter Property="Transitions">
+            <Setter.Value>
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="ctxt|CHyperlink:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorLight1}" />
+    </Style>
+
+    <Style Selector="ctxt|CHyperlink:pressed">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorLight3}" />
+    </Style>
+
+    <Style Selector="Grid.List">
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector=".List ctxt|CTextBlock">
+        <Setter Property="Margin" Value="0,3" />
+        <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+    </Style>
+
+    <Style Selector="ctxt|CTextBlock.ListMarker">
+        <Setter Property="Margin" Value="8,3" />
+    </Style>
+
+    <Style Selector="mdctl|Rule.Single">
+        <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Foreground" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="CornerRadius" Value="1" />
+    </Style>
+
+    <Style Selector="mdctl|Rule.TwoLines">
+        <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Foreground" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="CornerRadius" Value="1" />
+    </Style>
+
+    <Style Selector="mdctl|Rule.Bold">
+        <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Foreground" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="CornerRadius" Value="2" />
+    </Style>
+
+    <Style Selector="mdctl|Rule.BoldWithSingle">
+        <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Foreground" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="CornerRadius" Value="2" />
+    </Style>
+
+    <Style Selector="Border.Blockquote">
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorSecondary}" />
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondary}" />
+        <Setter Property="BorderThickness" Value="4,0,0,0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    </Style>
+
+    <Style Selector="ctxt|CCode">
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="MonospaceFontFamily" Value="{StaticResource UbuntuMono}" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    </Style>
+
+    <Style Selector="Border.CodeBlock">
+        <Setter Property="Margin" Value="0,5" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    </Style>
+
+    <Style Selector="TextBlock.CodeBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorDark1}" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="avedit|TextEditor">
+        <Setter Property="FontFamily" Value="{StaticResource UbuntuMono}" />
+    </Style>
+</Styles>
