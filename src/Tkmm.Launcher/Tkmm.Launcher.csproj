@@ -10,6 +10,7 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <PublishReadyToRun>true</PublishReadyToRun>
     <DebugType>embedded</DebugType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   
   <ItemGroup>
