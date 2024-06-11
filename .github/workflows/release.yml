@@ -78,7 +78,7 @@ jobs:
         run: |
           dotnet publish src/${{ matrix.target.project }} \
           -c Release \
-          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip \
+          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
           --sc false \
           --version-suffix ${{ needs.release.outputs.version }} \
@@ -92,7 +92,7 @@ jobs:
         with:
           type: zip
           filename: ../${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
-          directory: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
+          directory: ${{ matrix.target.name }}-${{ matrix.config.runtime }}
           path: ./**
 
       - name: Upload Release
