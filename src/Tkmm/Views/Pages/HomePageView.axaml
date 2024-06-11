@@ -118,7 +118,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="{Binding TopPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="{Binding LowerPanel, Source={x:Static pages:HomePageViewModel.Layout}}" />
                     </Grid.RowDefinitions>
 
@@ -154,14 +153,18 @@
                         </Viewbox>
                     </Grid>
 
-                    <ToggleButton Grid.Row="2"
-                                  Padding="8,4"
-                                  Content="Configure Options"
-                                  FontWeight="Medium"
-                                  IsChecked="{Binding ShowOptions}"
-                                  IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
+                    <Grid Grid.Row="2"
+                          Margin="0,10,0,0"
+                          RowDefinitions="Auto,*">
+                        <ToggleButton Margin="0,0,0,5"
+                                      Padding="8,4"
+                                      Content="Configure Options"
+                                      FontWeight="Medium"
+                                      IsChecked="{Binding ShowOptions}"
+                                      IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
 
-                    <md:MarkdownScrollViewer Grid.Row="3" Markdown="{Binding Current.Mod.Description}" />
+                        <md:MarkdownScrollViewer Grid.Row="1" Markdown="{Binding Current.Mod.Description}" />
+                    </Grid>
                 </Grid>
 
                 <Grid Grid.Row="1" IsVisible="{Binding ShowOptions}">
