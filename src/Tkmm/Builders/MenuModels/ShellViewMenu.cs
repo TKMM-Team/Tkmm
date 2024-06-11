@@ -76,7 +76,7 @@ public class ShellViewMenu
     [Menu("Install File", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
     public static async Task ImportModFile()
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "TKCL:*.tkcl|All Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "Supported Formats:*.tkcl;*.zip;*.rar;*.7z|TKCL:*.tkcl|Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
         string? selectedFile = await dialog.ShowDialog();
 
         if (string.IsNullOrEmpty(selectedFile)) {
