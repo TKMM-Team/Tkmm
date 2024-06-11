@@ -80,7 +80,8 @@
                                            TextTrimming="CharacterEllipsis"
                                            ToolTip.Tip="{Binding Mod.Name}" />
                                 <CheckBox Grid.Column="1"
-                                          Margin="10,0,0,0"
+                                          Margin="5,0,0,0"
+                                          Padding="0"
                                           IsChecked="{Binding IsEnabled}" />
                             </Grid>
                         </DataTemplate>
