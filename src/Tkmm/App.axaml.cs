@@ -57,7 +57,7 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
@@ -131,8 +131,6 @@ public partial class App : Application
             PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true, isDefault: isValid == false);
 
             Config.SetTheme(Config.Shared.Theme);
-
-            await ToolHelper.LoadDeps();
         }
 
         base.OnFrameworkInitializationCompleted();

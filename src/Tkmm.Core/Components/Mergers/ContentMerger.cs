@@ -8,12 +8,6 @@ namespace Tkmm.Core.Components.Mergers;
 
 public class ContentMerger : IMerger
 {
-    public static List<string> ExcludeFiles => [
-        .. ToolHelper.ExcludeFiles,
-        ".json",
-        ".thumbnail"
-    ];
-
     public Task Merge(IModItem[] mods, string output)
     {
         foreach (var item in mods) {
@@ -36,7 +30,8 @@ public class ContentMerger : IMerger
         foreach (string folder in TotkConfig.FileSystemFolders) {
             string srcFolder = Path.Combine(sourceFolder, folder);
             if (Directory.Exists(srcFolder)) {
-                DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(output, folder), ExcludeFiles, ToolHelper.ExcludeFolders, true);
+                DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(output, folder),
+                    ExcludeInfo.Extensions, ExcludeInfo.Folders, overwrite: true);
             }
         }
     }

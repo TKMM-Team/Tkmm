@@ -102,7 +102,7 @@ public class PackageBuilder
                     if (Directory.Exists(inputFsFolder)) {
                         DirectoryOperations.CopyDirectory(
                             inputFsFolder, Path.Combine(outputFolder, folder),
-                            [..ToolHelper.ExcludeFiles, ".ini", ".rsizetable"], [..ToolHelper.ExcludeFolders, "Mals"],
+                            [..ExcludeInfo.Extensions], [..ExcludeInfo.Folders],
                             overwrite: true
                         );
                     }
