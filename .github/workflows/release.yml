@@ -19,12 +19,6 @@ jobs:
         uses: battila7/get-version-action@v2.2.1
         id: version
 
-      - name: "Generate changelog"
-        uses: TriPSs/conventional-changelog-action@v5.3.0
-        id: changelog
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Release
         uses: actions/create-release@v1
         id: release
@@ -33,7 +27,6 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
           prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
 
   build:
