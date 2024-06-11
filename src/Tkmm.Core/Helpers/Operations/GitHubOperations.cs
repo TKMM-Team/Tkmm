@@ -6,20 +6,18 @@ namespace Tkmm.Core.Helpers.Operations;
 public class GitHubOperations
 {
     private const string USER_AGENT = "Tkmm.Core.Helpers.Operations.GitHubOperations";
-    private const string TOKEN = "token";
 
     private static readonly HttpClient _client = new() {
         DefaultRequestHeaders = {
             { "user-agent", USER_AGENT },
             { "accept", "application/octet-stream" },
-            { "authorization", $"Bearer {TOKEN}" },
             { "X-GitHub-Api-Version", "2022-11-28" },
         }
     };
 
-    private static readonly GitHubClient _githubClient = new(new ProductHeaderValue(USER_AGENT)) {
-        Credentials = new(TOKEN)
-    };
+    private static readonly GitHubClient _githubClient = new(
+        productInformation: new ProductHeaderValue(USER_AGENT)
+    );
 
     public static async Task<(Stream stream, string tag)> GetLatestRelease(string org, string repo, string assetName)
     {

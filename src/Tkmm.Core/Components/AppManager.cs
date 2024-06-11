@@ -11,7 +11,7 @@ namespace Tkmm.Core.Components;
 public static class AppManager
 {
     private const string ORG = "TKMM-Team";
-    private const string REPO = "__tkmm_debug";
+    private const string REPO = "Tkmm";
     private const string APP_NAME = "TKMM";
     private const string PROC_NAME = "tkmm";
     private const string LAUNCHER_NAME = "TKMM Launcher";
