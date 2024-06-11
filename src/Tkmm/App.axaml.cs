@@ -126,8 +126,7 @@ public partial class App : Application
             if (GameBananaHelper.IsOnline) {
                 PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
             }
-
-            PageManager.Shared.Register(Page.About, "About", new AboutPageView(), Symbol.Bookmark, "About The Project", isFooter: true);
+            
             PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
             PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true, isDefault: isValid == false);
 

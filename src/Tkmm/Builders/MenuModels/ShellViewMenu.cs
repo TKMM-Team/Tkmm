@@ -5,6 +5,7 @@ using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
 using System.Diagnostics;
+using Avalonia.Platform;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -159,6 +160,15 @@ public class ShellViewMenu
     }
 #endif
 
+    [Menu("Help", "Help", "F1", "fa-solid fa-circle-question")]
+    public static Task GoToHelp() {
+        Process.Start(new ProcessStartInfo("https://totkmods.github.io/tkmm/learn") {
+            UseShellExecute = true
+        });
+
+        return Task.CompletedTask;
+    }
+
     [Menu("Check for Update", "Help", "Ctrl + U", "fa-solid fa-cloud-arrow-up")]
     public static async Task CheckForUpdate()
     {
@@ -193,6 +203,8 @@ public class ShellViewMenu
         }
     }
 
+    
+
     [Menu("Download Dependencies", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
     public static async Task DownloadDependencies()
     {
@@ -208,15 +220,19 @@ public class ShellViewMenu
     }
 
     [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
-    public static async Task About()
-    {
-        string aboutFile = Path.Combine(Config.Shared.StaticStorageFolder, "Readme.md");
+    public static async Task About() {
+        await using var aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
+        var contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
+        
+        // Replace version info
+        contents = contents.Replace("@@version@@", App.Version);
+        
 
         TaskDialog dialog = new() {
             XamlRoot = App.XamlRoot,
             Title = "About",
             Content = new MarkdownScrollViewer {
-                Markdown = File.Exists(aboutFile) ? File.ReadAllText(aboutFile) : "Invalid Installation"
+                Markdown = contents
             },
             Buttons = [
                 new TaskDialogButton {
