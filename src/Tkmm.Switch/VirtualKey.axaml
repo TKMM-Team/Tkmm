@@ -1,7 +1,0 @@
-<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:HMI.Infrastructure.Keyboard">
-  <Design.PreviewWith>
-    <controls:VirtualKey />
-  </Design.PreviewWith>
-</Styles>
