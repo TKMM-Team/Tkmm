@@ -17,11 +17,11 @@ public static class AppManager
     private const string LAUNCHER_NAME = "TKMM Launcher";
 
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
-    private static readonly string _appPath = Path.Combine(_appFolder, "Tkmm.Desktop.exe");
+    private static readonly string _appPath = Path.Combine(_appFolder, "tkmm.exe");
     private static readonly string _appVersionFile = Path.Combine(Config.Shared.StaticStorageFolder, "version");
 
     private static readonly string _launcherFolder = Path.Combine(Config.Shared.StaticStorageFolder, "launcher");
-    private static readonly string _launcherPath = Path.Combine(_launcherFolder, "Tkmm.Launcher.exe");
+    private static readonly string _launcherPath = Path.Combine(_launcherFolder, "tkmm-launcher.exe");
 
     private const string ID = "Tkmm-[9fcf39df-ec9a-4510-8f56-88b52e85ae01]";
     private static Func<string[], Task>? _attach;
