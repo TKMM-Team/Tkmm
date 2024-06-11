@@ -148,9 +148,9 @@ public static class AppManager
 
     public static void CreateDesktopShortcuts()
     {
-        Shortcut.Create(APP_NAME, Location.Application, _appPath, "nxe");
-        Shortcut.Create(LAUNCHER_NAME, Location.Application, _launcherPath, "nxe");
-        Shortcut.Create(APP_NAME, Location.Desktop, _appPath, "nxe");
+        Shortcut.Create(APP_NAME, Location.Application, _appPath, "tkmm");
+        Shortcut.Create(LAUNCHER_NAME, Location.Application, _launcherPath, "tkmm");
+        Shortcut.Create(APP_NAME, Location.Desktop, _appPath, "tkmm");
     }
 
     public static void DeleteDesktopShortcuts()
