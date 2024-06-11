@@ -15,7 +15,7 @@ public partial class Config : ConfigModule<Config>
         = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TotK Mod Manager");
 
     private static readonly string _defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm");
-    private static readonly string _defaultMergedPath = Path.Combine(DocumentsFolder, "TotK Mod Manager", "Merged Output");
+    private static readonly string _defaultMergedPath = Path.Combine(DocumentsFolder, "Merged Output");
 
     public override string Name { get; } = "tkmm";
 
