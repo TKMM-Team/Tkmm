@@ -39,9 +39,9 @@ jobs:
       matrix:
         target:
           - project: Tkmm.Desktop
-            name: TKMM-
+            name: TKMM
           - project: Tkmm.Launcher
-            name: TKMM-Launcher-
+            name: TKMM-Launcher
         config:
           - name: Windows (x64)
             os: ubuntu-latest
