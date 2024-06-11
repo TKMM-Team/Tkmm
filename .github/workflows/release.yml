@@ -32,7 +32,7 @@ jobs:
   build:
     needs: release
     permissions: write-all
-    name: Build ${{ matrix.config.name }}
+    name: ${{ matrix.target.name }} on ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: true
