@@ -1,4 +1,6 @@
-﻿using Tkmm.Core;
+﻿using Avalonia.Controls.Notifications;
+using Tkmm.Core;
+using Tkmm.Core.Components;
 using Tkmm.Core.Services;
 
 namespace Tkmm.Helpers;
@@ -11,6 +13,12 @@ public static class MergerOperations
 
         try {
             await MergerService.Merge();
+            App.Toast(
+                $"The profile '{ProfileManager.Shared.Current.Name}' was merged successfully.", 
+                "Merge Successful!",
+                NotificationType.Success,
+                TimeSpan.FromDays(5)
+            );
         }
         catch (Exception ex) {
             TriviaService.Stop();
