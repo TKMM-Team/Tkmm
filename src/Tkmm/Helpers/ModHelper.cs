@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls.Notifications;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Humanizer;
 using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
