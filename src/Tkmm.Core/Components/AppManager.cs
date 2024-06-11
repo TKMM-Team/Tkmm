@@ -135,15 +135,29 @@ public static class AppManager
         AppStatus.Set("Launcher updated!", "fa-solid fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
     }
 
-    public static void Uninstall()
+    public static async Task Uninstall(Action<int> setProgress)
     {
+        AppStatus.Set("Closing open app instances", "fa-solid fa-cicle-xmark");
         Kill();
+        setProgress(20);
+
+        AppStatus.Set("Uninstalling", "fa-solid fa-broom", isWorkingStatus: true);
+        await Task.Delay(1000);
+        setProgress(40);
 
         if (Directory.Exists(_appFolder)) {
             Directory.Delete(_appFolder, true);
         }
+        setProgress(60);
+
+        if (File.Exists(_appVersionFile)) {
+            File.Delete(_appVersionFile);
+        }
+        setProgress(80);
 
         DeleteDesktopShortcuts();
+        setProgress(100);
+        AppStatus.Set("Uninstall Successful", "fa-regular fa-circle-check", isWorkingStatus: false);
     }
 
     public static void CreateDesktopShortcuts()

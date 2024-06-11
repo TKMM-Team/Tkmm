@@ -19,9 +19,6 @@ public partial class ShellViewModel : ObservableObject
     private string _primaryText = INSTALL;
 
     [ObservableProperty]
-    private string _status = "Ready";
-
-    [ObservableProperty]
     private double _progress = 0.0;
 
     [ObservableProperty]
@@ -74,9 +71,17 @@ public partial class ShellViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static async Task Uninstall()
+    private async Task Uninstall()
     {
-        await Task.Run(AppManager.Uninstall);
+        ShowStatusBar = true;
+        Progress = 0;
+
+        await Task.Run(async () => {
+            await AppManager.Uninstall((progress) => Progress = progress);
+        });
+
+        PrimaryText = INSTALL;
+        IsInstalled = false;
     }
 
     [RelayCommand]
