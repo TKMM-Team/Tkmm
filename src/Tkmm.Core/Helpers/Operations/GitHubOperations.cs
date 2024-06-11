@@ -5,9 +5,21 @@ namespace Tkmm.Core.Helpers.Operations;
 
 public class GitHubOperations
 {
-    private static readonly GitHubClient _githubClient = new(
-        new ProductHeaderValue("Tkmm.Core.Helpers.Operations.GitHubOperations")
-    );
+    private const string USER_AGENT = "Tkmm.Core.Helpers.Operations.GitHubOperations";
+    private const string TOKEN = "token";
+
+    private static readonly HttpClient _client = new() {
+        DefaultRequestHeaders = {
+            { "user-agent", USER_AGENT },
+            { "accept", "application/octet-stream" },
+            { "authorization", $"Bearer {TOKEN}" },
+            { "X-GitHub-Api-Version", "2022-11-28" },
+        }
+    };
+
+    private static readonly GitHubClient _githubClient = new(new ProductHeaderValue(USER_AGENT)) {
+        Credentials = new(TOKEN)
+    };
 
     public static async Task<(Stream stream, string tag)> GetLatestRelease(string org, string repo, string assetName)
     {
@@ -23,8 +35,8 @@ public class GitHubOperations
             asset = latest.Assets.Where(x => x.Name == assetName).FirstOrDefault();
         }
 
-        using HttpClient client = new();
-        return (await client.GetStreamAsync(asset.BrowserDownloadUrl), latest.TagName);
+        string url = $"https://api.github.com/repos/{org}/{repo}/releases/assets/{asset.Id}";
+        return (await _client.GetStreamAsync(url), latest.TagName);
     }
 
     public static async Task<Stream> GetRelease(string org, string repo, string assetName, string tag)

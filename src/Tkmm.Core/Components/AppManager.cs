@@ -4,11 +4,14 @@ using System.IO.Pipes;
 using System.Text;
 using Tkmm.Core.Helpers.Models;
 using Tkmm.Core.Helpers.Operations;
+using static System.Runtime.InteropServices.RuntimeInformation;
 
 namespace Tkmm.Core.Components;
 
 public static class AppManager
 {
+    private const string ORG = "TKMM-Team";
+    private const string REPO = "__tkmm_debug";
     private const string APP_NAME = "TKMM";
     private const string PROC_NAME = "tkmm";
     private const string LAUNCHER_NAME = "TKMM Launcher";
@@ -103,11 +106,11 @@ public static class AppManager
         AppStatus.Set("Downloading app", "fa-solid fa-download");
 
         (Stream stream, string tag) = await GitHubOperations
-            .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-{Dependency.GetOSName()}.zip");
+            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-{RuntimeIdentifier}.zip");
 
         AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
         using ZipArchive archive = new(stream);
-        archive.ExtractToDirectory(_appFolder, true);
+        archive.ExtractToDirectory(_appFolder, overwriteFiles: true);
 
         AppStatus.Set("Updating version", "fa-solid fa-code-commit");
         File.WriteAllText(_appVersionFile, tag);
@@ -120,7 +123,7 @@ public static class AppManager
         AppStatus.Set("Downloading launcher", "fa-solid fa-download");
 
         (Stream stream, _) = await GitHubOperations
-            .GetLatestRelease("TKMM-Team", "Tkmm", $"TKMM-Launcher-{Dependency.GetOSName()}.zip");
+            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-Launcher-{RuntimeIdentifier}.zip");
 
         AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
         using ZipArchive archive = new(stream);

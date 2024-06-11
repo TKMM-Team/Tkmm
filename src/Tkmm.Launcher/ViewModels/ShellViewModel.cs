@@ -92,10 +92,4 @@ public partial class ShellViewModel : ObservableObject
             IsInstalled = true;
         }
     }
-
-    private void UpdateProgress(double value)
-    {
-        Progress += value;
-    }
-
 }
