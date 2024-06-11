@@ -184,7 +184,7 @@
                                         </Expander.Header>
                                         <ListBox ItemsSource="{Binding Options}"
                                                  SelectedItems="{Binding SelectedOptions}"
-                                                 SelectionMode="{Binding Type, Mode=OneWay, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
+                                                 SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate x:DataType="{x:Type models:ModOption}">
                                                     <TextBlock Text="{Binding Name}" />
