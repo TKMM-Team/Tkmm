@@ -21,6 +21,16 @@
                d:DesignWidth="800"
                x:DataType="vm:ShellViewModel"
                mc:Ignorable="d">
+    <!--<uiw:AppWindow.Styles>
+        <Style Selector="uiw|AppWindow">
+            <Setter Property="RenderTransform" Value="skewY(2deg)" />
+        </Style>
+    </uiw:AppWindow.Styles>
+    <uiw:AppWindow.Transitions>
+        <Transitions>
+            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:1" />
+        </Transitions>
+    </uiw:AppWindow.Transitions>-->
     <Grid Background="Transparent"
           Classes="InstallModDropTarget"
           DragDrop.AllowDrop="True"
@@ -101,4 +111,5 @@
             </TextBlock>
         </Grid>
     </Grid>
+
 </uiw:AppWindow>
