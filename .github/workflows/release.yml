@@ -89,8 +89,6 @@ jobs:
           -p:PublishSingleFile=true \
           -p:Version=${{ needs.release.outputs.version }}
 
-dotnet publish src/Tkmm.Desktop -c Release -o TKMM-win-x64 -r win-x64 --sc false --version-suffix 0.0.999-dev -p:DebugType=embedded -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:Version=0.0.999-dev
-
       - name: Rename Executable
         shell: bash
         run: |-
