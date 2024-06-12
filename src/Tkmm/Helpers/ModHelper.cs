@@ -31,11 +31,12 @@ public static class ModHelper
     public static async Task<Mod?> Import<T>(T arg, Func<T, Task<Mod>> createMod)
     {
         try {
-            AppStatus.Set($"Installing '{arg}'", "fa-solid fa-download", isWorkingStatus: true);
-
             Mod result = await Task.Run(async
                 () => await createMod(arg)
             );
+
+            ProfileManager.Shared.Current.Mods.TryInsert(result);
+            ProfileManager.Shared.Mods.TryInsert(result);
 
             ProfileManager.Shared.Current.Selected = result;
 
@@ -98,10 +99,9 @@ public static class ModHelper
 
     private static async Task<Mod> ImportAsync(string arg)
     {
-        Mod mod = await Mod.FromPath(arg);
-        ProfileManager.Shared.Current.Mods.TryInsert(mod);
-        ProfileManager.Shared.Mods.TryInsert(mod);
+        AppStatus.Set($"Installing '{arg}'", "fa-solid fa-download", isWorkingStatus: true);
 
+        Mod mod = await Mod.FromPath(arg);
         mod.RefreshOptions();
         return mod;
     }
