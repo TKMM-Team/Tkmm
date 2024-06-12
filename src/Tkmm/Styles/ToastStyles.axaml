@@ -1,0 +1,60 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="using:Avalonia.Controls.Notifications">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel>
+                <NotificationCard />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="NotificationCard">
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        <Setter Property="Background" Value="{DynamicResource SolidBackgroundFillColorTertiary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefault}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <LayoutTransformControl Name="PART_LayoutTransformControl" UseRenderTransform="True">
+                        <Border Margin="5,5,5,10"
+                                BoxShadow="0 4 8 0 #2E000000"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    ClipToBounds="True"
+                                    CornerRadius="{TemplateBinding CornerRadius}">
+                                <DockPanel>
+                                    <Border x:Name="PART_HeaderBar"
+                                            Height="5"
+                                            Margin="5"
+                                            Background="{DynamicResource SystemAccentColor}"
+                                            CornerRadius="{TemplateBinding CornerRadius}"
+                                            DockPanel.Dock="Top" />
+                                    <ContentPresenter Name="PART_ContentPresenter"
+                                                      MinHeight="64"
+                                                      Content="{TemplateBinding Content}" />
+                                </DockPanel>
+                            </Border>
+                        </Border>
+                    </LayoutTransformControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style Selector="^:information /template/ Border#PART_HeaderBar">
+            <Setter Property="Background" Value="#008dfa" />
+        </Style>
+        <Style Selector="^:success /template/ Border#PART_HeaderBar">
+            <Setter Property="Background" Value="#31c059" />
+        </Style>
+        <Style Selector="^:warning /template/ Border#PART_HeaderBar">
+            <Setter Property="Background" Value="#ffcd23" />
+        </Style>
+        <Style Selector="^:error /template/ Border#PART_HeaderBar">
+            <Setter Property="Background" Value="#e64032" />
+        </Style>
+    </Style>
+</Styles>

@@ -83,7 +83,7 @@ public partial class App : Application
                 _notificationManager = new(XamlRoot) {
                     Position = NotificationPosition.BottomRight,
                     MaxItems = 5,
-                    Margin = new(0, 0, 4, 0)
+                    Margin = new(0, 0, 4, 30)
                 };
             };
 

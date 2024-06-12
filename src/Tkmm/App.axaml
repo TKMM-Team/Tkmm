@@ -35,5 +35,6 @@
         <StyleInclude Source="/Styles/ContainerStyles.axaml" />
         <StyleInclude Source="/Styles/MenuItem.axaml" />
         <StyleInclude Source="/Styles/ListBoxStyles.axaml" />
+        <StyleInclude Source="/Styles/ToastStyles.axaml" />
     </Application.Styles>
 </Application>
