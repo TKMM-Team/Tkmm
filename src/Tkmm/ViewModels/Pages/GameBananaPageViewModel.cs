@@ -3,13 +3,11 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using System.Diagnostics;
 using System.Text.Json;
 using Tkmm.Core;
-using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.GameBanana;
-using Tkmm.Core.Models.Mods;
+using Tkmm.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -140,20 +138,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
             if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
                 AppStatus.Set($"Downloading '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
-
-                try {
-                    await Task.Run(async () => {
-                        Mod result = await mod.Full.FromFile(file);
-                        ProfileManager.Shared.Mods.Add(result);
-                        ProfileManager.Shared.Current.Mods.Add(result);
-                    });
-
-                    AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
-                }
-                catch (Exception ex) {
-                    App.ToastError(ex);
-                    AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
-                }
+                await ModHelper.Import(file, mod.Full.FromFile);
             }
         }
     }

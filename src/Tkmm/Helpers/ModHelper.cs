@@ -9,6 +9,8 @@ using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Helpers;
 
+public delegate Task<Mod> CreateModDelegate<T>(T input, out string sourceFolder);
+
 public static class ModHelper
 {
     private static readonly Bitmap _defaultThumbnail;
@@ -23,11 +25,16 @@ public static class ModHelper
 
     public static async Task<Mod?> Import(string arg)
     {
+        return await Import(arg, ImportAsync);
+    }
+
+    public static async Task<Mod?> Import<T>(T arg, Func<T, Task<Mod>> createMod)
+    {
         try {
             AppStatus.Set($"Installing '{arg}'", "fa-solid fa-download", isWorkingStatus: true);
 
             Mod result = await Task.Run(async
-                () => await ImportAsync(arg)
+                () => await createMod(arg)
             );
 
             ProfileManager.Shared.Current.Selected = result;
