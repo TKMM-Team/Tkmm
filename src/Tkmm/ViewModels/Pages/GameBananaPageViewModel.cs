@@ -19,18 +19,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_csvModelInclusions=Mod";
     private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sName={{1}}&_csvModelInclusions=Mod";
 
-    private static readonly GameBananaFeed? _sugesstedModsFeed;
-
-    static GameBananaPageViewModel()
-    {
-        string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
-        if (File.Exists(path)) {
-            using FileStream fs = File.OpenRead(path);
-            _sugesstedModsFeed = JsonSerializer.Deserialize<GameBananaFeed>(fs);
-        }
-
-        _sugesstedModsFeed ??= new();
-    }
+    private static GameBananaFeed? _sugesstedModsFeed = GetSuggestedFeed();
 
     [ObservableProperty]
     private string _searchArgument = string.Empty;
@@ -60,7 +49,6 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task ResetSearch(ScrollViewer modsViewer)
     {
-        IsShowingSuggested = false;
         Page = 0;
         SearchArgument = string.Empty;
         await UpdatePage();
@@ -86,6 +74,8 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task ShowSuggested(ScrollViewer modsViewer)
     {
+        _sugesstedModsFeed ??= GetSuggestedFeed();
+
         if (IsShowingSuggested == false) {
             await UpdatePage();
             modsViewer.ScrollToHome();
@@ -150,6 +140,10 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private async Task UpdatePage(GameBananaFeed? customFeed = null)
     {
+        if (customFeed is null) {
+            IsShowingSuggested = false;
+        }
+
         Feed = await Fetch(Page + 1, SearchArgument, customFeed);
     }
 
@@ -186,5 +180,16 @@ public partial class GameBananaPageViewModel : ObservableObject
                 mod.Thumbnail = new Bitmap(ms);
             }
         }
+    }
+
+    private static GameBananaFeed? GetSuggestedFeed()
+    {
+        string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
+        if (File.Exists(path)) {
+            using FileStream fs = File.OpenRead(path);
+            return JsonSerializer.Deserialize<GameBananaFeed>(fs);
+        }
+
+        return null;
     }
 }
