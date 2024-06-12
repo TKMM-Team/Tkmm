@@ -4,10 +4,13 @@ public static class DirectoryOperations
 {
     private const string ZS_EXT = ".zs";
 
-    public static void DeleteContents(string src, bool recursive)
+    public static void DeleteTargets(string src, string[] targets, bool recursive)
     {
-        foreach (string directory in Directory.EnumerateDirectories(src)) {
-            Directory.Delete(directory, recursive);
+        foreach (string target in targets) {
+            string directory = Path.Combine(src, target);
+            if (Directory.Exists(directory)) {
+                Directory.Delete(directory, recursive);
+            }
         }
     }
 

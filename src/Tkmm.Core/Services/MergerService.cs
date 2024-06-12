@@ -37,7 +37,7 @@ public class MergerService
 
         if (Directory.Exists(output)) {
             AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
-            DirectoryOperations.DeleteContents(output, recursive: true);
+            DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
         }
 
         TriviaService.Start();
