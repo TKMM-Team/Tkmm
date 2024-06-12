@@ -27,15 +27,15 @@ public class PackageBuilder
         AppStatus.Set($"Creating metadata for '{item.Name}'", METADATA_ICON);
         Directory.CreateDirectory(outputFolder);
 
-        string metadataFile = Path.Combine(outputFolder, METADATA);
-        using FileStream fs = File.Create(metadataFile);
-        JsonSerializer.Serialize(fs, item);
-
         if (File.Exists(item.ThumbnailUri)) {
             AppStatus.Set($"Copying thumbnail", METADATA_ICON);
             File.Copy(item.ThumbnailUri, Path.Combine(outputFolder, THUMBNAIL), true);
             item.ThumbnailUri = THUMBNAIL;
         }
+
+        string metadataFile = Path.Combine(outputFolder, METADATA);
+        using FileStream fs = File.Create(metadataFile);
+        JsonSerializer.Serialize(fs, item);
 
         if (item is Mod mod) {
             foreach (var group in mod.OptionGroups) {
