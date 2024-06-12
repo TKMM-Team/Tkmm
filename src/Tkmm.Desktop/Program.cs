@@ -4,6 +4,7 @@ using Cocona;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using System.Diagnostics;
+using Tkmm.Components;
 using Tkmm.Core.Commands;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers.Win32;
@@ -72,7 +73,7 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current
-            .Register<FontAwesomeIconProvider>();
+            .Register(new FontAwesomeIconProvider(FontAwesomeJsonStreamProvider.Instance));
 
 #if DEBUG
         if (OperatingSystem.IsWindows() && Core.Config.Shared.ShowConsole == false) {
