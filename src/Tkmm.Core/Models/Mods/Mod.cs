@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
@@ -48,6 +49,7 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     [property: System.Text.Json.Serialization.JsonIgnore]
     private ObservableCollection<ModOptionGroup> _optionGroups = [];
 
+    [JsonIgnore]
     public string SourceFolder => ProfileManager.GetModFolder(Id);
 
     public static async Task<Mod> FromPath(string path)
