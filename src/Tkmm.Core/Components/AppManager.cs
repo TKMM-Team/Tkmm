@@ -82,7 +82,10 @@ public static class AppManager
 
     public static void StartLauncher()
     {
-        Process.Start(_launcherPath);
+        Process.Start(new ProcessStartInfo {
+            FileName = _launcherPath,
+            UseShellExecute = true,
+        });
     }
 
     public static bool IsInstalled()
@@ -90,10 +93,10 @@ public static class AppManager
         return File.Exists(_appVersionFile);
     }
 
-    public static async Task<bool> HasUpdate()
+    public static async Task<(bool Result, string Tag)> HasUpdate()
     {
         if (!File.Exists(_appVersionFile)) {
-            return true;
+            return (true, "Latest");
         }
 
         string currentVersion = File.ReadAllText(_appVersionFile);

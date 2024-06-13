@@ -176,7 +176,7 @@ public class ShellViewMenu
     [Menu("Check for Update", "Help", "Ctrl + U", "fa-solid fa-cloud-arrow-up")]
     public static async Task CheckForUpdate()
     {
-        if (!await AppManager.HasUpdate()) {
+        if (!(await AppManager.HasUpdate()).Result) {
             await new ContentDialog {
                 Title = "Check for Updates",
                 Content = "Software up to date.",
@@ -186,25 +186,7 @@ public class ShellViewMenu
             return;
         }
 
-        ContentDialog dialog = new() {
-            Title = "Update",
-            Content = """
-                An update is availible.
-                
-                Would you like to close your current session and open the launcher?
-                """,
-            PrimaryButtonText = "Yes",
-            SecondaryButtonText = "Cancel"
-        };
-
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
-            await Task.Run(async () => {
-                await AppManager.UpdateLauncher();
-                AppManager.StartLauncher();
-            });
-
-            Environment.Exit(0);
-        }
+       await App.PromptUpdate();
     }
 
     [Menu("Download Assets", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]

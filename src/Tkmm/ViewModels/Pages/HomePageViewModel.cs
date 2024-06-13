@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -106,6 +107,18 @@ public partial class HomePageViewModel : ObservableObject
                 Current = ProfileManager.Shared.Current.Selected;
             }
         };
+
+        _ = Task.Run(async () => {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            (bool hasUpdate, string tag) = await AppManager.HasUpdate();
+            if (hasUpdate) {
+                App.Toast($"TKMM {tag} is availible! (Click here to install)", "Update Availible",
+                    NotificationType.Information, TimeSpan.FromSeconds(10), async () => {
+                        await App.PromptUpdate();
+                    });
+            }
+        });
     }
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

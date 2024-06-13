@@ -55,9 +55,10 @@ public class GitHubOperations
         return await _githubClient.Repository.Content.GetRawContent(org, repo, assetPath);
     }
 
-    public static async Task<bool> HasUpdate(string org, string repo, string currentTag)
+    public static async Task<(bool Result, string Tag)> HasUpdate(string org, string repo, string currentTag)
     {
         IReadOnlyList<Release> releases = await _githubClient.Repository.Release.GetAll(org, repo);
-        return releases.Count > 0 && releases[0].TagName != currentTag;
+        string tag = releases[0].TagName;
+        return (releases.Count > 0 && tag != currentTag, tag);
     }
 }

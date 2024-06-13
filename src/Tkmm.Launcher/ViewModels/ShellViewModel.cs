@@ -97,7 +97,7 @@ public partial class ShellViewModel : ObservableObject
         if (!AppManager.IsInstalled()) {
             PrimaryText = INSTALL;
         }
-        else if (await AppManager.HasUpdate()) {
+        else if ((await AppManager.HasUpdate()).Result) {
             PrimaryText = UPDATE;
             IsInstalled = true;
         }

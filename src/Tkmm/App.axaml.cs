@@ -179,4 +179,27 @@ public partial class App : Application
         AppLog.Log($"TotkCommon Configured GamePath: '{Totk.Config.GamePath}'", LogLevel.Info);
         AppLog.Log($"TotkCommon ZsDic Exists: '{File.Exists(Totk.Config.ZsDicPath)}'", LogLevel.Info);
     }
+
+    public static async Task PromptUpdate()
+    {
+        ContentDialog dialog = new() {
+            Title = "Update",
+            Content = """
+                An update is availible.
+                
+                Would you like to close your current session and open the launcher?
+                """,
+            PrimaryButtonText = "Yes",
+            SecondaryButtonText = "Cancel"
+        };
+
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
+            await Task.Run(async () => {
+                await AppManager.UpdateLauncher();
+                AppManager.StartLauncher();
+            });
+
+            Environment.Exit(0);
+        }
+    }
 }
