@@ -24,7 +24,7 @@ public class AssetHelper
 
         List<Task> tasks = [];
 
-        foreach (var asset in await Load()) {
+        foreach (GithubAsset asset in await Load()) {
             tasks.Add(asset.Download());
         }
 

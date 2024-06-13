@@ -13,11 +13,16 @@ public class GithubAsset
 
     public async Task Download()
     {
-        byte[] data = await GitHubOperations.GetAsset(Owner, Repo, Asset);
         string outputFile = Path.GetFullPath(
             FilePath.Replace(LOCALAPPDATA_VAR, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
         );
 
+        // Only downlaod shops.json once
+        if (Asset == "assets/shops.json" && File.Exists(outputFile)) {
+            return;
+        }
+
+        byte[] data = await GitHubOperations.GetAsset(Owner, Repo, Asset);
         File.WriteAllBytes(outputFile, data);
     }
 }
