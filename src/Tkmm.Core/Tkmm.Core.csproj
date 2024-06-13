@@ -13,7 +13,7 @@
     <PackageReference Include="Octokit" Version="12.0.0" />
     <PackageReference Include="ReverseMarkdown" Version="4.4.0" />
     <PackageReference Include="SharpCompress" Version="0.37.2" />
-    <PackageReference Include="TotkCommon" Version="1.2.6">
+    <PackageReference Include="TotkCommon" Version="1.2.7">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
   </ItemGroup>
