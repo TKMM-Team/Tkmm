@@ -66,7 +66,7 @@ public class ShellViewMenu
 
             string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", GAME_ID);
             DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
-            DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output);
+            DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output, overwrite: true);
         }
     }
 
