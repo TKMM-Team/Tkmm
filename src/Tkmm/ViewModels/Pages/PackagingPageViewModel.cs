@@ -94,37 +94,45 @@ public partial class PackagingPageViewModel : ObservableObject
 
     private async Task<(bool, string?)> Create(string output, bool cleanOutput)
     {
-        if (string.IsNullOrEmpty(SourceFolder)) {
-            App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
+        try {
+            if (string.IsNullOrEmpty(SourceFolder)) {
+                App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
+                return (false, default);
+            }
+
+            if (string.IsNullOrEmpty(Mod.Name)) {
+                Mod.Name = Path.GetFileName(SourceFolder);
+            }
+
+            if (string.IsNullOrEmpty(ExportPath)) {
+                ExportPath = Path.Combine(Path.GetDirectoryName(SourceFolder) ?? string.Empty,
+                                          $"{Path.GetFileName(SourceFolder)}.tkcl");
+            }
+
+            if (!string.IsNullOrEmpty(Mod.ThumbnailUri)) {
+                string relativeThumbnailUri = Path.Combine(SourceFolder, Mod.ThumbnailUri);
+                if (File.Exists(relativeThumbnailUri)) {
+                    Mod.ThumbnailUri = relativeThumbnailUri;
+                }
+            }
+
+            if (cleanOutput && Directory.Exists(output)) {
+                Directory.Delete(output, recursive: true);
+            }
+
+            await Task.Run(async () => {
+                PackageBuilder.CreateMetaData(Mod, output);
+                await PackageBuilder.CopyContents(Mod, SourceFolder, output);
+                PackageBuilder.Package(output, ExportPath);
+            });
+
+            return (true, output);
+        } catch (Exception exc) {
+            App.ToastError(exc);
+            AppStatus.Set(exc.Message, isWorkingStatus: false, temporaryStatusTime: 1.5, logLevel: LogLevel.None);
+
             return (false, default);
         }
-
-        if (string.IsNullOrEmpty(Mod.Name)) {
-            Mod.Name = Path.GetFileName(SourceFolder);
-        }
-
-        if (string.IsNullOrEmpty(ExportPath)) {
-            ExportPath = Path.Combine(Path.GetDirectoryName(SourceFolder) ?? string.Empty, $"{Path.GetFileName(SourceFolder)}.tkcl");
-        }
-
-        if (!string.IsNullOrEmpty(Mod.ThumbnailUri)) {
-            string relativeThumbnailUri = Path.Combine(SourceFolder, Mod.ThumbnailUri);
-            if (File.Exists(relativeThumbnailUri)) {
-                Mod.ThumbnailUri = relativeThumbnailUri;
-            }
-        }
-
-        if (cleanOutput && Directory.Exists(output)) {
-            Directory.Delete(output, recursive: true);
-        }
-
-        await Task.Run(async () => {
-            PackageBuilder.CreateMetaData(Mod, output);
-            await PackageBuilder.CopyContents(Mod, SourceFolder, output);
-            PackageBuilder.Package(output, ExportPath);
-        });
-
-        return (true, output);
     }
 
     [RelayCommand]
