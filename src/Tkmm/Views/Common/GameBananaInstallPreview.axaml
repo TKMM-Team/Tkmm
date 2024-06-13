@@ -24,14 +24,23 @@
             <ItemsControl Name="Items" ItemsSource="{Binding Full.Files}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:GameBananaFile}">
-                        <RadioButton GroupName="_files" IsChecked="{Binding IsSelected}">
-                            <StackPanel Spacing="3">
-                                <TextBlock FontWeight="Medium" Text="{Binding Name}" />
-                                <TextBlock FontSize="11"
-                                           FontStyle="Italic"
-                                           Text="{Binding Description}"
-                                           TextWrapping="Wrap" />
-                            </StackPanel>
+                        <RadioButton VerticalAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     GroupName="_files"
+                                     IsChecked="{Binding IsSelected}">
+                            <Grid>
+                                <Border Background="{DynamicResource SystemAccentColor}"
+                                        CornerRadius="{DynamicResource ControlCornerRadius}"
+                                        IsVisible="{Binding IsTkcl}"
+                                        Opacity="0.6" />
+                                <StackPanel Margin="3,0" Spacing="3">
+                                    <TextBlock FontWeight="Medium" Text="{Binding Name}" />
+                                    <TextBlock FontSize="11"
+                                               FontStyle="Italic"
+                                               Text="{Binding Description}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
                         </RadioButton>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
