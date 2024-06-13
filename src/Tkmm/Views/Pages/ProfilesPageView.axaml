@@ -70,6 +70,7 @@
                          DragDrop.AllowDrop="True"
                          ItemsSource="{Binding Current.Mods, Source={x:Static comp:ProfileManager.Shared}}"
                          SelectedItem="{Binding Selected}"
+                         SelectionMode="AlwaysSelected"
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
@@ -122,6 +123,7 @@
                  DragDrop.AllowDrop="True"
                  ItemsSource="{Binding Mods, Source={x:Static comp:ProfileManager.Shared}}"
                  SelectedItem="{Binding MasterSelected}"
+                 SelectionMode="AlwaysSelected"
                  ToolTip.Tip="All Mods">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Mod}">
