@@ -166,7 +166,7 @@ public class ShellViewMenu
     [Menu("Help", "Help", "F1", "fa-solid fa-circle-question")]
     public static Task GoToHelp()
     {
-        Process.Start(new ProcessStartInfo("https://totkmods.github.io/tkmm/learn") {
+        Process.Start(new ProcessStartInfo("https://totkmods.github.io/tkmm/docs/index.html") {
             UseShellExecute = true
         });
 
