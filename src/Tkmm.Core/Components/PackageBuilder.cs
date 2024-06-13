@@ -4,6 +4,7 @@ using RsdbMerger.Core.Services;
 using System.IO.Compression;
 using System.Text.Json;
 using Tkmm.Core.Components.ModReaders;
+using Tkmm.Core.Exceptions;
 using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
@@ -61,8 +62,13 @@ public class PackageBuilder
 
     public static async Task CopyContents<T>(T item, string sourceFolder, string outputFolder) where T : IModItem
     {
-        await Task.WhenAll(CopyContentsInternal(item, sourceFolder, outputFolder));
-        AppStatus.Set($"Packaged '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
+        try {
+            await Task.WhenAll(CopyContentsInternal(item, sourceFolder, outputFolder));
+            AppStatus.Set($"Packaged '{item.Name}'", CHECK_ICON, isWorkingStatus: false, temporaryStatusTime: 1.5);
+        }
+        catch (Exception ex) {
+            throw new PackageException(item, outputFolder, ex);
+        }
     }
 
     private static List<Task> CopyContentsInternal<T>(T item, string sourceFolder, string outputFolder) where T : IModItem

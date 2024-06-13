@@ -4,6 +4,7 @@ using Avalonia.Platform;
 using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
+using Tkmm.Core.Exceptions;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
 
@@ -51,11 +52,23 @@ public static class ModHelper
             AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
             return result;
         }
+        catch (PackageException ex) {
+            if (Directory.Exists(ex.SystemModFolder)) {
+                try {
+                    Directory.Delete(ex.SystemModFolder, recursive: true);
+                }
+                catch (Exception deleteException) {
+                    AppLog.Log(deleteException);
+                }
+            }
+
+            App.ToastError(ex.InnerException ?? ex);
+        }
         catch (Exception ex) {
             App.ToastError(ex);
-            AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
         }
 
+        AppStatus.Set("Install Failed!", "fa-regular fa-circle-xmark", isWorkingStatus: false, temporaryStatusTime: 1.5);
         return null;
     }
 
