@@ -160,4 +160,11 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
             await task;
         }
     }
+
+    partial void OnIsEditingOptionsChanged(bool value)
+    {
+        if (value) {
+            ProfileManager.Shared.Current.Selected = this;
+        }
+    }
 }
