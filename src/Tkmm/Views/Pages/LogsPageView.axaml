@@ -23,7 +23,6 @@
                 <Style Selector="ListBoxItem">
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Margin" Value="0" />
-                    <Setter Property="MaxHeight" Value="200" />
                     <Setter Property="MinHeight" Value="0" />
                 </Style>
             </ListBox.Styles>
