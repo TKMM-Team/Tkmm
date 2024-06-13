@@ -111,19 +111,42 @@ public partial class Config : ConfigModule<Config>
         }
     }
 
-    private static readonly string _japaneseCitrusFruitPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load", "0100F2C0115B6000", "TKMM");
     partial void OnUseJapaneseCitrusFruitChanged(bool value)
     {
-        if (Directory.Exists(_japaneseCitrusFruitPath)) {
-            Directory.Delete(_japaneseCitrusFruitPath, true);
+        string japaneseCitrusFruitPath = Path.Combine(ReadJapaneseCitrusFruitLoadPath(), "0100F2C0115B6000", "TKMM");
+
+        if (Directory.Exists(japaneseCitrusFruitPath)) {
+            Directory.Delete(japaneseCitrusFruitPath, true);
         }
 
         if (value == true) {
-            if (Path.GetDirectoryName(_japaneseCitrusFruitPath) is string folder) {
+            if (Path.GetDirectoryName(japaneseCitrusFruitPath) is string folder) {
                 Directory.CreateDirectory(folder);
             }
 
-            Directory.CreateSymbolicLink(_japaneseCitrusFruitPath, MergeOutput);
+            Directory.CreateSymbolicLink(japaneseCitrusFruitPath, MergeOutput);
         }
+    }
+
+    private static readonly string _japaneseCitrusFruitDefaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load");
+    private static readonly string _japaneseCitrusFruitConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "config", "qt-config.ini");
+    private static string ReadJapaneseCitrusFruitLoadPath()
+    {
+        if (!File.Exists(_japaneseCitrusFruitConfigPath)) {
+            return _japaneseCitrusFruitDefaultPath;
+        }
+
+        using FileStream fs = File.OpenRead(_japaneseCitrusFruitConfigPath);
+        using StreamReader reader = new(fs);
+
+        const string prefix = "load_directory=";
+
+        while (reader.ReadLine() is string line) {
+            if (line.StartsWith(prefix)) {
+                return line[prefix.Length..];
+            }
+        }
+
+        return _japaneseCitrusFruitDefaultPath;
     }
 }
