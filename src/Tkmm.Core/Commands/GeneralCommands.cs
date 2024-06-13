@@ -6,6 +6,7 @@ using Tkmm.Core.Services;
 namespace Tkmm.Core.Commands;
 
 [HasSubCommands(typeof(ModCommands), "mods", Description = "Mod commands")]
+[HasSubCommands(typeof(ProfileCommands), "profile", Description = "Profile commands")]
 public class GeneralCommands
 {
     [Command("merge", Description = "Merge the mods from a profile into an output folder")]
