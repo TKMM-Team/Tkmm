@@ -8,6 +8,7 @@ using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.GameBanana;
 using Tkmm.Helpers;
+using Tkmm.Views.Common;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -88,48 +89,34 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public static async Task InstallMod(GameBananaModInfo mod)
     {
-        StackPanel panel = new() {
-            Spacing = 5
+        ArgumentNullException.ThrowIfNull(mod.Full, nameof(mod.Full));
+
+        GameBananaInstallPreview preview = new() {
+            DataContext = mod
         };
-
-        panel.Children.Add(new TextBlock {
-            Text = mod.Name,
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap
-        });
-
-        panel.Children.Add(new TextBlock {
-            Text = "Choose a file to install:",
-            FontSize = 11,
-            Margin = new(15, 10, 0, 0),
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap
-        });
-
-        ArgumentNullException.ThrowIfNull(mod.Full);
-
-        bool first = true;
-        foreach (var file in mod.Full.Files) {
-            panel.Children.Add(new RadioButton {
-                GroupName = "@",
-                Content = file.Name,
-                IsChecked = first,
-                Tag = file
-            });
-
-            first = false;
-        }
 
         ContentDialog dialog = new() {
-            Title = $"Install {mod.Name}?",
-            Content = panel,
-            SecondaryButtonText = "No",
-            PrimaryButtonText = "Yes"
+            Title = $"Install {mod.Name}",
+            Content = preview,
+            SecondaryButtonText = "Cancel",
+            PrimaryButtonText = "Install",
+            DefaultButton = ContentDialogButton.Primary,
+            IsPrimaryButtonEnabled = false,
         };
 
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary) {
-            if (panel.Children.FirstOrDefault(x => x is RadioButton radioButton && radioButton.IsChecked == true)?.Tag is GameBananaFile file) {
-                AppStatus.Set($"Downloading '{file.Name}'", "fa-solid fa-download", isWorkingStatus: true);
-                await ModHelper.Import(file, mod.Full.FromFile);
-            }
+        GameBananaFile? target = null;
+        foreach (GameBananaFile file in mod.Full.Files) {
+            file.PropertyChanged += (s, e) => {
+                if (e.PropertyName == nameof(file.IsSelected)) {
+                    target = file;
+                    dialog.IsPrimaryButtonEnabled = true;
+                }
+            };
+        }
+
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary && target is not null) {
+            AppStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", isWorkingStatus: true);
+            await ModHelper.Import(target, mod.Full.FromFile);
         }
     }
 
