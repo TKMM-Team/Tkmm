@@ -17,7 +17,7 @@ public static class AppManager
     private const string LAUNCHER_NAME = "TKMM Launcher";
 
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
-    private static readonly string _appPath = Path.Combine(_appFolder, "tkmm.exe");
+    private static readonly string _appPath = Path.Combine(_appFolder, OperatingSystem.IsWindows() ? "tkmm.exe" : "tkmm");
     private static readonly string _appVersionFile = Path.Combine(Config.Shared.StaticStorageFolder, "version");
 
     private static readonly string _launcherFolder = Path.Combine(Config.Shared.StaticStorageFolder, "launcher");
