@@ -56,6 +56,8 @@ public partial class ShellViewModel : ObservableObject
                 AppManager.CreateDesktopShortcuts();
             }
 
+            AppManager.CreateProtocol();
+
             Progress = 100;
 
             if (OperatingSystem.IsWindows()) {

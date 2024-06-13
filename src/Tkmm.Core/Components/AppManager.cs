@@ -160,6 +160,11 @@ public static class AppManager
         AppStatus.Set("Uninstall Successful", "fa-regular fa-circle-check", isWorkingStatus: false);
     }
 
+    public static void CreateProtocol()
+    {
+        WebProtocol.Create(PROC_NAME, _appPath);
+    }
+
     public static void CreateDesktopShortcuts()
     {
         Shortcut.Create(APP_NAME, Location.Application, _appPath, "tkmm");
