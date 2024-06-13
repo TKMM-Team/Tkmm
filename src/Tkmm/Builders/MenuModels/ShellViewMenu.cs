@@ -13,6 +13,7 @@ using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Helpers.Win32;
+using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
 
@@ -25,7 +26,7 @@ public class ShellViewMenu
     {
         const string GAME_ID = "0100F2C0115B6000";
 
-        DriveInfo[] disks = DriveInfo.GetDrives()
+        FriendlyDriveInfo[] disks = DriveInfo.GetDrives()
             .Where(drive => {
                 try {
                     return drive.DriveType == DriveType.Removable && drive.DriveFormat == "FAT32";
@@ -34,6 +35,7 @@ public class ShellViewMenu
                     return false;
                 }
             })
+            .Select(x => new FriendlyDriveInfo(x))
             .ToArray();
 
         if (disks.Length == 0) {
@@ -49,7 +51,7 @@ public class ShellViewMenu
             Content = new ComboBox {
                 ItemsSource = disks,
                 SelectedIndex = 0,
-                DisplayMemberBinding = new Binding("VolumeLabel")
+                DisplayMemberBinding = new Binding("DisplayName")
             },
             PrimaryButtonText = "Export",
             SecondaryButtonText = "Cancel"
@@ -59,10 +61,10 @@ public class ShellViewMenu
             return;
         }
 
-        if (selector.SelectedItem is DriveInfo drive) {
+        if (selector.SelectedItem is FriendlyDriveInfo drive) {
             await MergerOperations.Merge();
 
-            string output = Path.Combine(drive.Name, "atmosphere", "contents", GAME_ID);
+            string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", GAME_ID);
             DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output);
         }
     }
