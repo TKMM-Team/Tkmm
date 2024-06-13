@@ -49,27 +49,27 @@
             </ListBox.ContextFlyout>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SystemLog}">
-                    <Grid ToolTip.Tip="{Binding Message}">
+                    <Grid>
                         <Border Margin="1"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 Background="{Binding LogLevel, Converter={x:Static converters:LogLevelToBrushConverter.Shared}}"
                                 CornerRadius="3"
                                 Opacity="0.3" />
-                        <ScrollViewer Margin="7,3">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock VerticalAlignment="Center"
-                                           FontFamily="{StaticResource UbuntuMono}"
-                                           Text="{Binding Message}"
-                                           TextWrapping="WrapWithOverflow" />
-                                <TextBlock Grid.Column="1"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource UbuntuMono}"
-                                           FontSize="9"
-                                           Text="{Binding Date}" />
-                            </Grid>
-                        </ScrollViewer>
+                        
+                        <Grid ColumnDefinitions="*,Auto" Margin="5">
+                            <TextBlock VerticalAlignment="Center"
+                                       FontFamily="{StaticResource UbuntuMono}"
+                                       Text="{Binding Message}"
+                                       TextWrapping="WrapWithOverflow" />
+                            <TextBlock Grid.Column="1"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource UbuntuMono}"
+                                       FontSize="9"
+                                       Text="{Binding Date}" />
+                        </Grid>
+                    
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
