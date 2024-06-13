@@ -12,7 +12,7 @@ public class InstallModDropHandler : DropHandlerBase
 {
     public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
     {
-        return e.Data.GetFiles()?.Any(x => File.Exists(x.Path.LocalPath) && ModReaderProviderService.GetReader(x.Path.LocalPath) is not null) == true
+        return e.Data.GetFiles()?.Any(x => Path.Exists(x.Path.LocalPath) && ModReaderProviderService.GetReader(x.Path.LocalPath) is not null) == true
             || e.Data.GetText() is string text && ModReaderProviderService.GetReader(text) is not null;
     }
 
