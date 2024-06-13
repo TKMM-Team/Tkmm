@@ -27,7 +27,7 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
-          prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
+          # prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
 
   build:
     needs: release
