@@ -64,9 +64,15 @@ public class ShellViewMenu
         if (selector.SelectedItem is FriendlyDriveInfo drive) {
             await MergerOperations.Merge();
 
-            string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", GAME_ID);
-            DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
-            DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output, overwrite: true);
+            try {
+                string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", GAME_ID);
+                DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
+                DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output, overwrite: true);
+            }
+            catch (Exception ex) {
+                AppLog.Log(ex);
+                App.ToastError(ex);
+            }
         }
     }
 
