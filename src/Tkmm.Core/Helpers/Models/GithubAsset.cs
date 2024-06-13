@@ -22,6 +22,10 @@ public class GithubAsset
             return;
         }
 
+        if (Path.GetDirectoryName(outputFile) is string folder) {
+            Directory.CreateDirectory(folder);
+        }
+
         byte[] data = await GitHubOperations.GetAsset(Owner, Repo, Asset);
         File.WriteAllBytes(outputFile, data);
     }
