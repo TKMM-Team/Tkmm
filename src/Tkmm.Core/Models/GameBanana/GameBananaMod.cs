@@ -91,7 +91,11 @@ public partial class GameBananaMod : ObservableObject
 
         mod.Name = Name;
         mod.Author = Submitter.Name;
-        mod.Description = new ReverseMarkdown.Converter().Convert(Text);
+        mod.Description = new ReverseMarkdown.Converter(new ReverseMarkdown.Config {
+            GithubFlavored = true,
+            ListBulletChar = '*',
+            UnknownTags = ReverseMarkdown.Config.UnknownTagsOption.Bypass
+        }).Convert(Text);
         mod.ThumbnailUri = PackageBuilder.THUMBNAIL;
         mod.Contributors = contributors;
         mod.Version = Version;
