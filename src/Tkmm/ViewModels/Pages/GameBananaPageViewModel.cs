@@ -95,16 +95,17 @@ public partial class GameBananaPageViewModel : ObservableObject
             DataContext = mod
         };
 
+        GameBananaFile? target = mod.Full.Files.FirstOrDefault(x => x.IsSelected);
+
         ContentDialog dialog = new() {
             Title = $"Install {mod.Name}",
             Content = preview,
             SecondaryButtonText = "Cancel",
             PrimaryButtonText = "Install",
             DefaultButton = ContentDialogButton.Primary,
-            IsPrimaryButtonEnabled = false,
+            IsPrimaryButtonEnabled = target is not null,
         };
 
-        GameBananaFile? target = null;
         foreach (GameBananaFile file in mod.Full.Files) {
             file.PropertyChanged += (s, e) => {
                 if (e.PropertyName == nameof(file.IsSelected)) {
