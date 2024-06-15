@@ -68,6 +68,7 @@ public class Shortcut(string name, Location location, string target, params stri
             writer.WriteLine($"Icon={Target}");
             writer.WriteLine($"Keywords={string.Join(';', Keywords)}");
             writer.WriteLine($"Name={Name}");
+            writer.WriteLine($"Exec={Target}");
             writer.WriteLine("StartupNotify=true");
             writer.WriteLine("Terminal=false");
             writer.WriteLine("Type=Application");
