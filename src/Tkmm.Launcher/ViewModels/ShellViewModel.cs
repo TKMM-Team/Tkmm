@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
@@ -40,36 +42,61 @@ public partial class ShellViewModel : ObservableObject
     private async Task Primary()
     {
         if (PrimaryText is INSTALL or UPDATE) {
-            if (OperatingSystem.IsWindows()) {
-                _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
-
+            try {
+                await Install();
             }
+            catch (Exception ex) {
+                ContentDialog dialog = new() {
+                    Title = ex.GetType().Name,
+                    Content = ex.Message,
+                    PrimaryButtonCommand = new RelayCommand(async () => {
+                        await (_view.Clipboard?.SetTextAsync($"""
+                            ```
+                            {ex}
+                            ```
+                            """) ?? Task.CompletedTask);
+                    }),
+                    PrimaryButtonText = "Copy",
+                    SecondaryButtonText = "Dismiss",
+                    DefaultButton = ContentDialogButton.Primary
+                };
 
-            await Task.Run(async () => {
-                Progress = 10;
-                await AppManager.Update((progress) => Progress = progress);
-                await AssetHelper.Download();
-                Progress = 98;
-            });
-
-            if (InstallShortcuts) {
-                AppManager.CreateDesktopShortcuts();
+                await dialog.ShowAsync();
             }
-
-            AppManager.CreateProtocol();
-
-            Progress = 100;
-
-            if (OperatingSystem.IsWindows()) {
-                _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Normal);
-                _view.PlatformFeatures.SetTaskBarProgressBarValue(0, 0);
-            }
-
-            PrimaryText = LAUNCH;
         }
         else {
             AppManager.Start();
         }
+    }
+
+    private async Task Install()
+    {
+        if (OperatingSystem.IsWindows()) {
+            _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
+
+        }
+
+        await Task.Run(async () => {
+            Progress = 10;
+            await AppManager.Update((progress) => Progress = progress);
+            await AssetHelper.Download();
+            Progress = 98;
+        });
+
+        if (InstallShortcuts) {
+            AppManager.CreateDesktopShortcuts();
+        }
+
+        AppManager.CreateProtocol();
+
+        Progress = 100;
+
+        if (OperatingSystem.IsWindows()) {
+            _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Normal);
+            _view.PlatformFeatures.SetTaskBarProgressBarValue(0, 0);
+        }
+
+        PrimaryText = LAUNCH;
     }
 
     [RelayCommand]
