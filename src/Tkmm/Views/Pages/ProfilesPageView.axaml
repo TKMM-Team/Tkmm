@@ -95,7 +95,7 @@
                                 VerticalAlignment="Stretch"
                                 Command="{Binding RemoveCommand}"
                                 ToolTip.Tip="Remove Mod">
-                            <pi:Icon Value="fa-solid fa-trash" />
+                            <pi:Icon Value="fa-regular fa-trash" />
                         </Button>
                         <Button Margin="2.5"
                                 VerticalAlignment="Stretch"
@@ -152,7 +152,7 @@
                                 Command="{Binding $parent[UserControl].DataContext.UninstallCommand}"
                                 CommandParameter="{Binding}"
                                 ToolTip.Tip="Uninstall">
-                            <pi:Icon Value="fa-solid fa-trash" />
+                            <pi:Icon Value="fa-solid fa-trash-xmark" />
                         </Button>
                     </Grid>
                 </DataTemplate>

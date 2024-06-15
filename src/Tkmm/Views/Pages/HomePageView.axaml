@@ -264,7 +264,7 @@
                             VerticalAlignment="Stretch"
                             Command="{Binding RemoveCommand}"
                             ToolTip.Tip="Remove Mod">
-                        <pi:Icon Value="fa-solid fa-trash" />
+                        <pi:Icon Value="fa-regular fa-trash" />
                     </Button>
                     <Button Margin="2.5"
                             VerticalAlignment="Stretch"
