@@ -73,7 +73,6 @@ public partial class ShellViewModel : ObservableObject
     {
         if (OperatingSystem.IsWindows()) {
             _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
-
         }
 
         await Task.Run(async () => {
