@@ -89,7 +89,7 @@ public class Shortcut(string name, Location location, string target, params stri
     private string? GetLinuxLocation()
     {
         if (Location == Location.Application) {
-            return "/usr/share/applications";
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "applications");
         }
 
         return null;
