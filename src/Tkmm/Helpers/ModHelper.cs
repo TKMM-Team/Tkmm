@@ -36,8 +36,8 @@ public static class ModHelper
                 () => await createMod(arg)
             );
 
-            ProfileManager.Shared.Current.Mods.TryInsert(result);
             ProfileManager.Shared.Mods.TryInsert(result);
+            ProfileManager.Shared.Current.Mods.TryInsert(result);
 
             ProfileManager.Shared.Current.Selected = result;
 
