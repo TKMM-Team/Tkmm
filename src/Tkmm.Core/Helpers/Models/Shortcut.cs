@@ -22,11 +22,8 @@ public class Shortcut(string name, Location location, string target, params stri
         if (OperatingSystem.IsWindows()) {
             shortcut.CreateWin32();
         }
-        else if (OperatingSystem.IsLinux()) {
-            shortcut.CreateLinux();
-        }
         else {
-            // TODO: Implement MacOS bookmark/alias creation
+            shortcut.CreateUnix();
         }
     }
 
@@ -60,7 +57,7 @@ public class Shortcut(string name, Location location, string target, params stri
         }
     }
 
-    private void CreateLinux()
+    private void CreateUnix()
     {
         if (GetLinuxLocation() is string location) {
             using StreamWriter writer = new(Path.Combine(location, $"{Name}.desktop"));
