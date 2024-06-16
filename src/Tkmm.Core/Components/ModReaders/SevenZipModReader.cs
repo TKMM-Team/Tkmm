@@ -57,9 +57,13 @@ public class SevenZipModReader : IModReader
 
         string outputFolder = ProfileManager.GetModFolder(id);
 
-        PackageBuilder.CreateMetaData(mod, outputFolder);
-        await PackageBuilder.CopyContents(mod, tmpOutputFolder, outputFolder);
-        Directory.Delete(tmpOutputFolder, true);
+        try {
+            PackageBuilder.CreateMetaData(mod, outputFolder);
+            await PackageBuilder.CopyContents(mod, tmpOutputFolder, outputFolder);
+        }
+        finally {
+            Directory.Delete(tmpOutputFolder, true);
+        }
 
         return mod;
     }
