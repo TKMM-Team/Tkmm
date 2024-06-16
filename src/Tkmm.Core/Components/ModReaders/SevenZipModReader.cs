@@ -23,7 +23,7 @@ public class SevenZipModReader : IModReader
         using SevenZipArchive archive = SevenZipArchive.Open(ms);
 
         Guid id = Guid.NewGuid();
-        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), id.ToString());
+        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), "tkmm", id.ToString());
         string? root = null;
 
         foreach (var entry in archive.Entries) {

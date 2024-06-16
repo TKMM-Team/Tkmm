@@ -25,7 +25,7 @@ public class ArchiveModReader : IModReader
         using IReader reader = ReaderFactory.Open(input);
 
         Guid id = Guid.NewGuid();
-        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), id.ToString());
+        string tmpOutputFolder = Path.Combine(Path.GetTempPath(), "tkmm", id.ToString());
         string? root = null;
 
         while (reader.MoveToNextEntry()) {
