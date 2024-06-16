@@ -141,7 +141,7 @@ public class PackageBuilder
     {
         using FileStream fs = File.Create(outputFile);
         fs.Write(TkclModReader.MAGIC);
-        fs.Write(TkclModReader.Version);
+        fs.Write(TkclModReader._version);
         ZipFile.CreateFromDirectory(inputFolder, fs);
     }
 }
