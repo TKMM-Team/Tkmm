@@ -73,7 +73,7 @@ public partial class GameBananaMod : ObservableObject
     {
         using HttpClient client = new();
         using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        Mod mod = await Mod.FromStream(stream, file.Name, BuildModId());
+        Mod mod = await Mod.FromStream(stream, file.Name, BuildModId(file));
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {
@@ -118,14 +118,11 @@ public partial class GameBananaMod : ObservableObject
                 """);
     }
 
-    private const string GB_GUID = "65c32812-981c-4d7e-8a97-3091ec9c4555";
-    private static readonly Guid _gbGuid = Guid.Parse(GB_GUID);
-
-    private Guid BuildModId()
+    private Guid BuildModId(GameBananaFile gameBananaFile)
     {
         Span<byte> guidRawBuffer = stackalloc byte[16];
-        MemoryMarshal.Write(guidRawBuffer, _gbGuid);
         MemoryMarshal.Write(guidRawBuffer, Id);
+        MemoryMarshal.Write(guidRawBuffer[8..], gameBananaFile.Id);
 
         return MemoryMarshal.Read<Guid>(guidRawBuffer);
     }

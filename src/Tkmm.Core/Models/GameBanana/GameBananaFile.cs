@@ -5,6 +5,9 @@ namespace Tkmm.Core.Models.GameBanana;
 
 public partial class GameBananaFile : ObservableObject
 {
+    [JsonPropertyName("_idRow")]
+    public ulong Id { get; set; }
+
     [JsonPropertyName("_sFile")]
     public string Name { get; set; } = string.Empty;
 
