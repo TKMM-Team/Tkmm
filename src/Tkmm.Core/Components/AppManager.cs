@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Text;
 using Tkmm.Core.Helpers.Models;
 using Tkmm.Core.Helpers.Operations;
-using static System.Runtime.InteropServices.RuntimeInformation;
 
 namespace Tkmm.Core.Components;
 
@@ -17,6 +17,14 @@ public static class AppManager
     private const string LAUNCHER_NAME = "TKMM Launcher";
 
     private static readonly string _ext = OperatingSystem.IsWindows() ? ".exe" : string.Empty;
+    private static readonly string _platform =
+        OperatingSystem.IsWindows() ? "win" :
+        OperatingSystem.IsLinux() ? "linux" :
+        OperatingSystem.IsMacOS() ? "osx" :
+            throw new PlatformNotSupportedException(
+                "Unsupported platform. Only Windows, Linux and MacOS are supported."
+            );
+    private static readonly string _rid = $"{_platform}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}";
 
     private static readonly string _appFolder = Path.Combine(Config.Shared.StaticStorageFolder, "bin");
     private static readonly string _appPath = Path.Combine(_appFolder, $"tkmm{_ext}");
@@ -111,7 +119,7 @@ public static class AppManager
 
         AppStatus.Set("Downloading app", "fa-solid fa-download");
         (Stream stream, string tag) = await GitHubOperations
-            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-{RuntimeIdentifier}.zip");
+            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-{_rid}.zip");
         setProgress(40);
 
         AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
@@ -131,7 +139,7 @@ public static class AppManager
         AppStatus.Set("Downloading launcher", "fa-solid fa-download");
 
         (Stream stream, _) = await GitHubOperations
-            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-Launcher-{RuntimeIdentifier}.zip");
+            .GetLatestRelease(ORG, REPO, assetName: $"TKMM-Launcher-{_rid}.zip");
 
         AppStatus.Set("Extracting release", "fa-solid fa-file-zipper");
         using ZipArchive archive = new(stream);

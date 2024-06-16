@@ -65,6 +65,7 @@ public class Shortcut(string name, Location location, string target, params stri
             writer.WriteLine($"Icon={Target}");
             writer.WriteLine($"Keywords={string.Join(';', Keywords)}");
             writer.WriteLine($"Name={Name}");
+            writer.WriteLine($"Exec={Target}");
             writer.WriteLine("StartupNotify=true");
             writer.WriteLine("Terminal=false");
             writer.WriteLine("Type=Application");
@@ -86,7 +87,7 @@ public class Shortcut(string name, Location location, string target, params stri
     private string? GetLinuxLocation()
     {
         if (Location == Location.Application) {
-            return "/usr/share/applications";
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "applications");
         }
 
         return null;

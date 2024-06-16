@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Windowing;
@@ -73,7 +72,6 @@ public partial class ShellViewModel : ObservableObject
     {
         if (OperatingSystem.IsWindows()) {
             _view.PlatformFeatures.SetTaskBarProgressBarState(TaskBarProgressBarState.Indeterminate);
-
         }
 
         await Task.Run(async () => {
