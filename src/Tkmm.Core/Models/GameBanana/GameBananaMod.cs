@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
@@ -12,6 +13,9 @@ public partial class GameBananaMod : ObservableObject
 {
     private const int GB_TOTK_ID = 7617;
     private const string ENDPOINT = $"/Mod/{{0}}/ProfilePage";
+
+    [JsonPropertyName("_idRow")]
+    public ulong Id { get; set; }
 
     [JsonPropertyName("_sName")]
     public string Name { get; set; } = string.Empty;
@@ -69,7 +73,7 @@ public partial class GameBananaMod : ObservableObject
     {
         using HttpClient client = new();
         using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        Mod mod = await Mod.FromStream(stream, file.Name);
+        Mod mod = await Mod.FromStream(stream, file.Name, BuildModId());
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {
@@ -112,5 +116,17 @@ public partial class GameBananaMod : ObservableObject
             ?? throw new InvalidOperationException("""
                 Could not parse GameBananaMod, the deserializer returned null
                 """);
+    }
+
+    private const string GB_GUID = "65c32812-981c-4d7e-8a97-3091ec9c4555";
+    private static readonly Guid _gbGuid = Guid.Parse(GB_GUID);
+
+    private Guid BuildModId()
+    {
+        Span<byte> guidRawBuffer = stackalloc byte[16];
+        MemoryMarshal.Write(guidRawBuffer, _gbGuid);
+        MemoryMarshal.Write(guidRawBuffer, Id);
+
+        return MemoryMarshal.Read<Guid>(guidRawBuffer);
     }
 }

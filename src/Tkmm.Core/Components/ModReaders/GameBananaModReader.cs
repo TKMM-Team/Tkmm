@@ -13,7 +13,7 @@ public class GameBananaModReader : IModReader
         return path.StartsWith(GB_MODS_URL) || ulong.TryParse(path, out _);
     }
 
-    public async Task<Mod> Read(Stream? input, string path)
+    public async Task<Mod> Read(Stream? input, string path, Guid? modId)
     {
         string id;
 

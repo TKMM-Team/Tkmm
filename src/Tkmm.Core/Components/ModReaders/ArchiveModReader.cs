@@ -18,13 +18,13 @@ public class ArchiveModReader : IModReader
         return Path.GetExtension(file) is ".rar" or ".zip";
     }
 
-    public async Task<Mod> Read(Stream? input, string file)
+    public async Task<Mod> Read(Stream? input, string file, Guid? modId)
     {
         ArgumentNullException.ThrowIfNull(input);
 
         using IReader reader = ReaderFactory.Open(input);
 
-        Guid id = Guid.NewGuid();
+        Guid id = modId ?? Guid.NewGuid();
         string tmpOutputFolder = Path.Combine(Path.GetTempPath(), "tkmm", id.ToString());
         string? root = null;
 

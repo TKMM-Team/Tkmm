@@ -13,7 +13,7 @@ public class FolderModReader : IModReader
         );
     }
 
-    public async Task<Mod> Read(Stream? _, string path)
+    public async Task<Mod> Read(Stream? _, string path, Guid? modId)
     {
         Mod? mod = null;
         string metadataPath = Path.Combine(path, PackageBuilder.METADATA);
@@ -24,6 +24,7 @@ public class FolderModReader : IModReader
         }
 
         mod ??= new() {
+            Id = modId ?? Guid.NewGuid(),
             Name = Path.GetFileName(path)
         };
 

@@ -69,10 +69,10 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
             """);
     }
 
-    public static async Task<Mod> FromStream(Stream stream, string path)
+    public static async Task<Mod> FromStream(Stream stream, string path, Guid? modId)
     {
         if (ModReaderProviderService.GetReader(path) is IModReader parser) {
-            return await parser.Read(stream, path);
+            return await parser.Read(stream, path, modId);
         }
 
         throw new NotSupportedException($"""

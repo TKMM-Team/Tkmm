@@ -13,7 +13,7 @@ public class SevenZipModReader : IModReader
         return Path.GetExtension(file) == ".7z";
     }
 
-    public async Task<Mod> Read(Stream? input, string file)
+    public async Task<Mod> Read(Stream? input, string file, Guid? modId)
     {
         ArgumentNullException.ThrowIfNull(input);
 
@@ -22,7 +22,7 @@ public class SevenZipModReader : IModReader
 
         using SevenZipArchive archive = SevenZipArchive.Open(ms);
 
-        Guid id = Guid.NewGuid();
+        Guid id = modId ?? Guid.NewGuid();
         string tmpOutputFolder = Path.Combine(Path.GetTempPath(), "tkmm", id.ToString());
         string? root = null;
 

@@ -11,7 +11,7 @@ public class TkclModReader : IModReader
 {
     internal const int MAGIC = 0x4C434B54;
 
-    internal static readonly TkclVersion Version = new() {
+    internal static readonly TkclVersion _version = new() {
         Major = 1,
         Minor = 0,
         Revision = 0,
@@ -22,7 +22,7 @@ public class TkclModReader : IModReader
         return Path.GetExtension(file) == ".tkcl";
     }
 
-    public Task<Mod> Read(Stream? input, string file)
+    public Task<Mod> Read(Stream? input, string file, Guid? modId)
     {
         ArgumentNullException.ThrowIfNull(input);
 
@@ -33,7 +33,7 @@ public class TkclModReader : IModReader
         }
 
         TkclVersion version = input.Read<TkclVersion>();
-        if (version.Value != Version.Value) {
+        if (version.Value != _version.Value) {
             throw new InvalidOperationException($"""
                 Unexpected TKCL version {version}.
                 """);
