@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Platform;
@@ -74,6 +75,21 @@ public class ShellViewMenu
                 App.ToastError(ex);
             }
         }
+    }
+
+    [Menu("Cleanup Temporary Files", "File", "Ctrl + Shift + F6", "fa-solid fa-broom-wide")]
+    public static void ClearTempFolder()
+    {
+        string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
+        if (!Directory.Exists(tempFolder)) {
+            return;
+        }
+
+        Directory.Delete(tempFolder, recursive: true);
+        Directory.CreateDirectory(tempFolder);
+        App.Toast(
+            "The TKMM temporary files were succesfully deleted.", "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3)
+        );
     }
 
     [Menu("Exit", "File", "Alt + F4", "fa-solid fa-right-from-bracket", IsSeparator = true)]
