@@ -88,6 +88,7 @@ public partial class ShellViewModel : ObservableObject
         }
 
         AppManager.CreateProtocol();
+        AppManager.AddToPath();
 
         Progress = 100;
 

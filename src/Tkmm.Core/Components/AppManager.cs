@@ -165,6 +165,21 @@ public static class AppManager
         AppStatus.Set("Uninstall Successful", "fa-regular fa-circle-check", isWorkingStatus: false);
     }
 
+    private static readonly char _pathSeperatorChar = OperatingSystem.IsWindows() ? ';' : ':';
+    public static void AddToPath()
+    {
+        const string PATH_NAME = "PATH";
+        string path = Environment.GetEnvironmentVariable(PATH_NAME, EnvironmentVariableTarget.User)
+            ?? string.Empty;
+
+        if (path.Contains(_appFolder)) {
+            return;
+        }
+
+        path += $"{_pathSeperatorChar}{_appFolder}";
+        Environment.SetEnvironmentVariable(PATH_NAME, path, EnvironmentVariableTarget.User);
+    }
+
     public static void CreateProtocol()
     {
         WebProtocol.Create(PROC_NAME, _appPath);
