@@ -113,7 +113,7 @@ public partial class HomePageViewModel : ObservableObject
 
             (bool hasUpdate, string tag) = await AppManager.HasUpdate();
             if (hasUpdate) {
-                App.Toast($"TKMM {tag} is availible! (Click here to install)", "Update Availible",
+                App.Toast($"TKMM {tag} is available! (Click here to install)", "Update Available",
                     NotificationType.Information, TimeSpan.FromSeconds(10), async () => {
                         await App.PromptUpdate();
                     });
