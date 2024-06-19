@@ -185,7 +185,7 @@ public partial class App : Application
         ContentDialog dialog = new() {
             Title = "Update",
             Content = """
-                An update is availible.
+                An update is available.
                 
                 Would you like to close your current session and open the launcher?
                 """,
