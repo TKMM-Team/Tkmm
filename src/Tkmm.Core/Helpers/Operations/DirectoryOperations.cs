@@ -4,6 +4,17 @@ public static class DirectoryOperations
 {
     private const string ZS_EXT = ".zs";
 
+    public static void ClearAttributes(string src)
+    {
+        foreach (string file in Directory.EnumerateFiles(src)) {
+            File.SetAttributes(file, FileAttributes.None);
+        }
+
+        foreach (string folder in Directory.EnumerateDirectories(src)) {
+            ClearAttributes(folder);
+        }
+    }
+
     public static void DeleteTargets(string src, string[] targets, bool recursive)
     {
         foreach (string target in targets) {
@@ -50,5 +61,18 @@ public static class DirectoryOperations
                 CopyDirectory(folder, dstFolder, excludeFiles, excludeFolders, overwrite);
             }
         }
+    }
+
+    public static string? LocateTargets(string src, params string[] targets)
+    {
+        foreach (string folder in Directory.EnumerateDirectories(src)) {
+            if (targets.Contains(Path.GetFileName(folder))) {
+                return src;
+            }
+
+            return LocateTargets(folder, targets);
+        }
+
+        return null;
     }
 }
