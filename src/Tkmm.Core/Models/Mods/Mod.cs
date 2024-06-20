@@ -35,18 +35,18 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     private string? _thumbnailUri;
 
     [ObservableProperty]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     private object? _thumbnail;
 
     [ObservableProperty]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     private bool _isEditingOptions;
 
     [ObservableProperty]
     private ObservableCollection<Guid> _optionGroupReferences = [];
 
     [ObservableProperty]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     private ObservableCollection<ModOptionGroup> _optionGroups = [];
 
     [JsonIgnore]
@@ -87,7 +87,7 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     }
 
     [RelayCommand]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     public void AddToCurrentProfile()
     {
         if (!ProfileManager.Shared.Current.Mods.Contains(this)) {
@@ -96,7 +96,7 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     }
 
     [RelayCommand]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     public void Uninstall()
     {
         ProfileManager.Shared.Mods.Remove(this);
@@ -114,21 +114,21 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     }
 
     [RelayCommand]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     public void RefreshOptions()
     {
         RefreshOptions(SourceFolder);
     }
 
     [RelayCommand]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     public void NewContributor()
     {
         Contributors.Add(new());
     }
 
     [RelayCommand]
-    [property: System.Text.Json.Serialization.JsonIgnore]
+    [property: JsonIgnore]
     public void RemoveContributor(ModContributor contributor)
     {
         Contributors.Remove(contributor);
