@@ -176,9 +176,9 @@
                         <ItemsControl ItemsSource="{Binding Current.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:ModOptionGroup}">
-                                    <Expander Padding="5">
+                                    <Expander Padding="5" IsExpanded="True">
                                         <Expander.Header>
-                                            <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding Description}">
                                                 <pi:Icon Value="{Binding Icon}" />
                                                 <TextBlock Margin="5,0,0,0">
                                                     <Run Text="{Binding Name}" />
@@ -191,7 +191,10 @@
                                                  SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate x:DataType="{x:Type models:ModOption}">
-                                                    <TextBlock Text="{Binding Name}" />
+                                                    <TextBlock HorizontalAlignment="Stretch"
+                                                               Background="Transparent"
+                                                               Text="{Binding Name}"
+                                                               ToolTip.Tip="{Binding Description}" />
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                             <ListBox.Styles>
