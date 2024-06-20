@@ -119,6 +119,7 @@ public partial class Config : ConfigModule<Config>
                 Directory.CreateDirectory(folder);
             }
 
+            EnsureMergeOutput();
             Directory.CreateSymbolicLink(_ryujinxPath, MergeOutput);
         }
     }
@@ -136,6 +137,7 @@ public partial class Config : ConfigModule<Config>
                 Directory.CreateDirectory(folder);
             }
 
+            EnsureMergeOutput();
             Directory.CreateSymbolicLink(japaneseCitrusFruitPath, MergeOutput);
         }
     }
@@ -160,5 +162,12 @@ public partial class Config : ConfigModule<Config>
         }
 
         return _japaneseCitrusFruitDefaultPath;
+    }
+
+    public void EnsureMergeOutput()
+    {
+        if (string.IsNullOrEmpty(MergeOutput)) {
+            MergeOutput = _defaultMergedPath;
+        }
     }
 }

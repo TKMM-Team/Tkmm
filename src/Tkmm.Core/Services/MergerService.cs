@@ -16,9 +16,19 @@ public class MergerService
         new SarcMergerShell()
     ];
 
-    public static async Task Merge() => await Merge(ProfileManager.Shared.Current, Config.Shared.MergeOutput);
+    public static async Task Merge()
+    {
+        Config.Shared.EnsureMergeOutput();
+        await Merge(ProfileManager.Shared.Current, Config.Shared.MergeOutput);
+    }
+
+    public static async Task Merge(Profile profile)
+    {
+        Config.Shared.EnsureMergeOutput();
+        await Merge(profile, Config.Shared.MergeOutput);
+    }
+
     public static async Task Merge(string output) => await Merge(ProfileManager.Shared.Current, output);
-    public static async Task Merge(Profile profile) => await Merge(profile, Config.Shared.MergeOutput);
     public static async Task Merge(Profile profile, string output)
     {
         IModItem[] mods = profile.Mods
