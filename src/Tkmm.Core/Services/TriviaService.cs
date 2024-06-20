@@ -25,6 +25,10 @@ public class TriviaService
                 }
 
                 int index = _random.Next(_unusedMessages.Count - 1);
+                if (index >= _unusedMessages.Count || index < 0) {
+                    return;
+                }
+
                 AppStatus.Set(_unusedMessages[index], "fa-solid fa-code-merge");
                 _unusedMessages.RemoveAt(index);
             }
