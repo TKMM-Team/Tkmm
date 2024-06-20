@@ -19,6 +19,10 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
     [ObservableProperty]
     private string? _thumbnailUri;
 
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private object? _thumbnail;
+
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
 
@@ -49,5 +53,12 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
         }
 
         return true;
+    }
+
+    async partial void OnThumbnailUriChanged(string? value)
+    {
+        if (Mod.ResolveThumbnail?.Invoke(this) is Task task) {
+            await task;
+        }
     }
 }

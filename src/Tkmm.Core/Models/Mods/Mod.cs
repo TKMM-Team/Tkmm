@@ -11,7 +11,7 @@ namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem, IReferenceItem
 {
-    public static Func<Mod, Task>? ResolveThumbnail { get; set; }
+    public static Func<IModItem, Task>? ResolveThumbnail { get; set; }
 
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();

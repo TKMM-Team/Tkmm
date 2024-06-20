@@ -36,7 +36,11 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     private string _icon = string.Empty;
 
     [ObservableProperty]
-    private string _thumbnailUri = string.Empty;
+    private string? _thumbnailUri = string.Empty;
+
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private object? _thumbnail;
 
     [ObservableProperty]
     private ObservableCollection<ModOptionDependency> _dependencies = [];
@@ -112,5 +116,12 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
         }
 
         return true;
+    }
+
+    async partial void OnThumbnailUriChanged(string? value)
+    {
+        if (Mod.ResolveThumbnail?.Invoke(this) is Task task) {
+            await task;
+        }
     }
 }
