@@ -52,6 +52,18 @@ public partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
+        Header = "7z Path",
+        Description = "The absolute path to the 7-zip executable used for faster 7z extraction.",
+        Group = "Application")]
+    [property: BrowserConfig(
+        BrowserMode = BrowserMode.OpenFile,
+        InstanceBrowserKey = "7z-path",
+        Filter = "7z:*7z*",
+        Title = "7z Location")]
+    private string? _sevenZipPath;
+
+    [ObservableProperty]
+    [property: Config(
         Header = "Default Author",
         Description = "The default author used when packaging TKCL mods.",
         Group = "Packaging")]

@@ -7,7 +7,7 @@ namespace Tkmm.Core.Components.ModReaders;
 
 public class ArchiveModReader : IModReader
 {
-    private static readonly string[] _folders = [
+    public static readonly string[] Targets = [
         PackageBuilder.OPTIONS,
         TotkConfig.ROMFS,
         TotkConfig.EXEFS
@@ -74,7 +74,7 @@ public class ArchiveModReader : IModReader
         ArgumentNullException.ThrowIfNull(entry.Key);
 
         if (root is null) {
-            foreach (var folder in _folders) {
+            foreach (var folder in Targets) {
                 int index = entry.Key.IndexOf(folder);
                 if (index > -1) {
                     root = entry.Key[..index].Trim('/', '\\');
