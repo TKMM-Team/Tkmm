@@ -120,7 +120,7 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
 
     async partial void OnThumbnailUriChanged(string? value)
     {
-        if (Mod.ResolveThumbnail?.Invoke(this) is Task task) {
+        if (Mod.ResolveThumbnail?.Invoke(this, false) is Task task) {
             await task;
         }
     }

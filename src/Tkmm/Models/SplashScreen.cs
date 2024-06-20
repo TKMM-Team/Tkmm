@@ -20,7 +20,7 @@ public class SplashScreen : IApplicationSplashScreen
         List<Task> tasks = [];
 
         foreach (var mod in ProfileManager.Shared.Mods) {
-            tasks.Add(ModHelper.ResolveThumbnail(mod));
+            tasks.Add(ModHelper.ResolveThumbnail(mod, useDefaultThumbnail: true));
         }
 
         await Task.WhenAll(tasks);

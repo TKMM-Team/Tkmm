@@ -161,6 +161,7 @@
                                               ItemsSource="{x:Static models:ModOptionGroup.OptionGroupTypes}"
                                               SelectedItem="{Binding Type}" />
                                     <TextBox Text="{Binding Icon}" Watermark="Icon" />
+
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
                                         <Button Grid.Column="1"
@@ -168,7 +169,8 @@
                                                 x:CompileBindings="False"
                                                 Command="{Binding $parent[UserControl].DataContext.BrowseThumbnailCommand}"
                                                 CommandParameter="{Binding}"
-                                                Content="Browse..." />
+                                                Content="..."
+                                                ToolTip.Tip="Browse" />
                                     </Grid>
 
                                     <Button Padding="5,3"
@@ -203,6 +205,16 @@
                                                     <StackPanel Spacing="5">
                                                         <TextBox Text="{Binding Name}" Watermark="Name" />
                                                         <TextBox Text="{Binding Description}" Watermark="Description" />
+                                                        <Grid ColumnDefinitions="*,Auto">
+                                                            <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+                                                            <Button Grid.Column="1"
+                                                                    Margin="5,0,0,0"
+                                                                    x:CompileBindings="False"
+                                                                    Command="{Binding $parent[UserControl].DataContext.BrowseThumbnailCommand}"
+                                                                    CommandParameter="{Binding}"
+                                                                    Content="..."
+                                                                    ToolTip.Tip="Browse" />
+                                                        </Grid>
                                                     </StackPanel>
                                                 </Expander>
                                             </DataTemplate>

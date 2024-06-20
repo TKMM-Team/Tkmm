@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Exceptions;
+using Tkmm.Core.Generics;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models.Mods;
 
@@ -72,23 +73,35 @@ public static class ModHelper
         return null;
     }
 
-    public static async Task ResolveThumbnail(Mod mod)
+    public static async Task ResolveThumbnail(IModItem item, bool useDefaultThumbnail = false)
     {
-        if (mod.Thumbnail is not null) {
+        if (item is Mod mod) {
+            foreach (ModOptionGroup modOptionGroup in mod.OptionGroups) {
+                await ResolveThumbnail(modOptionGroup);
+            }
+        }
+
+        if (item is ModOptionGroup group) {
+            foreach (ModOption option in group.Options) {
+                await ResolveThumbnail(option);
+            }
+        }
+
+        if (item.Thumbnail is not null) {
             return;
         }
 
-        if (mod.ThumbnailUri is string uri) {
-            string localPath = Path.Combine(mod.SourceFolder, uri);
+        if (item.ThumbnailUri is string uri) {
+            string localPath = Path.Combine(item.SourceFolder, uri);
             if (File.Exists(localPath)) {
-                mod.Thumbnail = new Bitmap(localPath);
+                item.Thumbnail = new Bitmap(localPath);
             }
             else if (uri.StartsWith("https://")) {
                 try {
                     using HttpClient client = new();
                     byte[] data = await client.GetByteArrayAsync(uri);
                     using MemoryStream ms = new(data);
-                    mod.Thumbnail = new Bitmap(ms);
+                    item.Thumbnail = new Bitmap(ms);
                 }
                 catch (Exception ex) {
                     Trace.WriteLine($"""
@@ -107,7 +120,9 @@ public static class ModHelper
         }
 
     Default:
-        mod.Thumbnail = _defaultThumbnail;
+        if (useDefaultThumbnail) {
+            item.Thumbnail = _defaultThumbnail;
+        }
     }
 
     private static async Task<Mod> ImportAsync(string arg)

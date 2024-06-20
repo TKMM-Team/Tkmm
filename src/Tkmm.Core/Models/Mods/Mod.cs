@@ -11,7 +11,7 @@ namespace Tkmm.Core.Models.Mods;
 
 public partial class Mod : ObservableObject, IModItem, IReferenceItem
 {
-    public static Func<IModItem, Task>? ResolveThumbnail { get; set; }
+    public static Func<IModItem, bool, Task>? ResolveThumbnail { get; set; }
 
     [ObservableProperty]
     private Guid _id = Guid.NewGuid();
@@ -158,7 +158,7 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
 
     async partial void OnThumbnailUriChanged(string? value)
     {
-        if (ResolveThumbnail?.Invoke(this) is Task task) {
+        if (ResolveThumbnail?.Invoke(this, true) is Task task) {
             await task;
         }
     }
