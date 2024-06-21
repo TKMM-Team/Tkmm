@@ -19,7 +19,7 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
     private string _description = string.Empty;
 
     [ObservableProperty]
-    private int _priority;
+    private int? _priority;
 
     [ObservableProperty]
     private string? _thumbnailUri;
