@@ -36,6 +36,9 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     private string _icon = string.Empty;
 
     [ObservableProperty]
+    private int _priority;
+
+    [ObservableProperty]
     private string? _thumbnailUri = string.Empty;
 
     [ObservableProperty]

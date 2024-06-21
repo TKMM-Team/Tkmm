@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Generics;
 
 namespace Tkmm.Core.Models.Mods;
 
+[DebuggerDisplay("{Name}")]
 public partial class ModOption : ObservableObject, IReferenceItem, IModItem
 {
     [ObservableProperty]
@@ -15,6 +17,9 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
 
     [ObservableProperty]
     private string _description = string.Empty;
+
+    [ObservableProperty]
+    private int _priority;
 
     [ObservableProperty]
     private string? _thumbnailUri;

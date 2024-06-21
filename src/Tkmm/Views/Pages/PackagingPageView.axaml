@@ -161,7 +161,11 @@
                                               ItemsSource="{x:Static models:ModOptionGroup.OptionGroupTypes}"
                                               SelectedItem="{Binding Type}" />
                                     <TextBox Text="{Binding Icon}" Watermark="Icon" />
-
+                                    <NumericUpDown FormatString="0"
+                                                   Minimum="0"
+                                                   ToolTip.Tip="Priority (0 is Lowest)"
+                                                   Watermark="Priority (0 is Lowest)"
+                                                   Value="{Binding Priority}" />
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
                                         <Button Grid.Column="1"
@@ -205,6 +209,11 @@
                                                     <StackPanel Spacing="5">
                                                         <TextBox Text="{Binding Name}" Watermark="Name" />
                                                         <TextBox Text="{Binding Description}" Watermark="Description" />
+                                                        <NumericUpDown FormatString="0"
+                                                                       Minimum="0"
+                                                                       ToolTip.Tip="Priority (0 is Lowest)"
+                                                                       Watermark="Priority (0 is Lowest)"
+                                                                       Value="{Binding Priority}" />
                                                         <Grid ColumnDefinitions="*,Auto">
                                                             <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
                                                             <Button Grid.Column="1"
