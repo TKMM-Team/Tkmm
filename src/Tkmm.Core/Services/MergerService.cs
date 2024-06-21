@@ -33,8 +33,8 @@ public class MergerService
     {
         IModItem[] mods = profile.Mods
             .Where(x => x.IsEnabled && x.Mod is not null)
-            .SelectMany(x => x.Mod!.SelectModRecursive())
             .Reverse()
+            .SelectMany(x => x.Mod!.SelectModRecursive())
             .ToArray();
 
         if (mods.Length <= 0) {

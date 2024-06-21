@@ -153,7 +153,7 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     /// </summary>
     public IEnumerable<IModItem> SelectModRecursive()
     {
-        return [this, ..OptionGroups.SelectMany(x => x.SelectedOptions).Cast<IModItem>()];
+        return [this, ..OptionGroups.SelectMany(x => x.SelectedOptions).Reverse().Cast<IModItem>()];
     }
 
     async partial void OnThumbnailUriChanged(string? value)
