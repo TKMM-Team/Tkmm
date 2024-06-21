@@ -132,11 +132,19 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsShowingSuggested = false;
         }
 
-        Feed = await Fetch(Page + 1, SearchArgument, customFeed);
+        try {
+            Feed = await Fetch(Page + 1, SearchArgument, customFeed);
+        }
+        catch (Exception ex) {
+            AppLog.Log(ex);
+            App.ToastError(ex);
+            Feed = await Fetch((Page = 0) + 1, string.Empty);
+        }
     }
 
     private static async Task<GameBananaFeed> Fetch(int page, string search, GameBananaFeed? customFeed = null)
     {
+        search = search.Trim();
         string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
             ? string.Format(FEED_ENDPOINT_SEARCH, page, search)
             : string.Format(FEED_ENDPOINT, page);
