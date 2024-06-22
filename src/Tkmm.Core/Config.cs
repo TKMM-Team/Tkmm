@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Tkmm.Core.Helpers.Operations;
 
 namespace Tkmm.Core;
 
@@ -111,6 +112,7 @@ public partial class Config : ConfigModule<Config>
     partial void OnUseRyujinxChanged(bool value)
     {
         if (Directory.Exists(_ryujinxPath)) {
+            DirectoryOperations.ClearAttributes(_ryujinxPath);
             Directory.Delete(_ryujinxPath, true);
         }
 
@@ -129,6 +131,7 @@ public partial class Config : ConfigModule<Config>
         string japaneseCitrusFruitPath = Path.Combine(ReadJapaneseCitrusFruitLoadPath(), "0100F2C0115B6000", "TKMM");
 
         if (Directory.Exists(japaneseCitrusFruitPath)) {
+            DirectoryOperations.ClearAttributes(japaneseCitrusFruitPath);
             Directory.Delete(japaneseCitrusFruitPath, true);
         }
 
