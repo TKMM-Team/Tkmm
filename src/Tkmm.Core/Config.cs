@@ -108,7 +108,7 @@ public partial class Config : ConfigModule<Config>
         SetTheme?.Invoke(value);
     }
 
-    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", "0100f2c0115b6000");
+    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", "0100f2c0115b6000", "TKMM");
     partial void OnUseRyujinxChanged(bool value)
     {
         if (Directory.Exists(_ryujinxPath)) {
