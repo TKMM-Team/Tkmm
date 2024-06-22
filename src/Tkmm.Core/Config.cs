@@ -108,22 +108,34 @@ public partial class Config : ConfigModule<Config>
         SetTheme?.Invoke(value);
     }
 
+    partial void OnMergeOutputChanged(string value)
+    {
+        OnUseRyujinxChanged(UseRyujinx);
+        OnUseJapaneseCitrusFruitChanged(UseJapaneseCitrusFruit);
+    }
+
     private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", "0100f2c0115b6000", "TKMM");
     partial void OnUseRyujinxChanged(bool value)
     {
         if (Directory.Exists(_ryujinxPath)) {
-            DirectoryOperations.ClearAttributes(_ryujinxPath);
             Directory.Delete(_ryujinxPath, true);
         }
 
-        if (value == true) {
-            if (Path.GetDirectoryName(_ryujinxPath) is string folder) {
-                Directory.CreateDirectory(folder);
-            }
-
-            EnsureMergeOutput();
-            Directory.CreateSymbolicLink(_ryujinxPath, MergeOutput);
+        if (!value) {
+            return;
         }
+
+        if (_ryujinxPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)) {
+            UseRyujinx = false;
+            return;
+        }
+
+        if (Path.GetDirectoryName(_ryujinxPath) is string folder) {
+            Directory.CreateDirectory(folder);
+        }
+
+        EnsureMergeOutput();
+        Directory.CreateSymbolicLink(_ryujinxPath, MergeOutput);
     }
 
     partial void OnUseJapaneseCitrusFruitChanged(bool value)
@@ -131,18 +143,24 @@ public partial class Config : ConfigModule<Config>
         string japaneseCitrusFruitPath = Path.Combine(ReadJapaneseCitrusFruitLoadPath(), "0100F2C0115B6000", "TKMM");
 
         if (Directory.Exists(japaneseCitrusFruitPath)) {
-            DirectoryOperations.ClearAttributes(japaneseCitrusFruitPath);
             Directory.Delete(japaneseCitrusFruitPath, true);
         }
 
-        if (value == true) {
-            if (Path.GetDirectoryName(japaneseCitrusFruitPath) is string folder) {
-                Directory.CreateDirectory(folder);
-            }
-
-            EnsureMergeOutput();
-            Directory.CreateSymbolicLink(japaneseCitrusFruitPath, MergeOutput);
+        if (!value) {
+            return;
         }
+
+        if (japaneseCitrusFruitPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)) {
+            UseJapaneseCitrusFruit = false;
+            return;
+        }
+
+        if (Path.GetDirectoryName(japaneseCitrusFruitPath) is string folder) {
+            Directory.CreateDirectory(folder);
+        }
+
+        EnsureMergeOutput();
+        Directory.CreateSymbolicLink(japaneseCitrusFruitPath, MergeOutput);
     }
 
     private static readonly string _japaneseCitrusFruitDefaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load");
