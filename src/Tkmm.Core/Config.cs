@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace Tkmm.Core;
 
@@ -136,10 +138,11 @@ public partial class Config : ConfigModule<Config>
             return;
         }
 
-        if (_ryujinxPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)) {
+        if (_ryujinxPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase) || !EnsureDeveloperMode()) {
             UseRyujinx = false;
             return;
         }
+
 
         if (Path.GetDirectoryName(_ryujinxPath) is string folder) {
             Directory.CreateDirectory(folder);
@@ -161,7 +164,7 @@ public partial class Config : ConfigModule<Config>
             return;
         }
 
-        if (japaneseCitrusFruitPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)) {
+        if (japaneseCitrusFruitPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase) || !EnsureDeveloperMode()) {
             UseJapaneseCitrusFruit = false;
             return;
         }
@@ -201,5 +204,40 @@ public partial class Config : ConfigModule<Config>
         if (string.IsNullOrEmpty(MergeOutput)) {
             MergeOutput = _defaultMergedPath;
         }
+    }
+
+    private static bool EnsureDeveloperMode()
+    {
+        if (!OperatingSystem.IsWindows()) {
+            return true;
+        }
+
+    Check:
+        RegistryKey? key = Registry.LocalMachine.OpenSubKey(
+            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", writable: false);
+        bool isDevModeEnabled = (key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int?) == 1;
+        key?.Dispose();
+
+        if (isDevModeEnabled) {
+            return true;
+        }
+
+        try {
+            ProcessStartInfo info = new() {
+                FileName = "cmd.exe",
+                Arguments = """
+                /c "REG ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock /v AllowDevelopmentWithoutDevLicense /t REG_DWORD /d 1 /f"
+                """,
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+
+            Process.Start(info)?.WaitForExit();
+        }
+        catch (Exception ex) {
+            AppLog.Log(ex);
+        }
+
+        goto Check;
     }
 }
