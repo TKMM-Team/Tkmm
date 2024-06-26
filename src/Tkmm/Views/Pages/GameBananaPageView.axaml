@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:core="using:Tkmm.Core"
              xmlns:models="using:Tkmm.Core.Models.GameBanana"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
@@ -17,7 +18,7 @@
     </UserControl.DataContext>
     <Grid Margin="15" RowDefinitions="Auto,*,Auto">
         <Grid Margin="15"
-              ColumnDefinitions="*,Auto,Auto,Auto"
+              ColumnDefinitions="*,Auto,Auto,Auto,Auto"
               RowDefinitions="Auto,*,Auto">
 
             <TextBox Grid.Column="0"
@@ -48,7 +49,7 @@
                 <pi:Icon Value="fa-regular fa-circle-xmark" />
             </Button>
 
-            <ToggleButton Grid.Column="4"
+            <ToggleButton Grid.Column="3"
                           Height="30"
                           Padding="0"
                           Command="{Binding ShowSuggestedCommand}"
@@ -59,6 +60,13 @@
                     <pi:Icon Value="fa-solid fa-gift" />
                 </StackPanel>
             </ToggleButton>
+
+            <ComboBox Grid.Column="5"
+                      Width="100"
+                      Margin="5,0,0,0"
+                      ItemsSource="{x:Static core:Config.GameBananaSortModes}"
+                      SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
+                      ToolTip.Tip="Sort Mode" />
         </Grid>
 
 

@@ -1,9 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
-using Tkmm.Core.Helpers.Operations;
 
 namespace Tkmm.Core;
+
+public enum GameBananaSortMode
+{
+    Default,
+    New,
+    Updated
+}
 
 public partial class Config : ConfigModule<Config>
 {
@@ -102,6 +108,11 @@ public partial class Config : ConfigModule<Config>
         Description = "Automatically export to your Japanese Citrus Fruit mod folder.",
         Group = "Merging")]
     private bool _useJapaneseCitrusFruit = false;
+
+    public static readonly GameBananaSortMode[] GameBananaSortModes = Enum.GetValues<GameBananaSortMode>();
+
+    [ObservableProperty]
+    private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
 
     partial void OnThemeChanged(string value)
     {

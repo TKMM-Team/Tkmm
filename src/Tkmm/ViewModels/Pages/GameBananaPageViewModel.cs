@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
@@ -17,8 +18,8 @@ public partial class GameBananaPageViewModel : ObservableObject
     private static readonly HttpClient _client = new();
 
     private const string GAME_ID = "7617";
-    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_csvModelInclusions=Mod";
-    private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sName={{1}}&_csvModelInclusions=Mod";
+    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_csvModelInclusions=Mod";
+    private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_sName={{2}}&_csvModelInclusions=Mod";
 
     private static GameBananaFeed? _sugesstedModsFeed = GetSuggestedFeed();
 
@@ -37,6 +38,13 @@ public partial class GameBananaPageViewModel : ObservableObject
     public GameBananaPageViewModel()
     {
         InitLoad();
+
+        Config.Shared.PropertyChanged += async (s, e) => {
+            if (e.PropertyName == nameof(Config.GameBananaSortMode)) {
+                await UpdatePage();
+                Config.Shared.Save();
+            }
+        };
     }
 
     [RelayCommand]
@@ -144,10 +152,11 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private static async Task<GameBananaFeed> Fetch(int page, string search, GameBananaFeed? customFeed = null)
     {
+        string sort = Config.Shared.GameBananaSortMode.ToString().ToLower();
         search = search.Trim();
         string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
-            ? string.Format(FEED_ENDPOINT_SEARCH, page, search)
-            : string.Format(FEED_ENDPOINT, page);
+            ? string.Format(FEED_ENDPOINT_SEARCH, page, sort, search)
+            : string.Format(FEED_ENDPOINT, page, sort);
 
         using Stream stream = await GameBananaHelper.Get(endpoint);
         GameBananaFeed feed = customFeed ?? JsonSerializer.Deserialize<GameBananaFeed>(stream)
