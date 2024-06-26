@@ -17,6 +17,8 @@ public class TkclModReader : IModReader
         Revision = 0,
     };
 
+    public static readonly TkclModReader Instance = new();
+
     public bool IsValid(string file)
     {
         return Path.GetExtension(file) == ".tkcl";

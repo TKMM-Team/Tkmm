@@ -8,8 +8,9 @@ public static class ModReaderProviderService
         new ArchiveModReader(),
         new FolderModReader(),
         new GameBananaModReader(),
+        new ProtocolModReader(),
         new SevenZipModReader(),
-        new TkclModReader(),
+        TkclModReader.Instance,
     ];
 
     public static IModReader? GetReader(string path)

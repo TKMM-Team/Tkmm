@@ -59,7 +59,7 @@ class Program
     private static int CheckArgs(string[] args)
     {
         int argc = args.Length;
-        foreach (string arg in args.Where(Path.Exists)) {
+        foreach (string arg in args.Where(x => Path.Exists(x) || (x.Length > 5 && x.AsSpan()[..5] is "tkmm:"))) {
             argc--;
             _ = Task.Run(async () => {
                 await ModHelper.Import(arg);
