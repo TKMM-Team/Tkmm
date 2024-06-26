@@ -17,7 +17,7 @@ public static class DownloadOperations
 
         do {
         Retry:
-            if (maxRetry > retry) {
+            if (maxRetry < retry) {
                 throw new HttpRequestException($"Failed to download resource. The max retry of {maxRetry} was exceeded.",
                     inner: null,
                     HttpStatusCode.BadRequest
