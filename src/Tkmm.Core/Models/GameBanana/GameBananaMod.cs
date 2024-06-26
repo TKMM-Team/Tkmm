@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Models.GameBanana;
@@ -71,9 +72,9 @@ public partial class GameBananaMod : ObservableObject
 
     public async Task<Mod> FromFile(GameBananaFile file)
     {
-        using HttpClient client = new();
-        using Stream stream = await client.GetStreamAsync(file.DownloadUrl);
-        Mod mod = await Mod.FromStream(stream, file.Name, BuildModId(file));
+        byte[] data = await DownloadOperations.DownloadAndVerify(file.DownloadUrl, Convert.FromHexString(file.Checksum));
+        using MemoryStream ms = new(data);
+        Mod mod = await Mod.FromStream(ms, file.Name, BuildModId(file));
 
         ObservableCollection<ModContributor> contributors = [];
         foreach (var group in Credits) {
@@ -86,7 +87,7 @@ public partial class GameBananaMod : ObservableObject
         }
 
         string thumbnailUrl = $"{Media.Images[0].BaseUrl}/{Media.Images[0].File}";
-        using Stream thumbnailHttpStream = await client.GetStreamAsync(thumbnailUrl);
+        using Stream thumbnailHttpStream = await DownloadOperations.Client.GetStreamAsync(thumbnailUrl);
 
         string thumbnailPath = Path.Combine(mod.SourceFolder, PackageBuilder.THUMBNAIL);
         using (FileStream thumbnailFileStream = File.Create(thumbnailPath)) {

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Security.Cryptography;
 using System.Web;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Core.Services;
 
@@ -19,31 +20,7 @@ internal class ProtocolModReader : IModReader
         AppStatus.Set($"Downloading {modName} ({Path.GetFileName(fileUrl)})",
             "fa-regular fa-download", isWorkingStatus: true);
 
-        byte[] data;
-        byte[] hash;
-
-        do {
-        Retry:
-            try {
-                using HttpClient client = new() {
-                    Timeout = TimeSpan.FromMinutes(2),
-                };
-
-                data = await client.GetByteArrayAsync(fileUrl);
-                hash = MD5.HashData(data);
-            }
-            catch (HttpRequestException ex) {
-                if (ex.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.RequestTimeout) {
-                    goto Retry;
-                }
-
-                throw;
-            }
-            catch {
-                throw;
-            }
-        } while (hash.SequenceEqual(md5Checksum) == false);
-
+        byte[] data = await DownloadOperations.DownloadAndVerify(fileUrl, md5Checksum);
         using MemoryStream ms = new(data);
         return await TkclModReader.Instance.Read(ms, fileUrl, modId: default);
     }
