@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
-using Microsoft.Win32;
-using System.Diagnostics;
+using Tkmm.Core.Helpers;
+using Tkmm.Core.Models;
 
 namespace Tkmm.Core;
 
@@ -32,6 +32,11 @@ public partial class Config : ConfigModule<Config>
         = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "tkmm");
 
     public static Action<string>? SetTheme { get; set; }
+
+    public Config()
+    {
+        OnSave += CreateExportLocationSymlinks;
+    }
 
     [ObservableProperty]
     [property: Config(
@@ -99,17 +104,19 @@ public partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Use Ryujinx",
-        Description = "Automatically export to your Ryujinx mod folder.",
+        Header = "Export Locations",
+        Description = "Define custom locations to export the merged mods to.",
         Group = "Merging")]
-    private bool _useRyujinx = false;
-
-    [ObservableProperty]
-    [property: Config(
-        Header = "Use Japanese Citrus Fruit",
-        Description = "Automatically export to your Japanese Citrus Fruit mod folder.",
-        Group = "Merging")]
-    private bool _useJapaneseCitrusFruit = false;
+    private ExportLocationCollection _exportLocations = [
+        new() {
+            SymlinkPath = Path.Combine(ReadJapaneseCitrusFruitLoadPath(), "TKMM"),
+            IsEnabled = false,
+        },
+        new() {
+            SymlinkPath = _ryujinxPath,
+            IsEnabled = false,
+        }
+    ];
 
     public static readonly GameBananaSortMode[] GameBananaSortModes = Enum.GetValues<GameBananaSortMode>();
 
@@ -121,61 +128,7 @@ public partial class Config : ConfigModule<Config>
         SetTheme?.Invoke(value);
     }
 
-    partial void OnMergeOutputChanged(string value)
-    {
-        OnUseRyujinxChanged(UseRyujinx);
-        OnUseJapaneseCitrusFruitChanged(UseJapaneseCitrusFruit);
-    }
-
     private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", "0100f2c0115b6000", "TKMM");
-    partial void OnUseRyujinxChanged(bool value)
-    {
-        if (Directory.Exists(_ryujinxPath)) {
-            Directory.Delete(_ryujinxPath, true);
-        }
-
-        if (!value) {
-            return;
-        }
-
-        if (_ryujinxPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase) || !EnsureDeveloperMode()) {
-            UseRyujinx = false;
-            return;
-        }
-
-
-        if (Path.GetDirectoryName(_ryujinxPath) is string folder) {
-            Directory.CreateDirectory(folder);
-        }
-
-        EnsureMergeOutput();
-        Directory.CreateSymbolicLink(_ryujinxPath, MergeOutput);
-    }
-
-    partial void OnUseJapaneseCitrusFruitChanged(bool value)
-    {
-        string japaneseCitrusFruitPath = Path.Combine(ReadJapaneseCitrusFruitLoadPath(), "0100F2C0115B6000", "TKMM");
-
-        if (Directory.Exists(japaneseCitrusFruitPath)) {
-            Directory.Delete(japaneseCitrusFruitPath, true);
-        }
-
-        if (!value) {
-            return;
-        }
-
-        if (japaneseCitrusFruitPath.Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase) || !EnsureDeveloperMode()) {
-            UseJapaneseCitrusFruit = false;
-            return;
-        }
-
-        if (Path.GetDirectoryName(japaneseCitrusFruitPath) is string folder) {
-            Directory.CreateDirectory(folder);
-        }
-
-        EnsureMergeOutput();
-        Directory.CreateSymbolicLink(japaneseCitrusFruitPath, MergeOutput);
-    }
 
     private static readonly string _japaneseCitrusFruitDefaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load");
     private static readonly string _japaneseCitrusFruitConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "config", "qt-config.ini");
@@ -192,7 +145,7 @@ public partial class Config : ConfigModule<Config>
 
         while (reader.ReadLine() is string line) {
             if (line.StartsWith(prefix)) {
-                return line[prefix.Length..];
+                return Path.GetFullPath(line[prefix.Length..]);
             }
         }
 
@@ -206,38 +159,12 @@ public partial class Config : ConfigModule<Config>
         }
     }
 
-    private static bool EnsureDeveloperMode()
+    private void CreateExportLocationSymlinks()
     {
-        if (!OperatingSystem.IsWindows()) {
-            return true;
-        }
-
-    Check:
-        RegistryKey? key = Registry.LocalMachine.OpenSubKey(
-            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", writable: false);
-        bool isDevModeEnabled = (key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int?) == 1;
-        key?.Dispose();
-
-        if (isDevModeEnabled) {
-            return true;
-        }
-
-        try {
-            ProcessStartInfo info = new() {
-                FileName = "cmd.exe",
-                Arguments = """
-                /c "REG ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock /v AllowDevelopmentWithoutDevLicense /t REG_DWORD /d 1 /f"
-                """,
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-
-            Process.Start(info)?.WaitForExit();
-        }
-        catch (Exception ex) {
-            AppLog.Log(ex);
-        }
-
-        goto Check;
+        SymlinkHelper.CreateMany(ExportLocations
+            .Where(x => x.IsEnabled && (x.IsEnabled = !Path.GetFullPath(x.SymlinkPath).Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)))
+            .Select(x => (x.SymlinkPath, MergeOutput))
+            .ToArray()
+        );
     }
 }

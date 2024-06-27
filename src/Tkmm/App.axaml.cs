@@ -46,6 +46,11 @@ public partial class App : Application
     /// </summary>
     public static IMenuFactory MenuFactory { get; private set; } = null!;
 
+    static App()
+    {
+        ExportLocationControlBuilder.Shared.Register();
+    }
+
     public App()
     {
         TaskScheduler.UnobservedTaskException += (s, e) => {
