@@ -105,7 +105,7 @@ public partial class Config : ConfigModule<Config>
     [ObservableProperty]
     [property: Config(
         Header = "Export Locations",
-        Description = "Define custom locations to export the merged mods to.",
+        Description = "Define custom locations to export the merged mod to.",
         Group = "Merging")]
     private ExportLocationCollection _exportLocations = [
         new() {
