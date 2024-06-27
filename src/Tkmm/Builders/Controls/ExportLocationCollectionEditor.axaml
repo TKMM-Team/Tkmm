@@ -16,7 +16,7 @@
                  SelectionMode="AlwaysSelected">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:ExportLocation}">
-                    <Grid ColumnDefinitions="*,Auto,Auto">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                         <TextBox Width="400"
                                  MinHeight="0"
                                  Margin="10,0,0,0"
@@ -30,12 +30,22 @@
                                 Width="20"
                                 Height="20"
                                 Margin="5,0,0,0"
-                                Padding="0"
+                                Padding="1,1,0,0"
                                 Command="{x:Static local:ExportLocationCollectionEditor.BrowseCommand}"
                                 CommandParameter="{Binding}">
                             <pi:Icon Value="fa-regular fa-folder-open" />
                         </Button>
-                        <CheckBox Grid.Column="2"
+                        <Button Grid.Column="2"
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                Padding="0"
+                                x:CompileBindings="False"
+                                Command="{Binding $parent[UserControl].DataContext.DeleteCommand}"
+                                CommandParameter="{Binding}">
+                            <pi:Icon Value="fa-regular fa-trash" />
+                        </Button>
+                        <CheckBox Grid.Column="3"
                                   Width="20"
                                   Height="20"
                                   Margin="5,0,0,0"
@@ -49,17 +59,7 @@
         <StackPanel HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Spacing="5">
-            <Button Width="20"
-                    Height="20"
-                    Padding="0"
-                    Command="{Binding DeleteCommand}"
-                    CommandParameter="{Binding #LocationsListBox.SelectedItem}">
-                <pi:Icon Value="fa-regular fa-trash" />
-            </Button>
-            <Button Width="20"
-                    Height="20"
-                    Padding="0"
-                    Command="{Binding NewCommand}">
+            <Button Command="{Binding NewCommand}">
                 <pi:Icon Value="fa-regular fa-plus" />
             </Button>
         </StackPanel>
