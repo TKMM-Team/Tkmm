@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Cocona" Version="2.2.0" />
     <PackageReference Include="ConfigFactory.Core" Version="0.4.2" />
-    <PackageReference Include="Octokit" Version="12.0.0" />
+    <PackageReference Include="Octokit" Version="13.0.0" />
     <PackageReference Include="ReverseMarkdown" Version="4.5.0" />
     <PackageReference Include="SharpCompress" Version="0.37.2" />
     <PackageReference Include="TotkCommon" Version="1.2.7">
