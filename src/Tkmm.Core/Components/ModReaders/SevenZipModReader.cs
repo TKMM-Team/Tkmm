@@ -28,8 +28,9 @@ public class SevenZipModReader : IModReader
         if (Config.Shared.SevenZipPath is string sevenZip && File.Exists(sevenZip)) {
             try {
                 if (!File.Exists(file)) {
+                    Directory.CreateDirectory(tmpOutputFolder);
                     file = Path.Combine(tmpOutputFolder, Guid.NewGuid().ToString());
-                    using FileStream fs = File.Create(tmpOutputFolder);
+                    using FileStream fs = File.Create(file);
                     await input.CopyToAsync(fs);
                 }
 
