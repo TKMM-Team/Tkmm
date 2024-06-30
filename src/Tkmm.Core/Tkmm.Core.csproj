@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\IPS.NET\IPS.NET.Core\IPS.NET.Core.csproj" />
     <ProjectReference Include="..\..\lib\MalsMerger\src\MalsMerger.Core\MalsMerger.Core.csproj" />
     <ProjectReference Include="..\..\lib\RsdbMerger\src\RsdbMerger.Core\RsdbMerger.Core.csproj" />
     <ProjectReference Include="..\..\lib\TKMM-SARC\TKMM.SarcTool.Core\TKMM.SarcTool.Core.csproj" />

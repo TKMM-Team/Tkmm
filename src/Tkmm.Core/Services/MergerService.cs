@@ -11,6 +11,7 @@ public class MergerService
 {
     private static readonly IMerger[] _mergers = [
         new ContentMerger(),
+        new ExefsMerger(),
         new MalsMergerShell(),
         new RsdbMergerShell(),
         new SarcMergerShell()
