@@ -22,6 +22,7 @@ public class ExcludeInfo
         ".blarc",
         ".genvb",
         ".pack",
-        ".ta"
+        ".ta",
+        ".pchtxt"
     ];
 }
