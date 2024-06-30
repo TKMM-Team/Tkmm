@@ -32,6 +32,8 @@ public static class ModHelper
 
     public static async Task<Mod?> Import<T>(T arg, Func<T, Task<Mod>> createMod)
     {
+        App.LogTkmmInfo();
+
         try {
             Mod result = await Task.Run(async
                 () => await createMod(arg)
