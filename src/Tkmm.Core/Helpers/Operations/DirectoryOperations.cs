@@ -3,6 +3,7 @@
 public static class DirectoryOperations
 {
     private const string ZS_EXT = ".zs";
+    private const string INI_EXT = ".ini";
 
     public static void ClearAttributes(string src)
     {
@@ -46,6 +47,11 @@ public static class DirectoryOperations
             string ext = Path.GetExtension(file);
             if (ext == ZS_EXT) {
                 ext = Path.GetExtension(file[..^3]);
+            }
+            else if (ext is INI_EXT) {
+                // Some .ini files are exluded, but they
+                // are specified by the entire file name
+                ext = Path.GetFileName(file);
             }
 
             if (!excludeFiles.Contains(ext)) {

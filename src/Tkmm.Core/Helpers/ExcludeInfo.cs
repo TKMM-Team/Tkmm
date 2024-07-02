@@ -11,7 +11,7 @@ public class ExcludeInfo
     ];
 
     public static List<string> Extensions { get; private set; } = [
-        ".ini",
+        "desktop.ini",
         ".json",
         ".thumbnail",
         ".rsizetable",
