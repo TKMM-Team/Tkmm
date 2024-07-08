@@ -78,8 +78,11 @@ public class ExefsMerger : IMerger
             """;
 
         string outputFolder = Path.Combine(output, TotkConfig.EXEFS);
+        Directory.CreateDirectory(outputFolder);
+
         string outputPath = Path.Combine(outputFolder, $"{Totk.Config.NSOBID}.ips");
         using FileStream ofs = File.Create(outputPath);
+
         PchtxtToIPS.ConvertPchtxtToIps(pchtxt, ofs);
 
         return Task.CompletedTask;
