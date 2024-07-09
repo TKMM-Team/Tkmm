@@ -69,7 +69,6 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     {
         Validate(() => GamePath, value => {
             Totk.Config.GamePath = GamePath;
-            TotkRstbGenerator.Core.Models.TotkConfig.Shared.GamePath = GamePath;
             if (value is not null && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"))) {
                 Totk.Zstd.LoadDictionaries(ZsDicPath);
                 return true;
