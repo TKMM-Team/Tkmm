@@ -20,11 +20,16 @@ public class ExefsMerger : IMerger
 
     public Task Merge(IModItem[] mods, string output)
     {
-        IEnumerable<string> pchtxtFiles = mods
+        string[] pchtxtFiles = mods
             .Select(x => Path.Combine(x.SourceFolder, TotkConfig.EXEFS))
             .Where(Directory.Exists)
             .SelectMany(Directory.EnumerateFiles)
-            .Where(x => Path.GetExtension(x.AsSpan()) is ".pchtxt");
+            .Where(x => Path.GetExtension(x.AsSpan()) is ".pchtxt")
+            .ToArray();
+
+        if (pchtxtFiles.Length <= 0) {
+            return Task.CompletedTask;
+        }
 
         State state = State.None;
         string expectedPchtxtHeader = $"@nsobid-{Totk.Config.NSOBID}";
