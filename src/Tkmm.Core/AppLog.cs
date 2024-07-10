@@ -14,6 +14,8 @@ public enum LogLevel
 
 public static class AppLog
 {
+    private static readonly string _userName = Path.GetFileName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
     static AppLog()
     {
         Trace.Listeners.Add(new ConsoleTraceListener());
@@ -21,11 +23,13 @@ public static class AppLog
 
     public static void Log(string message, LogLevel level)
     {
-        Trace.WriteLine(level == LogLevel.Default ? message : $"[{level}] {message}");
+        message = message.Replace(_userName, "%username%");
+        Trace.WriteLine(level == LogLevel.Default
+            ? message : $"[{level}] {message}");
     }
 
     public static void Log(Exception ex)
     {
-        Trace.WriteLine($"[{LogLevel.Error}] {ex}");
+        Trace.WriteLine($"[{LogLevel.Error}] {ex.ToString().Replace(_userName, "%username%")}");
     }
 }
