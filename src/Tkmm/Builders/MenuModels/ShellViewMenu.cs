@@ -77,7 +77,28 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Cleanup Temporary Files", "File", "Ctrl + Shift + F6", "fa-solid fa-broom-wide")]
+    [Menu("Export Current Mod", "File", "Ctrl + Shift + E", "fa-solid fa-file-export")]
+    public static async Task ExportTkcl()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
+            return;
+        }
+
+        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export TKCL", "TKCL:*.tkcl|All Files:*.*");
+        string? selectedFile = await dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(selectedFile)) {
+            return;
+        }
+
+        string folder = ProfileManager.GetModFolder(target);
+        PackageBuilder.Package(folder, selectedFile);
+
+        AppStatus.Set($"'{target.Name}' was exported successfully!", "fa-solid fa-circle-check",
+                isWorkingStatus: false, temporaryStatusTime: 2.5);
+    }
+
+    [Menu("Cleanup Temporary Files", "File", "Ctrl + Shift + F6", "fa-solid fa-broom-wide", IsSeparator = true)]
     public static void ClearTempFolder()
     {
         string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
