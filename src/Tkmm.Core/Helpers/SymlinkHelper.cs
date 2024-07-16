@@ -7,17 +7,16 @@ namespace Tkmm.Core.Helpers;
 
 internal static class SymlinkHelper
 {
-    public static void CreateMany((string Path, string PathToTarget)[] targets)
+    public static bool CreateMany((string Path, string PathToTarget)[] targets)
     {
         if (!OperatingSystem.IsWindows() || IsDeveloperModeEnabled()) {
-            CreateManyWithPermission(targets);
-            return;
+            return CreateManyWithPermission(targets);
         }
 
-        CreateManyRequestPermission(targets);
+        return CreateManyRequestPermission(targets);
     }
 
-    private static void CreateManyWithPermission((string Path, string PathToTarget)[] targets)
+    private static bool CreateManyWithPermission((string Path, string PathToTarget)[] targets)
     {
         foreach (var (path, pathToTarget)  in targets) {
             if (Directory.Exists(path)) {
@@ -26,9 +25,11 @@ internal static class SymlinkHelper
 
             Directory.CreateSymbolicLink(path, pathToTarget);
         }
+
+        return true;
     }
 
-    private static void CreateManyRequestPermission((string Path, string PathToTarget)[] targets)
+    private static bool CreateManyRequestPermission((string Path, string PathToTarget)[] targets)
     {
         StringBuilder arguments = new();
 
@@ -55,7 +56,13 @@ internal static class SymlinkHelper
             Verb = "runas"
         };
 
-        Process.Start(processInfo)?.WaitForExit();
+        try {
+            Process.Start(processInfo)?.WaitForExit();
+            return true;
+        }
+        catch {
+            return false;
+        }
     }
 
     [SupportedOSPlatform("windows")]

@@ -35,7 +35,12 @@ public partial class Config : ConfigModule<Config>
 
     public Config()
     {
-        OnSave += CreateExportLocationSymlinks;
+        FileInfo configFileInfo = new(LocalPath);
+        if (configFileInfo.Exists && configFileInfo.Length == 0) {
+            File.Delete(LocalPath);
+        }
+
+        OnSaving += CreateExportLocationSymlinks;
     }
 
     [ObservableProperty]
@@ -159,9 +164,9 @@ public partial class Config : ConfigModule<Config>
         }
     }
 
-    private void CreateExportLocationSymlinks()
+    private bool CreateExportLocationSymlinks()
     {
-        SymlinkHelper.CreateMany(ExportLocations
+        return SymlinkHelper.CreateMany(ExportLocations
             .Where(x => x.IsEnabled && (x.IsEnabled = !Path.GetFullPath(x.SymlinkPath).Contains(Path.GetFullPath(MergeOutput), StringComparison.InvariantCultureIgnoreCase)))
             .Select(x => (x.SymlinkPath, MergeOutput))
             .ToArray()
