@@ -10,6 +10,7 @@ public class ExefsMerger : IMerger
 {
     private const string FLAG_KEYWORD = "@flag";
     private const string ENABLED_KEYWORD = "@enabled";
+    private const char COMMENT_CHAR = '@';
     private const string STOP_KEYWORD = "@stop";
 
     private enum State
@@ -55,6 +56,10 @@ public class ExefsMerger : IMerger
                 if (state is State.Enabled) {
                     if (line.StartsWith(STOP_KEYWORD)) {
                         state = State.None;
+                        goto Skip;
+                    }
+
+                    if (line.Length > 0 && line[0] == COMMENT_CHAR) {
                         goto Skip;
                     }
 
