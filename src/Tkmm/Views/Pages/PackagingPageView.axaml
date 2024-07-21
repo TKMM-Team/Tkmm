@@ -14,11 +14,9 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <ContentControl x:Key="ContributorsEditor"
-                        Name="Root"
-                        x:DataType="models:Mod"
-                        DataContext="{Binding Mod}">
+                        Name="Root">
             <Grid Width="460" RowDefinitions="*,Auto">
-                <ItemsControl ItemsSource="{Binding Contributors}">
+                <ItemsControl ItemsSource="{Binding Mod.Contributors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:ModContributor}">
                             <Grid Margin="0,0,0,5" ColumnDefinitions="Auto,*,1.8*">
@@ -50,7 +48,7 @@
                         Width="25"
                         Height="25"
                         Padding="0"
-                        Command="{Binding NewContributorCommand}">
+                        Command="{Binding Mod.NewContributorCommand}">
                     <pi:Icon Value="fa-solid fa-plus" />
                 </Button>
             </Grid>
