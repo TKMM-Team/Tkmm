@@ -131,7 +131,12 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private async void InitLoad()
     {
-        await UpdatePage();
+        try {
+            await UpdatePage();
+        }
+        catch (Exception ex) {
+            App.ToastError(ex);
+        }
     }
 
     private async Task UpdatePage(GameBananaFeed? customFeed = null)
