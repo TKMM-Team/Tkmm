@@ -56,8 +56,9 @@ public static class DirectoryOperations
 
             if (!excludeFiles.Contains(ext)) {
                 Directory.CreateDirectory(dst);
-                File.Copy(file, Path.Combine(dst, Path.GetFileName(file)), overwrite);
-                File.SetAttributes(dst, FileAttributes.None);
+                string dstFile = Path.Combine(dst, Path.GetFileName(file));
+                File.Copy(file, dstFile, overwrite);
+                File.SetAttributes(dstFile, FileAttributes.None);
             }
         }
 
