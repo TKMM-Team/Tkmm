@@ -150,7 +150,7 @@ public partial class Config : ConfigModule<Config>
 
         while (reader.ReadLine() is string line) {
             if (line.StartsWith(prefix)) {
-                return Path.Combine(line[prefix.Length..], "0100f2c0115b6000");
+                return Path.Combine(line[prefix.Length..], "0100F2C0115B6000");
             }
         }
 
