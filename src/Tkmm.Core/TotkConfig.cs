@@ -10,6 +10,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
 {
     public const string ROMFS = "romfs";
     public const string EXEFS = "exefs";
+    public const string TITLE_ID = "0100F2C0115B6000";
 
     public static readonly string[] FileSystemFolders = [
         ROMFS,

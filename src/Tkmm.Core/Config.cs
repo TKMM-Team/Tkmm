@@ -133,9 +133,9 @@ public partial class Config : ConfigModule<Config>
         SetTheme?.Invoke(value);
     }
 
-    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", "0100f2c0115b6000", "TKMM");
+    private static readonly string _ryujinxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx", "mods", "contents", TotkConfig.TITLE_ID.ToLower(), "TKMM");
 
-    private static readonly string _japaneseCitrusFruitDefaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load", "0100F2C0115B6000");
+    private static readonly string _japaneseCitrusFruitDefaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "load", TotkConfig.TITLE_ID);
     private static readonly string _japaneseCitrusFruitConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yuzu", "config", "qt-config.ini");
     private static string ReadJapaneseCitrusFruitLoadPath()
     {
@@ -150,7 +150,7 @@ public partial class Config : ConfigModule<Config>
 
         while (reader.ReadLine() is string line) {
             if (line.StartsWith(prefix)) {
-                return Path.Combine(line[prefix.Length..], "0100F2C0115B6000");
+                return Path.Combine(line[prefix.Length..], TotkConfig.TITLE_ID);
             }
         }
 
