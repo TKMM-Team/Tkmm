@@ -2,9 +2,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Attributes;
+using Tkmm.Helpers;
 
 namespace Tkmm.Views.Pages;
 
+[Page(Page.Profiles, "Manage mod profiles", Symbol.OtherUser)]
 public partial class ProfilesPageView : UserControl
 {
     public ProfilesPageView()

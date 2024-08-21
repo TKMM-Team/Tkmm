@@ -1,8 +1,12 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Attributes;
+using Tkmm.Helpers;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Views.Pages;
+
 public partial class GameBananaPageView : UserControl
 {
     public GameBananaPageView()

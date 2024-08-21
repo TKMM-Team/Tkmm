@@ -127,18 +127,16 @@ public partial class App : Application
                         "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 }
             }
-
-            PageManager.Shared.Register(Page.Home, "Home", new HomePageView(), Symbol.Home, "Home", isDefault: true);
-            PageManager.Shared.Register(Page.Profiles, "Profiles", new ProfilesPageView(), Symbol.OtherUser, "Manage mod profiles");
-            PageManager.Shared.Register(Page.Tools, "TKCL Packager", new PackagingPageView(), Symbol.CodeHTML, "Mod developer tools");
-            PageManager.Shared.Register(Page.ShopParam, "ShopParam Overflow Editor", new ShopParamPageView(), Symbol.Sort, "ShopParam overflow ordering tools");
-
-            if (GameBananaHelper.IsOnline) {
-                PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
-            }
             
-            PageManager.Shared.Register(Page.Logs, "Logs", new LogsPageView(), Symbol.AllApps, "System Logs", isFooter: true);
-            PageManager.Shared.Register(Page.Settings, "Settings", settingsPage, Symbol.Settings, "Settings", isFooter: true, isDefault: isValid == false);
+            PageManager.Init(
+                afterNormals: pm => {
+                    if (GameBananaHelper.IsOnline) {
+                        pm.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
+                    }
+                }, 
+                afterFooters: pm =>
+                    pm.Register(Page.Settings, nameof(Page.Settings), settingsPage, Symbol.Settings, nameof(Page.Settings), isFooter: true, isDefault: isValid == false)
+                );
 
             Config.SetTheme(Config.Shared.Theme);
         }
@@ -148,7 +146,7 @@ public partial class App : Application
 
     public static void Focus()
     {
-        if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow is not null) {
+        if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktop) {
             desktop.MainWindow.WindowState = WindowState.Normal;
             desktop.MainWindow.Activate();
         }
