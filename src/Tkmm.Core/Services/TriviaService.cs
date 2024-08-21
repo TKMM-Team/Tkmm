@@ -29,8 +29,10 @@ public class TriviaService
                     return;
                 }
 
-                AppStatus.Set(_unusedMessages[index], "fa-solid fa-code-merge");
+                string message = _unusedMessages[index];
                 _unusedMessages.RemoveAt(index);
+
+                AppStatus.Set(message, "fa-solid fa-code-merge");
             }
         }, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(3));
     }
