@@ -10,7 +10,8 @@ public class ArchiveModReader : IModReader
     public static readonly string[] Targets = [
         PackageBuilder.OPTIONS,
         TotkConfig.ROMFS,
-        TotkConfig.EXEFS
+        TotkConfig.EXEFS,
+        TotkConfig.CHEATS,
     ];
 
     public bool IsValid(string file)
