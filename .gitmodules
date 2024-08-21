@@ -10,6 +10,3 @@
 [submodule "lib/RsdbMerger"]
 	path = lib/RsdbMerger
 	url = https://github.com/ArchLeaders/RsdbMerger
-[submodule "lib/IPS.NET"]
-	path = lib/IPS.NET
-	url = https://github.com/The5thTear/IPS.NET
