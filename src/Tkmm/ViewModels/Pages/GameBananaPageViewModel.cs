@@ -3,7 +3,6 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
