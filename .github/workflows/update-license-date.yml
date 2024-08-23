@@ -17,8 +17,9 @@ jobs:
         shell: bash
         run: |
           sed -i "s/$(date -d 'last year' +%Y)/$(date +%Y)/g" License.md
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git add License.md
-          git commit -S -m "chore(license): update license date"
-          git push origin
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          add: License.md
+          message: 'chore(license.md) Update License Date'
