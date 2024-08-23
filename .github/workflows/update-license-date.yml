@@ -16,7 +16,7 @@ jobs:
       - name: Found last year date, replace, and push
         shell: bash
         run: |
-          sed -i "s/Copyright © `$(date -d 'last year' +%Y)`/Copyright © `$(date +%Y)`/g" License.md
+          sed -i "s/$(date -d 'last year' +%Y)/$(date +%Y)/g" License.md
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add License.md
