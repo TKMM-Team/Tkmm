@@ -17,6 +17,8 @@ jobs:
         shell: bash
         run: |
           sed -i "s/Copyright © `$(date -d 'last year' +%Y)`/Copyright © `$(date +%Y)`/g" License.md
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           git add License.md
           git commit -S -m "chore(license): update license date"
           git push origin
