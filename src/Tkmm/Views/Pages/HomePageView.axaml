@@ -31,12 +31,12 @@
                                FontSize="32"
                                Foreground="{DynamicResource SystemChromeHighColor}"
                                Text="{x:Static app:App.Title}" />
-                    <ui:HyperlinkButton Margin="5"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Content="{x:Static app:App.Version}"
-                                        FontFamily="{StaticResource UbuntuMono}"
-                                        FontSize="20" />
+                    <HyperlinkButton Margin="5"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Content="{x:Static app:App.Version}"
+                                     FontFamily="{StaticResource UbuntuMono}"
+                                     FontSize="20" />
                     <Rectangle Grid.Row="1"
                                Margin="5"
                                Stroke="{DynamicResource SystemChromeHighColor}"
@@ -103,11 +103,11 @@
                                    FontSize="14"
                                    IsVisible="{Binding Current.Mod.Contributors.Count}"
                                    Text=" and " />
-                        <ui:HyperlinkButton Padding="1"
-                                            Command="{Binding ShowContributorsCommand}"
-                                            Content="Contributors"
-                                            FontSize="12"
-                                            IsVisible="{Binding Current.Mod.Contributors.Count}" />
+                        <HyperlinkButton Padding="1"
+                                         Command="{Binding ShowContributorsCommand}"
+                                         Content="Contributors"
+                                         FontSize="12"
+                                         IsVisible="{Binding Current.Mod.Contributors.Count}" />
                     </StackPanel>
                 </Grid>
 
