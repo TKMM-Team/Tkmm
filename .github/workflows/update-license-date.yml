@@ -1,0 +1,21 @@
+name: Update License Date
+on:
+  - workflow_dispatch:
+  - schedule:
+    - cron: 0 0 1 1 * # Every January 1st
+
+jobs:
+  update-date:
+    name: Update License Date
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Found last year date, replace, and push
+        shell: bash
+        run: |
+          sed -i "s/Copyright © `$(date -d 'last year' +%Y)`/Copyright © `$(date +%Y)`/g" License.md
+          git add License.md
+          git commit -S -m "chore(license): update license date"
+          git push origin
