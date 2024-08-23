@@ -1,8 +1,9 @@
 name: Update License Date
 on:
-  - workflow_dispatch:
-  - schedule:
-    - cron: 0 0 1 1 * # Every January 1st
+  workflow_dispatch:
+    inputs: { }
+  schedule:
+  - cron: 0 0 1 1 * # Every January 1st
 
 jobs:
   update-date:
