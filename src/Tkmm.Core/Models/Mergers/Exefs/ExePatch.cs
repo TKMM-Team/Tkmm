@@ -107,12 +107,14 @@ public class ExePatch
                 }
 
                 ReadOnlySpan<char> chars = line.AsSpan();
-                if (!uint.TryParse(chars[0..8], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint address)) {
+                int addressEndIndex = GetValueEndIndex(chars, 0);
+                if (!uint.TryParse(chars[0..addressEndIndex], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint address)) {
                     AppLog.Log($"Could not parse entry address '{chars[0..8]}' skipping '{line}'.", LogLevel.Warning);
                     continue;
                 }
 
-                if (!uint.TryParse(chars[9..17], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint value)) {
+                int valueEndIndex = GetValueEndIndex(chars, ++addressEndIndex);
+                if (!uint.TryParse(chars[addressEndIndex..valueEndIndex], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint value)) {
                     AppLog.Log($"Could not parse entry value '{chars[9..17]}' skipping '{line}'.", LogLevel.Warning);
                     continue;
                 }
@@ -129,5 +131,15 @@ public class ExePatch
 
     Skip:
         return;
+    }
+
+    private static int GetValueEndIndex(ReadOnlySpan<char> chars, int startIndex)
+    {
+        int endIndex = startIndex;
+        while (endIndex < chars.Length && chars[endIndex] is (>= 'A' and <= 'F') or (>= 'a' and <= 'f') or (>= '0' and <= '9')) {
+            endIndex++;
+        }
+
+        return endIndex;
     }
 }
