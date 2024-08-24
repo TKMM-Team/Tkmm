@@ -99,7 +99,7 @@ public class ExePatch
             if (state is State.Enabled) {
                 if (line.StartsWith(STOP_KEYWORD)) {
                     state = State.None;
-                    goto Skip;
+                    continue;
                 }
 
                 if (line.Length > 0 && line[0] == COMMENT_CHAR) {
