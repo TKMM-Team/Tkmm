@@ -31,7 +31,7 @@ public class ContentMerger : IMerger
             string srcFolder = Path.Combine(sourceFolder, folder);
             if (Directory.Exists(srcFolder)) {
                 DirectoryOperations.CopyDirectory(srcFolder, Path.Combine(output, folder),
-                    ExcludeInfo.Extensions, ExcludeInfo.Folders, overwrite: true);
+                    [..ExcludeInfo.Extensions, ".pchtxt"], ExcludeInfo.Folders, overwrite: true);
             }
         }
     }
