@@ -34,7 +34,7 @@ public class ExePatch
 
         foreach (var (address, value) in _values) {
             fs.Write(address + NSO_HEADER_LENGTH, Endianness.Big);
-            fs.Write(sizeof(uint), Endianness.Big); // value size
+            fs.Write<short>(sizeof(uint), Endianness.Big); // value size
             fs.Write(value, Endianness.Big);
         }
 
