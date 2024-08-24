@@ -103,18 +103,18 @@ public class ExePatch
                 }
 
                 if (line.Length > 0 && line[0] == COMMENT_CHAR) {
-                    goto Skip;
+                    continue;
                 }
 
                 ReadOnlySpan<char> chars = line.AsSpan();
                 if (!uint.TryParse(chars[0..8], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint address)) {
                     AppLog.Log($"Could not parse entry address '{chars[0..8]}' skipping '{line}'.", LogLevel.Warning);
-                    goto Skip;
+                    continue;
                 }
 
                 if (!uint.TryParse(chars[9..17], NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out uint value)) {
                     AppLog.Log($"Could not parse entry value '{chars[9..17]}' skipping '{line}'.", LogLevel.Warning);
-                    goto Skip;
+                    continue;
                 }
 
                 _values[address] = value;
