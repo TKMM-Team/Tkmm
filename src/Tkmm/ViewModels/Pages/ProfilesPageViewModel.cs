@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using Tkmm.Core.Components;
 using Tkmm.Core.Components.Models;
 using Tkmm.Core.Models.Mods;
@@ -18,6 +20,12 @@ public partial class ProfilesPageViewModel : ObservableObject
             OnPropertyChanged(nameof(Selected));
         }
     }
+
+    [ObservableProperty]
+    private ObservableCollection<Mod> _filteredMods = GetOrderedMods();
+
+    [ObservableProperty]
+    private string? _filterArgument;
 
     [ObservableProperty]
     private Mod? _masterSelected;
@@ -112,5 +120,24 @@ public partial class ProfilesPageViewModel : ObservableObject
         ProfileManager.Shared.Current = ProfileManager.Shared.Profiles[currentIndex == ProfileManager.Shared.Profiles.Count
             ? --currentIndex : currentIndex
         ];
+    }
+
+    partial void OnFilterArgumentChanged(string? value)
+    {
+        if (string.IsNullOrEmpty(value)) {
+            FilteredMods = GetOrderedMods();
+            return;
+        }
+
+        FilteredMods = [..ProfileManager.Shared.Mods
+            .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase) || value.Contains(x.Name, StringComparison.InvariantCultureIgnoreCase))
+            .OrderBy(x => x.Name)
+        ];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ObservableCollection<Mod> GetOrderedMods()
+    {
+        return [.. ProfileManager.Shared.Mods.OrderBy(x => x.Name)];
     }
 }

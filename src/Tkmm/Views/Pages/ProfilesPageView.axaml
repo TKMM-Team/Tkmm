@@ -117,46 +117,52 @@
                 Margin="25,0"
                 Background="{DynamicResource SystemAccentColor}" />
 
-        <ListBox Name="MasterListBox"
-                 Grid.Column="2"
-                 Classes="ModDragDropListBox"
-                 DragDrop.AllowDrop="True"
-                 ItemsSource="{Binding Mods, Source={x:Static comp:ProfileManager.Shared}}"
-                 SelectedItem="{Binding MasterSelected}"
-                 SelectionMode="AlwaysSelected"
-                 ToolTip.Tip="All Mods">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:Mod}">
-                    <Grid ColumnDefinitions="*,Auto,Auto">
-                        <TextBlock VerticalAlignment="Center"
-                                   Background="Transparent"
-                                   Text="{Binding Name}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip.Tip="{Binding Name}" />
-                        <Button Grid.Column="1"
-                                Width="25"
-                                Height="25"
-                                Padding="0"
-                                VerticalAlignment="Stretch"
-                                Command="{Binding AddToCurrentProfileCommand}"
-                                ToolTip.Tip="Add to current profile">
-                            <pi:Icon Value="fa-solid fa-plus" />
-                        </Button>
-                        <Button Grid.Column="2"
-                                Width="25"
-                                Height="25"
-                                Margin="5,0,0,0"
-                                Padding="0"
-                                VerticalAlignment="Stretch"
-                                x:CompileBindings="False"
-                                Command="{Binding $parent[UserControl].DataContext.UninstallCommand}"
-                                CommandParameter="{Binding}"
-                                ToolTip.Tip="Uninstall">
-                            <pi:Icon Value="fa-solid fa-trash-xmark" />
-                        </Button>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid Grid.Column="2" RowDefinitions="Auto,*">
+            <TextBox Margin="0,0,0,10"
+                     Classes="clearButton"
+                     Text="{Binding FilterArgument}"
+                     Watermark="Search" />
+            <ListBox Name="MasterListBox"
+                     Grid.Row="1"
+                     Classes="ModDragDropListBox"
+                     DragDrop.AllowDrop="True"
+                     ItemsSource="{Binding FilteredMods}"
+                     SelectedItem="{Binding MasterSelected}"
+                     SelectionMode="AlwaysSelected"
+                     ToolTip.Tip="All Mods">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Mod}">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBlock VerticalAlignment="Center"
+                                       Background="Transparent"
+                                       Text="{Binding Name}"
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip.Tip="{Binding Name}" />
+                            <Button Grid.Column="1"
+                                    Width="25"
+                                    Height="25"
+                                    Padding="0"
+                                    VerticalAlignment="Stretch"
+                                    Command="{Binding AddToCurrentProfileCommand}"
+                                    ToolTip.Tip="Add to current profile">
+                                <pi:Icon Value="fa-solid fa-plus" />
+                            </Button>
+                            <Button Grid.Column="2"
+                                    Width="25"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    Padding="0"
+                                    VerticalAlignment="Stretch"
+                                    x:CompileBindings="False"
+                                    Command="{Binding $parent[UserControl].DataContext.UninstallCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="Uninstall">
+                                <pi:Icon Value="fa-solid fa-trash-xmark" />
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </UserControl>
