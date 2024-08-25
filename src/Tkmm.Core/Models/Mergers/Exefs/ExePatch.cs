@@ -26,7 +26,7 @@ public class ExePatch
         string outputFolder = Path.Combine(output, TotkConfig.EXEFS);
         Directory.CreateDirectory(outputFolder);
 
-        string outputPath = Path.Combine(outputFolder, $"{Totk.Config.NSOBID}.ips");
+        string outputPath = Path.Combine(outputFolder, $"{Totk.Config.NSOBID.ToUpper()}.ips");
         using FileStream fs = File.Create(outputPath);
 
         fs.Write(IPS32_MAGIC);
