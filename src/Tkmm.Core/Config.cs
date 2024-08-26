@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using System.ComponentModel;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 
@@ -57,6 +58,13 @@ public partial class Config : ConfigModule<Config>
         Description = "Show the console window for additional information (restart required)",
         Group = "Application")]
     private bool _showConsole = false;
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Auto Save Settings",
+        Description = "Automatically save the settings when a change is made and there are no errors.",
+        Group = "Application")]
+    private bool _autoSaveSettings = true;
 
     [ObservableProperty]
     [property: Config(
@@ -171,5 +179,17 @@ public partial class Config : ConfigModule<Config>
             .Select(x => (x.SymlinkPath, MergeOutput))
             .ToArray()
         );
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (AutoSaveSettings) {
+            try {
+                Save();
+            }
+            catch { }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using TotkCommon;
 
@@ -89,5 +90,17 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
 
             return false;
         });
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (Config.Shared.AutoSaveSettings) {
+            try {
+                Save();
+            }
+            catch { }
+        }
     }
 }
