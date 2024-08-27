@@ -15,14 +15,11 @@ public delegate Task<Mod> CreateModDelegate<T>(T input, out string sourceFolder)
 
 public static class ModHelper
 {
-    private static readonly Bitmap _defaultThumbnail;
+    private static Bitmap? _defaultThumbnail;
 
     static ModHelper()
     {
         Mod.ResolveThumbnail = ResolveThumbnail;
-
-        using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
-        _defaultThumbnail = new Bitmap(stream);
     }
 
     public static async Task<Mod?> Import(string arg)
@@ -122,6 +119,11 @@ public static class ModHelper
         }
 
     Default:
+        if (_defaultThumbnail is null) {
+            using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
+            _defaultThumbnail = new Bitmap(stream);
+        }
+
         if (useDefaultThumbnail) {
             item.Thumbnail = _defaultThumbnail;
         }
