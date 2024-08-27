@@ -13,8 +13,7 @@
              x:DataType="pages:PackagingPageViewModel"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ContentControl x:Key="ContributorsEditor"
-                        Name="Root">
+        <ContentControl x:Key="ContributorsEditor" Name="Root">
             <Grid Width="460" RowDefinitions="*,Auto">
                 <ItemsControl ItemsSource="{Binding Mod.Contributors}">
                     <ItemsControl.ItemTemplate>
@@ -25,7 +24,7 @@
                                         Height="25"
                                         Padding="0"
                                         x:CompileBindings="False"
-                                        Command="{Binding #Root.DataContext.RemoveContributorCommand}"
+                                        Command="{Binding #Root.DataContext.Mod.RemoveContributorCommand}"
                                         CommandParameter="{Binding}">
                                     <pi:Icon Value="fa-solid fa-trash" />
                                 </Button>

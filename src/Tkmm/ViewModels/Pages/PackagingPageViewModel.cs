@@ -30,7 +30,7 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private async Task EditContributors(ContentControl content)
     {
-        content.DataContext = Mod;
+        content.DataContext = this;
 
         ContentDialog dialog = new() {
             Title = "Contributors",
