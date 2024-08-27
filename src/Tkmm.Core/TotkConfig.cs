@@ -58,14 +58,14 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     public TotkConfig()
     {
         OnSaving += () => {
-            if (Version == 100) {
-                AppStatus.Set($"Version 1.0.0 is not supported by TKMM, please dump TotK v1.1.0 or later.",
+            if (Validate(out string? message, out ConfigProperty? target) == false) {
+                AppStatus.Set($"Invalid setting. {target.Property.Name} is invalid.",
                     "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 return false;
             }
 
-            if (Validate(out string? message, out ConfigProperty? target) == false) {
-                AppStatus.Set($"Invalid setting, {target.Property.Name} is invalid.",
+            if (Version == 100) {
+                AppStatus.Set($"Version 1.0.0 is not supported by TKMM, please dump TotK v1.1.0 or later.",
                     "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 return false;
             }
