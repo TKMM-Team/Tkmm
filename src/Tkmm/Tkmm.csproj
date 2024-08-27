@@ -6,6 +6,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version Condition="'$(Configuration)' == 'Debug'">0.0.999-dev</Version>
+    <NoWarn>0657</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
