@@ -2,7 +2,9 @@
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Media;
 using Avalonia.Platform;
+using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
@@ -29,7 +31,7 @@ public class ShellViewMenu
     public static async Task ExportToSdCard()
     {
         const string GAME_ID = "0100F2C0115B6000";
-        
+
         FriendlyDriveInfo[] disks = DriveInfo.GetDrives()
             .Where(drive => {
                 try {
@@ -144,9 +146,37 @@ public class ShellViewMenu
             temporaryStatusTime: 3.5
         );
 
+        string resultContent = $"""
+            {results.MissingFiles} missing files recorded.
+            {results.BadFiles.Count} corrupt files recorded.{(results.BadFiles.Count > 0 ? "\n- `" : string.Empty)}{string.Join("`\n- `", results.BadFiles)}{(results.BadFiles.Count > 0 ? '`' : string.Empty)}
+            {results.BadFiles.Count} extra files recorded.{(results.ExtraFiles.Count > 0 ? "\n- `" : string.Empty)}{string.Join("`\n- `", results.ExtraFiles)}{(results.ExtraFiles.Count > 0 ? '`' : string.Empty)}
+            """;
+
         ContentDialog dialog = new() {
             Title = "Dump Integrity Check Results",
-            Content = results.IsCompleteDump ? "Your dump is perfect :D" : "Your dump is corrupt :(",
+            Content = new StackPanel {
+                Children = {
+                    new TextBlock {
+                        Margin = new(0, 0, 0, 5),
+                        Text = results.IsCompleteDump ? "Verified Complete Game Dump" : "Invalid Game Dump",
+                        FontSize = 16
+                    },
+                    new Button {
+                        Margin = new(0, 0, 0, 5),
+                        Padding = new(5, 2),
+                        Content = "Copy Report",
+                        Command = new AsyncRelayCommand(async () => {
+                            if (App.XamlRoot?.Clipboard?.SetTextAsync(resultContent) is Task task) {
+                                await task;
+                            }
+                        })
+                    },
+                    new TextBlock {
+                        TextWrapping = TextWrapping.WrapWithOverflow,
+                        Text = resultContent
+                    },
+                }
+            },
             IsSecondaryButtonEnabled = false,
             PrimaryButtonText = "OK",
             IsPrimaryButtonEnabled = true,
@@ -159,7 +189,7 @@ public class ShellViewMenu
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void CheckDumpIntegrityUpdateCallback(int i, int length)
     {
-        AppStatus.Set($"Checking {i}/{length} . . .",
+        AppStatus.Set($"Checking {i}/{length}...",
             "fa-regular fa-arrow-progress",
             isWorkingStatus: false,
             logLevel: LogLevel.None
@@ -282,7 +312,7 @@ public class ShellViewMenu
             return;
         }
 
-       await App.PromptUpdate();
+        await App.PromptUpdate();
     }
 
     [Menu("Download Assets", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
