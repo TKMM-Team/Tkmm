@@ -26,7 +26,7 @@ public class WindowsFileAssociation
         using RegistryKey command = open.CreateSubKey("command");
         command.SetValue(null, $"\"{appPath}\" %1", RegistryValueKind.String);
 
-        using RegistryKey fileAssosiation = classes.CreateSubKey(extension);
-        fileAssosiation.SetValue(null, name, RegistryValueKind.String);
+        using RegistryKey fileAssociation = classes.CreateSubKey(extension);
+        fileAssociation.SetValue(null, name, RegistryValueKind.String);
     }
 }
