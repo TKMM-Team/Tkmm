@@ -7,43 +7,39 @@ namespace Tkmm.Converters;
 
 public class LogLevelToBrushConverter : IValueConverter
 {
-    private static readonly BrushConverter _brushConverter = new();
-    private static readonly object? _default = Brushes.Transparent;
-    private static readonly object? _info = _brushConverter.ConvertFromInvariantString("#2E5FC9");
-    private static readonly object? _debug = _brushConverter.ConvertFromInvariantString("#A86032");
-    private static readonly object? _warning = _brushConverter.ConvertFromInvariantString("#C9962E");
-    private static readonly object? _error = _brushConverter.ConvertFromInvariantString("#C9402E");
+    private static readonly IBrush _default = Brushes.Transparent;
+    private static readonly IBrush _info = Brush.Parse("#2E5FC9");
+    private static readonly IBrush _debug = Brush.Parse("#A86032");
+    private static readonly IBrush _warning = Brush.Parse("#C9962E");
+    private static readonly IBrush _error = Brush.Parse("#C9402E");
 
     private static readonly Lazy<LogLevelToBrushConverter> _shared = new(() => new());
     public static LogLevelToBrushConverter Shared => _shared.Value;
 
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is LogLevel logLevel) {
-            return logLevel switch {
-                LogLevel.Debug => _debug,
-                LogLevel.Info => _info,
-                LogLevel.Warning => _warning,
-                LogLevel.Error => _error,
-                _ => _default
-            };
-        }
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) 
+        => value switch {
+            LogLevel.Debug => _debug,
+            LogLevel.Info => _info,
+            LogLevel.Warning => _warning,
+            LogLevel.Error => _error,
+            _ => _default
+        };
 
-        return _default;
-    }
-
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value == _info) {
+        if (_info.Equals(value)) {
             return LogLevel.Info;
         }
-        else if (value == _debug) {
+        
+        if (_debug.Equals(value)) {
             return LogLevel.Debug;
         }
-        else if (value == _warning) {
+        
+        if (_warning.Equals(value)) {
             return LogLevel.Warning;
         }
-        else if (value == _error) {
+        
+        if (_error.Equals(value)) {
             return LogLevel.Error;
         }
 
