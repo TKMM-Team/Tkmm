@@ -27,23 +27,19 @@ public class LogLevelToBrushConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (_info.Equals(value))
-        {
+        if (_info.Equals(value)) {
             return LogLevel.Info;
         }
         
-        if (_debug.Equals(value))
-        {
+        if (_debug.Equals(value)) {
             return LogLevel.Debug;
         }
         
-        if (_warning.Equals(value))
-        {
+        if (_warning.Equals(value)) {
             return LogLevel.Warning;
         }
         
-        if (_error.Equals(value))
-        {
+        if (_error.Equals(value)) {
             return LogLevel.Error;
         }
 
