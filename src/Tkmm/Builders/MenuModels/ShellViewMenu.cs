@@ -26,7 +26,7 @@ public class ShellViewMenu
     public static async Task ExportToSdCard()
     {
         const string GAME_ID = "0100F2C0115B6000";
-
+        
         FriendlyDriveInfo[] disks = DriveInfo.GetDrives()
             .Where(drive => {
                 try {

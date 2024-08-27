@@ -193,6 +193,11 @@ public static class AppManager
         WebProtocol.Create(PROC_NAME, _appPath);
     }
 
+    public static void CreateFileAssociation()
+    {
+        WindowsFileAssociation.Create(PROC_NAME, ".tkcl", _appPath);
+    }
+
     public static void CreateDesktopShortcuts()
     {
         Shortcut.Create(APP_NAME, Location.Application, _appPath, "tkmm");

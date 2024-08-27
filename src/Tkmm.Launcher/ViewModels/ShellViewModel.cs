@@ -85,6 +85,7 @@ public partial class ShellViewModel : ObservableObject
             AppManager.CreateDesktopShortcuts();
         }
 
+        AppManager.CreateFileAssociation();
         AppManager.CreateProtocol();
         AppManager.AddToPath();
 
