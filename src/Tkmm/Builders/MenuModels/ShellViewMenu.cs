@@ -8,6 +8,7 @@ using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
@@ -17,6 +18,8 @@ using Tkmm.Core.Helpers.Win32;
 using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
+using TotkCommon;
+using TotkCommon.Components;
 
 namespace Tkmm.Builders.MenuModels;
 
@@ -110,6 +113,56 @@ public class ShellViewMenu
         Directory.CreateDirectory(tempFolder);
         App.Toast(
             "The TKMM temporary files were succesfully deleted.", "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3)
+        );
+    }
+
+    [Menu("Check Dump Integrity", "File", "Ctrl + Shift + F5", "fa-regular fa-arrow-progress", IsSeparator = true)]
+    public static async Task CheckDumpIntegrity()
+    {
+        AppStatus.Set($"Checking Dump Integrity",
+            "fa-solid fa-file-magnifying-glass",
+            isWorkingStatus: true
+        );
+
+        TotkDumpResults results;
+
+        try {
+            results = await Task.Run(async () => TotkDump.CheckIntegrity(
+                Totk.Config.GamePath,
+                await DumpChecksumTableHelper.DownloadChecksumTable(),
+                CheckDumpIntegrityUpdateCallback
+            ));
+        }
+        catch (Exception ex) {
+            App.ToastError(new Exception($"Dump Integrity Check Failed", ex));
+            return;
+        }
+
+        AppStatus.Set($"Dump Integrity Check Completed",
+            "fa-circle-check",
+            isWorkingStatus: false,
+            temporaryStatusTime: 3.5
+        );
+
+        ContentDialog dialog = new() {
+            Title = "Dump Integrity Check Results",
+            Content = results.IsCompleteDump ? "Your dump is perfect :D" : "Your dump is corrupt :(",
+            IsSecondaryButtonEnabled = false,
+            PrimaryButtonText = "OK",
+            IsPrimaryButtonEnabled = true,
+            DefaultButton = ContentDialogButton.Primary
+        };
+
+        await dialog.ShowAsync();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void CheckDumpIntegrityUpdateCallback(int i, int length)
+    {
+        AppStatus.Set($"Checking {i}/{length} . . .",
+            "fa-regular fa-arrow-progress",
+            isWorkingStatus: false,
+            logLevel: LogLevel.None
         );
     }
 
