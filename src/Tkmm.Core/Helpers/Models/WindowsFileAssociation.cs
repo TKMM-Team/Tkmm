@@ -8,7 +8,7 @@ public class WindowsFileAssociation
     public static void Create(string name, string extension, string appPath)
     {
         if (OperatingSystem.IsWindows()) {
-            CreateWindows(name, appPath);
+            CreateWindows(name, extension, appPath);
         }
     }
 
