@@ -9,9 +9,9 @@ using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
+using MenuFactory.Abstractions.Attributes;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Tkmm.Attributes;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
@@ -27,7 +27,7 @@ namespace Tkmm.Builders.MenuModels;
 
 public class ShellViewMenu
 {
-    [Menu("Export to SD Card", "File", "Ctrl + E", "fa-solid fa-sd-card")]
+    [Menu("Export to SD Card", "File", InputGesture = "Ctrl + E", Icon = "fa-solid fa-sd-card")]
     public static async Task ExportToSdCard()
     {
         const string GAME_ID = "0100F2C0115B6000";
@@ -82,7 +82,7 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Export Current Mod", "File", "Ctrl + Shift + E", "fa-solid fa-file-export")]
+    [Menu("Export Current Mod", "File", InputGesture = "Ctrl + Shift + E", Icon = "fa-solid fa-file-export")]
     public static async Task ExportTkcl()
     {
         if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
@@ -103,7 +103,7 @@ public class ShellViewMenu
                 isWorkingStatus: false, temporaryStatusTime: 2.5);
     }
 
-    [Menu("Cleanup Temporary Files", "File", "Ctrl + Shift + F6", "fa-solid fa-broom-wide", IsSeparator = true)]
+    [Menu("Cleanup Temporary Files", "File", InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
     public static void ClearTempFolder()
     {
         string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
@@ -118,7 +118,7 @@ public class ShellViewMenu
         );
     }
 
-    [Menu("Check Dump Integrity", "File", "Ctrl + Shift + F5", "fa-regular fa-arrow-progress", IsSeparator = true)]
+    [Menu("Check Dump Integrity", "File", InputGesture = "Ctrl + Shift + F5", Icon = "fa-regular fa-arrow-progress", IsSeparator = true)]
     public static async Task CheckDumpIntegrity()
     {
         AppStatus.Set($"Checking Dump Integrity",
@@ -196,14 +196,14 @@ public class ShellViewMenu
         );
     }
 
-    [Menu("Exit", "File", "Alt + F4", "fa-solid fa-right-from-bracket", IsSeparator = true)]
+    [Menu("Exit", "File", InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
     public static void Exit()
     {
         ProfileManager.Shared.Apply();
         Environment.Exit(0);
     }
 
-    [Menu("Install File", "Mod", "Ctrl + I", "fa-solid fa-file-import")]
+    [Menu("Install File", "Mod", InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
     public static async Task ImportModFile()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "Supported Formats:*.tkcl;*.zip;*.rar;*.7z|TKCL:*.tkcl|Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
@@ -216,7 +216,7 @@ public class ShellViewMenu
         await ModHelper.Import(selectedFile);
     }
 
-    [Menu("Install Folder", "Mod", "Ctrl + Shift + I", "fa-regular fa-folder-open")]
+    [Menu("Install Folder", "Mod", InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
     public static async Task ImportModFolder()
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
@@ -229,7 +229,7 @@ public class ShellViewMenu
         await ModHelper.Import(selectedFolder);
     }
 
-    [Menu("Install from Argument", "Mod", "Ctrl + Alt + I", "fa-regular fa-keyboard")]
+    [Menu("Install from Argument", "Mod", InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
     public static async Task ImportArgument()
     {
         ContentDialog dialog = new() {
@@ -250,13 +250,13 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Merge", "Mod", "Ctrl + M", "fa-solid fa-code-merge", IsSeparator = true)]
+    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-code-merge", IsSeparator = true)]
     public static async Task MergeMods()
     {
         await MergerOperations.Merge();
     }
 
-    [Menu("Show/Hide Console", "View", "Ctrl + F11", "fa-solid fa-terminal")]
+    [Menu("Show/Hide Console", "View", InputGesture = "Ctrl + F11", Icon = "fa-solid fa-terminal")]
     public static void ShowHideConsole()
     {
         if (OperatingSystem.IsWindows()) {
@@ -270,7 +270,7 @@ public class ShellViewMenu
     }
 
 #if DEBUG
-    [Menu("Open Mod Folder", "Debug", "Alt + O", "fa-solid fa-folder-tree")]
+    [Menu("Open Mod Folder", "Debug", InputGesture = "Alt + O", Icon = "fa-solid fa-folder-tree")]
     public static void OpenModFolder()
     {
         if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
@@ -289,7 +289,7 @@ public class ShellViewMenu
     }
 #endif
 
-    [Menu("Help", "Help", "F1", "fa-solid fa-circle-question")]
+    [Menu("Help", "Help", InputGesture = "F1", Icon = "fa-solid fa-circle-question")]
     public static Task GoToHelp()
     {
         Process.Start(new ProcessStartInfo("https://totkmods.github.io/tkmm/docs/index.html") {
@@ -299,7 +299,7 @@ public class ShellViewMenu
         return Task.CompletedTask;
     }
 
-    [Menu("Check for Update", "Help", "Ctrl + U", "fa-solid fa-cloud-arrow-up")]
+    [Menu("Check for Update", "Help", InputGesture = "Ctrl + U", Icon = "fa-solid fa-cloud-arrow-up")]
     public static async Task CheckForUpdate()
     {
         if (!(await AppManager.HasUpdate()).Result) {
@@ -315,20 +315,20 @@ public class ShellViewMenu
         await App.PromptUpdate();
     }
 
-    [Menu("Download Assets", "Help", "Ctrl + Shift + U", "fa-solid fa-screwdriver-wrench")]
+    [Menu("Download Assets", "Help", InputGesture = "Ctrl + Shift + U", Icon = "fa-solid fa-screwdriver-wrench")]
     public static async Task DownloadAssets()
     {
         await AssetHelper.Download();
     }
 
-    [Menu("Create Desktop Shortcuts", "Help", "Ctrl + Alt + L", "fa-solid fa-link")]
+    [Menu("Create Desktop Shortcuts", "Help", InputGesture = "Ctrl + Alt + L", Icon = "fa-solid fa-link")]
     public static Task CreateDesktopShortcuts()
     {
         AppManager.CreateDesktopShortcuts();
         return Task.CompletedTask;
     }
 
-    [Menu("About", "Help", "F12", "fa-solid fa-circle-info", IsSeparator = true)]
+    [Menu("About", "Help", InputGesture = "F12", Icon = "fa-solid fa-circle-info", IsSeparator = true)]
     public static async Task About()
     {
         await using Stream aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));

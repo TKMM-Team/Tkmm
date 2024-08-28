@@ -13,6 +13,8 @@ using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
+using MenuFactory;
+using MenuFactory.Abstractions;
 using System.Reflection;
 using Tkmm.Builders;
 using Tkmm.Builders.MenuModels;
@@ -92,8 +94,8 @@ public partial class App : Application
                 };
             };
 
-            MenuFactory = new MenuFactory(XamlRoot);
-            MenuFactory.Append<ShellViewMenu>();
+            MenuFactory = new AvaloniaMenuFactory(XamlRoot);
+            MenuFactory.AddMenuGroup<ShellViewMenu>();
 
             shellView.MainMenu.ItemsSource = MenuFactory.Items;
             desktop.MainWindow = shellView;
