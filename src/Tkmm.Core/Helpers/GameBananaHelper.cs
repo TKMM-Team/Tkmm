@@ -4,7 +4,8 @@ namespace Tkmm.Core.Helpers;
 
 public static class GameBananaHelper
 {
-    public static bool IsOnline() {
+    public static bool IsOnline()
+    {
         try {
             return new Ping()
                 .Send("gamebanana.com", 10000).Status == IPStatus.Success;
