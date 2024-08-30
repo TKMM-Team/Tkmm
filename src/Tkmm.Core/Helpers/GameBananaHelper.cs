@@ -4,17 +4,19 @@ namespace Tkmm.Core.Helpers;
 
 public static class GameBananaHelper
 {
-    public static bool IsOnline {
-        get {
+    private static readonly Lazy<bool> _isOnline = new(() =>
+        {
             try {
                 return new Ping()
-                    .Send("www.google.com", 1000).Status == IPStatus.Success;
+                    .Send("gamebanana.com", 10000).Status == IPStatus.Success;
             }
             catch {
                 return false;
             }
-        }
-    }
+        });
+
+
+    public static bool IsOnline => _isOnline.Value;
 
     private const string BASE_URL = "https://gamebanana.com/apiv11";
     private static readonly HttpClient _client = new();
