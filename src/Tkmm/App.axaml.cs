@@ -135,7 +135,7 @@ public partial class App : Application
             PageManager.Shared.Register(Page.Tools, "TKCL Packager", new PackagingPageView(), Symbol.CodeHTML, "Mod developer tools");
             PageManager.Shared.Register(Page.ShopParam, "ShopParam Overflow Editor", new ShopParamPageView(), Symbol.Sort, "ShopParam overflow ordering tools");
 
-            if (GameBananaHelper.IsOnline) {
+            if (GameBananaHelper.IsOnline()) {
                 PageManager.Shared.Register(Page.Mods, "GameBanana Mod Browser", new GameBananaPageView(), Symbol.Globe, "GameBanana browser client for TotK mods");
             }
             
