@@ -4,16 +4,14 @@ namespace Tkmm.Core.Helpers;
 
 public static class GameBananaHelper
 {
-    private static readonly Lazy<bool> _isOnline = new(() =>
-        {
-            try {
-                return new Ping()
-                    .Send("gamebanana.com", 10000).Status == IPStatus.Success;
-            }
-            catch {
-                return false;
-            }
-        });
+    private static readonly Lazy<bool> _isOnline = new(() => {
+        try {
+            return new Ping()
+                .Send("gamebanana.com", 10000).Status == IPStatus.Success;
+        } catch {
+            return false;
+        }
+    });
 
 
     public static bool IsOnline => _isOnline.Value;
