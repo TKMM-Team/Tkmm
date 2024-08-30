@@ -8,7 +8,7 @@ public static class GameBananaHelper
         get {
             try {
                 return new Ping()
-                    .Send("www.google.com", 1000).Status == IPStatus.Success;
+                    .Send("https://gamebanana.com", 1000).Status == IPStatus.Success;
             }
             catch {
                 return false;
