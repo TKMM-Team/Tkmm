@@ -14,7 +14,7 @@ Merge mods like never before!
 
 ---
 
-TKMM is a mod manager and merger for Tears of the Kingdom developed by [TKMM-Team](./about#the-team).
+TKMM is a mod manager and merger for Tears of the Kingdom developed by [TKMM-Team](https://totkmods.github.io/tkmm/about#the-team).
 
 ## Download TKMM
 
