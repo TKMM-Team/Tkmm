@@ -39,8 +39,6 @@ public static class ModHelper
             ProfileManager.Shared.Mods.TryInsert(result);
             ProfileManager.Shared.Current.Mods.TryInsert(result);
 
-            ProfileManager.Shared.Current.Selected = result;
-
             if (result.OptionGroups.Any()) {
                 App.Toast($"'{result.Name}' has configurable options!\n\nClick here to configure them.", "Configure Options",
                     NotificationType.Information, TimeSpan.FromDays(5), () => {
@@ -48,6 +46,8 @@ public static class ModHelper
                         PageManager.Shared.Focus(Page.Home);
                     });
             }
+
+            ProfileManager.Shared.Current.Selected = result;
 
             AppStatus.Set("Install Complete!", "fa-regular fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
             return result;
