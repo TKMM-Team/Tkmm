@@ -1,5 +1,7 @@
 # Tears of the Kingdom Mod Manager
+
 Merge mods like never before!
+
 <a href="https://github.com/TKMM-Team/Tkmm/releases">
   <img src="https://img.shields.io/github/v/tag/TKMM-Team/Tkmm?style=for-the-badge&logoColor=C71B42&color=C71B42&labelColor=2A2C33&logo=git&label=Version" alt="Releases'"/>
 </a> &nbsp;
