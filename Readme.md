@@ -17,7 +17,7 @@ TKMM is a mod manager and merger for Tears of the Kingdom developed by [TKMM-Tea
 ## Download TKMM
 
 <div id="download-btns">
-  <a class="download-btn" id="download-all" href="./downloads/">Downloads</a>
+  <a class="download-btn" id="download-all" href="https://totkmods.github.io/tkmm/downloads/">Downloads</a>
 </div>
 
 ---
