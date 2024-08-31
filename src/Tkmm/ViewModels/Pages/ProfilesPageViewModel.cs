@@ -84,6 +84,7 @@ public partial class ProfilesPageViewModel : ObservableObject
             IsSecondaryButtonEnabled = true,
             PrimaryButtonText = "Uninstall Mod",
             SecondaryButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Secondary,
             Title = "Warning"
         };
 
