@@ -104,7 +104,7 @@ public class ShellViewMenu
             return;
         }
 
-        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export TKCL", "TKCL:*.tkcl|All Files:*.*");
+        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export TKCL", "TKCL:*.tkcl|All Files:*.*", target.Name);
         string? selectedFile = await dialog.ShowDialog();
 
         if (string.IsNullOrEmpty(selectedFile)) {
