@@ -23,6 +23,13 @@ public partial class HomePageViewModel : ObservableObject
             OnPropertyChanging(nameof(Current));
             ProfileManager.Shared.Current.Selected = value;
             OnPropertyChanged(nameof(Current));
+
+            if (value?.Mod is not null) {
+                // Re-validate the description
+                string content = value.Mod.Description;
+                value.Mod.Description = string.Empty;
+                value.Mod.Description = content;
+            }
         }
     }
 
