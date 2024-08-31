@@ -86,7 +86,7 @@ public static class ModHelper
             }
         }
 
-        if (item.Thumbnail is not null) {
+        if (item.Thumbnail is not null && item.Thumbnail != _defaultThumbnail) {
             return;
         }
 
