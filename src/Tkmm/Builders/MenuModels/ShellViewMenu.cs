@@ -20,6 +20,7 @@ using Tkmm.Core.Helpers.Win32;
 using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
+using Tkmm.ViewModels.Pages;
 using TotkCommon;
 using TotkCommon.Components;
 
@@ -27,7 +28,127 @@ namespace Tkmm.Builders.MenuModels;
 
 public class ShellViewMenu
 {
-    [Menu("Export to SD Card", "File", InputGesture = "Ctrl + E", Icon = "fa-solid fa-sd-card")]
+    [Menu("Install File", "File", InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
+    public static async Task ImportModFile()
+    {
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "Supported Formats:*.tkcl;*.zip;*.rar;*.7z|TKCL:*.tkcl|Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
+        string? selectedFile = await dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(selectedFile)) {
+            return;
+        }
+
+        await ModHelper.Import(selectedFile);
+    }
+
+    [Menu("Install Folder", "File", InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
+    public static async Task ImportModFolder()
+    {
+        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
+        string? selectedFolder = await dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(selectedFolder)) {
+            return;
+        }
+
+        await ModHelper.Import(selectedFolder);
+    }
+
+    [Menu("Install from Argument", "File", InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
+    public static async Task ImportArgument()
+    {
+        ContentDialog dialog = new() {
+            Title = "Import Argument",
+            Content = new TextBox {
+                Watermark = "Argument (File, Folder, URL, Mod ID)"
+            },
+            PrimaryButtonText = "Import",
+            SecondaryButtonText = "Cancel",
+        };
+
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
+            return;
+        }
+
+        if (dialog.Content is TextBox tb && tb.Text is not null) {
+            await ModHelper.Import(tb.Text.Replace("\"", string.Empty));
+        }
+    }
+
+    [Menu("Cleanup Temporary Files", "File", InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
+    public static void ClearTempFolder()
+    {
+        string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
+        if (!Directory.Exists(tempFolder)) {
+            return;
+        }
+
+        Directory.Delete(tempFolder, recursive: true);
+        Directory.CreateDirectory(tempFolder);
+        App.Toast(
+            "The TKMM temporary files were succesfully deleted.", "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3)
+        );
+    }
+
+    [Menu("Exit", "File", InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
+    public static void Exit()
+    {
+        ProfileManager.Shared.Apply();
+        Environment.Exit(0);
+    }
+
+    [Menu("Export", "Mod", InputGesture = "Ctrl + Shift + E", Icon = "fa-solid fa-file-export")]
+    public static async Task ExportTkcl()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
+            return;
+        }
+
+        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export TKCL", "TKCL:*.tkcl|All Files:*.*");
+        string? selectedFile = await dialog.ShowDialog();
+
+        if (string.IsNullOrEmpty(selectedFile)) {
+            return;
+        }
+
+        string folder = ProfileManager.GetModFolder(target);
+        PackageBuilder.Package(folder, selectedFile);
+
+        AppStatus.Set($"'{target.Name}' was exported successfully!", "fa-solid fa-circle-check",
+                isWorkingStatus: false, temporaryStatusTime: 2.5);
+    }
+
+    [Menu("Configure Options", "Mod", InputGesture = "F4", Icon = "fa-sliders")]
+    public static void ConfigureOptions()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is Mod mod) {
+            mod.IsEditingOptions = !mod.IsEditingOptions;
+        }
+    }
+
+    [Menu("Remove from Profile", "Mod", InputGesture = "Ctrl + Delete", Icon = "fa-regular fa-trash", IsSeparator = true)]
+    public static void RemoveFromProfile()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is Mod mod) {
+            ProfileManager.Shared.Current.Mods.Remove(mod);
+        }
+    }
+
+    [Menu("Uninstall", "Mod", InputGesture = "Ctrl + Shift + Delete", Icon = "fa-solid fa-trash")]
+    public static async Task Uninstall()
+    {
+        await PageManager.Shared.Get<ProfilesPageViewModel>(Page.Profiles)
+            .UninstallCommand
+            .ExecuteAsync(ProfileManager.Shared.Current.Selected?.Mod);
+    }
+
+    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-list-check", IsSeparator = true)]
+    public static async Task MergeMods()
+    {
+        await MergerOperations.Merge();
+    }
+
+    [Menu("Export to SD Card", "Tools", InputGesture = "Ctrl + E", Icon = "fa-solid fa-sd-card")]
     public static async Task ExportToSdCard()
     {
         const string GAME_ID = "0100F2C0115B6000";
@@ -82,43 +203,7 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Export Current Mod", "File", InputGesture = "Ctrl + Shift + E", Icon = "fa-solid fa-file-export")]
-    public static async Task ExportTkcl()
-    {
-        if (ProfileManager.Shared.Current.Selected?.Mod is not Mod target) {
-            return;
-        }
-
-        BrowserDialog dialog = new(BrowserMode.SaveFile, "Export TKCL", "TKCL:*.tkcl|All Files:*.*");
-        string? selectedFile = await dialog.ShowDialog();
-
-        if (string.IsNullOrEmpty(selectedFile)) {
-            return;
-        }
-
-        string folder = ProfileManager.GetModFolder(target);
-        PackageBuilder.Package(folder, selectedFile);
-
-        AppStatus.Set($"'{target.Name}' was exported successfully!", "fa-solid fa-circle-check",
-                isWorkingStatus: false, temporaryStatusTime: 2.5);
-    }
-
-    [Menu("Cleanup Temporary Files", "File", InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
-    public static void ClearTempFolder()
-    {
-        string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
-        if (!Directory.Exists(tempFolder)) {
-            return;
-        }
-
-        Directory.Delete(tempFolder, recursive: true);
-        Directory.CreateDirectory(tempFolder);
-        App.Toast(
-            "The TKMM temporary files were succesfully deleted.", "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3)
-        );
-    }
-
-    [Menu("Check Dump Integrity", "File", InputGesture = "Ctrl + Shift + F5", Icon = "fa-regular fa-arrow-progress", IsSeparator = true)]
+    [Menu("Check Dump Integrity", "Tools", Icon = "fa-regular fa-arrow-progress", IsSeparator = true)]
     public static async Task CheckDumpIntegrity()
     {
         AppStatus.Set($"Checking Dump Integrity",
@@ -194,74 +279,6 @@ public class ShellViewMenu
             isWorkingStatus: false,
             logLevel: LogLevel.None
         );
-    }
-
-    [Menu("Exit", "File", InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
-    public static void Exit()
-    {
-        ProfileManager.Shared.Apply();
-        Environment.Exit(0);
-    }
-
-    [Menu("Install File", "Mod", InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
-    public static async Task ImportModFile()
-    {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Open Mod File", "Supported Formats:*.tkcl;*.zip;*.rar;*.7z|TKCL:*.tkcl|Archives:*.tkcl;*.zip;*.rar;*.7z|All Files:*.*");
-        string? selectedFile = await dialog.ShowDialog();
-
-        if (string.IsNullOrEmpty(selectedFile)) {
-            return;
-        }
-
-        await ModHelper.Import(selectedFile);
-    }
-
-    [Menu("Install Folder", "Mod", InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
-    public static async Task ImportModFolder()
-    {
-        BrowserDialog dialog = new(BrowserMode.OpenFolder, "Open Mod");
-        string? selectedFolder = await dialog.ShowDialog();
-
-        if (string.IsNullOrEmpty(selectedFolder)) {
-            return;
-        }
-
-        await ModHelper.Import(selectedFolder);
-    }
-
-    [Menu("Install from Argument", "Mod", InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
-    public static async Task ImportArgument()
-    {
-        ContentDialog dialog = new() {
-            Title = "Import Argument",
-            Content = new TextBox {
-                Watermark = "Argument (File, Folder, URL, Mod ID)"
-            },
-            PrimaryButtonText = "Import",
-            SecondaryButtonText = "Cancel",
-        };
-
-        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
-            return;
-        }
-
-        if (dialog.Content is TextBox tb && tb.Text is not null) {
-            await ModHelper.Import(tb.Text.Replace("\"", string.Empty));
-        }
-    }
-
-    [Menu("Configure Options", "Mod", InputGesture = "F4", Icon = "fa-sliders", IsSeparator = true)]
-    public static void ConfigureOptions()
-    {
-        if (ProfileManager.Shared.Current.Selected?.Mod is Mod mod) {
-            mod.IsEditingOptions = !mod.IsEditingOptions;
-        }
-    }
-
-    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-code-merge")]
-    public static async Task MergeMods()
-    {
-        await MergerOperations.Merge();
     }
 
     [Menu("Show/Hide Console", "View", InputGesture = "Ctrl + F11", Icon = "fa-solid fa-terminal")]
