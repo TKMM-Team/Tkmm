@@ -221,7 +221,10 @@ public partial class PackagingPageViewModel : ObservableObject
             }
 
             DirectoryOperations.CopyDirectory(result, output, overwrite: true);
-            Mod.OptionGroups.Add(ModOptionGroup.FromFolder(output));
+
+            if (ModOptionGroup.FromFolder(output) is ModOptionGroup group) {
+                Mod.OptionGroups.Add(group);
+            }
         }
     }
 
@@ -253,7 +256,9 @@ public partial class PackagingPageViewModel : ObservableObject
             }
 
             DirectoryOperations.CopyDirectory(result, output);
-            group.Options.Add(ModOption.FromFolder(output));
+            if (ModOption.FromFolder(output) is ModOption option) {
+                group.Options.Add(option);
+            }
         }
     }
 

@@ -31,13 +31,19 @@ public partial class ModOption : ObservableObject, IReferenceItem, IModItem
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
 
-    public static ModOption FromFolder(string path)
+    public static ModOption? FromFolder(string path)
     {
         ModOption option;
 
         if (TryGetMetadata(path, out string metadataPath)) {
-            using FileStream fs = File.OpenRead(metadataPath);
-            option = JsonSerializer.Deserialize<ModOption>(fs)!;
+            try {
+                using FileStream fs = File.OpenRead(metadataPath);
+                option = JsonSerializer.Deserialize<ModOption>(fs)!;
+            }
+            catch (Exception ex) {
+                AppLog.Log(ex);
+                return null;
+            }
         }
         else {
             option = new() {

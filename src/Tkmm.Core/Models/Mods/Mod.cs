@@ -141,7 +141,9 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
         string optionsPath = Path.Combine(path, "options");
         if (Directory.Exists(optionsPath)) {
             foreach (var folder in Directory.EnumerateDirectories(optionsPath)) {
-                OptionGroups.Add(ModOptionGroup.FromFolder(folder));
+                if (ModOptionGroup.FromFolder(folder) is ModOptionGroup group) {
+                    OptionGroups.Add(group);
+                }
             }
         }
 

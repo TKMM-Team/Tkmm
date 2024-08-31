@@ -74,13 +74,19 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
         };
     }
 
-    public static ModOptionGroup FromFolder(string path)
+    public static ModOptionGroup? FromFolder(string path)
     {
         ModOptionGroup group;
 
         if (TryGetMetadata(path, out string metadataPath)) {
-            using FileStream fs = File.OpenRead(metadataPath);
-            group = JsonSerializer.Deserialize<ModOptionGroup>(fs)!;
+            try {
+                using FileStream fs = File.OpenRead(metadataPath);
+                group = JsonSerializer.Deserialize<ModOptionGroup>(fs)!;
+            }
+            catch (Exception ex) {
+                AppLog.Log(ex);
+                return null;
+            }
         }
         else {
             group = new() {
@@ -92,7 +98,10 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
         group.SourceFolder = path;
 
         foreach (string folder in Directory.EnumerateDirectories(path)) {
-            ModOption option = ModOption.FromFolder(folder);
+            if (ModOption.FromFolder(folder) is not ModOption option) {
+                continue;
+            }
+
             group.Options.Add(option);
             
             if (group.SelectedOptionReferences.Contains(option.Id)) {
