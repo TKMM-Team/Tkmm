@@ -1,16 +1,14 @@
 # Tears of the Kingdom Mod Manager
 Merge mods like never before!
-<p align="center" style="text-align: center;">
-  <a href="https://github.com/TKMM-Team/Tkmm/releases">
-    <img src="https://img.shields.io/github/v/tag/TKMM-Team/Tkmm?style=for-the-badge&logoColor=C71B42&color=C71B42&labelColor=2A2C33&logo=git&label=Version" alt="Releases'"/>
-  </a> &nbsp;
-  <a href="https://discord.com/invite/3tNUBWQRXv">
-    <img src="https://img.shields.io/discord/1179611100183011429?style=for-the-badge&logoColor=3b83c8&color=3b83c8&labelColor=2A2C33&logo=discord&label=discord" alt="Discord"/>
-  </a> &nbsp;
-  <a href="https://github.com/TKMM-Team/Tkmm">
-    <img src="https://img.shields.io/github/stars/TKMM-Team/Tkmm?style=for-the-badge&logoColor=FFCB41&color=FFCB41&labelColor=2A2C33&logo=github" alt="Stars"/>
-  </a>
-</p>
+<a href="https://github.com/TKMM-Team/Tkmm/releases">
+  <img src="https://img.shields.io/github/v/tag/TKMM-Team/Tkmm?style=for-the-badge&logoColor=C71B42&color=C71B42&labelColor=2A2C33&logo=git&label=Version" alt="Releases'"/>
+</a> &nbsp;
+<a href="https://discord.com/invite/3tNUBWQRXv">
+  <img src="https://img.shields.io/discord/1179611100183011429?style=for-the-badge&logoColor=3b83c8&color=3b83c8&labelColor=2A2C33&logo=discord&label=discord" alt="Discord"/>
+</a> &nbsp;
+<a href="https://github.com/TKMM-Team/Tkmm">
+  <img src="https://img.shields.io/github/stars/TKMM-Team/Tkmm?style=for-the-badge&logoColor=FFCB41&color=FFCB41&labelColor=2A2C33&logo=github" alt="Stars"/>
+</a>
 
 ---
 
