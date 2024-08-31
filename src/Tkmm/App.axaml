@@ -30,8 +30,9 @@
     </Application.Resources>
 
     <Application.Styles>
+        <!--  Included for Markdown.Avalonia  -->
+        <SimpleTheme />
         <sty:FluentAvaloniaTheme PreferUserAccentColor="True" />
-        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
         <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
         <StyleInclude Source="/Styles/ContainerStyles.axaml" />
         <StyleInclude Source="/Styles/MenuItem.axaml" />
