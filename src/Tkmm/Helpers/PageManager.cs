@@ -27,6 +27,9 @@ public partial class PageManager : ObservableObject
     [ObservableProperty]
     private PageModel? _current = null;
 
+    [ObservableProperty]
+    private Page _default;
+
     private readonly Dictionary<Page, (int Index, bool IsFooter)> _lookup = [];
     public ObservableCollection<PageModel> Pages { get; } = [];
     public ObservableCollection<PageModel> FooterPages { get; } = [];
@@ -51,7 +54,7 @@ public partial class PageManager : ObservableObject
         });
 
         if (isDefault) {
-            Focus(page);
+            Default = page;
         }
     }
 

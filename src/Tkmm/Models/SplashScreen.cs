@@ -25,8 +25,6 @@ public class SplashScreen : IApplicationSplashScreen
 
         await Task.WhenAll(tasks);
 
-        PageModel? store = PageManager.Shared.Current;
-        PageManager.Shared.Focus(Page.Settings);
-        PageManager.Shared.Current = store;
+        PageManager.Shared.Focus(PageManager.Shared.Default);
     }
 }
