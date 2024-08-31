@@ -27,8 +27,16 @@ class Program
             try {
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
             }
-            catch (Exception ex) {
+            catch
+#if !DEBUG
+            (Exception ex)
+#endif
+            {
+#if DEBUG
+                throw;
+#else
                 ConsoleOperations.WaitOnFailure(ex);
+#endif
             }
 
             return;
