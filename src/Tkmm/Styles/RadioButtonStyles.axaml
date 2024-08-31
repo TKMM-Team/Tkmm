@@ -1,0 +1,91 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!--  Add Controls for Previewer Here  -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="RadioButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Root"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                    <Grid ColumnDefinitions="20,*">
+
+                        <Grid Grid.Column="0"
+                              Height="32"
+                              VerticalAlignment="Center">
+
+                            <Ellipse Name="OuterEllipse"
+                                     Width="20"
+                                     Height="20"
+                                     Fill="{DynamicResource RadioButtonOuterEllipseFill}"
+                                     Stroke="{DynamicResource RadioButtonOuterEllipseStroke}"
+                                     StrokeThickness="{DynamicResource RadioButtonBorderThemeThickness}"
+                                     UseLayoutRounding="False" />
+
+                            <!--  A seperate element is added since the two orthogonal state groups that cannot touch the same property  -->
+                            <Ellipse Name="CheckOuterEllipse"
+                                     Width="20"
+                                     Height="20"
+                                     Fill="{DynamicResource RadioButtonOuterEllipseCheckedFill}"
+                                     Opacity="0"
+                                     Stroke="{DynamicResource RadioButtonOuterEllipseCheckedStroke}"
+                                     StrokeThickness="{DynamicResource RadioButtonBorderThemeThickness}"
+                                     UseLayoutRounding="False" />
+
+                            <Ellipse Name="CheckGlyph"
+                                     Width="12"
+                                     Height="12"
+                                     Fill="{DynamicResource RadioButtonCheckGlyphFill}"
+                                     Opacity="0"
+                                     RenderTransform="scaleX(0.86) scaleY(0.86)"
+                                     Stroke="{DynamicResource RadioButtonCheckGlyphStroke}"
+                                     UseLayoutRounding="False">
+                                <Ellipse.Transitions>
+                                    <Transitions>
+                                        <TransformOperationsTransition Easing="0.0,0.0 0.0,1.0"
+                                                                       Property="RenderTransform"
+                                                                       Duration="0:0:0.167" />
+                                    </Transitions>
+                                </Ellipse.Transitions>
+                            </Ellipse>
+
+                            <!--  A seperate element is added since the two orthogonal state groups that cannot touch the same property  -->
+                            <Border Name="PressedCheckGlyph"
+                                    Width="4"
+                                    Height="4"
+                                    Background="{DynamicResource RadioButtonCheckGlyphFill}"
+                                    BorderBrush="{DynamicResource RadioButtonCheckGlyphStroke}"
+                                    CornerRadius="6"
+                                    Opacity="0"
+                                    RenderTransform="scaleX(0.86) scaleY(0.86)"
+                                    UseLayoutRounding="False">
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <TransformOperationsTransition Easing="0,0 0,1"
+                                                                       Property="RenderTransform"
+                                                                       Duration="0:0:0.167" />
+                                    </Transitions>
+                                </Border.Transitions>
+                            </Border>
+                        </Grid>
+
+                        <ContentPresenter Name="ContentPresenter"
+                                          Grid.Column="1"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+                    </Grid>
+
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

@@ -10,11 +10,13 @@
              mc:Ignorable="d">
     <Grid>
         <Border ClipToBounds="True" CornerRadius="5">
-            <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+            <Image Effect="blur(5)"
+                   Source="{Binding Thumbnail}"
+                   Stretch="UniformToFill" />
         </Border>
         <Border Background="{DynamicResource SolidBackgroundFillColorBase}"
                 CornerRadius="5"
-                Opacity="0.6" />
+                Opacity="0.75" />
         <StackPanel Margin="15" Spacing="5">
             <TextBlock Margin="15,5,0,0"
                        FontSize="12"
@@ -29,14 +31,22 @@
                                      GroupName="_files"
                                      IsChecked="{Binding IsSelected}">
                             <Grid>
-                                <Border Background="{DynamicResource SystemAccentColor}"
-                                        CornerRadius="{DynamicResource ControlCornerRadius}"
-                                        IsVisible="{Binding IsTkcl}"
-                                        Opacity="0.6" />
-                                <StackPanel Margin="3,0" Spacing="3">
+                                <Border Width="2"
+                                        HorizontalAlignment="Left"
+                                        Background="{DynamicResource SystemAccentColor}"
+                                        CornerRadius="2"
+                                        IsVisible="{Binding IsTkcl}" />
+                                <StackPanel Margin="6,0,0,0" Spacing="3">
+                                    <TextBlock FontSize="11"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource SystemAccentColorLight3}"
+                                               IsVisible="{Binding IsTkcl}"
+                                               Text="Recommended file"
+                                               TextWrapping="Wrap" />
                                     <TextBlock FontWeight="Medium" Text="{Binding Name}" />
                                     <TextBlock FontSize="11"
                                                FontStyle="Italic"
+                                               IsVisible="{Binding Description.Length}"
                                                Text="{Binding Description}"
                                                TextWrapping="Wrap" />
                                 </StackPanel>
