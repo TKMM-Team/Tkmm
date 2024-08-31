@@ -250,7 +250,15 @@ public class ShellViewMenu
         }
     }
 
-    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-code-merge", IsSeparator = true)]
+    [Menu("Configure Options", "Mod", InputGesture = "F4", Icon = "fa-sliders", IsSeparator = true)]
+    public static void ConfigureOptions()
+    {
+        if (ProfileManager.Shared.Current.Selected?.Mod is Mod mod) {
+            mod.IsEditingOptions = !mod.IsEditingOptions;
+        }
+    }
+
+    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-code-merge")]
     public static async Task MergeMods()
     {
         await MergerOperations.Merge();

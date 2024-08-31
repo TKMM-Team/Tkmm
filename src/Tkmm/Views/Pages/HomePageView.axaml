@@ -152,17 +152,8 @@
                         </Viewbox>
                     </Grid>
 
-                    <Grid Grid.Row="2"
-                          Margin="0,10,0,0"
-                          RowDefinitions="Auto,*">
-                        <ToggleButton Margin="0,0,0,5"
-                                      Padding="8,4"
-                                      Content="Configure Options"
-                                      FontWeight="Medium"
-                                      IsChecked="{Binding Current.Mod.IsEditingOptions}"
-                                      IsVisible="{Binding Current.Mod.OptionGroups.Count}" />
-
-                        <md:MarkdownScrollViewer Grid.Row="1" Markdown="{Binding Current.Mod.Description}">
+                    <Grid Grid.Row="2">
+                        <md:MarkdownScrollViewer Markdown="{Binding Current.Mod.Description}">
                             <md:MarkdownScrollViewer.Styles>
                                 <StyleInclude Source="/Styles/Markdown.axaml" />
                             </md:MarkdownScrollViewer.Styles>
@@ -278,16 +269,18 @@
                                            TextTrimming="CharacterEllipsis"
                                            ToolTip.Tip="{Binding Mod.Name}" />
                                 <ToggleButton Grid.Column="1"
-                                              Width="20"
                                               Height="20"
                                               Margin="5,0,0,0"
-                                              Padding="0"
+                                              Padding="3,1"
                                               HorizontalContentAlignment="Center"
                                               VerticalContentAlignment="Center"
                                               IsChecked="{Binding Mod.IsEditingOptions}"
                                               IsVisible="{Binding Mod.OptionGroups.Count}">
                                     <ToggleButton.Content>
-                                        <pi:Icon RenderTransform="scale(0.9)" Value="fa-sliders" />
+                                        <StackPanel Orientation="Horizontal" Spacing="3">
+                                            <pi:Icon RenderTransform="scale(0.9)" Value="fa-sliders" />
+                                            <TextBlock FontSize="11" Text="Options" />
+                                        </StackPanel>
                                     </ToggleButton.Content>
                                 </ToggleButton>
                                 <CheckBox Grid.Column="2"
