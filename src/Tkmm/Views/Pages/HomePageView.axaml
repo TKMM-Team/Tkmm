@@ -176,9 +176,11 @@
                                                 </TextBlock>
                                                 <ToolTip.Tip>
                                                     <StackPanel>
-                                                        <TextBlock Text="{Binding Description}" TextWrapping="WrapWithOverflow" />
-                                                        <Border Margin="0,5,0,0"
-                                                                HorizontalAlignment="Stretch"
+                                                        <TextBlock Margin="0,0,0,5"
+                                                                   IsVisible="{Binding Description.Length}"
+                                                                   Text="{Binding Description}"
+                                                                   TextWrapping="WrapWithOverflow" />
+                                                        <Border HorizontalAlignment="Stretch"
                                                                 VerticalAlignment="Center"
                                                                 BoxShadow="2 2 30 1 #30000000"
                                                                 CornerRadius="5">
@@ -191,19 +193,17 @@
                                             </StackPanel>
                                         </Expander.Header>
                                         <StackPanel Spacing="5">
-                                            <TextBlock Margin="5,0"
-                                                       FontStyle="Italic"
-                                                       FontWeight="Bold"
-                                                       Text="Description:" />
                                             <TextBlock MinHeight="0"
                                                        Margin="5,0"
                                                        FontStyle="Italic"
+                                                       IsVisible="{Binding Description.Length}"
                                                        Text="{Binding Description}"
                                                        TextWrapping="WrapWithOverflow" />
                                             <Border Height="1"
                                                     Margin="5"
                                                     VerticalAlignment="Stretch"
-                                                    Background="{DynamicResource ControlStrokeColorDefault}" />
+                                                    Background="{DynamicResource ControlStrokeColorDefault}"
+                                                    IsVisible="{Binding Description.Length}" />
                                             <ListBox Grid.Row="1"
                                                      ItemsSource="{Binding Options}"
                                                      SelectedItems="{Binding SelectedOptions}"
@@ -215,9 +215,11 @@
                                                                    Text="{Binding Name}">
                                                             <ToolTip.Tip>
                                                                 <StackPanel>
-                                                                    <TextBlock Text="{Binding Description}" TextWrapping="WrapWithOverflow" />
-                                                                    <Border Margin="0,5,0,0"
-                                                                            HorizontalAlignment="Stretch"
+                                                                    <TextBlock Margin="0,0,0,5"
+                                                                               IsVisible="{Binding Description.Length}"
+                                                                               Text="{Binding Description}"
+                                                                               TextWrapping="WrapWithOverflow" />
+                                                                    <Border HorizontalAlignment="Stretch"
                                                                             VerticalAlignment="Center"
                                                                             BoxShadow="2 2 30 1 #30000000"
                                                                             CornerRadius="5">
