@@ -75,12 +75,14 @@ public class ArchiveModReader : IModReader
         ArgumentNullException.ThrowIfNull(entry.Key);
 
         if (root is null) {
-            foreach (var folder in Targets) {
-                int index = entry.Key.IndexOf(folder);
-                if (index > -1) {
-                    root = entry.Key[..index].Trim('/', '\\');
-                    break;
+            foreach (string folder in Targets) {
+                int index = entry.Key.IndexOf(folder, StringComparison.Ordinal);
+                if (index <= -1) {
+                    continue;
                 }
+
+                root = entry.Key[..index].Trim('/', '\\');
+                break;
             }
         }
 

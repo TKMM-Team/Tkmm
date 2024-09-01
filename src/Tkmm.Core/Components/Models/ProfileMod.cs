@@ -37,9 +37,9 @@ public partial class ProfileMod : ObservableObject, IReferenceItem
         if (obj is ProfileMod profileMod) {
             return Id.Equals(profileMod.Id);
         }
-        else {
-            return base.Equals(obj);
-        }
+
+        // ReSharper disable once BaseObjectEqualsIsObjectEquals
+        return base.Equals(obj);
     }
 
     public override int GetHashCode()

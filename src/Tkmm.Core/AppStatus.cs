@@ -7,15 +7,18 @@ public partial class AppStatus : ObservableObject
 {
     public static AppStatus Shared { get; } = new();
 
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _timer;
 
     public AppStatus()
     {
-        _timer = new((e) => {
-            if (IsWorking) {
-                Status = Status.Replace(".....", string.Empty);
-                Status += ".";
+        _timer = new(_ => {
+            if (!IsWorking) {
+                return;
             }
+
+            Status = Status.Replace(".....", string.Empty);
+            Status += ".";
         });
 
         _timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(0.3));
@@ -42,6 +45,7 @@ public partial class AppStatus : ObservableObject
     /// <param name="icon">The font-awesome icon name and type to use in the status modal</param>
     /// <param name="isWorkingStatus"></param>
     /// <param name="temporaryStatusTime">Reset the status message after a set amount of time (seconds)</param>
+    /// <param name="logLevel"></param>
     public static void Set(string status, string icon = "fa-regular fa-message", bool? isWorkingStatus = null, double temporaryStatusTime = double.NaN, LogLevel logLevel = LogLevel.Default)
     {
         bool isResetStatus = status.Equals("ready", StringComparison.CurrentCultureIgnoreCase);
@@ -56,10 +60,11 @@ public partial class AppStatus : ObservableObject
                 Interval = temporaryStatusTime * 1000.0,
             };
 
-            resetTimer.Elapsed += (s, e) => {
+            resetTimer.Elapsed += (_, _) => {
                 if (Shared.Status == status) {
                     Reset();
                 }
+                
                 resetTimer.Dispose();
             };
 

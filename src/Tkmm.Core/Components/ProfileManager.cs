@@ -45,13 +45,13 @@ public partial class ProfileManager : ObservableObject
 
         Profiles = profileCollection?.Profiles ?? [new Profile("Default")];
 
-        if (profileCollection is not null && (profileCollection.CurrentIndex < 0 || profileCollection?.CurrentIndex > profileCollection?.Profiles.Count)) {
+        if (profileCollection is not null && (profileCollection.CurrentIndex < 0 || profileCollection.CurrentIndex > profileCollection.Profiles.Count)) {
             profileCollection.CurrentIndex = 0;
         }
 
         Current = Profiles[profileCollection?.CurrentIndex ?? 0];
 
-        Profiles.CollectionChanged += (s, e) => {
+        Profiles.CollectionChanged += (_, _) => {
             Apply();
         };
     }

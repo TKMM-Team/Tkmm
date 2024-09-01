@@ -20,16 +20,18 @@ public partial class HomePageViewModel : ObservableObject
     public ProfileMod? Current {
         get => ProfileManager.Shared.Current.Selected;
         set {
-            OnPropertyChanging(nameof(Current));
+            OnPropertyChanging();
             ProfileManager.Shared.Current.Selected = value;
-            OnPropertyChanged(nameof(Current));
+            OnPropertyChanged();
 
-            if (value?.Mod is not null) {
-                // Re-validate the description
-                string content = value.Mod.Description;
-                value.Mod.Description = string.Empty;
-                value.Mod.Description = content;
+            if (value?.Mod is null) {
+                return;
             }
+
+            // Re-validate the description
+            string content = value.Mod.Description;
+            value.Mod.Description = string.Empty;
+            value.Mod.Description = content;
         }
     }
 
@@ -109,7 +111,7 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
         ProfileManager.Shared.Current.Mods.CollectionChanged += ModsUpdated;
-        ProfileManager.Shared.Current.PropertyChanged += (s, e) => {
+        ProfileManager.Shared.Current.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(ProfileManager.Shared.Current.Selected)) {
                 Current = ProfileManager.Shared.Current.Selected;
             }
@@ -121,6 +123,7 @@ public partial class HomePageViewModel : ObservableObject
             (bool hasUpdate, string tag) = await AppManager.HasUpdate();
             if (hasUpdate) {
                 App.Toast($"TKMM {tag} is available! (Click here to install)", "Update Available",
+                    // ReSharper disable once AsyncVoidLambda
                     NotificationType.Information, TimeSpan.FromSeconds(10), async () => {
                         await App.PromptUpdate();
                     });
@@ -130,15 +133,19 @@ public partial class HomePageViewModel : ObservableObject
 
     private async void ModsUpdated(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        if (e.NewItems is IList mods) {
-            foreach (ProfileMod profileMod in mods) {
-                if (profileMod.Mod is not null) {
-                    await ModHelper.ResolveThumbnail(profileMod.Mod);
+        if (e.NewItems is not IList mods) {
+            return;
+        }
 
-                    if (!ProfileManager.Shared.Current.Mods.Contains(profileMod)) {
-                        Current = profileMod;
-                    }
-                }
+        foreach (ProfileMod profileMod in mods) {
+            if (profileMod.Mod is null) {
+                continue;
+            }
+
+            await ModHelper.ResolveThumbnail(profileMod.Mod);
+
+            if (!ProfileManager.Shared.Current.Mods.Contains(profileMod)) {
+                Current = profileMod;
             }
         }
     }

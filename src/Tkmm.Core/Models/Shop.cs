@@ -8,7 +8,7 @@ namespace Tkmm.Core.Models
         public string ShopName { get; set; } = string.Empty;
 
         [JsonPropertyName("NPC Name")]
-        public string NPCName { get; set; } = string.Empty;
+        public string NpcName { get; set; } = string.Empty;
 
         [JsonPropertyName("Location")]
         public string Location { get; set; } = string.Empty;
@@ -17,7 +17,7 @@ namespace Tkmm.Core.Models
         public string RequiredQuest { get; set; } = string.Empty;
 
         [JsonPropertyName("NPC ActorName")]
-        public string NPCActorName { get; set; } = string.Empty;
+        public string NpcActorName { get; set; } = string.Empty;
 
         [JsonPropertyName("Map")]
         public string Map { get; set; } = "Surface";
@@ -29,9 +29,9 @@ namespace Tkmm.Core.Models
         {
             return $"""
                 {ShopName}
-                {NPCName} in {Location} after completeing {RequiredQuest}
+                {NpcName} in {Location} after completeing {RequiredQuest}
                 [{Coordinates.X}, {Coordinates.Y}, {Map}]
-                [{NPCActorName}]
+                [{NpcActorName}]
                 """;
         }
     }

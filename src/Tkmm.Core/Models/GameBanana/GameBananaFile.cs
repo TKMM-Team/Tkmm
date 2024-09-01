@@ -22,7 +22,7 @@ public partial class GameBananaFile : ObservableObject
 
     [ObservableProperty]
     [property: JsonIgnore]
-    private bool _isSelected = false;
+    private bool _isSelected;
 
     [JsonIgnore]
     public bool IsTkcl => Name.EndsWith(".tkcl");

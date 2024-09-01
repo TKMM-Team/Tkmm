@@ -14,19 +14,19 @@ public class MapImageConverter : IValueConverter
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string map) {
-            if (!_cache.TryGetValue(map, out var bitmap)) {
-                using Stream stream = AssetLoader.Open(new($"avares://Tkmm/Assets/Maps/{map}.jpg"));
-                bitmap = new Bitmap(stream);
-            }
+        if (value is not string map) {
+            return null;
+        }
 
+        if (_cache.TryGetValue(map, out Bitmap? bitmap)) {
             return bitmap;
         }
 
-        return null;
+        using Stream stream = AssetLoader.Open(new($"avares://Tkmm/Assets/Maps/{map}.jpg"));
+        return _cache[map] = bitmap = new(stream);
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }

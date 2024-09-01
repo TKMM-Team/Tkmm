@@ -7,7 +7,7 @@
              xmlns:models="using:Tkmm.Core.Models"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-             Name="root"
+             Name="Root"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:ShopParamPageViewModel"
@@ -21,12 +21,12 @@
             <StackPanel Spacing="3">
                 <TextBlock FontSize="17"
                            Text="{Binding CurrentShop.ShopName}"
-                           ToolTip.Tip="{Binding CurrentShop.NPCActorName}" />
+                           ToolTip.Tip="{Binding CurrentShop.NpcActorName}" />
                 <Grid Background="Transparent" ToolTip.Tip="{Binding CurrentShop}">
                     <TextBlock FontSize="14"
                                FontStyle="Italic"
                                TextTrimming="CharacterEllipsis">
-                        <Run FontWeight="Medium" Text="{Binding CurrentShop.NPCName}" />
+                        <Run FontWeight="Medium" Text="{Binding CurrentShop.NpcName}" />
                         <Run Text="in" />
                         <Run FontWeight="Medium" Text="{Binding CurrentShop.Location}" />
                         <Run Text="after completing" />

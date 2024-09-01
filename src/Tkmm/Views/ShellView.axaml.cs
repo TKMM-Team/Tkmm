@@ -17,9 +17,9 @@ public partial class ShellView : AppWindow
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
         Bitmap bitmap = new(AssetLoader.Open(new Uri("avares://Tkmm/Assets/icon.ico")));
-        Icon = bitmap.CreateScaledBitmap(new(48, 48), BitmapInterpolationMode.HighQuality);
+        Icon = bitmap.CreateScaledBitmap(new(48, 48));
 
-        PageManager.Shared.PropertyChanged += (s, e) => {
+        PageManager.Shared.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(PageManager.Current)) {
                 MainNavigation.Content = PageManager.Shared.Current?.Content;
             }

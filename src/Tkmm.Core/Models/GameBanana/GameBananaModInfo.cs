@@ -31,7 +31,7 @@ public partial class GameBananaModInfo : ObservableObject
     public string Version { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private object? _thumbnail = null;
+    private object? _thumbnail;
 
     [JsonIgnore]
     public GameBananaMod? Full { get; set; } = new();

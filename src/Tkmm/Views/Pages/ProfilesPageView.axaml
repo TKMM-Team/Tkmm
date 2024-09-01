@@ -3,12 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:behaviors="using:Tkmm.Behaviors"
              xmlns:comp="using:Tkmm.Core.Components"
-             xmlns:comp-models="using:Tkmm.Core.Components.Models"
-             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-             xmlns:idd="clr-namespace:Avalonia.Xaml.Interactions.DragAndDrop;assembly=Avalonia.Xaml.Interactions.DragAndDrop"
+             xmlns:compModels="using:Tkmm.Core.Components.Models"
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
@@ -28,7 +24,7 @@
                           ItemsSource="{Binding Profiles, Source={x:Static comp:ProfileManager.Shared}}"
                           SelectedItem="{Binding Current, Source={x:Static comp:ProfileManager.Shared}}">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type comp-models:Profile}">
+                        <DataTemplate x:DataType="{x:Type compModels:Profile}">
                             <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -73,7 +69,7 @@
                          SelectionMode="AlwaysSelected"
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
+                        <DataTemplate DataType="{x:Type compModels:ProfileMod}">
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock VerticalAlignment="Center"
                                            Background="Transparent"
@@ -147,6 +143,7 @@
                                     ToolTip.Tip="Add to current profile">
                                 <pi:Icon Value="fa-solid fa-plus" />
                             </Button>
+                            <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                             <Button Grid.Column="2"
                                     Width="25"
                                     Height="25"

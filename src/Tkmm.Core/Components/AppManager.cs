@@ -61,12 +61,13 @@ public static class AppManager
         return false;
     }
 
+    // ReSharper disable once FunctionRecursiveOnAllPaths
     public static async Task StartServerListener()
     {
-        using NamedPipeServerStream server = new(ID);
-        server.WaitForConnection();
+        await using NamedPipeServerStream server = new(ID);
+        await server.WaitForConnectionAsync();
 
-        using (var reader = new BinaryReader(server, Encoding.UTF8)) {
+        using (BinaryReader reader = new(server, Encoding.UTF8)) {
             int argc = reader.ReadInt32();
             string[] args = new string[argc];
             for (int i = 0; i < argc; i++) {
@@ -176,8 +177,8 @@ public static class AppManager
     private static readonly char _pathSeperatorChar = OperatingSystem.IsWindows() ? ';' : ':';
     public static void AddToPath()
     {
-        const string PATH_NAME = "PATH";
-        string path = Environment.GetEnvironmentVariable(PATH_NAME, EnvironmentVariableTarget.User)
+        const string pathName = "PATH";
+        string path = Environment.GetEnvironmentVariable(pathName, EnvironmentVariableTarget.User)
             ?? string.Empty;
 
         if (path.Contains(_appFolder)) {
@@ -185,7 +186,7 @@ public static class AppManager
         }
 
         path += $"{_pathSeperatorChar}{_appFolder}";
-        Environment.SetEnvironmentVariable(PATH_NAME, path, EnvironmentVariableTarget.User);
+        Environment.SetEnvironmentVariable(pathName, path, EnvironmentVariableTarget.User);
     }
 
     public static void CreateProtocol()

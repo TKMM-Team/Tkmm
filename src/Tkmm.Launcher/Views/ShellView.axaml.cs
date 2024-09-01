@@ -21,11 +21,12 @@ public partial class ShellView : AppWindow
 
     private static readonly List<(Bitmap Image, IBrush Color)> _backgrounds = [];
 
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _timer;
 
     static ShellView()
     {
-        foreach ((var image, var color) in _images) {
+        foreach ((string image, string color) in _images) {
             using Stream stream = AssetLoader.Open(new($"avares://Tkmm.Launcher/Assets/{image}"));
             Bitmap bmp = new(stream);
             _backgrounds.Add((bmp, Brush.Parse(color)));
@@ -36,7 +37,10 @@ public partial class ShellView : AppWindow
     {
         InitializeComponent();
         DataContext = new ShellViewModel(this);
-        Client.PointerPressed += (s, e) => BeginMoveDrag(e);
+        Client.PointerPressed += (_, e) => {
+            ArgumentNullException.ThrowIfNull(e);
+            BeginMoveDrag(e);
+        };
 
         TitleBar.ExtendsContentIntoTitleBar = true;
         TitleBar.Height = 0;
@@ -44,15 +48,18 @@ public partial class ShellView : AppWindow
         BackgroundWallpaper.Source = _backgrounds[^1].Image;
         StaticBackgroundWallpaper.Source = _backgrounds[0].Image;
 
-        _timer = new(async (e) => {
+        // ReSharper disable once AsyncVoidLambda
+        _timer = new(async (_) => {
             Dispatcher.UIThread.Invoke(() => {
                 for (int i = 0; i < _backgrounds.Count; i++) {
-                    if (BackgroundWallpaper.Source == _backgrounds[i].Image) {
-                        (var image, var color) = _backgrounds[++i >= _backgrounds.Count ? 0 : i];
-                        BackgroundWallpaper.Source = image;
-                        IconBack.Fill = color;
-                        IconFront.Fill = color;
+                    if (BackgroundWallpaper.Source != _backgrounds[i].Image) {
+                        continue;
                     }
+
+                    (Bitmap image, IBrush color) = _backgrounds[++i >= _backgrounds.Count ? 0 : i];
+                    BackgroundWallpaper.Source = image;
+                    IconBack.Fill = color;
+                    IconFront.Fill = color;
                 }
             });
 

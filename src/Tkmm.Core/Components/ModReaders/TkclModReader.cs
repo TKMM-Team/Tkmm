@@ -11,7 +11,7 @@ public class TkclModReader : IModReader
 {
     internal const int MAGIC = 0x4C434B54;
 
-    internal static readonly TkclVersion _version = new() {
+    internal static readonly TkclVersion Version = new() {
         Major = 1,
         Minor = 0,
         Revision = 0,
@@ -35,7 +35,7 @@ public class TkclModReader : IModReader
         }
 
         TkclVersion version = input.Read<TkclVersion>();
-        if (version.Value != _version.Value) {
+        if (version.Value != Version.Value) {
             throw new InvalidOperationException($"""
                 Unexpected TKCL version {version}.
                 """);

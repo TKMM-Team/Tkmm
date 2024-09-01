@@ -1,4 +1,4 @@
-﻿using NxEditor.Launcher.Helpers.Win32;
+﻿using Tkmm.Core.Helpers.Windows;
 
 namespace Tkmm.Core.Helpers.Models;
 
@@ -47,11 +47,13 @@ public class Shortcut(string name, Location location, string target, params stri
     private void CreateWin32()
     {
         if (GetWin32Location() is string location) {
+            // ReSharper disable once SuspiciousTypeConversion.Global
             IShellLink link = (IShellLink)new ShellLink();
             link.SetPath(Target);
             link.SetIconLocation(Target, 0);
             link.SetWorkingDirectory(Path.GetDirectoryName(Target) ?? location);
 
+            // ReSharper disable once SuspiciousTypeConversion.Global
             IPersistFile file = (IPersistFile)link;
             file.Save(Path.Combine(location, $"{Name}.lnk"), false);
         }

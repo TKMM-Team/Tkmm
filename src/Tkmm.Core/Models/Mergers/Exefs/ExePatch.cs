@@ -125,12 +125,11 @@ public class ExePatch
 
             if (line.StartsWith(ENABLED_KEYWORD)) {
                 state = State.Enabled;
-                continue;
             }
         }
 
     Skip:
-        return;
+        ;
     }
 
     private static int GetValueEndIndex(ReadOnlySpan<char> chars, int startIndex)

@@ -25,7 +25,7 @@ public partial class PageManager : ObservableObject
     public static PageManager Shared => _shared.Value;
 
     [ObservableProperty]
-    private PageModel? _current = null;
+    private PageModel? _current;
 
     [ObservableProperty]
     private Page _default;

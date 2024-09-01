@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace NxEditor.Launcher.Helpers.Win32;
+namespace Tkmm.Core.Helpers.Windows;
 
 [ComImport]
 [Guid("00021401-0000-0000-C000-000000000046")]
@@ -42,6 +42,7 @@ internal interface IShellLink
 [Guid("0000010b-0000-0000-C000-000000000046")]
 public interface IPersistFile : IPersist
 {
+    // ReSharper disable once InconsistentNaming
     new void GetClassID(out Guid pClassID);
     [PreserveSig]
     int IsDirty();
@@ -67,5 +68,6 @@ public interface IPersistFile : IPersist
 public interface IPersist
 {
     [PreserveSig]
+    // ReSharper disable once InconsistentNaming
     void GetClassID(out Guid pClassID);
 }

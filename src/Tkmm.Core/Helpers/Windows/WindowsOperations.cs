@@ -1,8 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Tkmm.Core.Helpers.Win32;
+namespace Tkmm.Core.Helpers.Windows;
 
-public enum WindowMode : int { Hidden = 0, Visible = 5 }
+public enum WindowMode
+{
+    Hidden = 0,
+    Visible = 5
+}
 
 public static partial class WindowsOperations
 {
@@ -14,7 +18,8 @@ public static partial class WindowsOperations
 
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool ShowWindow(IntPtr window_handle, int cmd_show_mode);
+    // ReSharper disable once UnusedMethodReturnValue.Local
+    private static partial bool ShowWindow(IntPtr windowHandle, int cmdShowMode);
 
     public static void SetWindowMode(WindowMode mode)
     {

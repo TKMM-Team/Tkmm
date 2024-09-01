@@ -189,8 +189,7 @@
                             IsHitTestVisible="False"
                             Orientation="Horizontal">
                     <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static core:AppStatus.Shared}}" />
-                    <TextBlock Grid.Column="1"
-                               Margin="5,0"
+                    <TextBlock Margin="5,0"
                                VerticalAlignment="Center"
                                FontFamily="{StaticResource UbuntuMono}"
                                Text="{Binding Status, Source={x:Static core:AppStatus.Shared}}" />

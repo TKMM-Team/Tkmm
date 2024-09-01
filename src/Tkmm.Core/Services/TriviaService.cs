@@ -8,7 +8,7 @@ public class TriviaService
     private static readonly Random _random = new();
     private static readonly Timer? _timer;
 
-    public static bool IsWorking { get; set; } = false;
+    public static bool IsWorking { get; set; }
 
     static TriviaService()
     {
@@ -18,22 +18,24 @@ public class TriviaService
         }
 
         _triviaMessages = File.ReadAllLines(_triviaConfigPath);
-        _timer = new((e) => {
-            if (IsWorking) {
-                if (_unusedMessages.Count <= 0) {
-                    _unusedMessages.AddRange(_triviaMessages);
-                }
-
-                int index = _random.Next(_unusedMessages.Count - 1);
-                if (index >= _unusedMessages.Count || index < 0) {
-                    return;
-                }
-
-                string message = _unusedMessages[index];
-                _unusedMessages.RemoveAt(index);
-
-                AppStatus.Set(message, "fa-solid fa-code-merge");
+        _timer = new((_) => {
+            if (!IsWorking) {
+                return;
             }
+
+            if (_unusedMessages.Count <= 0) {
+                _unusedMessages.AddRange(_triviaMessages);
+            }
+
+            int index = _random.Next(_unusedMessages.Count - 1);
+            if (index >= _unusedMessages.Count || index < 0) {
+                return;
+            }
+
+            string message = _unusedMessages[index];
+            _unusedMessages.RemoveAt(index);
+
+            AppStatus.Set(message, "fa-solid fa-code-merge");
         }, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(3));
     }
 

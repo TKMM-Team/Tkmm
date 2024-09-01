@@ -6,7 +6,7 @@
                xmlns:app="using:Tkmm"
                xmlns:comp="using:Tkmm.Core.Components"
                xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
-               xmlns:helper-models="using:Tkmm.Helpers.Models"
+               xmlns:helperModels="using:Tkmm.Helpers.Models"
                xmlns:helpers="using:Tkmm.Helpers"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -79,7 +79,7 @@
                            PaneTitle="{x:Static app:App.ShortTitle}"
                            SelectedItem="{Binding Current, Mode=TwoWay, Source={x:Static helpers:PageManager.Shared}}">
             <ui:NavigationView.MenuItemTemplate>
-                <DataTemplate x:DataType="helper-models:PageModel">
+                <DataTemplate x:DataType="helperModels:PageModel">
                     <ui:NavigationViewItem Content="{Binding Title}"
                                            IconSource="{Binding Icon}"
                                            Tag="{Binding Content}"

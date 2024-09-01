@@ -20,13 +20,13 @@ public partial class ShellViewModel : ObservableObject
     private string _primaryText = INSTALL;
 
     [ObservableProperty]
-    private double _progress = 0.0;
+    private double _progress;
 
     [ObservableProperty]
     private bool _showStatusBar = true;
 
     [ObservableProperty]
-    private bool _isInstalled = false;
+    private bool _isInstalled;
 
     [ObservableProperty]
     private bool _installShortcuts = true;
@@ -48,7 +48,7 @@ public partial class ShellViewModel : ObservableObject
                 ContentDialog dialog = new() {
                     Title = ex.GetType().Name,
                     Content = ex.Message,
-                    PrimaryButtonCommand = new RelayCommand(async () => {
+                    PrimaryButtonCommand = new AsyncRelayCommand(async () => {
                         await (_view.Clipboard?.SetTextAsync($"""
                             ```
                             {ex}

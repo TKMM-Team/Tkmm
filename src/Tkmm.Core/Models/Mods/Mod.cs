@@ -157,9 +157,8 @@ public partial class Mod : ObservableObject, IModItem, IReferenceItem
     {
         return [this, ..OptionGroups
             .OrderBy(x => x.Priority)
-            .SelectMany(x => x.SelectedOptions.OrderBy(x => x.Priority))
+            .SelectMany(x => x.SelectedOptions.OrderBy(modOption => modOption.Priority))
             .Reverse()
-            .Cast<IModItem>()
         ];
     }
 

@@ -6,16 +6,6 @@ namespace Tkmm.Core.Components.Mergers;
 
 public class ExefsMerger : IMerger
 {
-    private const string ENABLED_KEYWORD = "@enabled";
-    private const char COMMENT_CHAR = '@';
-    private const string STOP_KEYWORD = "@stop";
-
-    private enum State
-    {
-        None,
-        Enabled,
-    }
-
     public Task Merge(IModItem[] mods, string output)
     {
         string[] pchtxtFiles = mods

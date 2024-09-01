@@ -7,7 +7,7 @@ public static class CollectionHelper
 {
     public static bool TryInsert<T>(this ObservableCollection<T> items, T item) where T : IReferenceItem
     {
-        if (items.FirstOrDefault(x => x.Id == item.Id) is T match && items.IndexOf(match) is int index && index > -1) {
+        if (items.FirstOrDefault(x => x.Id == item.Id) is T match && items.IndexOf(match) is var index and > -1) {
             items[index] = item;
             return true;
         }

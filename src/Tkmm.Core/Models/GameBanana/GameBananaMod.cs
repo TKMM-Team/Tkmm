@@ -10,7 +10,7 @@ using Tkmm.Core.Models.Mods;
 
 namespace Tkmm.Core.Models.GameBanana;
 
-public partial class GameBananaMod : ObservableObject
+public class GameBananaMod : ObservableObject
 {
     private const int GB_TOTK_ID = 7617;
     private const string ENDPOINT = $"/Mod/{{0}}/ProfilePage";

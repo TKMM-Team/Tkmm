@@ -2,7 +2,8 @@
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Core.Helpers.Operations;
-using Tkmm.Core.Helpers.Win32;
+using Tkmm.Core.Helpers.Windows;
+using WindowsOperations = Tkmm.Core.Helpers.Windows.WindowsOperations;
 
 namespace Tkmm.Launcher;
 

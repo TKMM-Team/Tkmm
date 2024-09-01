@@ -9,7 +9,7 @@ public class SemicolonDelimitedListConverter : IValueConverter
     private static readonly Lazy<SemicolonDelimitedListConverter> _shared = new(() => new());
     public static SemicolonDelimitedListConverter Shared => _shared.Value;
 
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is IEnumerable<string> collection) {
             return string.Join(';', collection);
@@ -18,7 +18,7 @@ public class SemicolonDelimitedListConverter : IValueConverter
         return string.Empty;
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is string text) {
             return new ObservableCollection<string>(text.Split(';'));

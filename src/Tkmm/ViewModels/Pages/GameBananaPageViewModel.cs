@@ -20,16 +20,16 @@ public partial class GameBananaPageViewModel : ObservableObject
     private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_csvModelInclusions=Mod";
     private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_sName={{2}}&_csvModelInclusions=Mod";
 
-    private static GameBananaFeed? _sugesstedModsFeed = GetSuggestedFeed();
+    private static GameBananaFeed? _sugestedModsFeed = GetSuggestedFeed();
 
     [ObservableProperty]
     private string _searchArgument = string.Empty;
 
     [ObservableProperty]
-    private int _page = 0;
+    private int _page;
 
     [ObservableProperty]
-    private bool _isShowingSuggested = false;
+    private bool _isShowingSuggested;
 
     [ObservableProperty]
     private GameBananaFeed _feed = new();
@@ -38,7 +38,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     {
         InitLoad();
 
-        Config.Shared.PropertyChanged += async (s, e) => {
+        Config.Shared.PropertyChanged += async (_, e) => {
             if (e.PropertyName == nameof(Config.GameBananaSortMode)) {
                 await UpdatePage();
                 Config.Shared.Save();
@@ -82,7 +82,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task ShowSuggested(ScrollViewer modsViewer)
     {
-        _sugesstedModsFeed ??= GetSuggestedFeed();
+        _sugestedModsFeed ??= GetSuggestedFeed();
 
         if (IsShowingSuggested == false) {
             await UpdatePage();
@@ -90,7 +90,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             return;
         }
 
-        await UpdatePage(_sugesstedModsFeed);
+        await UpdatePage(_sugestedModsFeed);
     }
 
     [RelayCommand]
@@ -114,7 +114,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         };
 
         foreach (GameBananaFile file in mod.Full.Files) {
-            file.PropertyChanged += (s, e) => {
+            file.PropertyChanged += (_, e) => {
                 if (e.PropertyName == nameof(file.IsSelected)) {
                     target = file;
                     dialog.IsPrimaryButtonEnabled = true;
@@ -150,6 +150,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         catch (Exception ex) {
             AppLog.Log(ex);
             App.ToastError(ex);
+            // ReSharper disable once UselessBinaryOperation
             Feed = await Fetch((Page = 0) + 1, string.Empty);
         }
     }
@@ -162,17 +163,18 @@ public partial class GameBananaPageViewModel : ObservableObject
             ? string.Format(FEED_ENDPOINT_SEARCH, page, sort, search)
             : string.Format(FEED_ENDPOINT, page, sort);
 
-        using Stream stream = await GameBananaHelper.Get(endpoint);
+        await using Stream stream = await GameBananaHelper.Get(endpoint);
         GameBananaFeed feed = customFeed ?? JsonSerializer.Deserialize<GameBananaFeed>(stream)
             ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
 
         await Task.WhenAll(feed.Records.Select(x => x.FetchMetadata()));
         feed.Records = [.. feed.Records.Where(x =>
-            x.Full?.IsTrashed == false &&
-            x.Full?.IsFlagged == false &&
-            x.IsObsolete == false &&
-            x.IsContentRated == false &&
-            x.Full?.IsPrivate == false
+            x is {
+                Full: {
+                    IsTrashed: false, IsFlagged: false, IsPrivate: false
+                },
+                IsObsolete: false, IsContentRated: false                
+            }
         )];
 
         _ = Task.Run(() => DownloadThumbnails(feed));
@@ -181,24 +183,26 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private static async Task DownloadThumbnails(GameBananaFeed feed)
     {
-        foreach (var mod in feed.Records) {
-            if (mod.Media.Images.FirstOrDefault() is GameBananaImage img) {
-                byte[] image = await _client
-                    .GetByteArrayAsync($"{img.BaseUrl}/{img.SmallFile}");
-                using MemoryStream ms = new(image);
-                mod.Thumbnail = new Bitmap(ms);
+        foreach (GameBananaModInfo mod in feed.Records) {
+            if (mod.Media.Images.FirstOrDefault() is not GameBananaImage img) {
+                continue;
             }
+
+            byte[] image = await _client
+                .GetByteArrayAsync($"{img.BaseUrl}/{img.SmallFile}");
+            using MemoryStream ms = new(image);
+            mod.Thumbnail = new Bitmap(ms);
         }
     }
 
     private static GameBananaFeed? GetSuggestedFeed()
     {
         string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
-        if (File.Exists(path)) {
-            using FileStream fs = File.OpenRead(path);
-            return JsonSerializer.Deserialize<GameBananaFeed>(fs);
+        if (!File.Exists(path)) {
+            return null;
         }
 
-        return null;
+        using FileStream fs = File.OpenRead(path);
+        return JsonSerializer.Deserialize<GameBananaFeed>(fs);
     }
 }

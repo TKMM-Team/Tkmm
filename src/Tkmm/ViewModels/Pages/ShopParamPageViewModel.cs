@@ -54,13 +54,15 @@ public partial class ShopParamPageViewModel : ObservableObject
     [RelayCommand]
     private void GotoSelected()
     {
-        if (CurrentShop is not null) {
-            const int zoom = 6;
-            _zoomBorder.Zoom(zoom,
-                CurrentShop.Coordinates.X + (CurrentShop.Coordinates.X / zoom) + 6000,
-                CurrentShop.Coordinates.Y + (CurrentShop.Coordinates.Y / zoom) + 5000
-            );
+        if (CurrentShop is null) {
+            return;
         }
+
+        const int zoom = 6;
+        _zoomBorder.Zoom(zoom,
+            CurrentShop.Coordinates.X + (CurrentShop.Coordinates.X / zoom) + 6000,
+            CurrentShop.Coordinates.Y + (CurrentShop.Coordinates.Y / zoom) + 5000
+        );
     }
 
     private void Move(int offset)

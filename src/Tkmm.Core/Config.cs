@@ -14,7 +14,7 @@ public enum GameBananaSortMode
     Updated
 }
 
-public partial class Config : ConfigModule<Config>
+public sealed partial class Config : ConfigModule<Config>
 {
     static Config()
     {
@@ -37,7 +37,7 @@ public partial class Config : ConfigModule<Config>
     public Config()
     {
         FileInfo configFileInfo = new(LocalPath);
-        if (configFileInfo.Exists && configFileInfo.Length == 0) {
+        if (configFileInfo is { Exists: true, Length: 0 }) {
             File.Delete(LocalPath);
         }
 
@@ -57,7 +57,7 @@ public partial class Config : ConfigModule<Config>
         Header = "Show Console",
         Description = "Show the console window for additional information (restart required)",
         Group = "Application")]
-    private bool _showConsole = false;
+    private bool _showConsole;
 
     [ObservableProperty]
     [property: Config(
@@ -185,11 +185,15 @@ public partial class Config : ConfigModule<Config>
     {
         base.OnPropertyChanged(e);
 
-        if (AutoSaveSettings) {
-            try {
-                Save();
-            }
-            catch { }
+        if (!AutoSaveSettings) {
+            return;
+        }
+
+        try {
+            Save();
+        }
+        catch {
+            // ignored
         }
     }
 }

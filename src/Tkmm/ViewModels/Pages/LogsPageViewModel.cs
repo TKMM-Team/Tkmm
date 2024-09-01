@@ -20,7 +20,7 @@ public partial class LogsPageViewModel(LogsPageView view) : ObservableObject
     private ObservableCollection<SystemLog> _logs = [];
 
     [ObservableProperty]
-    private SystemLog? _selected = null;
+    private SystemLog? _selected;
 
     [RelayCommand]
     private void Copy()
@@ -44,10 +44,12 @@ public partial class LogsPageViewModel(LogsPageView view) : ObservableObject
 
     private static void Copy(string text)
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            if (desktop.MainWindow?.Clipboard is IClipboard clipboard) {
-                clipboard.SetTextAsync(text);
-            }
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) {
+            return;
+        }
+
+        if (desktop.MainWindow?.Clipboard is IClipboard clipboard) {
+            clipboard.SetTextAsync(text);
         }
     }
 

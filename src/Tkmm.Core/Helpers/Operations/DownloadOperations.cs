@@ -35,9 +35,6 @@ public static class DownloadOperations
 
                 throw;
             }
-            catch {
-                throw;
-            }
             finally {
                 retry++;
             }

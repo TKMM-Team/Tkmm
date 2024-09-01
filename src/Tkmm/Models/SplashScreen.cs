@@ -1,8 +1,9 @@
-﻿using Avalonia.Media;
+﻿// ReSharper disable UnassignedGetOnlyAutoProperty
+
+using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core.Components;
 using Tkmm.Helpers;
-using Tkmm.Helpers.Models;
 using Tkmm.Views.Common;
 
 namespace Tkmm.Models;

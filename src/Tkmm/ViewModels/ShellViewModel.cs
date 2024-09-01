@@ -2,6 +2,6 @@
 
 namespace Tkmm.ViewModels;
 
-public partial class ShellViewModel : ObservableObject
+public class ShellViewModel : ObservableObject
 {
 }

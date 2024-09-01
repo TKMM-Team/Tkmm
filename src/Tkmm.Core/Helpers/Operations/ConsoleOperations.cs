@@ -1,4 +1,5 @@
-﻿using Tkmm.Core.Helpers.Win32;
+﻿using Tkmm.Core.Helpers.Windows;
+using WindowsOperations = Tkmm.Core.Helpers.Windows.WindowsOperations;
 
 namespace Tkmm.Core.Helpers.Operations;
 

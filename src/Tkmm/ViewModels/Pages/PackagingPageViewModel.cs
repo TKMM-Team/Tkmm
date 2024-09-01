@@ -18,14 +18,11 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class PackagingPageViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private string _exportPath = string.Empty;
+    [ObservableProperty] private string _exportPath = string.Empty;
 
-    [ObservableProperty]
-    private Mod _mod = new();
+    [ObservableProperty] private Mod _mod = new();
 
-    [ObservableProperty]
-    private string _sourceFolder = string.Empty;
+    [ObservableProperty] private string _sourceFolder = string.Empty;
 
     [RelayCommand]
     private async Task EditContributors(ContentControl content)
@@ -64,7 +61,8 @@ public partial class PackagingPageViewModel : ObservableObject
     [RelayCommand]
     private static async Task BrowseThumbnail(IModItem item)
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail", "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.png;*.tif");
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Thumbnail",
+            "Image Files:*.bmp;*.gif;*.jpg;*.jpeg;*.png;*.tif");
         if (await dialog.ShowDialog() is string result) {
             item.ThumbnailUri = result;
         }
@@ -84,7 +82,7 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         string output = ProfileManager.GetModFolder(Mod.Id);
         await Create(output, cleanOutput: true);
-        
+
         if (FolderModReader.FromInternal(output) is Mod copy) {
             ProfileManager.Shared.Mods.TryInsert(copy);
             ProfileManager.Shared.Current.Mods.TryInsert(copy);
@@ -92,12 +90,12 @@ public partial class PackagingPageViewModel : ObservableObject
         }
     }
 
-    private async Task<(bool, string?)> Create(string output, bool cleanOutput)
+    private async Task Create(string output, bool cleanOutput)
     {
         try {
             if (string.IsNullOrEmpty(SourceFolder)) {
                 App.Toast("Packaging requires a mod to package. Please provide a mod folder.");
-                return (false, default);
+                return;
             }
 
             if (string.IsNullOrEmpty(Mod.Name)) {
@@ -106,7 +104,7 @@ public partial class PackagingPageViewModel : ObservableObject
 
             if (string.IsNullOrEmpty(ExportPath)) {
                 ExportPath = Path.Combine(Path.GetDirectoryName(SourceFolder) ?? string.Empty,
-                                          $"{Path.GetFileName(SourceFolder)}.tkcl");
+                    $"{Path.GetFileName(SourceFolder)}.tkcl");
             }
 
             if (!string.IsNullOrEmpty(Mod.ThumbnailUri)) {
@@ -125,20 +123,18 @@ public partial class PackagingPageViewModel : ObservableObject
                 await PackageBuilder.CopyContents(Mod, SourceFolder, output);
                 PackageBuilder.Package(output, ExportPath);
             });
-
-            return (true, output);
-        } catch (Exception exc) {
+        }
+        catch (Exception exc) {
             App.ToastError(exc);
             AppStatus.Set(exc.Message, isWorkingStatus: false, temporaryStatusTime: 1.5, logLevel: LogLevel.None);
-
-            return (false, default);
         }
     }
 
     [RelayCommand]
     private async Task ImportInfo()
     {
-        BrowserDialog dialog = new(BrowserMode.OpenFile, "Import Mod Info", "Mods:info.json;*.tkcl|JSON Metadata:info.json|Mod Archive:*.tkcl");
+        BrowserDialog dialog = new(BrowserMode.OpenFile, "Import Mod Info",
+            "Mods:info.json;*.tkcl|JSON Metadata:info.json|Mod Archive:*.tkcl");
         if (await dialog.ShowDialog() is string result) {
             Stream? stream;
             if (result.EndsWith("info.json")) {
@@ -150,14 +146,15 @@ public partial class PackagingPageViewModel : ObservableObject
             }
 
             if (stream is null) {
-                AppStatus.Set("Could not read mod metadata!", "fa-solid fa-triangle-exclamation", temporaryStatusTime: 1.5, isWorkingStatus: false);
+                AppStatus.Set("Could not read mod metadata!", "fa-solid fa-triangle-exclamation",
+                    temporaryStatusTime: 1.5, isWorkingStatus: false);
                 return;
             }
 
             Mod = JsonSerializer.Deserialize<Mod>(stream)
                 ?? throw new InvalidOperationException("""
-                    Error parsing metadata: The JSON deserializer returned null.
-                    """);
+                                                       Error parsing metadata: The JSON deserializer returned null.
+                                                       """);
 
             await stream.DisposeAsync();
         }
@@ -169,7 +166,8 @@ public partial class PackagingPageViewModel : ObservableObject
         BrowserDialog dialog = new(BrowserMode.OpenFolder, "Export Mod Metadata");
         if (await dialog.ShowDialog() is string result) {
             PackageBuilder.CreateMetaData(Mod, result);
-            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
+            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5,
+                isWorkingStatus: false);
         }
     }
 
@@ -178,7 +176,8 @@ public partial class PackagingPageViewModel : ObservableObject
     {
         if (!string.IsNullOrEmpty(SourceFolder) && Directory.Exists(SourceFolder)) {
             PackageBuilder.CreateMetaData(Mod, SourceFolder, useSourceFolderName: true);
-            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5, isWorkingStatus: false);
+            AppStatus.Set("Exported metadata!", "fa-solid fa-circle-check", temporaryStatusTime: 1.5,
+                isWorkingStatus: false);
         }
 
         return Task.CompletedTask;
@@ -238,7 +237,8 @@ public partial class PackagingPageViewModel : ObservableObject
             if (Directory.Exists(output)) {
                 ContentDialog warningDialog = new() {
                     Title = "Warning",
-                    Content = $"The option '{name}' already exists in the group '{group.Name}', would you like to replace it?",
+                    Content =
+                        $"The option '{name}' already exists in the group '{group.Name}', would you like to replace it?",
                     PrimaryButtonText = "Yes",
                     SecondaryButtonText = "Cancel",
                     DefaultButton = ContentDialogButton.Primary,
@@ -295,10 +295,10 @@ public partial class PackagingPageViewModel : ObservableObject
         ContentDialog dialog = new() {
             Title = "Warning",
             Content = $"""
-            This action will delete the source folder in '{target.SourceFolder}' and cannot be undone.
+                       This action will delete the source folder in '{target.SourceFolder}' and cannot be undone.
 
-            Are you sure you would like to delete '{target.Name}'?
-            """,
+                       Are you sure you would like to delete '{target.Name}'?
+                       """,
             PrimaryButtonText = "Delete Permanently",
             SecondaryButtonText = "Cancel"
         };

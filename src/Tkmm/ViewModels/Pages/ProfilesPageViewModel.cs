@@ -15,9 +15,9 @@ public partial class ProfilesPageViewModel : ObservableObject
     public ProfileMod? Selected {
         get => ProfileManager.Shared.Current.Selected;
         set {
-            OnPropertyChanging(nameof(Selected));
+            OnPropertyChanging();
             ProfileManager.Shared.Current.Selected = value;
-            OnPropertyChanged(nameof(Selected));
+            OnPropertyChanged();
         }
     }
 
@@ -32,7 +32,7 @@ public partial class ProfilesPageViewModel : ObservableObject
 
     public ProfilesPageViewModel()
     {
-        ProfileManager.Shared.Current.PropertyChanged += (s, e) => {
+        ProfileManager.Shared.Current.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(ProfileManager.Shared.Current.Selected)) {
                 Selected = ProfileManager.Shared.Current.Selected;
             }

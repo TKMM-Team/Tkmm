@@ -58,7 +58,7 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     public TotkConfig()
     {
         OnSaving += () => {
-            if (Validate(out string? message, out ConfigProperty? target) == false) {
+            if (Validate(out string? _, out ConfigProperty? target) == false) {
                 AppStatus.Set($"Invalid setting. {target.Property.Name} is invalid.",
                     "fa-solid fa-triangle-exclamation", isWorkingStatus: false);
                 return false;
@@ -77,18 +77,19 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
 
     partial void OnGamePathChanged(string value)
     {
-        Validate(() => GamePath, value => {
+        Validate(() => GamePath, gamePathValue => {
             if (Version == 100) {
                 return false;
             }
 
             Totk.Config.GamePath = GamePath;
-            if (value is not null && File.Exists(Path.Combine(value, "Pack", "ZsDic.pack.zs"))) {
-                Totk.Zstd.LoadDictionaries(ZsDicPath);
-                return true;
+            if (gamePathValue is null || !File.Exists(Path.Combine(gamePathValue, "Pack", "ZsDic.pack.zs"))) {
+                return false;
             }
 
-            return false;
+            Totk.Zstd.LoadDictionaries(ZsDicPath);
+            return true;
+
         });
     }
 
@@ -96,11 +97,15 @@ public partial class TotkConfig : ConfigModule<TotkConfig>
     {
         base.OnPropertyChanged(e);
 
-        if (Config.Shared.AutoSaveSettings) {
-            try {
-                Save();
-            }
-            catch { }
+        if (!Config.Shared.AutoSaveSettings) {
+            return;
+        }
+
+        try {
+            Save();
+        }
+        catch {
+            // ignored
         }
     }
 }

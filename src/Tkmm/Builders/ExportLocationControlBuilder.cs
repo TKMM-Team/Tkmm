@@ -13,7 +13,7 @@ namespace Tkmm.Builders;
 
 internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocationControlBuilder>
 {
-    public override object? Build(IConfigModule context, PropertyInfo propertyInfo)
+    public override object Build(IConfigModule context, PropertyInfo propertyInfo)
     {
         return new Button {
             Content = "Edit",

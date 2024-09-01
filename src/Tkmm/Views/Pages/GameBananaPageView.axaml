@@ -7,7 +7,6 @@
              xmlns:models="using:Tkmm.Core.Models.GameBanana"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="False"
@@ -61,7 +60,7 @@
                 </StackPanel>
             </ToggleButton>
 
-            <ComboBox Grid.Column="5"
+            <ComboBox Grid.Column="4"
                       Width="100"
                       Margin="5,0,0,0"
                       ItemsSource="{x:Static core:Config.GameBananaSortModes}"

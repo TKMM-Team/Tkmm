@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.Styling;
@@ -10,19 +12,17 @@ using ConfigFactory.Core.Attributes;
 using FluentAvalonia.UI.Controls;
 using Markdown.Avalonia.Full;
 using MenuFactory.Abstractions.Attributes;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Operations;
-using Tkmm.Core.Helpers.Win32;
 using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
 using Tkmm.ViewModels.Pages;
 using TotkCommon;
 using TotkCommon.Components;
+using WindowsOperations = Tkmm.Core.Helpers.Windows.WindowsOperations;
 
 namespace Tkmm.Builders.MenuModels;
 
@@ -151,12 +151,12 @@ public class ShellViewMenu
     [Menu("Export to SD Card", "Tools", InputGesture = "Ctrl + E", Icon = "fa-solid fa-sd-card")]
     public static async Task ExportToSdCard()
     {
-        const string GAME_ID = "0100F2C0115B6000";
+        const string gameId = "0100F2C0115B6000";
 
         FriendlyDriveInfo[] disks = DriveInfo.GetDrives()
-            .Where(drive => {
+            .Where(driveInfo => {
                 try {
-                    return drive.DriveType == DriveType.Removable && drive.DriveFormat == "FAT32";
+                    return driveInfo is { DriveType: DriveType.Removable, DriveFormat: "FAT32" };
                 }
                 catch {
                     return false;
@@ -166,9 +166,9 @@ public class ShellViewMenu
             .ToArray();
 
         if (disks.Length == 0) {
-            App.ToastError(new InvalidOperationException("""
-                No removable disks found!
-                """));
+            App.ToastError(new InvalidOperationException(
+                "No removable disks found!"
+            ));
 
             return;
         }
@@ -192,7 +192,7 @@ public class ShellViewMenu
             await MergerOperations.Merge();
 
             try {
-                string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", GAME_ID);
+                string output = Path.Combine(drive.Drive.Name, "atmosphere", "contents", gameId);
                 DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
                 DirectoryOperations.CopyDirectory(Config.Shared.MergeOutput, output, overwrite: true);
             }

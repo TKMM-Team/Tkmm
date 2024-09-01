@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
@@ -15,22 +16,22 @@ using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using MenuFactory;
 using MenuFactory.Abstractions;
-using System.Reflection;
 using Tkmm.Builders;
 using Tkmm.Builders.MenuModels;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
-using Tkmm.Core.Helpers.Win32;
+using Tkmm.Core.Helpers.Windows;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
 using TotkCommon;
+using WindowsOperations = Tkmm.Core.Helpers.Windows.WindowsOperations;
 
 namespace Tkmm;
 
-public partial class App : Application
+public class App : Application
 {
     private static WindowNotificationManager? _notificationManager;
 
@@ -41,7 +42,6 @@ public partial class App : Application
     public static string ShortTitle { get; } = $"TKMM v{Version}";
     public static string ReleaseUrl { get; } = $"https://github.com/TKMM-Team/Tkmm/releases/{Version}";
     public static TopLevel? XamlRoot { get; private set; }
-    public static Exception? SettingsException { get; private set; }
 
     /// <summary>
     /// Application <see cref="IMenuFactory"/> (used for extending the main menu at runtime)
@@ -55,7 +55,7 @@ public partial class App : Application
 
     public App()
     {
-        TaskScheduler.UnobservedTaskException += (s, e) => {
+        TaskScheduler.UnobservedTaskException += (_, e) => {
             ToastError(e.Exception);
         };
     }
@@ -80,13 +80,13 @@ public partial class App : Application
                 DataContext = new ShellViewModel()
             };
 
-            shellView.Closed += (s, e) => {
+            shellView.Closed += (_, _) => {
                 ProfileManager.Shared.Apply();
                 Config.Shared.Save();
             };
 
             XamlRoot = shellView;
-            shellView.Loaded += (s, e) => {
+            shellView.Loaded += (_, _) => {
                 _notificationManager = new(XamlRoot) {
                     Position = NotificationPosition.BottomRight,
                     MaxItems = 5,
@@ -108,15 +108,14 @@ public partial class App : Application
 
             ConfigPage settingsPage = new();
             bool isValid = false;
-            string? message = string.Empty;
 
             if (settingsPage.DataContext is ConfigPageModel settingsModel) {
                 settingsModel.SecondaryButtonIsEnabled = false;
 
-                isValid = ConfigModule<Config>.Shared.Validate(out message, out ConfigProperty? target);
+                isValid = ConfigModule<Config>.Shared.Validate(out string? _, out ConfigProperty? target);
                 settingsModel.Append<Config>();
 
-                isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out message, out target);
+                isValid = isValid && ConfigModule<TotkConfig>.Shared.Validate(out string? _, out target);
                 settingsModel.Append<TotkConfig>();
 
                 if (!isValid && target?.Attribute is not null) {

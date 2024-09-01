@@ -6,7 +6,7 @@ using Tkmm.Launcher.Views;
 
 namespace Tkmm.Launcher;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {

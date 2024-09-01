@@ -5,13 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:app="using:Tkmm"
              xmlns:comp="using:Tkmm.Core.Components"
-             xmlns:comp-models="using:Tkmm.Core.Components.Models"
+             xmlns:compModels="using:Tkmm.Core.Components.Models"
              xmlns:converters="using:Tkmm.Converters"
              xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:models="using:Tkmm.Core.Models.Mods"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
@@ -161,7 +160,23 @@
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Row="1" IsVisible="{Binding Current.Mod.IsEditingOptions}">
+                <Grid Grid.Row="1"
+                      Classes.animate="{Binding Current.Mod.IsEditingOptions}"
+                      IsVisible="{Binding Current.Mod.IsEditingOptions}">
+                    <Grid.Styles>
+                        <Style Selector="Grid.animate">
+                            <Style.Animations>
+                                <Animation IterationCount="1" Duration="0:0:0.1">
+                                    <KeyFrame Cue="0%">
+                                        <Setter Property="Opacity" Value="0.0" />
+                                    </KeyFrame>
+                                    <KeyFrame Cue="100%">
+                                        <Setter Property="Opacity" Value="1.0" />
+                                    </KeyFrame>
+                                </Animation>
+                            </Style.Animations>
+                        </Style>
+                    </Grid.Styles>
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding Current.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
@@ -204,8 +219,7 @@
                                                     VerticalAlignment="Stretch"
                                                     Background="{DynamicResource ControlStrokeColorDefault}"
                                                     IsVisible="{Binding Description.Length}" />
-                                            <ListBox Grid.Row="1"
-                                                     ItemsSource="{Binding Options}"
+                                            <ListBox ItemsSource="{Binding Options}"
                                                      SelectedItems="{Binding SelectedOptions}"
                                                      SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                                 <ListBox.ItemTemplate>
@@ -263,7 +277,7 @@
                          SelectionMode="AlwaysSelected"
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type comp-models:ProfileMod}">
+                        <DataTemplate DataType="{x:Type compModels:ProfileMod}">
                             <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto">
                                 <TextBlock VerticalAlignment="Center"
                                            Background="Transparent"

@@ -19,8 +19,8 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:ModContributor}">
                             <Grid Margin="0,0,0,5" ColumnDefinitions="Auto,*,1.8*">
-                                <Button Grid.Row="1"
-                                        Width="25"
+                                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                <Button Width="25"
                                         Height="25"
                                         Padding="0"
                                         x:CompileBindings="False"
@@ -135,6 +135,7 @@
                             <Expander Margin="0,0,0,5">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal">
+                                        <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                                         <Button Width="24"
                                                 Height="24"
                                                 Padding="0"
@@ -165,6 +166,7 @@
                                                    Value="{Binding Priority}" />
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+                                        <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                                         <Button Grid.Column="1"
                                                 Margin="5,0,0,0"
                                                 x:CompileBindings="False"
@@ -174,6 +176,7 @@
                                                 ToolTip.Tip="Browse" />
                                     </Grid>
 
+                                    <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                                     <Button Padding="5,3"
                                             x:CompileBindings="False"
                                             Command="{Binding $parent[UserControl].DataContext.ImportOptionCommand}"
@@ -187,6 +190,7 @@
                                                 <Expander Margin="0,0,0,5">
                                                     <Expander.Header>
                                                         <StackPanel Orientation="Horizontal">
+                                                            <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                                                             <Button Width="24"
                                                                     Height="24"
                                                                     Padding="0"
@@ -213,6 +217,7 @@
                                                                        Value="{Binding Priority}" />
                                                         <Grid ColumnDefinitions="*,Auto">
                                                             <TextBox Text="{Binding ThumbnailUri}" Watermark="Thumbnail" />
+                                                            <!-- ReSharper disable once Xaml.PossibleNullReferenceException, Xaml.BindingWithContextNotResolved -->
                                                             <Button Grid.Column="1"
                                                                     Margin="5,0,0,0"
                                                                     x:CompileBindings="False"

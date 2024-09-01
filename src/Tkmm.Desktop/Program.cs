@@ -6,7 +6,6 @@ using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Components;
 using Tkmm.Core.Commands;
 using Tkmm.Core.Components;
-using Tkmm.Core.Helpers.Operations;
 using Tkmm.Helpers;
 
 namespace Tkmm.Desktop;
@@ -35,7 +34,7 @@ class Program
 #if DEBUG
                 throw;
 #else
-                ConsoleOperations.WaitOnFailure(ex);
+                Tkmm.Core.Helpers.Operations.ConsoleOperations.WaitOnFailure(ex);
 #endif
             }
 
@@ -80,7 +79,7 @@ class Program
 
 #if DEBUG
         if (OperatingSystem.IsWindows() && Core.Config.Shared.ShowConsole == false) {
-            Core.Helpers.Win32.WindowsOperations.SetWindowMode(Core.Helpers.Win32.WindowMode.Hidden);
+            Core.Helpers.Windows.WindowsOperations.SetWindowMode(Core.Helpers.Windows.WindowMode.Hidden);
         }
 #endif
 

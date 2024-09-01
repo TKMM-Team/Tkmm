@@ -1,11 +1,9 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:app="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avedit="https://github.com/avaloniaui/avaloniaedit"
         xmlns:ctxt="clr-namespace:ColorTextBlock.Avalonia;assembly=ColorTextBlock.Avalonia"
         xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
-        xmlns:mdctl="clr-namespace:Markdown.Avalonia.Controls;assembly=Markdown.Avalonia"
-        xmlns:models="using:Tkmm.Models">
+        xmlns:mdctl="clr-namespace:Markdown.Avalonia.Controls;assembly=Markdown.Avalonia">
     <Design.PreviewWith>
         <md:MarkdownScrollViewer Width="1000"
                                  Height="1000"
