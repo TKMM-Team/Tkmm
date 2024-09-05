@@ -1,0 +1,27 @@
+name: Deploy to Server
+on: [push]
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ~/flathub
+          git pull origin tkmm-pr
+          flatpak-builder --user --repo=/var/www/html/repo --install-deps-from=flathub --force-clean build io.github.tkmm_team.tkmm.yml --disable-cache
+          flatpak build-export /var/www/html/repo build
+          flatpak build-update-repo /var/www/html/repo
+          EOF
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          USERNAME: ${{ secrets.SERVER_USERNAME }}
