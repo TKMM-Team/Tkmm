@@ -1,4 +1,4 @@
-name: Deploy flatpak to self-hosted repository
+name: Deploy Flatpak to self-hosted repository
 on:
   push:
     tags:
