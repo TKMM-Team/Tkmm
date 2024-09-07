@@ -1,5 +1,8 @@
 name: Deploy flatpak to self-hosted repository
-on: [push]
+on:
+  push:
+    tags:
+      - "v*"
 jobs:
   deploy:
     name: Deploy
