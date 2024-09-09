@@ -18,13 +18,17 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@repo.tkmm.org << 'EOF'
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y jq xmlstarlet flatpak flatpak-builder          
+          rm -rf ~/flathub
+          git clone git@github.com:TKMM-Team/flathub.git --branch tkmm-pr
           cd ~/flathub
-          git pull origin tkmm-pr
-          flatpak-builder --user --repo=/var/www/html/repo --install-deps-from=flathub --force-clean build io.github.tkmm_team.tkmm.yml --disable-cache
+          bash update_metadata.sh
+          flatpak-builder --user --repo=/var/www/html/repo --install-deps-from=flathub build io.github.tkmm_team.tkmm.yml
           flatpak build-export /var/www/html/repo build
-          flatpak build-update-repo /var/www/html/repo
+          flatpak build-update-repo --generate-static-deltas /var/www/html/repo
           EOF
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          USERNAME: ${{ secrets.SERVER_USERNAME }}
+          USERNAME: ${{ secrets.USERNAME }}
