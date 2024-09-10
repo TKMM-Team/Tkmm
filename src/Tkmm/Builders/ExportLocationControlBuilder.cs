@@ -7,6 +7,7 @@ using ConfigFactory.Generics;
 using FluentAvalonia.UI.Controls;
 using System.Reflection;
 using Tkmm.Builders.Controls;
+using Tkmm.Core;
 using Tkmm.Core.Models;
 
 namespace Tkmm.Builders;
@@ -44,5 +45,6 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
         };
 
         await dialog.ShowAsync();
+        Config.Shared.Save();
     }
 }

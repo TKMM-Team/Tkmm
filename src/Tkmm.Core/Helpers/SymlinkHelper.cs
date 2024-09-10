@@ -18,9 +18,9 @@ internal static class SymlinkHelper
 
     private static bool CreateManyWithPermission((string Path, string PathToTarget)[] targets)
     {
-        foreach (var (path, pathToTarget)  in targets) {
-            if (Directory.Exists(path)) {
-                Directory.Delete(path);
+        foreach ((string path, string pathToTarget)  in targets) {
+            if (!TryDeleteFolder(path)) {
+                continue;
             }
 
             Directory.CreateSymbolicLink(path, pathToTarget);
@@ -33,15 +33,13 @@ internal static class SymlinkHelper
     {
         StringBuilder arguments = new();
 
-        for (int i = 0; i < targets.Length;) {
-            (string path, string pathToTarget) = targets[i];
-
-            if (Directory.Exists(path)) {
-                Directory.Delete(path);
+        foreach ((string path, string pathToTarget)  in targets) {
+            if (!TryDeleteFolder(path)) {
+                continue;
             }
 
             arguments.Append($"""
-                MKLINK /D "{path}" "{pathToTarget}" {(++i < targets.Length ? "&& " : string.Empty)}
+                MKLINK /D "{path}" "{pathToTarget}" &&
                 """);
         }
 
@@ -50,7 +48,7 @@ internal static class SymlinkHelper
             WindowStyle = ProcessWindowStyle.Hidden,
             FileName = "cmd.exe",
             Arguments = $"""
-                /c {arguments}
+                /c {arguments}ECHO Success
                 """,
             UseShellExecute = true,
             Verb = "runas"
@@ -71,5 +69,22 @@ internal static class SymlinkHelper
         RegistryKey? key = Registry.LocalMachine.OpenSubKey(
             "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", writable: false);
         return (key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int?) == 1;
+    }
+
+    private static bool TryDeleteFolder(string path)
+    {
+        if (!Directory.Exists(path)) {
+            return true;
+        }
+
+        try {
+            Directory.Delete(path);
+        }
+        catch (Exception ex) {
+            AppLog.Log(ex);
+            return false;
+        }
+
+        return true;
     }
 }
