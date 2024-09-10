@@ -38,18 +38,18 @@ public class MergerService
             .SelectMany(x => x.Mod!.SelectModRecursive())
             .ToArray();
 
+        if (Directory.Exists(output)) {
+            AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
+            DirectoryOperations.ClearAttributes(output);
+            DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
+        }
+
         if (mods.Length <= 0) {
             AppStatus.Set("Nothing to Merge", "fa-solid fa-code-merge",
                 isWorkingStatus: false, temporaryStatusTime: 1.5,
                 logLevel: LogLevel.Info);
 
             return;
-        }
-
-        if (Directory.Exists(output)) {
-            AppStatus.Set($"Clearing output", "fa-solid fa-code-merge");
-            DirectoryOperations.ClearAttributes(output);
-            DirectoryOperations.DeleteTargets(output, [TotkConfig.ROMFS, TotkConfig.EXEFS], recursive: true);
         }
 
         TriviaService.Start();
