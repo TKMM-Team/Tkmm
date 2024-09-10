@@ -131,6 +131,9 @@ public sealed partial class Config : ConfigModule<Config>
         }
     ];
 
+    [ObservableProperty]
+    private bool _suppressExportLocationsPrompt;
+
     public static readonly GameBananaSortMode[] GameBananaSortModes = Enum.GetValues<GameBananaSortMode>();
 
     [ObservableProperty]

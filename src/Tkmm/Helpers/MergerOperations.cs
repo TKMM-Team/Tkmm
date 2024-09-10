@@ -1,4 +1,8 @@
-﻿using Avalonia.Controls.Notifications;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Media;
 using FluentAvalonia.UI.Controls;
 using Tkmm.Builders;
 using Tkmm.Core;
@@ -13,10 +17,23 @@ public static class MergerOperations
     {
         App.LogTkmmInfo();
 
-        if (!Config.Shared.ExportLocations.Any(x => x.IsEnabled)) {
+        if (!Config.Shared.ExportLocations.Any(x => x.IsEnabled) && !Config.Shared.SuppressExportLocationsPrompt) {
             ContentDialog dialog = new() {
                 Title = "Warning",
-                Content = "There are currently no export locations enabled. Would you like to configure them now?",
+                Content = new StackPanel {
+                    Spacing = 5,
+                    Children = {
+                        new TextBlock {
+                            Text = "There are currently no export locations enabled. Would you like to configure them now?",
+                            TextWrapping = TextWrapping.WrapWithOverflow
+                        },
+                        new CheckBox {
+                            Content = "Never show again (recomended for Switch users).",
+                            DataContext = Config.Shared,
+                            [!ToggleButton.IsCheckedProperty] = new Binding(nameof(Config.SuppressExportLocationsPrompt))
+                        }
+                    }
+                },
                 PrimaryButtonText = "Yes",
                 SecondaryButtonText = "No",
                 DefaultButton = ContentDialogButton.Primary
@@ -25,6 +42,8 @@ public static class MergerOperations
             if (await dialog.ShowAsync() is ContentDialogResult.Primary) {
                 await ExportLocationControlBuilder.Edit(Config.Shared.ExportLocations);
             }
+
+            Config.Shared.Save();
         }
 
         try {
