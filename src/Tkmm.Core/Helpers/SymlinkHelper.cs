@@ -73,11 +73,15 @@ internal static class SymlinkHelper
 
     private static bool TryDeleteFolder(string path)
     {
-        if (!Directory.Exists(path)) {
-            return true;
-        }
-
         try {
+            if (!Directory.Exists(path)) {
+                if (Path.GetDirectoryName(path) is string folder) {
+                    Directory.CreateDirectory(folder);
+                }
+
+                return true;
+            }
+
             Directory.Delete(path);
         }
         catch (Exception ex) {
