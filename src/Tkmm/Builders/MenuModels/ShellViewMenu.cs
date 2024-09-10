@@ -142,7 +142,13 @@ public class ShellViewMenu
             .ExecuteAsync(ProfileManager.Shared.Current.Selected?.Mod);
     }
 
-    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-list-check", IsSeparator = true)]
+    [Menu("Edit Export Locations", "Mod", InputGesture = "Ctrl + L", Icon = "fa-solid fa-list-check", IsSeparator = true)]
+    public static async Task EditExportLocations()
+    {
+        await ExportLocationControlBuilder.Edit(Config.Shared.ExportLocations);
+    }
+
+    [Menu("Merge", "Mod", InputGesture = "Ctrl + M", Icon = "fa-solid fa-list-check")]
     public static async Task MergeMods()
     {
         await MergerOperations.Merge();
