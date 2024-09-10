@@ -31,7 +31,7 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
     }
 
     [RelayCommand]
-    private static async Task Edit(ExportLocationCollection source)
+    public static async Task Edit(ExportLocationCollection source)
     {
         TaskDialog dialog = new() {
             DataContext = source,

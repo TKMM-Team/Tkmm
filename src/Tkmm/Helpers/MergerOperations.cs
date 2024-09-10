@@ -1,4 +1,6 @@
 ﻿using Avalonia.Controls.Notifications;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Builders;
 using Tkmm.Core;
 using Tkmm.Core.Components;
 using Tkmm.Core.Services;
@@ -11,10 +13,24 @@ public static class MergerOperations
     {
         App.LogTkmmInfo();
 
+        if (!Config.Shared.ExportLocations.Any(x => x.IsEnabled)) {
+            ContentDialog dialog = new() {
+                Title = "Warning",
+                Content = "There are currently no export locations enabled. Would you like to configure them now?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            if (await dialog.ShowAsync() is ContentDialogResult.Primary) {
+                await ExportLocationControlBuilder.Edit(Config.Shared.ExportLocations);
+            }
+        }
+
         try {
             await MergerService.Merge();
             App.Toast(
-                $"The profile '{ProfileManager.Shared.Current.Name}' was merged successfully.", 
+                $"The profile '{ProfileManager.Shared.Current.Name}' was merged successfully.",
                 "Merge Successful!",
                 NotificationType.Success,
                 TimeSpan.FromDays(5)
