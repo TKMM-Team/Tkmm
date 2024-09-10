@@ -142,7 +142,7 @@ public class ShellViewMenu
             .ExecuteAsync(ProfileManager.Shared.Current.Selected?.Mod);
     }
 
-    [Menu("Edit Export Locations", "Mod", InputGesture = "Ctrl + L", Icon = "fa-solid fa-list-check", IsSeparator = true)]
+    [Menu("Edit Export Locations", "Mod", InputGesture = "Ctrl + L", Icon = "fa-regular fa-pen-to-square", IsSeparator = true)]
     public static async Task EditExportLocations()
     {
         await ExportLocationControlBuilder.Edit(Config.Shared.ExportLocations);
