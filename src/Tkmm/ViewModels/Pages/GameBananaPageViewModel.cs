@@ -32,17 +32,25 @@ public partial class GameBananaPageViewModel : ObservableObject
     private bool _isShowingSuggested;
 
     [ObservableProperty]
+    private bool _isLoading;
+
+    [ObservableProperty]
+    private bool _isLoadSuccess;
+
+    [ObservableProperty]
     private GameBananaFeed _feed = new();
 
     public GameBananaPageViewModel()
     {
-        InitLoad();
+        _ = Refresh();
 
         Config.Shared.PropertyChanged += async (_, e) => {
-            if (e.PropertyName == nameof(Config.GameBananaSortMode)) {
-                await UpdatePage();
-                Config.Shared.Save();
+            if (e.PropertyName is not nameof(Config.GameBananaSortMode)) {
+                return;
             }
+
+            await UpdatePage();
+            Config.Shared.Save();
         };
     }
 
@@ -128,30 +136,36 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
     }
 
-    private async void InitLoad()
+    [RelayCommand]
+    public async Task Refresh()
     {
         try {
             await UpdatePage();
         }
         catch (Exception ex) {
-            App.ToastError(ex);
+            AppLog.Log(ex);
         }
     }
 
     private async Task UpdatePage(GameBananaFeed? customFeed = null)
     {
+        IsLoadSuccess = IsLoading = true;
+
         if (customFeed is null) {
             IsShowingSuggested = false;
         }
 
         try {
             Feed = await Fetch(Page + 1, SearchArgument, customFeed);
+            IsLoadSuccess = true;
         }
         catch (Exception ex) {
+            IsLoadSuccess = false;
             AppLog.Log(ex);
             App.ToastError(ex);
-            // ReSharper disable once UselessBinaryOperation
-            Feed = await Fetch((Page = 0) + 1, string.Empty);
+        }
+        finally {
+            IsLoading = false;
         }
     }
 
@@ -173,7 +187,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                 Full: {
                     IsTrashed: false, IsFlagged: false, IsPrivate: false
                 },
-                IsObsolete: false, IsContentRated: false                
+                IsObsolete: false, IsContentRated: false
             }
         )];
 

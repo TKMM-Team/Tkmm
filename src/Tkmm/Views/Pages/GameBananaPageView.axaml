@@ -15,7 +15,7 @@
     <UserControl.DataContext>
         <pages:GameBananaPageViewModel />
     </UserControl.DataContext>
-    <Grid Margin="15" RowDefinitions="Auto,*,Auto">
+    <Grid Margin="15" RowDefinitions="Auto,*,Auto,Auto">
         <Grid Margin="15"
               ColumnDefinitions="*,Auto,Auto,Auto,Auto"
               RowDefinitions="Auto,*,Auto">
@@ -68,9 +68,16 @@
                       ToolTip.Tip="Sort Mode" />
         </Grid>
 
+        <Grid Grid.Row="1" IsVisible="{Binding !IsLoadSuccess}">
+            <Button Content="Retry"
+                    Command="{Binding RefreshCommand}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center" />
+        </Grid>
 
         <ScrollViewer Name="ModsViewer"
                       Grid.Row="1"
+                      IsVisible="{Binding IsLoadSuccess}"
                       IsScrollInertiaEnabled="True">
             <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">
                 <ItemsControl.ItemsPanel>
@@ -126,6 +133,7 @@
         </ScrollViewer>
 
         <Grid Grid.Row="2"
+              Margin="0,5,0,0"
               HorizontalAlignment="Center"
               ColumnDefinitions="Auto,Auto">
             <Button Margin="5"
@@ -142,5 +150,7 @@
                 <pi:Icon Value="fa-solid fa-chevron-right" />
             </Button>
         </Grid>
+
+        <ProgressBar Margin="0,5,0,0" Grid.Row="3" IsIndeterminate="{Binding IsLoading}" IsEffectivelyEnabled="{Binding IsLoading}" />
     </Grid>
 </UserControl>
