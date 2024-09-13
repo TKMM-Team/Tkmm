@@ -22,9 +22,9 @@ jobs:
           sudo apt update
           sudo apt upgrade -y
           sudo apt install -y jq xmlstarlet flatpak flatpak-builder          
-          rm -rf ~/flathub
-          git clone git@github.com:TKMM-Team/flathub.git --branch tkmm-pr
-          cd ~/flathub
+          rm -rf ~/flatpak
+          git clone git@github.com:TKMM-Team/flatpak.git
+          cd ~/flatpak
           bash update_metadata.sh
           flatpak-builder --user --repo=/var/www/html/repo --install-deps-from=flathub build io.github.tkmm_team.tkmm.yml
           flatpak build-export /var/www/html/repo build
