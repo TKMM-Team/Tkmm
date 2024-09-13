@@ -3,16 +3,16 @@ using System.Diagnostics;
 
 namespace Tkmm.Core;
 
-public partial class AppStatus : ObservableObject
+public sealed partial class AppStatus : ObservableObject
 {
     public static AppStatus Shared { get; } = new();
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _timer;
 
-    public AppStatus()
+    private AppStatus()
     {
-        _timer = new(_ => {
+        _timer = new Timer(_ => {
             if (!IsWorking) {
                 return;
             }
@@ -64,7 +64,7 @@ public partial class AppStatus : ObservableObject
                 if (Shared.Status == status) {
                     Reset();
                 }
-                
+
                 resetTimer.Dispose();
             };
 
