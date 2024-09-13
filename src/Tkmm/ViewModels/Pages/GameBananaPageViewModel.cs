@@ -6,6 +6,7 @@ using FluentAvalonia.UI.Controls;
 using System.Text.Json;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Helpers.Operations;
 using Tkmm.Core.Models.GameBanana;
 using Tkmm.Helpers;
 using Tkmm.Views.Common;
@@ -35,6 +36,9 @@ public partial class GameBananaPageViewModel : ObservableObject
     private bool _isLoading;
 
     [ObservableProperty]
+    private double? _loadProgress;
+
+    [ObservableProperty]
     private bool _isLoadSuccess;
 
     [ObservableProperty]
@@ -43,6 +47,19 @@ public partial class GameBananaPageViewModel : ObservableObject
     public GameBananaPageViewModel()
     {
         _ = Refresh();
+
+        DownloadOperations.OnDownloadStarted += () => {
+            IsLoading = true;
+            return new Progress<double>((value) => {
+                LoadProgress = value;
+            });
+        };
+
+        DownloadOperations.OnDownloadCompleted += () => {
+            IsLoading = false;
+            IsLoadSuccess = true;
+            LoadProgress = 0;
+        };
 
         Config.Shared.PropertyChanged += async (_, e) => {
             if (e.PropertyName is not nameof(Config.GameBananaSortMode)) {

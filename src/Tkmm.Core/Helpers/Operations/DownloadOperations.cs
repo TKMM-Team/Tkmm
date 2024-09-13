@@ -5,6 +5,9 @@ namespace Tkmm.Core.Helpers.Operations;
 
 public static class DownloadOperations
 {
+    public static event Func<IProgress<double>?> OnDownloadStarted = () => null;
+    public static event Action OnDownloadCompleted = delegate { };
+    
     public static readonly HttpClient Client = new() {
         Timeout = TimeSpan.FromMinutes(2)
     };
@@ -25,7 +28,7 @@ public static class DownloadOperations
             }
 
             try {
-                data = await Client.GetByteArrayAsync(fileUrl);
+                data = await GetBytesAndReportProgress(fileUrl);
                 hash = MD5.HashData(data);
             }
             catch (HttpRequestException ex) {
@@ -41,5 +44,40 @@ public static class DownloadOperations
         } while (hash.SequenceEqual(md5Checksum) == false);
 
         return data;
+    }
+
+    private static async Task<byte[]> GetBytesAndReportProgress(string url)
+    {
+        using HttpResponseMessage response = await Client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+
+        if (response.Content.Headers.ContentLength is not { } contentLength) {
+            // If the length is not known ahead
+            // of time, return the whole buffer
+            OnDownloadStarted();
+            byte[] staticResult = await response.Content.ReadAsByteArrayAsync();
+            OnDownloadCompleted();
+            return staticResult;
+        }
+
+        const int frameBufferSize = 0x2000;
+
+        IProgress<double>? progress = OnDownloadStarted();
+        byte[] result = new byte[contentLength];
+        Memory<byte> buffer = result;
+        int bytesRead = 0;
+
+        using Stream stream = await response.Content.ReadAsStreamAsync();
+        while (bytesRead < contentLength) {
+            int nextOffset = (bytesRead + frameBufferSize) >= result.Length
+                ? result.Length
+                : bytesRead + frameBufferSize;
+            int read = await stream.ReadAsync(buffer[bytesRead..nextOffset]);
+            bytesRead += read;
+            progress?.Report((double)bytesRead / contentLength);
+        }
+
+        OnDownloadCompleted();
+        return result;
     }
 }

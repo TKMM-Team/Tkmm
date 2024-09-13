@@ -69,16 +69,16 @@
         </Grid>
 
         <Grid Grid.Row="1" IsVisible="{Binding !IsLoadSuccess}">
-            <Button Content="Retry"
-                    Command="{Binding RefreshCommand}"
+            <Button HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Center" />
+                    Command="{Binding RefreshCommand}"
+                    Content="Retry" />
         </Grid>
 
         <ScrollViewer Name="ModsViewer"
                       Grid.Row="1"
-                      IsVisible="{Binding IsLoadSuccess}"
-                      IsScrollInertiaEnabled="True">
+                      IsScrollInertiaEnabled="True"
+                      IsVisible="{Binding IsLoadSuccess}">
             <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -151,6 +151,18 @@
             </Button>
         </Grid>
 
-        <ProgressBar Margin="0,5,0,0" Grid.Row="3" IsIndeterminate="{Binding IsLoading}" IsEffectivelyEnabled="{Binding IsLoading}" />
+        <ProgressBar Grid.Row="3"
+                     Margin="0,5,0,0"
+                     IsEffectivelyEnabled="{Binding IsLoading}"
+                     IsIndeterminate="{Binding LoadProgress, Converter={x:Static ObjectConverters.IsNull}}"
+                     Maximum="1"
+                     Value="{Binding LoadProgress}">
+            <ProgressBar.IsIndeterminate>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="LoadProgress" />
+                    <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="IsLoading" />
+                </MultiBinding>
+            </ProgressBar.IsIndeterminate>
+        </ProgressBar>
     </Grid>
 </UserControl>
