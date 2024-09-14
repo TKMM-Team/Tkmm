@@ -238,9 +238,9 @@ public class ShellViewMenu
         );
 
         string resultContent = $"""
-            {results.MissingFiles} missing files recorded.
+            {(results.MissingFiles <= 0 ? 0 : results.MissingFiles)} missing files recorded.
             {results.BadFiles.Count} corrupt files recorded.{(results.BadFiles.Count > 0 ? "\n- `" : string.Empty)}{string.Join("`\n- `", results.BadFiles)}{(results.BadFiles.Count > 0 ? '`' : string.Empty)}
-            {results.BadFiles.Count} extra files recorded.{(results.ExtraFiles.Count > 0 ? "\n- `" : string.Empty)}{string.Join("`\n- `", results.ExtraFiles)}{(results.ExtraFiles.Count > 0 ? '`' : string.Empty)}
+            {results.ExtraFiles.Count} extra files recorded.{(results.ExtraFiles.Count > 0 ? "\n- `" : string.Empty)}{string.Join("`\n- `", results.ExtraFiles)}{(results.ExtraFiles.Count > 0 ? '`' : string.Empty)}
             """;
 
         ContentDialog dialog = new() {
