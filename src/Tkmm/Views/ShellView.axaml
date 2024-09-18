@@ -68,6 +68,7 @@
             </Viewbox>
 
             <Menu Name="MainMenu" Grid.Column="1" />
+            <Menu Name="PowerOptionsMenu" Grid.Column="2" HorizontalAlignment="Right" />
         </Grid>
 
         <ui:NavigationView Name="MainNavigation"
