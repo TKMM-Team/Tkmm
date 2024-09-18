@@ -96,13 +96,11 @@ public class App : Application
 
             MenuFactory = new AvaloniaMenuFactory(XamlRoot);
             MenuFactory.AddMenuGroup<ShellViewMenu>();
-
-            var powerOptionsMenu = new AvaloniaMenuFactory(XamlRoot);
-            powerOptionsMenu.AddMenuGroup<PowerOptionsMenu>();
-
             shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
             #if SWITCH
+            var powerOptionsMenu = new AvaloniaMenuFactory(XamlRoot);
+            powerOptionsMenu.AddMenuGroup<PowerOptionsMenu>();
             shellView.PowerOptionsMenu.ItemsSource = powerOptionsMenu.Items;
             #endif
 

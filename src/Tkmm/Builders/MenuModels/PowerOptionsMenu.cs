@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using MenuFactory.Abstractions;
 using MenuFactory.Abstractions.Attributes;
 
 namespace Tkmm.Builders.MenuModels;
