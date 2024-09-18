@@ -5,11 +5,9 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm", "Tkmm\Tkmm.csproj", "{3321B06B-B5CB-4CA2-BD21-33E583964517}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Desktop", "Tkmm.Desktop\Tkmm.Desktop.csproj", "{40A7617E-DE6F-4042-BF60-160D7C5AD87F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Core", "Tkmm.Core\Tkmm.Core.csproj", "{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Launcher", "Tkmm.Launcher\Tkmm.Launcher.csproj", "{5F81B9EE-5AB0-4424-ABD8-CF70247871AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Desktop", "Clients\Tkmm.Desktop\Tkmm.Desktop.csproj", "{40A7617E-DE6F-4042-BF60-160D7C5AD87F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{1EF81CF1-1A94-46D7-AF67-FD31D1626304}"
 EndProject
@@ -24,8 +22,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TKMM-SARC", "TKMM-SARC", "{53D7C4BC-6673-4DE9-9A0C-D0BDE0471F50}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TKMM.SarcTool.Core", "..\lib\TKMM-SARC\TKMM.SarcTool.Core\TKMM.SarcTool.Core.csproj", "{9AD4B3F1-C822-4546-88DE-36179D1AFD90}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Switch", "Tkmm.Switch\Tkmm.Switch.csproj", "{E39A7115-A72A-4B4E-9635-BDBA4B08B719}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RsdbMerger", "RsdbMerger", "{5C2AA240-B9CD-4B83-9DAE-70D0A91A2238}"
 EndProject
