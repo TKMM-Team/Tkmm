@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm", "Tkmm\Tkmm.csproj", "{3321B06B-B5CB-4CA2-BD21-33E583964517}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{4F06C0F7-78DE-4871-A700-68FDF52AF435}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Core", "Tkmm.Core\Tkmm.Core.csproj", "{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tkmm.Desktop", "Clients\Tkmm.Desktop\Tkmm.Desktop.csproj", "{40A7617E-DE6F-4042-BF60-160D7C5AD87F}"
@@ -27,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RsdbMerger", "RsdbMerger", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RsdbMerger.Core", "..\lib\RsdbMerger\src\RsdbMerger.Core\RsdbMerger.Core.csproj", "{ED1B004E-6928-4F0B-80D1-E32338457973}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core.Abstractions", "Tkmm.Core.Abstractions\Tkmm.Core.Abstractions.csproj", "{4533EF07-0B03-473C-BFB0-3070F6E00C78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,10 +49,6 @@ Global
 		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86A281FB-31CC-4DEE-ABE6-2D7CBDBF111D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F81B9EE-5AB0-4424-ABD8-CF70247871AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F81B9EE-5AB0-4424-ABD8-CF70247871AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F81B9EE-5AB0-4424-ABD8-CF70247871AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F81B9EE-5AB0-4424-ABD8-CF70247871AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC009BB4-E869-412F-A06C-9530C28B6AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,14 +61,14 @@ Global
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E39A7115-A72A-4B4E-9635-BDBA4B08B719}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED1B004E-6928-4F0B-80D1-E32338457973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED1B004E-6928-4F0B-80D1-E32338457973}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED1B004E-6928-4F0B-80D1-E32338457973}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED1B004E-6928-4F0B-80D1-E32338457973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +82,7 @@ Global
 		{9AD4B3F1-C822-4546-88DE-36179D1AFD90} = {53D7C4BC-6673-4DE9-9A0C-D0BDE0471F50}
 		{5C2AA240-B9CD-4B83-9DAE-70D0A91A2238} = {1EF81CF1-1A94-46D7-AF67-FD31D1626304}
 		{ED1B004E-6928-4F0B-80D1-E32338457973} = {5C2AA240-B9CD-4B83-9DAE-70D0A91A2238}
+		{40A7617E-DE6F-4042-BF60-160D7C5AD87F} = {4F06C0F7-78DE-4871-A700-68FDF52AF435}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E3CBDD9-5DDE-459B-AAA6-90CAD61F9EA4}
