@@ -1,20 +1,25 @@
+using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core.Abstractions;
 using Tkmm.Core.Abstractions.IO;
 
 namespace Tkmm.Core;
 
-public sealed partial class TkModManager(ITkFileSystem fs) : ITkModManager
+public sealed partial class TkModManager(ITkFileSystem fs) : ObservableObject, ITkModManager
 {
     private const string PROFILES_FILE = "profiles.json";
     
     private readonly ITkFileSystem _fs = fs;
+    private ObservableCollection<ITkProfile> _profiles = [];
+    private ObservableCollection<ITkMod> _mods = [];
 
-    public IList<ITkMod> Mods { get; private set; } = null!;
+    public IList<ITkMod> Mods => _mods;
 
-    public ITkProfile CurrentProfile { get; set; } = null!;
+    [ObservableProperty]
+    private ITkProfile _currentProfile = null!;
 
-    public IList<ITkProfile> Profiles { get; private set; } = null!;
+    public IList<ITkProfile> Profiles => _profiles;
 
     public ValueTask Merge(ITkProfile profile, CancellationToken ct = default)
     {
@@ -26,10 +31,10 @@ public sealed partial class TkModManager(ITkFileSystem fs) : ITkModManager
         ProfilesMetadata? profilesMetadata = await _fs.GetMetadata(
             PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
         
-        Mods = await _fs.GetMetadata<IList<ITkMod>>("mods")
+        _mods = await _fs.GetMetadata<ObservableCollection<ITkMod>>("mods")
                ?? [];
         
-        Profiles = profilesMetadata is not null
+        _profiles = profilesMetadata is not null
             ? [..profilesMetadata.Profiles] : [];
         
         CurrentProfile = profilesMetadata?.Profiles

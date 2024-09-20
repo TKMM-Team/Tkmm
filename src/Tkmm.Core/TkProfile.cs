@@ -1,17 +1,24 @@
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core.Abstractions;
 using Tkmm.Core.Abstractions.Common;
 
 namespace Tkmm.Core;
 
-public sealed class TkProfile : ITkProfile
+public sealed partial class TkProfile : ObservableObject, ITkProfile
 {
+    private readonly ObservableCollection<ITkProfileMod> _mods = [];
+    
     public Ulid Id { get; } = Ulid.NewUlid();
 
-    public string Name { get; set; } = SystemMsg.DefaultProfileName;
+    [ObservableProperty]
+    private string _name = SystemMsg.DefaultProfileName;
 
-    public string Description { get; set; } = string.Empty;
+    [ObservableProperty]
+    private string _description = string.Empty;
 
-    public IThumbnail? Thumbnail { get; set; }
+    [ObservableProperty]
+    private IThumbnail? _thumbnail;
 
-    public IList<ITkProfileMod> Mods { get; } = [];
+    public IList<ITkProfileMod> Mods => _mods;
 }
