@@ -3,6 +3,11 @@ namespace Tkmm.Core.Abstractions;
 public interface ITkModManager
 {
     /// <summary>
+    /// The master collection of installed mods.
+    /// </summary>
+    IList<ITkMod> Mods { get; }
+
+    /// <summary>
     /// The current profile in use by the frontend.
     /// </summary>
     ITkProfile CurrentProfile { get; set; }
@@ -11,11 +16,6 @@ public interface ITkModManager
     /// The collection of custom profiles.
     /// </summary>
     IList<ITkProfile> Profiles { get; }
-
-    /// <summary>
-    /// The master collection of installed mods.
-    /// </summary>
-    IList<ITkMod> Mods { get; }
 
     /// <summary>
     /// Imports the provided <paramref name="mod"/> into the <see cref="CurrentProfile"/>.
@@ -30,14 +30,14 @@ public interface ITkModManager
     /// <param name="mod">The <see cref="ITkMod"/> to import.</param>
     /// <param name="profile"></param>
     /// <param name="ct"></param>
-    virtual ValueTask Import(ITkMod mod, ITkProfile profile, CancellationToken ct = default)
+    ValueTask Import(ITkMod mod, ITkProfile profile, CancellationToken ct = default)
     {
         profile.Mods.Add(mod.GetProfileMod());
         Mods.Add(mod);
         return ValueTask.CompletedTask;
     }
 
-    virtual ValueTask Merge(CancellationToken ct = default) => Merge(CurrentProfile, ct);
+    ValueTask Merge(CancellationToken ct = default) => Merge(CurrentProfile, ct);
     
     ValueTask Merge(ITkProfile profile, CancellationToken ct = default);
 
