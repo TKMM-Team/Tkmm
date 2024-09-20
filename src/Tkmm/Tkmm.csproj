@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="..\Tkmm.Desktop\icon.ico" Link="Assets\icon.ico" />
+    <AvaloniaResource Include="..\Clients\Tkmm.Desktop\icon.ico" Link="Assets\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
