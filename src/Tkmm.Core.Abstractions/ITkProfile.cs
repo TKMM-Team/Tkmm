@@ -11,13 +11,13 @@ public interface ITkProfile : ITkItem
     /// Moves the <paramref name="target"/> up in the <see cref="Mods"/> collection.
     /// </summary>
     /// <param name="target">The target <see cref="ITkMod"/> to be repositioned.</param>
-    void MoveUp(ITkMod target) => Move(target, direction: -1);
+    ITkProfileMod MoveUp(ITkProfileMod target) => Move(target, direction: -1);
 
     /// <summary>
     /// Moves the <paramref name="target"/> down in the <see cref="Mods"/> collection.
     /// </summary>
     /// <param name="target">The target <see cref="ITkMod"/> to be repositioned.</param>
-    void MoveDown(ITkMod target) => Move(target, direction: 1);
+    ITkProfileMod MoveDown(ITkProfileMod target) => Move(target, direction: 1);
 
     /// <summary>
     /// Move the <paramref name="target"/> in the provided <paramref name="direction"/>.<br/>
@@ -25,5 +25,19 @@ public interface ITkProfile : ITkItem
     /// </summary>
     /// <param name="target">The target <see cref="ITkMod"/> to be repositioned.</param>
     /// <param name="direction">The direction to move.</param>
-    protected void Move(ITkMod target, int direction);
+    protected ITkProfileMod Move(ITkProfileMod target, int direction)
+    {
+        int currentIndex = Mods.IndexOf(target);
+        int newIndex = currentIndex + direction;
+
+        if (newIndex < 0 || newIndex >= Mods.Count) {
+            return target;
+        }
+
+        ITkProfileMod store = Mods[newIndex];
+        Mods[newIndex] = target;
+        Mods[currentIndex] = store;
+        
+        return target;
+    }
 }
