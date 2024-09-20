@@ -9,7 +9,7 @@ public interface IRomfs
     /// </summary>
     /// <param name="fileName">The relative path to the vanilla file.</param>
     /// <returns></returns>
-    virtual ArraySegmentOwner<byte> GetVanilla(string fileName) => GetVanilla(fileName, out _);
+    ArraySegmentOwner<byte> GetVanilla(string fileName) => GetVanilla(fileName, out _);
     
     /// <summary>
     /// Reads and decompresses the requested vanilla file.
