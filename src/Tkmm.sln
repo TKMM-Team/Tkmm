@@ -31,6 +31,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RsdbMerger.Core", "..\lib\R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core.Abstractions", "Tkmm.Core.Abstractions\Tkmm.Core.Abstractions.csproj", "{4533EF07-0B03-473C-BFB0-3070F6E00C78}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EF8E1A94-2DA1-4CB7-A588-A37AC13ADD10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core.Tests", "Tests\Tkmm.Core.Tests\Tkmm.Core.Tests.csproj", "{0946A13C-1580-4552-ACC4-2846B9777A43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,10 @@ Global
 		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4533EF07-0B03-473C-BFB0-3070F6E00C78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0946A13C-1580-4552-ACC4-2846B9777A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0946A13C-1580-4552-ACC4-2846B9777A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0946A13C-1580-4552-ACC4-2846B9777A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0946A13C-1580-4552-ACC4-2846B9777A43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +91,7 @@ Global
 		{5C2AA240-B9CD-4B83-9DAE-70D0A91A2238} = {1EF81CF1-1A94-46D7-AF67-FD31D1626304}
 		{ED1B004E-6928-4F0B-80D1-E32338457973} = {5C2AA240-B9CD-4B83-9DAE-70D0A91A2238}
 		{40A7617E-DE6F-4042-BF60-160D7C5AD87F} = {4F06C0F7-78DE-4871-A700-68FDF52AF435}
+		{0946A13C-1580-4552-ACC4-2846B9777A43} = {EF8E1A94-2DA1-4CB7-A588-A37AC13ADD10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E3CBDD9-5DDE-459B-AAA6-90CAD61F9EA4}
