@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using Revrs.Buffers;
@@ -46,9 +47,8 @@ public class DesktopTkFileSystem(ITkModParserProvider modParserProvider) : ITkFi
             goto Result;
         }
 
-        foreach (string metadataFile in Directory.EnumerateDirectories(targetFolder).Select(x => Path.Combine(x, "info.json")).Where(File.Exists)) {
-            await using FileStream fs = File.OpenRead(metadataFile);
-            ITkMod target = await _systemModParser.Parse(fs);
+        foreach (string modFolder in Directory.EnumerateDirectories(targetFolder).Where(x => File.Exists(Path.Combine(x, "info.json")))) {
+            ITkMod target = await _systemModParser.Parse(modFolder);
             mods.Add(target);
         }
         
@@ -73,5 +73,11 @@ public class DesktopTkFileSystem(ITkModParserProvider modParserProvider) : ITkFi
 
         zsDictionaryId = -1;
         return buffer;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Stream OpenRead(string file)
+    {
+        return File.OpenRead(file);
     }
 }
