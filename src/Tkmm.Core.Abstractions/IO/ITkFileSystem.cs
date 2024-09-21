@@ -15,4 +15,6 @@ public interface ITkFileSystem
     ValueTask<T?> GetMetadata<T>(string metadataName, JsonTypeInfo<T>? typeInfo = null);
 
     ArraySegmentOwner<byte> OpenReadAndDecompress(string file, out int zsDictionaryId);
+
+    Stream OpenRead(string file);
 }
