@@ -29,6 +29,31 @@ public interface ITkModManager
     ValueTask<ITkMod?> Create(string argument, Stream? stream = null, CancellationToken ct = default);
 
     /// <summary>
+    /// Attempts to parse and import the provided <paramref name="argument"/> into the <see cref="CurrentProfile"/>.
+    /// </summary>
+    /// <param name="argument">The input argument, validated by the registered <see cref="ITkModParser"/>'s.</param>
+    /// <param name="stream">The input data stream.</param>
+    /// <param name="ct"></param>
+    ValueTask<ITkMod?> Import(string argument, Stream? stream = null, CancellationToken ct = default) => Import(CurrentProfile, argument, stream, ct);
+
+    /// <summary>
+    /// Attempts to parse and import the provided <paramref name="argument"/> into the provided <paramref name="profile"/>.
+    /// </summary>
+    /// <param name="argument">The input argument, validated by the registered <see cref="ITkModParser"/>'s.</param>
+    /// <param name="stream">The input data stream.</param>
+    /// <param name="profile"></param>
+    /// <param name="ct"></param>
+    async ValueTask<ITkMod?> Import(ITkProfile profile, string argument, Stream? stream = null, CancellationToken ct = default)
+    {
+        if (await Create(argument, stream, ct) is not ITkMod result) {
+            return default;
+        }
+
+        await Import(result, profile, ct);
+        return result;
+    }
+    
+    /// <summary>
     /// Imports the provided <paramref name="mod"/> into the <see cref="CurrentProfile"/>.
     /// </summary>
     /// <param name="mod">The <see cref="ITkMod"/> to import.</param>
