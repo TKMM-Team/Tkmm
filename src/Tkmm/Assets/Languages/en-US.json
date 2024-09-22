@@ -6,5 +6,6 @@
         "Ready": "Ready"
     },
     "Exception": {
+        "ParserNotFound": "The provided argument '{0}' could not be parsed. No valid parser could be found."
     }
 }

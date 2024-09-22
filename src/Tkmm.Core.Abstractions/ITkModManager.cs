@@ -1,3 +1,5 @@
+using Tkmm.Core.Abstractions.Parsers;
+
 namespace Tkmm.Core.Abstractions;
 
 public interface ITkModManager
@@ -18,11 +20,20 @@ public interface ITkModManager
     IList<ITkProfile> Profiles { get; }
 
     /// <summary>
+    /// Create an <see cref="ITkMod"/> from an <paramref name="argument"/> and optional <paramref name="stream"/>.
+    /// </summary>
+    /// <param name="argument">The input argument, validated by the registered <see cref="ITkModParser"/>'s.</param>
+    /// <param name="stream">The input data stream.</param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    ValueTask<ITkMod?> Create(string argument, Stream? stream = null, CancellationToken ct = default);
+
+    /// <summary>
     /// Imports the provided <paramref name="mod"/> into the <see cref="CurrentProfile"/>.
     /// </summary>
     /// <param name="mod">The <see cref="ITkMod"/> to import.</param>
     /// <param name="ct"></param>
-    virtual ValueTask Import(ITkMod mod, CancellationToken ct = default) => Import(mod, CurrentProfile, ct);
+    ValueTask Import(ITkMod mod, CancellationToken ct = default) => Import(mod, CurrentProfile, ct);
 
     /// <summary>
     /// Imports the provided <paramref name="mod"/> into the provided <paramref name="profile"/>.
