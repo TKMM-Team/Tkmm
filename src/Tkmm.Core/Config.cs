@@ -13,6 +13,8 @@ namespace Tkmm.Core;
 public sealed partial class Config : ConfigModule<Config>
 {
     public override string Name => "tkmm";
+    
+    public event Action<string> ThemeChanged = delegate { };
 
     public Config()
     {
@@ -29,7 +31,12 @@ public sealed partial class Config : ConfigModule<Config>
         Group = "Application")]
     [property: DropdownConfig("Dark", "Light")]
     private string _theme = "Dark";
-    
+
+    partial void OnThemeChanged(string value)
+    {
+        ThemeChanged(value);
+    }
+
     [ObservableProperty]
     [property: Config(
         Header = "Show Console",
