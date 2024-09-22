@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Timers;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -23,6 +24,7 @@ using Tkmm.Core.Components;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Helpers.Windows;
 using Tkmm.Helpers;
+using Tkmm.Managers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
@@ -34,6 +36,10 @@ namespace Tkmm;
 public class App : Application
 {
     private static WindowNotificationManager? _notificationManager;
+
+    #if SWITCH
+    private System.Timers.Timer? _batteryStatusTimer;
+    #endif
 
     public static readonly string Version = typeof(App).Assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
@@ -102,6 +108,41 @@ public class App : Application
             var powerOptionsMenu = new AvaloniaMenuFactory(XamlRoot);
             powerOptionsMenu.AddMenuGroup<PowerOptionsMenu>();
             shellView.PowerOptionsMenu.ItemsSource = powerOptionsMenu.Items;
+
+            if (XamlRoot is ShellView currentShellView)
+            {
+                var batteryStatusTextBlock = currentShellView.FindControl<TextBlock>("BatteryStatusTextBlock");
+                var viewModel = currentShellView.DataContext as ShellViewModel;
+
+                if (viewModel != null) // Check for null before passing
+                {
+                    var batteryStatusManager = new BatteryStatusManager(viewModel);
+
+                    // Start the timer to update battery status every second
+                    _batteryStatusTimer = new System.Timers.Timer(1000); // 1000 milliseconds = 1 second
+                    _batteryStatusTimer.Elapsed += (sender, e) =>
+                    {
+                        // Ensure this runs on the UI thread
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            if (batteryStatusTextBlock != null) // Check for null before passing
+                            {
+                                batteryStatusManager.UpdateBatteryStatus(batteryStatusTextBlock); // Call the update method
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("BatteryStatusTextBlock cannot be null.");
+                            }
+                        });
+                    };
+                    _batteryStatusTimer.AutoReset = true; // Reset the timer automatically
+                    _batteryStatusTimer.Start(); // Start the timer
+                }
+                else
+                {
+                    throw new InvalidOperationException("ViewModel cannot be null.");
+                }
+            }
             #endif
 
             desktop.MainWindow = shellView;

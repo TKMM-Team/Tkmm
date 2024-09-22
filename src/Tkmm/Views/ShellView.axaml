@@ -35,7 +35,7 @@
           Classes="InstallModDropTarget"
           DragDrop.AllowDrop="True"
           RowDefinitions="32,*,25">
-        <Grid ColumnDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
             <Viewbox Width="26"
                      Height="26"
                      Margin="4,2"
@@ -69,6 +69,22 @@
 
             <Menu Name="MainMenu" Grid.Column="1" />
             <Menu Name="PowerOptionsMenu" Grid.Column="2" HorizontalAlignment="Right" />
+
+            <StackPanel Name="BatteryStatusPanel" 
+                        Grid.Column="3" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="5,0">
+                <TextBlock Name="BatteryStatusTextBlock" 
+                        FontSize="15" 
+                        VerticalAlignment="Center" 
+                        Margin="0,0,4,0" 
+                        Text="{Binding BatteryStatus, Mode=OneWay}" />
+                <pi:Icon Name="BatteryIcon" 
+                        Value="{Binding BatteryIcon, Mode=OneWay}" 
+                        FontSize="25"
+                        Margin="0,0,2,0" />
+            </StackPanel>
         </Grid>
 
         <ui:NavigationView Name="MainNavigation"
