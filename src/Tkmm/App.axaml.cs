@@ -114,20 +114,19 @@ public class App : Application
                 var batteryStatusTextBlock = currentShellView.FindControl<TextBlock>("BatteryStatusTextBlock");
                 var viewModel = currentShellView.DataContext as ShellViewModel;
 
-                if (viewModel != null) // Check for null before passing
+                if (viewModel != null)
                 {
                     var batteryStatusManager = new BatteryStatusManager(viewModel);
 
-                    // Start the timer to update battery status every second
-                    _batteryStatusTimer = new System.Timers.Timer(1000); // 1000 milliseconds = 1 second
+                    // Timer to update battery status every second. Could have been better implemented with something that reads the files dynamically but this is a quick fix
+                    _batteryStatusTimer = new System.Timers.Timer(1000);
                     _batteryStatusTimer.Elapsed += (sender, e) =>
                     {
-                        // Ensure this runs on the UI thread
                         Dispatcher.UIThread.InvokeAsync(() =>
                         {
-                            if (batteryStatusTextBlock != null) // Check for null before passing
+                            if (batteryStatusTextBlock != null)
                             {
-                                batteryStatusManager.UpdateBatteryStatus(batteryStatusTextBlock); // Call the update method
+                                batteryStatusManager.UpdateBatteryStatus(batteryStatusTextBlock);
                             }
                             else
                             {
@@ -135,8 +134,8 @@ public class App : Application
                             }
                         });
                     };
-                    _batteryStatusTimer.AutoReset = true; // Reset the timer automatically
-                    _batteryStatusTimer.Start(); // Start the timer
+                    _batteryStatusTimer.AutoReset = true;
+                    _batteryStatusTimer.Start();
                 }
                 else
                 {
