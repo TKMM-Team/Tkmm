@@ -9,9 +9,9 @@ using TotkCommon;
 
 namespace Tkmm.Desktop.IO;
 
-public class DesktopTkFileSystem(ITkModParserProvider modParserProvider) : ITkFileSystem
+public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFileSystem
 {
-    private readonly ITkModParser _systemModParser = modParserProvider.GetSystemParser();
+    private readonly ITkModParser _systemModParser = modParserManager.GetSystemParser();
     
     public ValueTask<T?> GetMetadata<T>(string metadataName, JsonTypeInfo<T>? typeInfo = null)
     {
