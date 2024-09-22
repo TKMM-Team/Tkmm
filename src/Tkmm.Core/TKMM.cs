@@ -15,6 +15,10 @@ public static class TKMM
     private static readonly Lazy<IRomfsProvider> _romfsProvider = new(() =>
         DI.Get<IRomfsProvider>()
     );
+    
+    private static readonly Lazy<ITkFileSystem> _fileSystem = new(() =>
+        DI.Get<ITkFileSystem>()
+    );
 
     public static Config Config => Config.Shared;
 
@@ -23,6 +27,8 @@ public static class TKMM
     public static ILogger Logger => _logger.Value;
 
     public static IRomfs Romfs => _romfsProvider.Value.GetRomfs();
+
+    public static ITkFileSystem FS => _fileSystem.Value;
 
     public static ITkModManager ModManager => DI.Get<ITkModManager>();
 }
