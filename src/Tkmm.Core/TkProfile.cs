@@ -5,7 +5,7 @@ using Tkmm.Core.Abstractions.Common;
 
 namespace Tkmm.Core;
 
-public sealed partial class TkProfile : ObservableObject, ITkProfile
+internal sealed partial class TkProfile : ObservableObject, ITkProfile
 {
     private readonly ObservableCollection<ITkProfileMod> _mods = [];
     

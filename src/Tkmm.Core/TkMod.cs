@@ -4,7 +4,7 @@ using Tkmm.Core.Abstractions;
 
 namespace Tkmm.Core;
 
-public sealed partial class TkMod : TkModChangelog, ITkMod
+internal sealed partial class TkMod : TkModChangelog, ITkMod
 {
     private readonly ObservableCollection<ITkModContributor> _contributors = [];
     private readonly ObservableCollection<ITkModOptionGroup> _optionGroups = [];

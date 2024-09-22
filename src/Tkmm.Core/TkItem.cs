@@ -4,7 +4,7 @@ using Tkmm.Core.Abstractions.Common;
 
 namespace Tkmm.Core;
 
-public partial class TkItem : ObservableObject, ITkItem
+internal partial class TkItem : ObservableObject, ITkItem
 {
     public Ulid Id { get; } = Ulid.NewUlid();
 

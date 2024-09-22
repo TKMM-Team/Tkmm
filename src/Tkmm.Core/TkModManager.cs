@@ -7,7 +7,7 @@ using Tkmm.Core.Abstractions.Parsers;
 
 namespace Tkmm.Core;
 
-public sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager parserManager)
+internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager parserManager)
     : ObservableObject, ITkModManager
 {
     private const string PROFILES_FILE = "profiles.json";

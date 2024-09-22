@@ -3,7 +3,7 @@ using Tkmm.Core.Abstractions;
 
 namespace Tkmm.Core;
 
-public sealed partial class TkProfileMod(ITkMod mod) : ObservableObject, ITkProfileMod
+internal sealed partial class TkProfileMod(ITkMod mod) : ObservableObject, ITkProfileMod
 {
     [ObservableProperty]
     private ITkMod _mod = mod;

@@ -3,7 +3,7 @@ using Tkmm.Core.Abstractions;
 
 namespace Tkmm.Core;
 
-public class TkModChangelog : TkItem, ITkModChangelog
+internal class TkModChangelog : TkItem, ITkModChangelog
 {
     public IDictionary<string, ChangelogEntry> Manifest { get; } = new Dictionary<string, ChangelogEntry>();
 
