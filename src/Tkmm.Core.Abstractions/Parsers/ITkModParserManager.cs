@@ -1,8 +1,8 @@
 namespace Tkmm.Core.Abstractions.Parsers;
 
-public interface ITkModParserProvider
+public interface ITkModParserManager
 {
     ITkModParser GetSystemParser();
     
-    ITkModParser GetParser(string argument);
+    ITkModParser GetParser(string input);
 }
