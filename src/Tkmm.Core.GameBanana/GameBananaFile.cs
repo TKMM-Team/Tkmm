@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Core.GameBanana;
 
-internal partial class GameBananaFile : ObservableObject
+public partial class GameBananaFile : ObservableObject
 {
     [JsonPropertyName("_idRow")]
     public ulong Id { get; set; }

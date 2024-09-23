@@ -2,7 +2,7 @@
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaGame
+public class GameBananaGame
 {
     [JsonPropertyName("_idRow")]
     public int Id { get; set; }

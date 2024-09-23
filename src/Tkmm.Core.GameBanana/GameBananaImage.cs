@@ -2,7 +2,7 @@
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaImage
+public class GameBananaImage
 {
     [JsonPropertyName("_sBaseUrl")]
     public string BaseUrl { get; set; } = string.Empty;

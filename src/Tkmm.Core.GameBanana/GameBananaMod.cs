@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Core.GameBanana;
 
-internal sealed partial class GameBananaMod : ObservableObject
+public sealed partial class GameBananaMod : ObservableObject
 {
     private const int GB_TOTK_ID = 7617;
     

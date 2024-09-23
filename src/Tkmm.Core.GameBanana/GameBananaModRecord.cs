@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tkmm.Core.Abstractions.Common;
 
 namespace Tkmm.Core.GameBanana;
 
-internal partial class GameBananaModInfo : ObservableObject
+public partial class GameBananaModRecord : ObservableObject
 {
     [JsonPropertyName("_idRow")]
     public int Id { get; set; }
@@ -31,4 +32,25 @@ internal partial class GameBananaModInfo : ObservableObject
 
     [ObservableProperty]
     private object? _thumbnail;
+
+    [JsonIgnore]
+    public GameBananaMod? Full { get; private set; }
+
+    public async ValueTask DownloadFullMod(CancellationToken ct = default)
+    {
+        Full = await GameBanana.GetMod(Id, ct);
+    }
+
+    public async ValueTask DownloadThumbnail(CancellationToken ct = default)
+    {
+        if (Media.Images.FirstOrDefault() is not GameBananaImage img || IThumbnail.CreateBitmap is null) {
+            return;
+        }
+
+        Stream image = await GameBanana.Get($"{img.BaseUrl}/{img.SmallFile}", ct);
+        MemoryStream ms = new();
+        await image.CopyToAsync(ms, ct);
+        
+        Thumbnail = IThumbnail.CreateBitmap(ms);
+    }
 }

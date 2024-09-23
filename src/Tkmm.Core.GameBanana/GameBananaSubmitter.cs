@@ -2,7 +2,7 @@
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaSubmitter
+public class GameBananaSubmitter
 {
     [JsonPropertyName("_sName")]
     public string Name { get; set; } = string.Empty;

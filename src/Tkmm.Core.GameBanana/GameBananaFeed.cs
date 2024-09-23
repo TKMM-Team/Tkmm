@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaFeed
+public class GameBananaFeed
 {
     [JsonPropertyName("_aMetadata")]
     public GameBananaMetadata Metadata { get; set; } = new();
 
     [JsonPropertyName("_aRecords")]
-    public ObservableCollection<GameBananaModInfo> Records { get; set; } = [];
+    public ObservableCollection<GameBananaModRecord> Records { get; set; } = [];
 }
 
 [JsonSerializable(typeof(GameBananaFeed))]

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaCreditGroup
+public class GameBananaCreditGroup
 {
     [JsonPropertyName("_sGroupName")]
     public string Name { get; set; } = string.Empty;

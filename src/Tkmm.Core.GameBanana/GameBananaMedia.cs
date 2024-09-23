@@ -2,7 +2,7 @@
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaMedia
+public class GameBananaMedia
 {
     [JsonPropertyName("_aImages")]
     public List<GameBananaImage> Images { get; set; } = [];

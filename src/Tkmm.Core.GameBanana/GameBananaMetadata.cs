@@ -2,7 +2,7 @@
 
 namespace Tkmm.Core.GameBanana;
 
-internal class GameBananaMetadata
+public class GameBananaMetadata
 {
     [JsonPropertyName("_bIsComplete")]
     public bool IsCompleted { get; set; }
