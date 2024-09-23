@@ -1,4 +1,5 @@
 global using static Tkmm.Core.Localization.StringResources;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LocalizationResources = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, string>>;
 
@@ -24,10 +25,11 @@ public static class StringResources
 #endif
 
         string defaultLocalizationFilePath = Path.Combine(_localizationsFolderPath, "en-US.json");
-        using FileStream defaultLocalizationFileStream = File.OpenRead(defaultLocalizationFilePath);
+        using Stream defaultLocalizationFileStream = TKMM.FS.OpenRead(defaultLocalizationFilePath);
         return JsonSerializer.Deserialize<LocalizationResources>(defaultLocalizationFileStream) ?? [];
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static string GetStringResource(string group, string name)
     {
         return _resources[group][name];
