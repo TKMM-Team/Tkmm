@@ -10,7 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\Tkmm\Assets\Languages\en-US.json" Link="Assets\Languages\en-US.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
@@ -18,6 +23,13 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="FluentAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tkmm.Core.GameBanana\Tkmm.Core.GameBanana.csproj" />
+    <ProjectReference Include="..\..\Tkmm.Core\Tkmm.Core.csproj" />
+    <ProjectReference Include="..\..\Tkmm.IO.Desktop\Tkmm.IO.Desktop.csproj" />
   </ItemGroup>
 
 </Project>
