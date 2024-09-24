@@ -1,11 +1,8 @@
-
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
-#if DEBUG
-using System.Diagnostics;
-#endif
 
-namespace Tkmm.Desktop.IO;
+namespace Tkmm.IO.Desktop;
 
 public class DesktopLogger : ILogger
 {

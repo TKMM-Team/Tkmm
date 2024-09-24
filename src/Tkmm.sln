@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core.Tests", "Tests\Tk
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.Core.GameBanana", "Tkmm.Core.GameBanana\Tkmm.Core.GameBanana.csproj", "{FD88D88B-E08D-4484-98D6-479C6CB7EC22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.IO.Desktop", "Tkmm.IO.Desktop\Tkmm.IO.Desktop.csproj", "{12ED1B26-0032-4D9B-BE1C-01916593BD6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{FD88D88B-E08D-4484-98D6-479C6CB7EC22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD88D88B-E08D-4484-98D6-479C6CB7EC22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD88D88B-E08D-4484-98D6-479C6CB7EC22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12ED1B26-0032-4D9B-BE1C-01916593BD6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12ED1B26-0032-4D9B-BE1C-01916593BD6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12ED1B26-0032-4D9B-BE1C-01916593BD6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12ED1B26-0032-4D9B-BE1C-01916593BD6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@ using Revrs.Buffers;
 using Tkmm.Core.Abstractions.IO;
 using TotkCommon;
 
-namespace Tkmm.Desktop.IO;
+namespace Tkmm.IO.Desktop;
 
 public sealed class ExtractedRomfs(ITkFileSystem fs) : IRomfs
 {

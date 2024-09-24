@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Ninject.Modules;
 using Tkmm.Core.Abstractions.IO;
-using Tkmm.Desktop.IO;
 
-namespace Tkmm.Desktop;
+namespace Tkmm.IO.Desktop.Modules;
 
 public sealed class DesktopModule : NinjectModule
 {

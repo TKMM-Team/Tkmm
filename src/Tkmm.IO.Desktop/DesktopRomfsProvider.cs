@@ -2,7 +2,7 @@ using Ninject;
 using Tkmm.Core;
 using Tkmm.Core.Abstractions.IO;
 
-namespace Tkmm.Desktop.IO;
+namespace Tkmm.IO.Desktop;
 
 public class DesktopRomfsProvider : IRomfsProvider
 {

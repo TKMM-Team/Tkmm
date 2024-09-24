@@ -7,7 +7,7 @@ using Tkmm.Core.Abstractions.IO;
 using Tkmm.Core.Abstractions.Parsers;
 using TotkCommon;
 
-namespace Tkmm.Desktop.IO;
+namespace Tkmm.IO.Desktop;
 
 public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFileSystem
 {
@@ -48,8 +48,10 @@ public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFile
         }
 
         foreach (string modFolder in Directory.EnumerateDirectories(targetFolder).Where(x => File.Exists(Path.Combine(x, "info.json")))) {
-            ITkMod target = await _systemModParser.Parse(modFolder);
-            mods.Add(target);
+            ITkMod? target = await _systemModParser.Parse(modFolder);
+            if (target is not null) {
+                mods.Add(target);
+            }
         }
         
     Result:
