@@ -11,6 +11,4 @@ public interface ITkModParserManager
     ITkModParser? GetParser(string input);
     
     bool CanParse(string input);
-    
-    void RegisterParser(ITkModParser parser);
 }

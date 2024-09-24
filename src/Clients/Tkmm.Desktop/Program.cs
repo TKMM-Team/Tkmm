@@ -5,6 +5,7 @@ using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Core.GameBanana.Modules;
 using Tkmm.Core.Modules;
 
 namespace Tkmm.Desktop;
@@ -16,6 +17,7 @@ internal abstract class Program
     {
         TKMM.DI.Load<DesktopModule>();
         TKMM.DI.Load<TkModule>();
+        TKMM.DI.Load<GameBananaModule>();
 
         try {
             BuildAvaloniaApp()

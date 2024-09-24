@@ -6,8 +6,6 @@ namespace Tkmm.Core.Parsers;
 
 internal sealed class SystemModParser : ITkModParser
 {
-    public static readonly SystemModParser Instance = new();
-    
     public bool CanParseInput(string input, CancellationToken ct = default)
     {
         return 

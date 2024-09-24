@@ -1,3 +1,4 @@
+using Ninject;
 using Tkmm.Core.Abstractions;
 using Tkmm.Core.Abstractions.Parsers;
 using Tkmm.Core.Parsers;
@@ -6,11 +7,9 @@ namespace Tkmm.Core;
 
 internal class TkModParserManager : ITkModParserManager
 {
-    private static readonly List<ITkModParser> _parsers = [];
-    
     public ITkModParser GetSystemParser()
     {
-        return SystemModParser.Instance;
+        return TKMM.DI.Get<SystemModParser>();
     }
 
     public ITkModParser GetTkclParser()
@@ -20,16 +19,13 @@ internal class TkModParserManager : ITkModParserManager
 
     public ITkModParser? GetParser(string input)
     {
-        return _parsers.FirstOrDefault(parser => parser.CanParseInput(input));
+        return TKMM.DI.GetAll<ITkModParser>()
+            .FirstOrDefault(parser => parser.CanParseInput(input));
     }
 
     public bool CanParse(string input)
     {
-        return _parsers.Any(parser => parser.CanParseInput(input));
-    }
-
-    public void RegisterParser(ITkModParser parser)
-    {
-        _parsers.Add(parser);
+        return TKMM.DI.GetAll<ITkModParser>()
+            .Any(parser => parser.CanParseInput(input));
     }
 }
