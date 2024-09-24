@@ -6,7 +6,7 @@ namespace Tkmm.Core;
 
 internal partial class TkItem : ObservableObject, ITkItem
 {
-    public Ulid Id { get; } = Ulid.NewUlid();
+    public Ulid Id { get; internal set; } = Ulid.NewUlid();
 
     [ObservableProperty]
     private string _name = string.Empty;

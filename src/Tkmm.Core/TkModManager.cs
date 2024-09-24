@@ -24,15 +24,15 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
 
     public IList<ITkProfile> Profiles => _profiles;
 
-    public async ValueTask<ITkMod?> Create(string argument, Stream? stream = null, CancellationToken ct = default)
+    public async ValueTask<ITkMod?> Create(string argument, Stream? stream, Ulid id, CancellationToken ct)
     {
         if (_parserManager.GetParser(argument) is not ITkModParser parser) {
             throw Exceptions.ParserNotFound(argument);
         }
 
         return stream switch {
-            not null => await parser.Parse(stream, ct),
-            _ => await parser.Parse(argument, ct)
+            not null => await parser.Parse(stream, id, ct),
+            _ => await parser.Parse(argument, id, ct)
         };
     }
 

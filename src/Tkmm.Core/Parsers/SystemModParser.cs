@@ -15,15 +15,29 @@ internal sealed class SystemModParser : ITkModParser
             Directory.Exists(input) && File.Exists(Path.Combine(input, "info.json"));
     }
 
-    public async ValueTask<ITkMod?> Parse(string input, CancellationToken ct = default)
+    public async ValueTask<ITkMod?> Parse(string input, Ulid id = default, CancellationToken ct = default)
     {
         var metadata = await TKMM.FS.GetMetadata<TkMod>(Path.Combine(input, "info.json"));
+        
+        // TODO: load options
+        
+        if (metadata is not null) {
+            metadata.Id = id;
+        }
+        
         return metadata;
     }
 
-    public async ValueTask<ITkMod?> Parse(Stream input, CancellationToken ct = default)
+    public async ValueTask<ITkMod?> Parse(Stream input, Ulid id = default, CancellationToken ct = default)
     {
         var metadata = await JsonSerializer.DeserializeAsync<TkMod>(input, cancellationToken: ct);
+        
+        // TODO: load options
+
+        if (metadata is not null) {
+            metadata.Id = id;
+        }
+        
         return metadata;
     }
 }
