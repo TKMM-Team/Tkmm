@@ -6,7 +6,11 @@ public interface ITkModParserManager
 {
     ITkModParser GetSystemParser();
     
-    ValueTask<ITkModParser?> GetParser(string input);
+    ITkModParser GetTkclParser();
+    
+    ITkModParser? GetParser(string input);
+    
+    bool CanParse(string input);
     
     void RegisterParser(ITkModParser parser);
 }

@@ -8,12 +8,11 @@ internal sealed class SystemModParser : ITkModParser
 {
     public static readonly SystemModParser Instance = new();
     
-    public ValueTask<bool> CanParseInput(string input, CancellationToken ct = default)
+    public bool CanParseInput(string input, CancellationToken ct = default)
     {
-        return ValueTask.FromResult(
+        return 
             // TODO: Remove direct IO usage 
-            Directory.Exists(input) && File.Exists(Path.Combine(input, "info.json"))
-        );
+            Directory.Exists(input) && File.Exists(Path.Combine(input, "info.json"));
     }
 
     public async ValueTask<ITkMod?> Parse(string input, CancellationToken ct = default)

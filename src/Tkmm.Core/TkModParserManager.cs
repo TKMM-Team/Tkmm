@@ -13,15 +13,19 @@ internal class TkModParserManager : ITkModParserManager
         return SystemModParser.Instance;
     }
 
-    public async ValueTask<ITkModParser?> GetParser(string input)
+    public ITkModParser GetTkclParser()
     {
-        foreach (ITkModParser parser in _parsers) {
-            if (await parser.CanParseInput(input)) {
-                return parser;
-            }
-        }
+        throw new NotImplementedException();
+    }
 
-        return default;
+    public ITkModParser? GetParser(string input)
+    {
+        return _parsers.FirstOrDefault(parser => parser.CanParseInput(input));
+    }
+
+    public bool CanParse(string input)
+    {
+        return _parsers.Any(parser => parser.CanParseInput(input));
     }
 
     public void RegisterParser(ITkModParser parser)

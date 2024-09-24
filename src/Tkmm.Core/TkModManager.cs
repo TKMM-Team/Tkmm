@@ -26,7 +26,7 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
 
     public async ValueTask<ITkMod?> Create(string argument, Stream? stream = null, CancellationToken ct = default)
     {
-        if (await _parserManager.GetParser(argument) is not ITkModParser parser) {
+        if (_parserManager.GetParser(argument) is not ITkModParser parser) {
             throw Exceptions.ParserNotFound(argument);
         }
 
