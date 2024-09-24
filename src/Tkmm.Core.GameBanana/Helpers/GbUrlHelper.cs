@@ -10,8 +10,8 @@ public static class GbUrlHelper
         };
         
         id = 0;
-        return url.LastIndexOf('/') switch {
-            var lastIndex and >= 0 => long.TryParse(normalizedUrl[lastIndex..], out id),
+        return normalizedUrl.LastIndexOf('/') switch {
+            var lastIndex and >= 0 => long.TryParse(normalizedUrl[++lastIndex..], out id),
             _ => false
         };
     }

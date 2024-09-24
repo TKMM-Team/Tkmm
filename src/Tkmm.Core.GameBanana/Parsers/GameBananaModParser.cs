@@ -28,7 +28,7 @@ public class GameBananaModParser(ITkModParserManager parserManager) : ITkModPars
             return await ParseFromModId(id, ct);
         }
 
-        return await ParseFromFileUrl(input, ct);
+        return await ParseFromFileUrl(input, id, ct: ct);
     }
 
     public ValueTask<ITkMod?> Parse(Stream input, Ulid _, CancellationToken ct)
@@ -50,7 +50,7 @@ public class GameBananaModParser(ITkModParserManager parserManager) : ITkModPars
             return null;
         }
 
-        ITkMod? mod = await ParseFromFileUrl(target.DownloadUrl, ct);
+        ITkMod? mod = await ParseFromFileUrl(target.DownloadUrl, target.Id, target, ct);
 
         if (mod is null) {
             return null;
@@ -73,14 +73,17 @@ public class GameBananaModParser(ITkModParserManager parserManager) : ITkModPars
         return mod;
     }
     
-    public async ValueTask<ITkMod?> ParseFromFileUrl(string fileUrl, CancellationToken ct = default)
+    public async ValueTask<ITkMod?> ParseFromFileUrl(string fileUrl, long fileId, GameBananaFile? target = default, CancellationToken ct = default)
     {
+        target ??= await GameBanana.Get($"File/{fileId}", GameBananaModJsonContext.Default.GameBananaFile, ct);
+        if (target is null) {
+            return null;
+        }
+        
         await using Stream stream = await GameBanana.Get(fileUrl, ct);
-        ITkModParser? parser = _parserManager.GetParser(fileUrl);
+        ITkModParser? parser = _parserManager.GetParser(target.Name);
         
-        GbUrlHelper.TryGetId(fileUrl, out long id);
-        
-        return parser?.Parse(stream, Unsafe.BitCast<long, Ulid>(id), ct) switch {
+        return parser?.Parse(stream, Unsafe.BitCast<long, Ulid>(fileId), ct) switch {
             { } result => await result,
             _ => null
         };

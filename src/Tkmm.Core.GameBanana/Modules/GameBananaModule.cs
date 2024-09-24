@@ -9,7 +9,6 @@ public class GameBananaModule : NinjectModule
     public override void Load()
     {
         TKMM.DI.Bind<ITkModParser>()
-            .To<GameBananaModParser>()
-            .InSingletonScope();
+            .To<GameBananaModParser>();
     }
 }
