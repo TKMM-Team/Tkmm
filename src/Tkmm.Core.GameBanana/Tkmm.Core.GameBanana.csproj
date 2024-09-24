@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tkmm.Core.Abstractions\Tkmm.Core.Abstractions.csproj" />
+      <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+      <PackageReference Include="ReverseMarkdown" Version="4.6.0" />
     </ItemGroup>
 
 </Project>
