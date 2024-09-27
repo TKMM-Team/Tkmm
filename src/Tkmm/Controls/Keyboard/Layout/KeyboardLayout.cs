@@ -1,12 +1,8 @@
 ﻿using Avalonia.Controls;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Tkmm.Controls.Keyboard.Layout
+namespace Tkmm.Controls.Keyboard.Layout;
+
+public abstract class KeyboardLayout : UserControl
 {
-    public abstract class KeyboardLayout : UserControl
-    {
-        string LayoutName { get; }
-    }
+    public abstract string LayoutName { get; }
 }

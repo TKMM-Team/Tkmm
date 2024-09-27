@@ -3,52 +3,51 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
-             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
              x:Class="Tkmm.Controls.Keyboard.Layout.VirtualKeyboardLayoutNumpad" Background="Black">
 
-	<UserControl.Resources>
-		<keyboard:VirtualKeyWidthMultiplayer x:Key="VirtualKeyWidthMultiplayer" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <keyboard:VirtualKeyWidthMultiplayer x:Key="VirtualKeyWidthMultiplayer" />
+    </UserControl.Resources>
 
-	
-	
-	<StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center">
-		<StackPanel Orientation="Horizontal">
-			<keyboard:VirtualKey NormalKey="ESC" SpecialKey="Escape" Name="VirtualKey1"/>
-			<keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
-			<keyboard:VirtualKey NormalKey="2" ShiftKey="&quot;" AltCtrlKey="²" />
-			<keyboard:VirtualKey NormalKey="3" ShiftKey="§" AltCtrlKey="³" />
-			<keyboard:VirtualKey SpecialKey="Back" SpecialIcon="KeyboardBackspace" Width="{Binding #VirtualKey1.Bounds.Width, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}"/>
-		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<StackPanel Orientation="Vertical">
-				<StackPanel Orientation="Horizontal">
-					<keyboard:VirtualKey NormalKey="*" />
-					<keyboard:VirtualKey NormalKey="4" />
-					<keyboard:VirtualKey NormalKey="5"  />
-					<keyboard:VirtualKey NormalKey="6"  />
-					<keyboard:VirtualKey NormalKey="." />
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<keyboard:VirtualKey NormalKey="-" />
-					<keyboard:VirtualKey NormalKey="7" />
-					<keyboard:VirtualKey NormalKey="8"  />
-					<keyboard:VirtualKey NormalKey="9"  />
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+            <keyboard:VirtualKey NormalKey="ESC" SpecialKey="Escape" Name="VirtualKey1" />
+            <keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
+            <keyboard:VirtualKey NormalKey="2" ShiftKey="&quot;" AltCtrlKey="²" />
+            <keyboard:VirtualKey NormalKey="3" ShiftKey="§" AltCtrlKey="³" />
+            <keyboard:VirtualKey SpecialKey="Back" SpecialIcon="KeyboardBackspace"
+                                 Width="{Binding #VirtualKey1.Bounds.Width, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <keyboard:VirtualKey NormalKey="*" />
+                    <keyboard:VirtualKey NormalKey="4" />
+                    <keyboard:VirtualKey NormalKey="5" />
+                    <keyboard:VirtualKey NormalKey="6" />
+                    <keyboard:VirtualKey NormalKey="." />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <keyboard:VirtualKey NormalKey="-" />
+                    <keyboard:VirtualKey NormalKey="7" />
+                    <keyboard:VirtualKey NormalKey="8" />
+                    <keyboard:VirtualKey NormalKey="9" />
 
-				</StackPanel>
-			
-			</StackPanel>
-			<keyboard:VirtualKey SpecialKey="Enter" SpecialIcon="KeyboardReturn" Height="{Binding #VirtualKey1.Bounds.Height, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}"/>
-		</StackPanel>
-		
-		<StackPanel Orientation="Horizontal">
-			<keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
-			<keyboard:VirtualKey NormalKey="" ShiftKey="&quot;" AltCtrlKey="" />
-			<keyboard:VirtualKey NormalKey="0" ShiftKey="" AltCtrlKey="" />
-			<keyboard:VirtualKey SpecialKey="Left"  SpecialIcon="ChevronLeft"/>
-			<keyboard:VirtualKey SpecialKey="Right" SpecialIcon="ChevronRight"/>
-			<keyboard:VirtualKey NormalKey="ABC" SpecialKey="BrowserFavorites"/>
-		</StackPanel>
-	</StackPanel>
+                </StackPanel>
+
+            </StackPanel>
+            <keyboard:VirtualKey SpecialKey="Enter" SpecialIcon="KeyboardReturn"
+                                 Height="{Binding #VirtualKey1.Bounds.Height, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
+            <keyboard:VirtualKey NormalKey="" ShiftKey="&quot;" AltCtrlKey="" />
+            <keyboard:VirtualKey NormalKey="0" ShiftKey="" AltCtrlKey="" />
+            <keyboard:VirtualKey SpecialKey="Left" SpecialIcon="ChevronLeft" />
+            <keyboard:VirtualKey SpecialKey="Right" SpecialIcon="ChevronRight" />
+            <keyboard:VirtualKey NormalKey="ABC" SpecialKey="BrowserFavorites" />
+        </StackPanel>
+    </StackPanel>
 </UserControl>

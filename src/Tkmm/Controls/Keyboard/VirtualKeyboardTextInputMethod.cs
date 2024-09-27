@@ -9,60 +9,59 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Tkmm.Controls.Keyboard
+namespace Tkmm.Controls.Keyboard;
+
+public class VirtualKeyboardTextInputMethod
 {
-    public class VirtualKeyboardTextInputMethod
+    private bool _isOpen;
+    private TextInputOptions? _textInputOptions;
+
+    private Window root = null;
+
+    public VirtualKeyboardTextInputMethod(Window root)
     {
-        private bool _isOpen;
-        private TextInputOptions? _textInputOptions;
+        this.root = root;
+    }
+    public VirtualKeyboardTextInputMethod()
+    {
 
-        private Window root = null;
+    }
 
-        public VirtualKeyboardTextInputMethod(Window root)
+    public async Task SetActive(bool active, GotFocusEventArgs e)
+    {
+        if (active && !_isOpen)
         {
-            this.root = root;
-        }
-        public VirtualKeyboardTextInputMethod()
-        {
 
-        }
+            _isOpen = true;
+            var oskReturn = await VirtualKeyboard.ShowDialog(_textInputOptions, root);
 
-        public async Task SetActive(bool active, GotFocusEventArgs e)
-        {
-            if (active && !_isOpen)
+            if (e.Source.GetType() == typeof(TextBox))
             {
-
-                _isOpen = true;
-                var oskReturn = await VirtualKeyboard.ShowDialog(_textInputOptions, root);
-
-                if (e.Source.GetType() == typeof(TextBox))
-                {
-                    ((TextBox)e.Source).Text = oskReturn;
-
-                }
-
-                _isOpen = false;
-                _textInputOptions = null;
-
-                if (root != null)
-                {
-                    root!.Focus();
-                    root.FocusManager.ClearFocus();
-                    var r = root.GetVisualChildren();
-                    var t = r.Last();
-
-                    ((Control)t).Focus();
-
-                }
-                else if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    desktop.MainWindow.Focus();
-                    desktop.MainWindow.FocusManager.ClearFocus();
-                }
-
-                e.Handled = true;
+                ((TextBox)e.Source).Text = oskReturn;
 
             }
+
+            _isOpen = false;
+            _textInputOptions = null;
+
+            if (root != null)
+            {
+                root!.Focus();
+                root.FocusManager.ClearFocus();
+                var r = root.GetVisualChildren();
+                var t = r.Last();
+
+                ((Control)t).Focus();
+
+            }
+            else if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow.Focus();
+                desktop.MainWindow.FocusManager.ClearFocus();
+            }
+
+            e.Handled = true;
+
         }
     }
 }

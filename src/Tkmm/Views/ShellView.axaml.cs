@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
 using System.Timers;
+using Avalonia;
 using Tkmm.Controls.Keyboard;
 using Tkmm.Controls.Keyboard.Layout;
 using Tkmm.Helpers;
@@ -13,31 +14,23 @@ namespace Tkmm.Views;
 
 public partial class ShellView : AppWindow
 {
+    private bool _iskeyboardCooldown;
+    private bool _iskeyboardCooldownStarted;
 
-    private VirtualKeyboardTextInputMethod virtualKeyboardTextInput = null;
-    private bool iskeyboardCooldown;
-    private bool iskeyboardCooldownStarted;
-
-    private Tkmm.Controls.Keyboard.VirtualKeyboard keyboard;
-
-    private System.Timers.Timer? keyboardCoolDown;
+    private readonly System.Timers.Timer _keyboardCoolDown;
 
     public ShellView()
     {
-        Tkmm.Controls.Keyboard.VirtualKeyboard.AddLayout<VirtualKeyboardLayoutUS>();
-        Tkmm.Controls.Keyboard.VirtualKeyboard.SetDefaultLayout(() => typeof(VirtualKeyboardLayoutUS));
+        VirtualKeyboard.AddLayout<VirtualKeyboardLayoutUS>();
+        VirtualKeyboard.SetDefaultLayout(() => typeof(VirtualKeyboardLayoutUS));
 
         InitializeComponent();
 
-        virtualKeyboardTextInput = new VirtualKeyboardTextInputMethod((AppWindow)this);
+        _keyboardCoolDown = new System.Timers.Timer();
+        _keyboardCoolDown.Interval = 200;
+        _keyboardCoolDown.Elapsed += ResetCoolDown;
 
-        keyboard = this.GetControl<Tkmm.Controls.Keyboard.VirtualKeyboard>("VirtualKeyboardControl");
-
-        keyboardCoolDown = new System.Timers.Timer();
-        keyboardCoolDown.Interval = 200;
-        keyboardCoolDown.Elapsed += resetCoolDown;
-
-        this.AddHandler<GotFocusEventArgs>(Control.GotFocusEvent, openVirtualKeyboard);
+        AddHandler(GotFocusEvent, OpenVirtualKeyboard);
 
         SplashScreen = new SplashScreen();
 
@@ -45,7 +38,7 @@ public partial class ShellView : AppWindow
         TitleBar.TitleBarHitTestType = TitleBarHitTestType.Complex;
 
         Bitmap bitmap = new(AssetLoader.Open(new Uri("avares://Tkmm/Assets/icon.ico")));
-        Icon = bitmap.CreateScaledBitmap(new(48, 48));
+        Icon = bitmap.CreateScaledBitmap(new PixelSize(48, 48));
 
         PageManager.Shared.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(PageManager.Current)) {
@@ -53,46 +46,36 @@ public partial class ShellView : AppWindow
             }
         };
     }
-    private void resetCoolDown(object? sender, ElapsedEventArgs e)
+
+    private void ResetCoolDown(object? sender, ElapsedEventArgs e)
     {
-
-
-        iskeyboardCooldown = false;
-        iskeyboardCooldownStarted = false;
-        keyboardCoolDown.Stop();
+        _iskeyboardCooldown = false;
+        _iskeyboardCooldownStarted = false;
+        _keyboardCoolDown.Stop();
     }
-    private void openVirtualKeyboard(object? sender, GotFocusEventArgs e)
+
+    private void OpenVirtualKeyboard(object? sender, GotFocusEventArgs e)
     {
-        if (iskeyboardCooldown && !iskeyboardCooldownStarted)
-        {
-            iskeyboardCooldownStarted = true;
-            keyboardCoolDown.Start();
+        if (_iskeyboardCooldown && !_iskeyboardCooldownStarted) {
+            _iskeyboardCooldownStarted = true;
+            _keyboardCoolDown.Start();
         }
 
-        if (e.Source.GetType() == typeof(TextBox) && !keyboard.IsVisible)
-        {
-
-            //virtualKeyboardTextInput.SetActive(true, e);
-            var tb = e.Source as Control;
-
-
-
-
-            switch (tb.Tag?.ToString())
-            {
-                case "numpad":
-                    keyboard.ShowKeyboard(e.Source as TextBox, typeof(VirtualKeyboardLayoutNumpad));
-                    break;
-                default:
-                    keyboard.ShowKeyboard(e.Source as TextBox);
-                    break;
-            }
-
-
-            //keyboard.IsVisible = true;
-            //((Control)keyboard.Parent).IsVisible = true;
-
-            iskeyboardCooldown = true;
+        if (e.Source?.GetType() != typeof(TextBox) || Keyboard.IsVisible) {
+            return;
         }
+
+        var tb = e.Source as Control;
+
+        switch (tb?.Tag?.ToString()) {
+            case "numpad":
+                Keyboard.ShowKeyboard((TextBox)e.Source, typeof(VirtualKeyboardLayoutNumpad));
+                break;
+            default:
+                Keyboard.ShowKeyboard((TextBox)e.Source);
+                break;
+        }
+        
+        _iskeyboardCooldown = true;
     }
 }

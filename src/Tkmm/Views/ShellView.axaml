@@ -128,11 +128,9 @@
                 <Run Text="{Binding Source={x:Static app:App.Version}, StringFormat=' v{0}'}" />
             </TextBlock>
         </Grid>
-        <Grid>
-            <Panel Background="Transparent" Name="dialogpanel"  IsVisible="False">
-
-                <keyboard:VirtualKeyboard Name="VirtualKeyboardControl" IsVisible="False"></keyboard:VirtualKeyboard>
-            </Panel>
-        </Grid>
+        
+        <Panel Grid.RowSpan="4" Background="Transparent" IsVisible="False">
+            <keyboard:VirtualKeyboard Name="Keyboard" IsVisible="False"></keyboard:VirtualKeyboard>
+        </Panel>
     </Grid>
 </uiw:AppWindow>
