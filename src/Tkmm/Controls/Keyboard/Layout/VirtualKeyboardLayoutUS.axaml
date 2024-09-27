@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             x:Class="Tkmm.Controls.Keyboard.Layout.VirtualKeyboardLayoutUS" Background="Black">
+	
+
+	<DockPanel >
+
+		<Panel DockPanel.Dock="Bottom">
+
+			<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+				
+
+				<StackPanel Orientation="Horizontal">
+					<keyboard:VirtualKey NormalKey="q" ShiftKey="Q" AltCtrlKey="" Name="VirtualKey1"/>
+					<keyboard:VirtualKey NormalKey="w" ShiftKey="W" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="e" ShiftKey="E" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="r" ShiftKey="R" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="t" ShiftKey="T" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="y" ShiftKey="Y" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="u" ShiftKey="U" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="i" ShiftKey="I" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="o" ShiftKey="O" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="p" ShiftKey="P" AltCtrlKey=""/>
+					<keyboard:VirtualKey SpecialKey="Back" SpecialIcon="KeyboardBackspace" Width="294"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Margin="45 0 0 0">
+					<keyboard:VirtualKey NormalKey="a" ShiftKey="A" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="s" ShiftKey="S" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="d" ShiftKey="D" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="f" ShiftKey="F" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="g" ShiftKey="G" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="h" ShiftKey="H" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="j" ShiftKey="J" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="k" ShiftKey="K" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="l" ShiftKey="L" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="" ShiftKey='' AltCtrlKey=""/>
+					<keyboard:VirtualKey SpecialKey="Enter" SpecialIcon="KeyboardReturn" Width="252">
+						<keyboard:VirtualKey.SpecialIcon>
+
+						</keyboard:VirtualKey.SpecialIcon>
+					</keyboard:VirtualKey>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<keyboard:VirtualKey SpecialKey="LeftShift" SpecialIcon="KeyboardCaps"/>
+					<keyboard:VirtualKey NormalKey="z" ShiftKey="Z" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="x" ShiftKey="X" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="c" ShiftKey="C" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="v" ShiftKey="V" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="b" ShiftKey="B" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="n" ShiftKey="N" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="m" ShiftKey="M" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="." ShiftKey='' AltCtrlKey=""/>
+					<keyboard:VirtualKey NormalKey="-" ShiftKey="" AltCtrlKey=""/>
+					<keyboard:VirtualKey SpecialKey="RightShift" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<keyboard:VirtualKey SpecialKey="BrowserFavorites" NormalKey="123"/>
+					<keyboard:VirtualKey SpecialKey="RightCtrl" NormalKey="ctrl" />
+					<keyboard:VirtualKey NormalKey="" />
+					<keyboard:VirtualKey NormalKey=" " Width="933"/>
+					<keyboard:VirtualKey SpecialKey="Left"  SpecialIcon="ChevronLeft"/>
+					<keyboard:VirtualKey SpecialKey="Right" SpecialIcon="ChevronRight"/>
+					<keyboard:VirtualKey SpecialKey="BrowserFavorites" NormalKey="123"/>
+				</StackPanel>
+			</StackPanel>
+
+		</Panel>
+
+
+	</DockPanel>
+</UserControl>

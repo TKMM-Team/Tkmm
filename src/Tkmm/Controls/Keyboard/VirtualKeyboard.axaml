@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:layout="clr-namespace:Tkmm.Controls.Keyboard.Layout"
+			 xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
+			 Name="vk"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
+             x:Class="Tkmm.Controls.Keyboard.VirtualKeyboard" Background="White">
+
+	<UserControl.Styles>
+		
+		<Style Selector="keyboard|VirtualKey">
+			<Setter Property="Width" Value="141"/>
+			<Setter Property="Height" Value="135"/>
+			<Setter Property="Margin" Value=" 7 7 7 7"/>
+			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Foreground" Value="White" />
+
+
+		</Style>
+
+		<Style Selector="keyboard|VirtualKey /template/ Button /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="CornerRadius" Value="15"/>
+			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+
+		<Style Selector="keyboard|VirtualKey /template/ Button">
+			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="CornerRadius" Value="15"/>
+			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="keyboard|VirtualKey /template/ Button /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="CornerRadius" Value="15"/>
+		</Style>
+
+		<Style Selector="keyboard|VirtualKey /template/ Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="CornerRadius" Value="15"/>
+			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
+
+    <StackPanel>
+		<StackPanel DockPanel.Dock="Top" Margin="0 200 0 0">
+			<Border  BorderThickness="2" BorderBrush="{DynamicResource GrayInactiveBrush}" CornerRadius="45" Width="1700" Height="120" Margin="0,0,0,100">
+				<DockPanel>
+					<TextBox Name="TextBox" DockPanel.Dock="Left" Classes="KeyboardTextBox">
+					</TextBox>
+					<Button DockPanel.Dock="Right" Name="AcceptButton"  Width="320" Height="120" CornerRadius="45" FontSize="{DynamicResource Buttons}" Foreground="White" Background="{DynamicResource HighlightBrush}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+						Accept
+					</Button>
+				</DockPanel>
+			</Border>
+			<Panel HorizontalAlignment="Stretch">
+				<Button  DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+					<Image Classes="Large" Source="avares://Tkmm/Assets/Close_Icon.png" Width="40" Height="40"/>
+				</Button>
+			</Panel>
+			
+		</StackPanel>
+
+		<TransitioningContentControl Name="TransitioningContentControl" />
+		<!--<layout:VirtualKeyboardLayoutUS Opacity="0" IsHitTestVisible="False"/>-->
+		<!--<Grid>
+			--><!-- QuickAndDirty resize bugfix --><!--
+
+			--><!----><!--
+      </Grid>-->
+    </StackPanel>
+  </UserControl>

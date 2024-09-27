@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550"
+         Width="1280" Height="720"
+        x:Class="Tkmm.Controls.Keyboard.Layout.CoporateWindow"
+		x:CompileBindings="False"
+		
+      Title="CoporateWindow"
+     
+      ExtendClientAreaToDecorationsHint="True"
+      
+      WindowStartupLocation="CenterScreen"
+		>
+
+
+  <Window.Styles>
+
+    <Style Selector="Window">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    
+    <Style Selector="ExperimentalAcrylicBorder">
+      <Setter Property="CornerRadius" Value="30,30,30,30"/>
+    </Style>
+
+  </Window.Styles>
+
+  <Panel>
+    <ExperimentalAcrylicBorder IsHitTestVisible="False">
+      <ExperimentalAcrylicBorder.Material>
+        <ExperimentalAcrylicMaterial
+          BackgroundSource="Digger"
+          TintColor="#ffffff"
+          TintOpacity="0.9999"
+          MaterialOpacity="0.065" />
+      </ExperimentalAcrylicBorder.Material>
+    </ExperimentalAcrylicBorder>
+    <Panel Margin="5,5,5,5">
+		<StackPanel>
+			<Panel Margin="0">
+				<ContentPresenter Content="{Binding Path=CoporateContent}"/>
+			</Panel>
+
+		</StackPanel>
+
+	</Panel>
+  </Panel>
+</Window>

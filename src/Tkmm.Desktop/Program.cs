@@ -1,8 +1,10 @@
 ﻿using Avalonia;
+using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using Cocona;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using System;
 using Tkmm.Components;
 using Tkmm.Core.Commands;
 using Tkmm.Core.Components;
@@ -85,6 +87,7 @@ internal abstract class Program
 
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont();
+            .WithInterFont()
+            .UseReactiveUI();
     }
 }

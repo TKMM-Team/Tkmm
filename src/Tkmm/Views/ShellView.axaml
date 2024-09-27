@@ -8,6 +8,7 @@
                xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
                xmlns:helperModels="using:Tkmm.Helpers.Models"
                xmlns:helpers="using:Tkmm.Helpers"
+               xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
@@ -127,6 +128,11 @@
                 <Run Text="{Binding Source={x:Static app:App.Version}, StringFormat=' v{0}'}" />
             </TextBlock>
         </Grid>
-    </Grid>
+        <Grid>
+            <Panel Background="Transparent" Name="dialogpanel"  IsVisible="False">
 
+                <keyboard:VirtualKeyboard Name="VirtualKeyboardControl" IsVisible="False"></keyboard:VirtualKeyboard>
+            </Panel>
+        </Grid>
+    </Grid>
 </uiw:AppWindow>
