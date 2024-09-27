@@ -1,8 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace Tkmm.ViewModels
+namespace Tkmm.ViewModels;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }
