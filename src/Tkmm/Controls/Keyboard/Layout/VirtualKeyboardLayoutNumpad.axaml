@@ -19,8 +19,7 @@
             <keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
             <keyboard:VirtualKey NormalKey="2" ShiftKey="&quot;" AltCtrlKey="²" />
             <keyboard:VirtualKey NormalKey="3" ShiftKey="§" AltCtrlKey="³" />
-            <keyboard:VirtualKey SpecialKey="Back" NormalKey="🠈 Back"
-                                 Width="{Binding #VirtualKey1.Bounds.Width, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}" />
+            <keyboard:VirtualKey SpecialKey="Back" NormalKey="⬅ Back" Width="190" />
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Vertical">
@@ -48,8 +47,8 @@
             <keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
             <keyboard:VirtualKey NormalKey="" ShiftKey="" AltCtrlKey="" />
             <keyboard:VirtualKey NormalKey="0" ShiftKey="" AltCtrlKey="" />
-			<keyboard:VirtualKey SpecialKey="Left" NormalKey="🡠" />
-			<keyboard:VirtualKey SpecialKey="Right" NormalKey="🡢" />
+			<keyboard:VirtualKey SpecialKey="Left" NormalKey="⇤" />
+			<keyboard:VirtualKey SpecialKey="Right" NormalKey="⇥" />
             <keyboard:VirtualKey NormalKey="ABC" SpecialKey="BrowserFavorites" />
         </StackPanel>
     </StackPanel>

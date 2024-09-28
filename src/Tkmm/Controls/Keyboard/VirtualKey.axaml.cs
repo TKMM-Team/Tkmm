@@ -95,7 +95,7 @@ public partial class VirtualKey : TemplatedControl
                     BorderThickness = new Thickness(1),
                     BorderBrush = new SolidColorBrush(Color.Parse("Black")),
                     CornerRadius = new CornerRadius(5, 5, 5, 5),
-                    Background = new SolidColorBrush(Color.Parse("#33ffffff")), // DarkGray
+                    Background = new SolidColorBrush(Color.Parse("#CC444444")), // DarkGray
                     Foreground = new SolidColorBrush(Color.Parse("White")),
                     FontSize = 45,
                     [!WidthProperty] = new Binding("Width"),

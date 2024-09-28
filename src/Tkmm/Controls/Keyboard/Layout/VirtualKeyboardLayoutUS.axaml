@@ -27,7 +27,7 @@
                 <keyboard:VirtualKey NormalKey="i" ShiftKey="I" AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="o" ShiftKey="O" AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="p" ShiftKey="P" AltCtrlKey="" />
-                <keyboard:VirtualKey SpecialKey="Back" NormalKey="🠈 Backspace" ShiftKey="🠈 Backspace" Width="250" />
+                <keyboard:VirtualKey SpecialKey="Back" NormalKey="⬅ Backspace" ShiftKey="⬅ Backspace" Width="250" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                 <keyboard:VirtualKey NormalKey="a" ShiftKey="A" AltCtrlKey="" />
@@ -43,7 +43,7 @@
                 <keyboard:VirtualKey SpecialKey="Enter" NormalKey="↩ Return" ShiftKey="↩ Return" Width="250" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                <keyboard:VirtualKey SpecialKey="LeftShift" NormalKey="🡅" ShiftKey="🡅" Width="120" />
+                <keyboard:VirtualKey SpecialKey="LeftShift" NormalKey="⇪" ShiftKey="⇪" Width="120" />
                 <keyboard:VirtualKey NormalKey="z" ShiftKey="Z" AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="x" ShiftKey="X" AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="c" ShiftKey="C" AltCtrlKey="" />
@@ -54,14 +54,14 @@
                 <keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="." ShiftKey='' AltCtrlKey="" />
                 <keyboard:VirtualKey NormalKey="-" ShiftKey="" AltCtrlKey="" />
-                <keyboard:VirtualKey SpecialKey="RightShift" NormalKey="🡅" ShiftKey="🡅" Width="120" />
+                <keyboard:VirtualKey SpecialKey="RightShift" NormalKey="⇪" ShiftKey="⇪" Width="120" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                 <keyboard:VirtualKey SpecialKey="BrowserFavorites" NormalKey="123" ShiftKey="123" />
                 <keyboard:VirtualKey SpecialKey="RightCtrl" NormalKey="ctrl" ShiftKey="ctrl" />
-                <keyboard:VirtualKey NormalKey=" " Width="770" />
-                <keyboard:VirtualKey SpecialKey="Left" NormalKey="🡠" ShiftKey="🡠" />
-                <keyboard:VirtualKey SpecialKey="Right" NormalKey="🡢" ShiftKey="🡢" />
+                <keyboard:VirtualKey NormalKey=" " Width="750" />
+                <keyboard:VirtualKey SpecialKey="Left" NormalKey="⇤" ShiftKey="⇤" />
+                <keyboard:VirtualKey SpecialKey="Right" NormalKey="⇥" ShiftKey="⇥" />
                 <keyboard:VirtualKey SpecialKey="BrowserFavorites" NormalKey="123" ShiftKey="123" />
             </StackPanel>
         </StackPanel>
