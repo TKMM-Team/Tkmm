@@ -16,13 +16,13 @@ using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard;
 
-    public enum VirtualKeyboardState
-    {
-        Default,
-        Shift,
-        Capslock,
-        AltCtrl
-    }
+public enum VirtualKeyboardState
+{
+    Default,
+    Shift,
+    Capslock,
+    AltCtrl
+}
 
 public partial class VirtualKeyboard : UserControl
 {
