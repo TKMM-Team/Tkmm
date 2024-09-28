@@ -4,35 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:layout="clr-namespace:Tkmm.Controls.Keyboard.Layout"
-			 xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
-			 Name="vk"
-             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
-             x:Class="Tkmm.Controls.Keyboard.VirtualKeyboard" Background="White">
+             xmlns:keyboard="clr-namespace:Tkmm.Controls.Keyboard"
+             Name="vk"
+             mc:Ignorable="d" 
+             x:Class="Tkmm.Controls.Keyboard.VirtualKeyboard" 
+             Background="#CC000000" 
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
 
 	<UserControl.Styles>
 		
 		<Style Selector="keyboard|VirtualKey">
-			<Setter Property="Width" Value="141"/>
-			<Setter Property="Height" Value="135"/>
-			<Setter Property="Margin" Value=" 7 7 7 7"/>
-			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Width" Value="90"/>
+			<Setter Property="Height" Value="90"/>
+			<Setter Property="Margin" Value=" 5 5 5 5"/>
+			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
-
-
 		</Style>
 
 		<Style Selector="keyboard|VirtualKey /template/ Button /template/ ContentPresenter#PART_ContentPresenter">
-			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
-			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="FontSize" Value="32"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		</Style>
 
 
 		<Style Selector="keyboard|VirtualKey /template/ Button">
-			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
 			<Setter Property="FontSize" Value="45"/>
@@ -45,7 +46,7 @@
 		</Style>
 
 		<Style Selector="keyboard|VirtualKey /template/ Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-			<Setter Property="Background" Value="#33ffffff" />
+			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
 			<Setter Property="FontSize" Value="45"/>
@@ -54,23 +55,28 @@
 		</Style>
 	</UserControl.Styles>
 
-    <StackPanel>
-		<StackPanel DockPanel.Dock="Top" Margin="0 200 0 0">
-			<Border  BorderThickness="2" BorderBrush="{DynamicResource GrayInactiveBrush}" CornerRadius="45" Width="1700" Height="120" Margin="0,0,0,100">
-				<DockPanel>
-					<TextBox Name="TextBox" DockPanel.Dock="Left" Classes="KeyboardTextBox">
-					</TextBox>
-					<Button DockPanel.Dock="Right" Name="AcceptButton"  Width="320" Height="120" CornerRadius="45" FontSize="{DynamicResource Buttons}" Foreground="White" Background="{DynamicResource HighlightBrush}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-						Accept
+	<StackPanel>
+		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0"> <!-- Adjusted top margin -->
+			<Border BorderThickness="2" BorderBrush="{DynamicResource GrayInactiveBrush}" CornerRadius="70" Margin="0,0,0,50" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"> <!-- Adjusted bottom margin -->
+				<Grid Margin="20,0"> <!-- Adjusted grid margin -->
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="320" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<TextBox Name="TextBox" Grid.Column="0" Grid.Row="0" Classes="KeyboardTextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="36" Height="80"/> <!-- Adjusted height -->
+					<Button Grid.Column="1" Grid.Row="0" Name="AcceptButton" Width="320" Height="80" FontSize="24" Foreground="White" Background="{DynamicResource SystemAccentColor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20,0,0,0"> <!-- Adjusted height -->
+						Validate
 					</Button>
-				</DockPanel>
+				</Grid>
 			</Border>
 			<Panel HorizontalAlignment="Stretch">
-				<Button  DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+				<Button DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center">
 					<Image Classes="Large" Source="avares://Tkmm/Assets/Close_Icon.png" Width="40" Height="40"/>
 				</Button>
 			</Panel>
-			
 		</StackPanel>
 
 		<TransitioningContentControl Name="TransitioningContentControl" />
@@ -79,6 +85,6 @@
 			--><!-- QuickAndDirty resize bugfix --><!--
 
 			--><!----><!--
-      </Grid>-->
-    </StackPanel>
+		</Grid>-->
+	</StackPanel>
   </UserControl>

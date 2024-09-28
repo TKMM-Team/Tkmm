@@ -26,11 +26,12 @@ public partial class ShellView : AppWindow
 
         InitializeComponent();
 
+        #if SWITCH
         _keyboardCoolDown = new System.Timers.Timer();
         _keyboardCoolDown.Interval = 200;
         _keyboardCoolDown.Elapsed += ResetCoolDown;
-
         AddHandler(GotFocusEvent, OpenVirtualKeyboard);
+        #endif
 
         SplashScreen = new SplashScreen();
 
