@@ -224,11 +224,8 @@ public partial class VirtualKeyboard : UserControl
             }
             else if (key == Key.Enter || key == Key.ImeAccept)
             {
-                if (TextBox_.Text?.Length > 0)
-                {
-                    source.Text = TextBox_.Text;
-                    SimulateEnterKeyPress(source);
-                }
+                source.Text = TextBox_.Text;
+                SimulateEnterKeyPress(source);
                 Close();
             }
             else if (key == Key.Help)
