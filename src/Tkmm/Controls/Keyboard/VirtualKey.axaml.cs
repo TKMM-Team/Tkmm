@@ -9,8 +9,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
-using Material.Icons.Avalonia;
 
 namespace Tkmm.Controls.Keyboard;
 
@@ -58,12 +56,6 @@ public partial class VirtualKey : TemplatedControl
         set => SetValue(SpecialKeyProperty, value);
     }
 
-    public static readonly StyledProperty<MaterialIconKind> SpecialIconProperty = AvaloniaProperty.Register<VirtualKey, MaterialIconKind>(nameof(SpecialIcon));
-
-    public MaterialIconKind SpecialIcon {
-        get => GetValue(SpecialIconProperty);
-        set => SetValue(SpecialIconProperty, value);
-    }
 
     public VirtualKey()
     {
@@ -103,8 +95,9 @@ public partial class VirtualKey : TemplatedControl
                     BorderThickness = new Thickness(1),
                     BorderBrush = new SolidColorBrush(Color.Parse("Black")),
                     CornerRadius = new CornerRadius(5, 5, 5, 5),
-                    Background = new SolidColorBrush(Color.Parse("Black")),
+                    Background = new SolidColorBrush(Color.Parse("#33ffffff")), // DarkGray
                     Foreground = new SolidColorBrush(Color.Parse("White")),
+                    FontSize = 45,
                     [!WidthProperty] = new Binding("Width"),
                     [!HeightProperty] = new Binding("Height"),
                     [!ContentControl.ContentProperty] = new Binding("Caption"),
@@ -157,15 +150,6 @@ public partial class VirtualKey : TemplatedControl
                         var stackPanel = new StackPanel {
                             Orientation = Orientation.Vertical
                         };
-                        var first = new MaterialIcon {
-                            Kind = SpecialIcon
-                        };
-                        var second = new MaterialIcon {
-                            Kind = SpecialIcon,
-                            RenderTransform = new RotateTransform(180.0)
-                        };
-                        stackPanel.Children.Add(first);
-                        stackPanel.Children.Add(second);
                         Caption = stackPanel;
                         IsEnabled = false;
                     }
@@ -173,11 +157,6 @@ public partial class VirtualKey : TemplatedControl
                     case Key.Space: {
                         Caption = null;
                     }
-                        break;
-                    default:
-                        Caption = new MaterialIcon {
-                            Kind = SpecialIcon
-                        };
                         break;
                 }
             }
