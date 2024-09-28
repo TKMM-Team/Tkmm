@@ -26,7 +26,7 @@
 			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
-			<Setter Property="FontSize" Value="32"/>
+			<Setter Property="FontSize" Value="31"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		</Style>
@@ -36,7 +36,7 @@
 			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
-			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="FontSize" Value="35"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		</Style>
@@ -49,7 +49,7 @@
 			<Setter Property="Background" Value="#CC444444" />
 			<Setter Property="Foreground" Value="White" />
 			<Setter Property="CornerRadius" Value="15"/>
-			<Setter Property="FontSize" Value="45"/>
+			<Setter Property="FontSize" Value="35"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		</Style>

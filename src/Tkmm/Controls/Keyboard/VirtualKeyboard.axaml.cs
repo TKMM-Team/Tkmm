@@ -227,6 +227,7 @@ public partial class VirtualKeyboard : UserControl
                 if (TextBox_.Text?.Length > 0)
                 {
                     source.Text = TextBox_.Text;
+                    SimulateEnterKeyPress(source);
                 }
                 Close();
             }
@@ -296,6 +297,18 @@ public partial class VirtualKeyboard : UserControl
                 TextBox_.Focus();
             }
         }
+    }
+
+    private void SimulateEnterKeyPress(Control target)
+    {
+        var keyEventArgs = new KeyEventArgs
+        {
+            RoutedEvent = InputElement.KeyDownEvent,
+            Key = Key.Enter,
+            Source = target,
+            KeyModifiers = KeyModifiers.None
+        };
+        target.RaiseEvent(keyEventArgs);
     }
 
     private void InitializeComponent()
