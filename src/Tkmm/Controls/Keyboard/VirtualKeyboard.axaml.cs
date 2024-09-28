@@ -16,13 +16,13 @@ using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard;
 
-public enum VirtualKeyboardState
-{
-    Default,
-    Shift,
-    Capslock,
-    AltCtrl
-}
+    public enum VirtualKeyboardState
+    {
+        Default,
+        Shift,
+        Capslock,
+        AltCtrl
+    }
 
 public partial class VirtualKeyboard : UserControl
 {
@@ -36,36 +36,6 @@ public partial class VirtualKeyboard : UserControl
     public static async Task<string?> ShowDialog(TextInputOptions options, Window? owner = null)
     {
         var keyboard = new VirtualKeyboard();
-
-
-        //if (options.ContentType == TextInputContentType.)
-        //{
-        //    keyboard.TextBox.Text = textBox.Text;
-        //    keyboard.TextBox.PasswordChar = textBox.PasswordChar;
-
-        //    if (textBox.Tag != null && ((string)textBox.Tag).Contains("numeric"))
-        //    {
-        //        keyboard.targetLayout = "numpad";
-        //    }
-        //}
-
-
-
-        var window = new CoporateWindow();
-        window.CoporateContent = keyboard;
-        window.Title = "Keyboard";
-
-        var mw = ((IClassicDesktopStyleApplicationLifetime)App.Current.ApplicationLifetime).MainWindow;
-
-
-
-        await window.ShowDialog(owner ?? mw);
-        if (window.Tag is string s)
-        {
-            //if (options.Source is TextBox tb)
-            //    tb.Text = s;
-            return s;
-        }
         return null;
     }
 
@@ -76,12 +46,12 @@ public partial class VirtualKeyboard : UserControl
     public TransitioningContentControl TransitioningContentControl_ { get; }
 
     public TextBox source { get; set; }
-        
+    
 
     public IObservable<VirtualKeyboardState> KeyboardStateStream => _keyboardStateStream;
     private readonly BehaviorSubject<VirtualKeyboardState> _keyboardStateStream;
 
-       
+    
 
     public IReactiveCommand CloseCommand { get; }
 
@@ -98,7 +68,7 @@ public partial class VirtualKeyboard : UserControl
         CloseCommand = ReactiveCommand.Create(() => { Close(); });
         Initialized += async (sender, args) =>
         {
-                
+            
             if(targetLayout == null)
             {
                 TransitioningContentControl_.Content = Activator.CreateInstance(DefaultLayout.Invoke());
@@ -126,9 +96,9 @@ public partial class VirtualKeyboard : UserControl
             }
             else if (args.Key == Key.Enter)
             {
-                   
+                
                 source.Text = TextBox_.Text;
-                    
+                
                 Close();
             }
         };
@@ -142,8 +112,8 @@ public partial class VirtualKeyboard : UserControl
 
     public void Close()
     {
-           
-           
+        
+        
         TextBox_.Text = "";
         IsVisible = false;
         ((Control)this.Parent).IsVisible = false;
@@ -155,12 +125,11 @@ public partial class VirtualKeyboard : UserControl
         {
             TextBox_.Focus();
         });
-        TextBox_.Focus();
+            TextBox_.Focus();
         this.source = source;
 
         this.TextBox_.PasswordChar = source.PasswordChar;
         this.TextBox_.Text = source.Text == null ? "" : source.Text;
-        //this.TextBox_.CaretIndex = this.TextBox_.Text.Length;
         this.IsVisible = true;
         ((Control)this.Parent).IsVisible = true;
         TransitioningContentControl_.Content = Activator.CreateInstance(DefaultLayout.Invoke());
@@ -186,19 +155,17 @@ public partial class VirtualKeyboard : UserControl
 
     private void acceptClicked(object? sender, RoutedEventArgs e)
     {
-            
+        
         source.Text = TextBox_.Text;
-            
+        
         Close();
-            
+        
     }
 
     public void ProcessText(string text)
     {
         TextBox_.Focus();
-        // place the pressed text at the createIndex into the textbox
 
-          
         if(TextBox_.CaretIndex <= TextBox_.Text.Length)
         {
             TextBox_.Text = TextBox_.Text.Insert(TextBox_.CaretIndex, text);
@@ -207,7 +174,6 @@ public partial class VirtualKeyboard : UserControl
 
         TextBox_.Focus();
 
-        //InputManager.Instance.ProcessInput(new RawTextInputEventArgs(KeyboardDevice.Instance, (ulong)DateTime.Now.Ticks, (Window)TextBox.GetVisualRoot(), text));
         if (_keyboardStateStream.Value == VirtualKeyboardState.Shift)
         {
             _keyboardStateStream.OnNext(VirtualKeyboardState.Default);
@@ -296,8 +262,8 @@ public partial class VirtualKeyboard : UserControl
                     {
                         TextBox_.CaretIndex =dd;
                     }
-                        
-                        
+                    
+                    
                 }
                 TextBox_.Focus();
 
@@ -328,11 +294,6 @@ public partial class VirtualKeyboard : UserControl
             else
             {
                 TextBox_.Focus();
-                    
-                    
-
-                //InputManager.Instance.ProcessInput(new RawKeyEventArgs(KeyboardDevice.Instance, (ulong)DateTime.Now.Ticks, (Window)TextBox.GetVisualRoot(), RawKeyEventType.KeyDown, key, RawInputModifiers.None));
-                //InputManager.Instance.ProcessInput(new RawKeyEventArgs(KeyboardDevice.Instance, (ulong)DateTime.Now.Ticks, (Window)TextBox.GetVisualRoot(), RawKeyEventType.KeyUp, key, RawInputModifiers.None));
             }
         }
     }

@@ -56,22 +56,22 @@
 	</UserControl.Styles>
 
 	<StackPanel>
-		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0"> <!-- Adjusted top margin -->
-			<Border BorderThickness="2" BorderBrush="{DynamicResource GrayInactiveBrush}" CornerRadius="70" Margin="0,0,0,50" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"> <!-- Adjusted bottom margin -->
-				<Grid Margin="20,0"> <!-- Adjusted grid margin -->
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="320" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					<TextBox Name="TextBox" Grid.Column="0" Grid.Row="0" Classes="KeyboardTextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="36" Height="80"/> <!-- Adjusted height -->
-					<Button Grid.Column="1" Grid.Row="0" Name="AcceptButton" Width="320" Height="80" FontSize="24" Foreground="White" Background="{DynamicResource SystemAccentColor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20,0,0,0"> <!-- Adjusted height -->
-						Validate
-					</Button>
+		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0">
+			<Grid Margin="20,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="320" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<Grid Grid.Column="0" Grid.Row="0" Background="#AA000000">
+					<TextBox Name="TextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="36" Height="80" Classes="KeyboardTextBox"/>
 				</Grid>
-			</Border>
+				<Button Grid.Column="1" Grid.Row="0" Name="AcceptButton" Width="320" Height="80" FontSize="24" Foreground="White" Background="{DynamicResource SystemAccentColor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20,0,0,0"> <!-- Adjusted height -->
+					Validate
+				</Button>
+			</Grid>
 			<Panel HorizontalAlignment="Stretch">
 				<Button DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center">
 					<Image Classes="Large" Source="avares://Tkmm/Assets/Close_Icon.png" Width="40" Height="40"/>
@@ -80,11 +80,6 @@
 		</StackPanel>
 
 		<TransitioningContentControl Name="TransitioningContentControl" />
-		<!--<layout:VirtualKeyboardLayoutUS Opacity="0" IsHitTestVisible="False"/>-->
-		<!--<Grid>
-			--><!-- QuickAndDirty resize bugfix --><!--
 
-			--><!----><!--
-		</Grid>-->
 	</StackPanel>
   </UserControl>

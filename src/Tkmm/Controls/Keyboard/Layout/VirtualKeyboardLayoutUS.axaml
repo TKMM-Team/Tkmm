@@ -7,9 +7,9 @@
              x:Class="Tkmm.Controls.Keyboard.Layout.VirtualKeyboardLayoutUS" 
              Background="Transparent"
              HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch">
+             VerticalAlignment="Center">
 
-    <Grid>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#EE111111">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />

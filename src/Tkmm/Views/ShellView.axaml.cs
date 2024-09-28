@@ -26,7 +26,7 @@ public partial class ShellView : AppWindow
 
         InitializeComponent();
 
-        #if SWITCH
+        #if DEBUG
         _keyboardCoolDown = new System.Timers.Timer();
         _keyboardCoolDown.Interval = 200;
         _keyboardCoolDown.Elapsed += ResetCoolDown;

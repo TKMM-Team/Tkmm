@@ -6,14 +6,14 @@
              mc:Ignorable="d" 
              x:Class="Tkmm.Controls.Keyboard.Layout.VirtualKeyboardLayoutNumpad" 
              Background="Transparent"
-             HorizontalAlignment="Stretch"
+             HorizontalAlignment="Center"
              VerticalAlignment="Stretch">
 
     <UserControl.Resources>
         <keyboard:VirtualKeyWidthMultiplayer x:Key="VirtualKeyWidthMultiplayer" />
     </UserControl.Resources>
 
-    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#EE111111">
         <StackPanel Orientation="Horizontal">
             <keyboard:VirtualKey NormalKey="ESC" SpecialKey="Escape" Name="VirtualKey1" />
             <keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
