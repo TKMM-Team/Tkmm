@@ -8,9 +8,7 @@
              Name="vk"
              mc:Ignorable="d" 
              x:Class="Tkmm.Controls.Keyboard.VirtualKeyboard" 
-             Background="#CC000000" 
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch">
+             Background="#CC000000">
 
 	<UserControl.Styles>
 		
@@ -56,7 +54,7 @@
 	</UserControl.Styles>
 
 	<StackPanel>
-		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0">
+		<StackPanel Margin="0 60 0 0">
 			<Grid Margin="20,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -72,14 +70,19 @@
 					Validate
 				</Button>
 			</Grid>
-			<Panel HorizontalAlignment="Stretch">
-				<Button DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center">
-					<Image Classes="Large" Source="avares://Tkmm/Assets/Close_Icon.png" Width="40" Height="40"/>
-				</Button>
-			</Panel>
+			<Grid Margin="20,0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Border Grid.Row="0" Background="Transparent" Margin="0 70 0 0" />
+				<Panel Grid.Row="1" HorizontalAlignment="Stretch">
+					<Button DockPanel.Dock="Right" Name="CloseButton" Classes="SettingsClose" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center">
+						<Image Classes="Large" Source="avares://Tkmm/Assets/Close_Icon.png" Width="40" Height="40"/>
+					</Button>
+				</Panel>
+			</Grid>
 		</StackPanel>
-
 		<TransitioningContentControl Name="TransitioningContentControl" />
-
 	</StackPanel>
   </UserControl>

@@ -44,14 +44,9 @@ public partial class VirtualKeyboard : UserControl
     public Button CloseButton_ { get; }
     public string targetLayout { get; set; }
     public TransitioningContentControl TransitioningContentControl_ { get; }
-
     public TextBox source { get; set; }
-    
-
     public IObservable<VirtualKeyboardState> KeyboardStateStream => _keyboardStateStream;
     private readonly BehaviorSubject<VirtualKeyboardState> _keyboardStateStream;
-
-    
 
     public IReactiveCommand CloseCommand { get; }
 
@@ -125,7 +120,7 @@ public partial class VirtualKeyboard : UserControl
         {
             TextBox_.Focus();
         });
-            TextBox_.Focus();
+        TextBox_.Focus();
         this.source = source;
 
         this.TextBox_.PasswordChar = source.PasswordChar;
