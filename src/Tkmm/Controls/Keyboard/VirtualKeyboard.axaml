@@ -56,7 +56,7 @@
 	</UserControl.Styles>
 
 	<StackPanel>
-		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0">
+		<StackPanel DockPanel.Dock="Center" Margin="0 50 0 0">
 			<Grid Margin="20,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -68,7 +68,7 @@
 				<Grid Grid.Column="0" Grid.Row="0" Background="#AA000000">
 					<TextBox Name="TextBox" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="36" Height="80" Classes="KeyboardTextBox"/>
 				</Grid>
-				<Button Grid.Column="1" Grid.Row="0" Name="AcceptButton" Width="320" Height="80" FontSize="24" Foreground="White" Background="{DynamicResource SystemAccentColor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20,0,0,0"> <!-- Adjusted height -->
+				<Button Grid.Column="1" Grid.Row="0" Name="AcceptButton" Width="320" Height="80" FontSize="24" Foreground="White" Background="{DynamicResource SystemAccentColor}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20,0,0,0">
 					Validate
 				</Button>
 			</Grid>

@@ -7,49 +7,51 @@
              x:Class="Tkmm.Controls.Keyboard.Layout.VirtualKeyboardLayoutNumpad" 
              Background="Transparent"
              HorizontalAlignment="Center"
-             VerticalAlignment="Stretch">
+             VerticalAlignment="Bottom">
 
     <UserControl.Resources>
         <keyboard:VirtualKeyWidthMultiplayer x:Key="VirtualKeyWidthMultiplayer" />
     </UserControl.Resources>
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#EE111111">
-        <StackPanel Orientation="Horizontal">
-            <keyboard:VirtualKey NormalKey="ESC" SpecialKey="Escape" Name="VirtualKey1" />
-            <keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
-            <keyboard:VirtualKey NormalKey="2" ShiftKey="&quot;" AltCtrlKey="²" />
-            <keyboard:VirtualKey NormalKey="3" ShiftKey="§" AltCtrlKey="³" />
-            <keyboard:VirtualKey SpecialKey="Back" NormalKey="⬅ Back" Width="190" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <keyboard:VirtualKey NormalKey="*" />
-                    <keyboard:VirtualKey NormalKey="4" />
-                    <keyboard:VirtualKey NormalKey="5" />
-                    <keyboard:VirtualKey NormalKey="6" />
-                    <keyboard:VirtualKey NormalKey="." />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <keyboard:VirtualKey NormalKey="-" />
-                    <keyboard:VirtualKey NormalKey="7" />
-                    <keyboard:VirtualKey NormalKey="8" />
-                    <keyboard:VirtualKey NormalKey="9" />
+	<Border HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="#AD111111" CornerRadius="10">
+		<StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<keyboard:VirtualKey NormalKey="ESC" SpecialKey="Escape" Name="VirtualKey1" />
+				<keyboard:VirtualKey NormalKey="1" ShiftKey="!" AltCtrlKey="" />
+				<keyboard:VirtualKey NormalKey="2" ShiftKey="&quot;" AltCtrlKey="²" />
+				<keyboard:VirtualKey NormalKey="3" ShiftKey="§" AltCtrlKey="³" />
+				<keyboard:VirtualKey SpecialKey="Back" NormalKey="⬅ Back" Width="190" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Vertical">
+					<StackPanel Orientation="Horizontal">
+						<keyboard:VirtualKey NormalKey="*" />
+						<keyboard:VirtualKey NormalKey="4" />
+						<keyboard:VirtualKey NormalKey="5" />
+						<keyboard:VirtualKey NormalKey="6" />
+						<keyboard:VirtualKey NormalKey="." />
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<keyboard:VirtualKey NormalKey="-" />
+						<keyboard:VirtualKey NormalKey="7" />
+						<keyboard:VirtualKey NormalKey="8" />
+						<keyboard:VirtualKey NormalKey="9" />
 
-                </StackPanel>
+					</StackPanel>
 
-            </StackPanel>
-            <keyboard:VirtualKey SpecialKey="Enter" NormalKey="↩"
-                                 Height="{Binding #VirtualKey1.Bounds.Height, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}" />
-        </StackPanel>
+				</StackPanel>
+				<keyboard:VirtualKey SpecialKey="Enter" NormalKey="↩"
+									Height="{Binding #VirtualKey1.Bounds.Height, Converter={StaticResource VirtualKeyWidthMultiplayer}, ConverterParameter=20}" />
+			</StackPanel>
 
-        <StackPanel Orientation="Horizontal">
-            <keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
-            <keyboard:VirtualKey NormalKey="" ShiftKey="" AltCtrlKey="" />
-            <keyboard:VirtualKey NormalKey="0" ShiftKey="" AltCtrlKey="" />
-			<keyboard:VirtualKey SpecialKey="Left" NormalKey="⇤" />
-			<keyboard:VirtualKey SpecialKey="Right" NormalKey="⇥" />
-            <keyboard:VirtualKey NormalKey="ABC" SpecialKey="BrowserFavorites" />
-        </StackPanel>
-    </StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<keyboard:VirtualKey NormalKey="_" ShiftKey="" AltCtrlKey="" />
+				<keyboard:VirtualKey NormalKey="" ShiftKey="" AltCtrlKey="" />
+				<keyboard:VirtualKey NormalKey="0" ShiftKey="" AltCtrlKey="" />
+				<keyboard:VirtualKey SpecialKey="Left" NormalKey="⇤" />
+				<keyboard:VirtualKey SpecialKey="Right" NormalKey="⇥" />
+				<keyboard:VirtualKey NormalKey="ABC" SpecialKey="BrowserFavorites" />
+			</StackPanel>
+		</StackPanel>
+	</Border>
 </UserControl>
