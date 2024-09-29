@@ -56,7 +56,7 @@
 	</UserControl.Styles>
 
 	<StackPanel>
-		<StackPanel DockPanel.Dock="Center" Margin="0 50 0 0">
+		<StackPanel DockPanel.Dock="Top" Margin="0 50 0 0">
 			<Grid Margin="20,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
