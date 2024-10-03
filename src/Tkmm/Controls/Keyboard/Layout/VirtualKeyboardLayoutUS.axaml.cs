@@ -1,7 +1,4 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard.Layout;
 

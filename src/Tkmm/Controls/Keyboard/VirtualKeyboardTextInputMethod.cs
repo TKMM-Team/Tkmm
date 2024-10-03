@@ -4,10 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Input.TextInput;
 using Avalonia.VisualTree;
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Tkmm.Controls.Keyboard;
 
