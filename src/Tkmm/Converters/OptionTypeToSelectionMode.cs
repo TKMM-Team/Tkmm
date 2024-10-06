@@ -15,9 +15,9 @@ public class OptionTypeToSelectionMode : IValueConverter
         if (value is ModOptionGroupType type) {
             return type switch {
                 ModOptionGroupType.Multi => SelectionMode.Multiple | SelectionMode.Toggle,
-                ModOptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+                ModOptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle,
                 ModOptionGroupType.Single => SelectionMode.Single | SelectionMode.Toggle,
-                ModOptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+                ModOptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle,
                 _ => null
             };
         }

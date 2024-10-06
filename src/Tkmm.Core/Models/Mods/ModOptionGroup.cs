@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tkmm.Core.Components;
@@ -68,10 +69,36 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     {
         Options.CollectionChanged += (_, e)
             => ReferenceCollectionHelper.ResolveCollectionChanged(OptionReferences, e);
-        SelectedOptions.CollectionChanged += (_, e) => {
-            ReferenceCollectionHelper.ResolveCollectionChanged(SelectedOptionReferences, e);
-            Save();
-        };
+        SelectedOptions.CollectionChanged += OnSelectedOptionsChanged;
+    }
+
+    private void OnSelectedOptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        ReferenceCollectionHelper.ResolveCollectionChanged(SelectedOptionReferences, e);
+        Save();
+    }
+
+    private void EnsureSelectionConstraints()
+    {
+        SelectedOptions.CollectionChanged -= OnSelectedOptionsChanged;
+
+        try
+        {
+            switch (_type)
+            {
+                case ModOptionGroupType.MultiRequired:
+                case ModOptionGroupType.SingleRequired:
+                    if (SelectedOptions.Count == 0 && Options.Count > 0)
+                    {
+                        SelectedOptions.Add(Options.First());
+                    }
+                    break;
+            }
+        }
+        finally
+        {
+            SelectedOptions.CollectionChanged += OnSelectedOptionsChanged;
+        }
     }
 
     public static ModOptionGroup? FromFolder(string path)
@@ -115,6 +142,7 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
 
     public void Save()
     {
+        EnsureSelectionConstraints();
         string metadata = Path.Combine(SourceFolder, PackageBuilder.METADATA);
         using FileStream fs = File.Create(metadata);
         JsonSerializer.Serialize(fs, this);
