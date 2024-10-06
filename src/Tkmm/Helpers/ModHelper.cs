@@ -40,6 +40,10 @@ public static class ModHelper
             ProfileManager.Shared.Current.Mods.TryInsert(result);
 
             if (result.OptionGroups.Any()) {
+                foreach (var optionGroup in result.OptionGroups)
+                {
+                    optionGroup.Save();
+                }
                 App.Toast($"'{result.Name}' has configurable options!\n\nClick here to configure them.", "Configure Options",
                     NotificationType.Information, TimeSpan.FromDays(5), () => {
                         result.IsEditingOptions = true;
