@@ -65,6 +65,8 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     [JsonIgnore]
     public string SourceFolder { get; private set; } = string.Empty;
 
+    private bool _isUpdatingSelection = false;
+
     public ModOptionGroup()
     {
         Options.CollectionChanged += (_, e)
@@ -75,12 +77,15 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
     private void OnSelectedOptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         ReferenceCollectionHelper.ResolveCollectionChanged(SelectedOptionReferences, e);
-        Save();
+        if (!_isUpdatingSelection)
+        {
+            Save();
+        }
     }
 
     private void EnsureSelectionConstraints()
     {
-        SelectedOptions.CollectionChanged -= OnSelectedOptionsChanged;
+        _isUpdatingSelection = true;
 
         try
         {
@@ -88,16 +93,33 @@ public partial class ModOptionGroup : ObservableObject, IReferenceItem, IModItem
             {
                 case ModOptionGroupType.MultiRequired:
                 case ModOptionGroupType.SingleRequired:
-                    if (SelectedOptions.Count == 0 && Options.Count > 0)
+                    if (!SelectedOptions.Any() && Options.Any())
                     {
-                        SelectedOptions.Add(Options.First());
+                        var context = SynchronizationContext.Current;
+                        if (context != null)
+                        {
+                            context.Post(_ =>
+                            {
+                                if (!SelectedOptions.Any())
+                                {
+                                    SelectedOptions.Add(Options.First());
+                                }
+                            }, null);
+                        }
+                        else
+                        {
+                            if (!SelectedOptions.Any())
+                            {
+                                SelectedOptions.Add(Options.First());
+                            }
+                        }
                     }
                     break;
             }
         }
         finally
         {
-            SelectedOptions.CollectionChanged += OnSelectedOptionsChanged;
+            _isUpdatingSelection = false;
         }
     }
 
