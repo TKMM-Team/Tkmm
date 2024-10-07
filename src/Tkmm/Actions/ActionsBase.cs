@@ -16,7 +16,7 @@ public abstract class ActionsBase<TSingleton> where TSingleton : ActionsBase<TSi
     /// <summary>
     /// Run pre-action checks to ensure the target action can run.
     /// </summary>
-    protected async ValueTask<bool> CanActionRun([CallerMemberName] string? actionName = null, bool showErrorDialog = true)
+    protected async ValueTask<bool> CanActionRun([CallerMemberName] string? actionName = null, bool showError = true)
     {
         TKMM.Logger.LogInformation(
             "[TKMM] [{UtcNow}] Validatiing {ActionName} from {ActionGroupName}.",
@@ -32,14 +32,17 @@ public abstract class ActionsBase<TSingleton> where TSingleton : ActionsBase<TSi
             return true;
         }
 
+
+        if (showError is false) {
+            return false;
+        }
+        
         TKMM.Logger.LogCritical(
             "[TKMM] [{UtcNow}] Failed to run {ActionName} from {ActionGroupName}, the configuration was invalid.",
             DateTime.UtcNow, actionName, ActionGroupName);
-
-        if (showErrorDialog) {
-            await ShowFailureDialog(actionName,
-                "The application configuration is invalid, the invoked action cannot run.");
-        }
+        
+        await ShowFailureDialog(actionName,
+            "The application configuration is invalid, the invoked action cannot run.");
         
         return false;
     }
