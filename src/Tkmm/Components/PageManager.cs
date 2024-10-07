@@ -12,7 +12,7 @@ public enum Page
     Profiles,
     Tools,
     ShopParam,
-    Mods,
+    GbMods,
     About,
     Logs,
     Settings,
