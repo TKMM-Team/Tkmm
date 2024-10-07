@@ -6,8 +6,7 @@ namespace Tkmm.Converters;
 
 public class SemicolonDelimitedListConverter : IValueConverter
 {
-    private static readonly Lazy<SemicolonDelimitedListConverter> _shared = new(() => new());
-    public static SemicolonDelimitedListConverter Shared => _shared.Value;
+    public static SemicolonDelimitedListConverter Shared { get; } = new();
 
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

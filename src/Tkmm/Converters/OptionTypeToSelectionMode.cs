@@ -1,28 +1,23 @@
-﻿using Avalonia.Controls;
+﻿using System.Globalization;
+using Avalonia.Controls;
 using Avalonia.Data.Converters;
-using System.Globalization;
-using Tkmm.Core.Models.Mods;
+using Tkmm.Core.Abstractions;
 
 namespace Tkmm.Converters;
 
 public class OptionTypeToSelectionMode : IValueConverter
 {
-    private static readonly Lazy<OptionTypeToSelectionMode> _shared = new(() => new());
-    public static OptionTypeToSelectionMode Shared => _shared.Value;
+    public static OptionTypeToSelectionMode Shared { get; } = new();
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is ModOptionGroupType type) {
-            return type switch {
-                ModOptionGroupType.Multi => SelectionMode.Multiple | SelectionMode.Toggle,
-                ModOptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
-                ModOptionGroupType.Single => SelectionMode.Single | SelectionMode.Toggle,
-                ModOptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
-                _ => null
-            };
-        }
-
-        return null;
+        return value switch {
+            OptionGroupType.Multi => SelectionMode.Multiple | SelectionMode.Toggle,
+            OptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+            OptionGroupType.Single => SelectionMode.Single | SelectionMode.Toggle,
+            OptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+            _ => null
+        };
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

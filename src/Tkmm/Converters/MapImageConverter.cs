@@ -7,10 +7,9 @@ namespace Tkmm.Converters;
 
 public class MapImageConverter : IValueConverter
 {
-    private static readonly Lazy<MapImageConverter> _shared = new(() => new());
-    public static MapImageConverter Shared => _shared.Value;
-
     private readonly Dictionary<string, Bitmap> _cache = [];
+    
+    public static MapImageConverter Shared { get; } = new();
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -22,8 +21,8 @@ public class MapImageConverter : IValueConverter
             return bitmap;
         }
 
-        using Stream stream = AssetLoader.Open(new($"avares://Tkmm/Assets/Maps/{map}.jpg"));
-        return _cache[map] = bitmap = new(stream);
+        using Stream stream = AssetLoader.Open(new Uri($"avares://Tkmm/Assets/Maps/{map}.jpg"));
+        return _cache[map] = new Bitmap(stream);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
