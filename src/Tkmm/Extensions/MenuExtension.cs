@@ -9,5 +9,6 @@ public static class MenuExtension
     {
         factory.AddMenuGroup<FileMenuModel>();
         factory.AddMenuGroup<ModMenuModel>();
+        factory.AddMenuGroup<ToolsMenuModel>();
     }
 }
