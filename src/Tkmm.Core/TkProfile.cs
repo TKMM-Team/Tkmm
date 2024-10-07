@@ -20,5 +20,8 @@ internal sealed partial class TkProfile : ObservableObject, ITkProfile
     [ObservableProperty]
     private IThumbnail? _thumbnail;
 
+    [ObservableProperty]
+    private ITkProfileMod? _selected;
+    
     public IList<ITkProfileMod> Mods => _mods;
 }

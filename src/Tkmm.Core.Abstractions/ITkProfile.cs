@@ -8,6 +8,11 @@ public interface ITkProfile : ITkItem
     IList<ITkProfileMod> Mods { get; }
     
     /// <summary>
+    /// The current selected <see cref="ITkProfileMod"/>.
+    /// </summary>
+    ITkProfileMod? Selected { get; set; }
+    
+    /// <summary>
     /// Moves the <paramref name="target"/> up in the <see cref="Mods"/> collection.
     /// </summary>
     /// <param name="target">The target <see cref="ITkMod"/> to be repositioned.</param>
