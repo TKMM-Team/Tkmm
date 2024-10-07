@@ -6,7 +6,7 @@ using static Tkmm.Core.Localization.StringResources_Menu;
 
 namespace Tkmm.Models.MenuModels;
 
-public class FileMenuModel
+public sealed class FileMenuModel
 {
     [Menu(FILE_INSTALL_FILE, FILE_MENU, InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
     public static Task InstallFile(CancellationToken ct = default)
