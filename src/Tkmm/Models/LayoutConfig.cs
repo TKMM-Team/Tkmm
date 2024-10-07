@@ -29,7 +29,7 @@ public partial class LayoutConfig : ObservableObject
     {
         string file = GetPath(name);
         if (!File.Exists(file)) {
-            return new() {
+            return new LayoutConfig {
                 Name = name
             };
         }
@@ -38,8 +38,8 @@ public partial class LayoutConfig : ObservableObject
         LayoutConfig result = JsonSerializer.Deserialize<LayoutConfig>(fs) ?? new();
 
         result.Name = name;
-        result.TopPanel = new(result.TopPanelValue, result.TopPanelGridUnitType);
-        result.LowerPanel = new(result.LowerPanelValue, result.LowerPanelGridUnitType);
+        result.TopPanel = new GridLength(result.TopPanelValue, result.TopPanelGridUnitType);
+        result.LowerPanel = new GridLength(result.LowerPanelValue, result.LowerPanelGridUnitType);
 
         return result;
     }
@@ -52,7 +52,7 @@ public partial class LayoutConfig : ObservableObject
 
     private static string GetPath(string name)
     {
-        string folder = Path.Combine(Config.Shared.StaticStorageFolder, "Layout");
+        string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".layout");
         Directory.CreateDirectory(folder);
         return Path.Combine(folder, $"{name}.json");
     }

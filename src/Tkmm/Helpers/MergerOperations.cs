@@ -47,9 +47,9 @@ public static class MergerOperations
         }
 
         try {
-            await MergerService.Merge();
+            await TKMM.ModManager.Merge();
             App.Toast(
-                $"The profile '{ProfileManager.Shared.Current.Name}' was merged successfully.",
+                $"The profile '{TKMM.ModManager.CurrentProfile.Name}' was merged successfully.",
                 "Merge Successful!",
                 NotificationType.Success,
                 TimeSpan.FromDays(5)

@@ -6,12 +6,13 @@
                xmlns:app="using:Tkmm"
                xmlns:comp="using:Tkmm.Core.Components"
                xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
-               xmlns:helperModels="using:Tkmm.Helpers.Models"
                xmlns:helpers="using:Tkmm.Helpers"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
                xmlns:vm="using:Tkmm.ViewModels"
+               xmlns:components="clr-namespace:Tkmm.Components"
+               xmlns:helperModels="clr-namespace:Tkmm.Models"
                Title="{x:Static app:App.ShortTitle}"
                Width="870"
                Height="550"
@@ -72,12 +73,12 @@
 
         <ui:NavigationView Name="MainNavigation"
                            Grid.Row="1"
-                           FooterMenuItemsSource="{Binding FooterPages, Source={x:Static helpers:PageManager.Shared}}"
+                           FooterMenuItemsSource="{Binding FooterPages, Source={x:Static components:PageManager.Shared}}"
                            IsSettingsVisible="False"
-                           MenuItemsSource="{Binding Pages, Source={x:Static helpers:PageManager.Shared}}"
+                           MenuItemsSource="{Binding Pages, Source={x:Static components:PageManager.Shared}}"
                            PaneDisplayMode="LeftCompact"
                            PaneTitle="{x:Static app:App.ShortTitle}"
-                           SelectedItem="{Binding Current, Mode=TwoWay, Source={x:Static helpers:PageManager.Shared}}">
+                           SelectedItem="{Binding Current, Mode=TwoWay, Source={x:Static components:PageManager.Shared}}">
             <ui:NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="helperModels:PageModel">
                     <ui:NavigationViewItem Content="{Binding Title}"

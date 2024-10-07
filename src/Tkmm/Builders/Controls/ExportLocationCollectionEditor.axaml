@@ -8,7 +8,7 @@
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             x:DataType="core:ExportLocationCollection"
+             x:DataType="core:ExportLocations"
              mc:Ignorable="d">
     <StackPanel Spacing="5">
         <ListBox Name="LocationsListBox"

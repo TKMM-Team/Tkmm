@@ -1,6 +1,6 @@
 ﻿using FluentAvalonia.UI.Controls;
 
-namespace Tkmm.Helpers.Models;
+namespace Tkmm.Models;
 
 public class PageModel
 {

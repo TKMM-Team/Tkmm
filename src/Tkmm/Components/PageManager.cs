@@ -1,10 +1,10 @@
-﻿using Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.UI.Controls;
-using System.Collections.ObjectModel;
-using Tkmm.Helpers.Models;
+using Tkmm.Models;
 
-namespace Tkmm.Helpers;
+namespace Tkmm.Components;
 
 public enum Page
 {
@@ -13,7 +13,6 @@ public enum Page
     Tools,
     ShopParam,
     Mods,
-
     About,
     Logs,
     Settings,
@@ -66,10 +65,8 @@ public partial class PageManager : ObservableObject
     public T Get<T>(Page page) where T : ObservableObject
     {
         (int index, bool isFooter) = _lookup[page];
-        if ((isFooter ? FooterPages : Pages)[index].Content is UserControl userControl) {
-            if (userControl.DataContext is T value) {
-                return value;
-            }
+        if ((isFooter ? FooterPages : Pages)[index].Content is UserControl { DataContext: T value }) {
+            return value;
         }
 
         throw new InvalidOperationException(

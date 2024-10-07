@@ -28,11 +28,11 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
 
     public override bool IsValid(Type type)
     {
-        return type == typeof(ExportLocationCollection);
+        return type == typeof(ExportLocations);
     }
 
     [RelayCommand]
-    public static async Task Edit(ExportLocationCollection source)
+    public static async Task Edit(ExportLocations source)
     {
         TaskDialog dialog = new() {
             DataContext = source,

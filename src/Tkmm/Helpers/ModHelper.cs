@@ -2,7 +2,10 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System.Diagnostics;
+using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Core.Abstractions;
+using Tkmm.Core.Abstractions.Common;
 using Tkmm.Core.Components;
 using Tkmm.Core.Exceptions;
 using Tkmm.Core.Generics;
@@ -43,7 +46,7 @@ public static class ModHelper
                 App.Toast($"'{result.Name}' has configurable options!\n\nClick here to configure them.", "Configure Options",
                     NotificationType.Information, TimeSpan.FromDays(5), () => {
                         result.IsEditingOptions = true;
-                        PageManager.Shared.Focus(Page.Home);
+                        Components.PageManager.Shared.Focus(Page.Home);
                     });
             }
 
@@ -72,35 +75,29 @@ public static class ModHelper
         return null;
     }
 
-    public static async Task ResolveThumbnail(IModItem item, bool useDefaultThumbnail = false)
+    public static async Task ResolveThumbnail(ITkItem item, bool useDefaultThumbnail = false)
     {
-        if (item is Mod mod) {
-            foreach (ModOptionGroup modOptionGroup in mod.OptionGroups) {
-                await ResolveThumbnail(modOptionGroup);
+        if (item is ITkMod mod) {
+            foreach (ITkModOption tkGroup in mod.OptionGroups.SelectMany(x => x.Options)) {
+                await ResolveThumbnail(tkGroup);
             }
         }
 
-        if (item is ModOptionGroup group) {
-            foreach (ModOption option in group.Options) {
-                await ResolveThumbnail(option);
-            }
-        }
-
-        if (item.Thumbnail is not null && item.Thumbnail != _defaultThumbnail) {
+        if (item.Thumbnail is null || item.Thumbnail.IsResolved) {
             return;
         }
 
-        if (item.ThumbnailUri is string uri) {
+        if (item.Thumbnail.ThumbnailPath is string uri) {
             string localPath = Path.Combine(item.SourceFolder, uri);
             if (File.Exists(localPath)) {
-                item.Thumbnail = new Bitmap(localPath);
+                item.Thumbnail.Thumbnail = new Bitmap(localPath);
             }
             else if (uri.StartsWith("https://")) {
                 try {
                     using HttpClient client = new();
                     byte[] data = await client.GetByteArrayAsync(uri);
                     using MemoryStream ms = new(data);
-                    item.Thumbnail = new Bitmap(ms);
+                    item.Thumbnail.Thumbnail = new Bitmap(ms);
                 }
                 catch (Exception ex) {
                     Trace.WriteLine($"""
@@ -120,12 +117,12 @@ public static class ModHelper
 
     Default:
         if (_defaultThumbnail is null) {
-            using Stream stream = AssetLoader.Open(new("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
+            await using Stream stream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
             _defaultThumbnail = new Bitmap(stream);
         }
 
         if (useDefaultThumbnail) {
-            item.Thumbnail = _defaultThumbnail;
+            item.Thumbnail.Thumbnail = _defaultThumbnail;
         }
     }
 
