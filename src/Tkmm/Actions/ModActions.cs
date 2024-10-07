@@ -68,6 +68,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
     }
 
+    [RelayCommand]
     public async Task UninstallMod()
     {    
         if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
