@@ -5,5 +5,6 @@ public interface IThumbnail
     public static Func<Stream, object>? CreateBitmap { get; set; }
     
     string ThumbnailPath { get; }
-    object? Thumbnail { get; }
+    bool IsResolved { get; set; }
+    object? Thumbnail { get; set; }
 }

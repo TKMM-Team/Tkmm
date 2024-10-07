@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core.Abstractions.Common;
 
@@ -11,5 +12,9 @@ public partial class TkThumbnail : ObservableObject, IThumbnail
     private string _thumbnailPath = DEFAULT;
     
     [ObservableProperty]
+    [property: JsonIgnore]
     private object? _thumbnail;
+
+    [JsonIgnore]
+    public bool IsResolved { get; set; }
 }
