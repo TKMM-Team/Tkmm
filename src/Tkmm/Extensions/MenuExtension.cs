@@ -13,5 +13,6 @@ public static class MenuExtension
 #if DEBUG
         factory.AddMenuGroup<DebugMenuModel>();
 #endif
+        factory.AddMenuGroup<HelpMenuModel>();
     }
 }
