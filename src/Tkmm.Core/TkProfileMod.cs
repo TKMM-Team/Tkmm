@@ -10,4 +10,7 @@ internal sealed partial class TkProfileMod(ITkMod mod) : ObservableObject, ITkPr
     
     [ObservableProperty]
     private bool _isEnabled;
+    
+    [ObservableProperty]
+    private bool _isEditingOptions;
 }
