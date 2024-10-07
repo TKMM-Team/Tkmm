@@ -17,7 +17,7 @@ public sealed partial class SystemActions : ActionsBase<SystemActions>
     {
         await CanActionRun(showError: false);
 
-        throw new NotImplementedException();
+        // TODO: Check for updates
     }
 
     [RelayCommand]
@@ -25,7 +25,18 @@ public sealed partial class SystemActions : ActionsBase<SystemActions>
     {
         await CanActionRun(showError: false);
         
-        throw new NotImplementedException();
+        ContentDialog dialog = new() {
+            Title = "Proceed with update?",
+            Content = "Your current session will be saved and closed, are you sure you wish to proceed?",
+            PrimaryButtonText = "Yes",
+            SecondaryButtonText = "Cancel"
+        };
+
+        if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
+            return;
+        }
+        
+        // TODO: Update
     }
 
     [RelayCommand]
