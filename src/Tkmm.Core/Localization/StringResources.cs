@@ -12,6 +12,7 @@ public static class StringResources
 
     public static readonly StringResources_Exceptions Exceptions = new();
     public static readonly StringResources_Menu MenuMsg = new();
+    public static readonly StringResources_Pages PageMsg = new();
     public static readonly StringResources_Status StatusMsg = new();
     public static readonly StringResources_System SystemMsg = new();
 

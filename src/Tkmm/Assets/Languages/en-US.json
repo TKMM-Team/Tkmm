@@ -1,5 +1,6 @@
 {
     "System": {
+        "ToastNotice": "Notice",
         "DefaultProfileName": "Default"
     },
     "Menu": {
@@ -15,10 +16,27 @@
         "Debug": "Debug",
         "Help": "Help"
     },
+    "Pages": {
+        "Home": "Home",
+        "HomeDescription": "Home",
+        "Profiles": "Profiles",
+        "ProfilesDescription": "Manage mod profiles",
+        "Tools": "Modding Tools",
+        "ToolsDescription": "Mod developer tools",
+        "ShopParam": "ShopParam Overflow Editor",
+        "ShopParamDescription": "ShopParam overflow ordering tools",
+        "GbMods": "GameBanana Mod Browser",
+        "GbModsDescription": "GameBanana browser client for TotK mods",
+        "Logs": "Logs",
+        "LogsDescription": "System Logs",
+        "Settings": "Settings",
+        "SettingsDescription": "Application settings"
+    },
     "Status": {
         "Ready": "Ready"
     },
     "Exception": {
-        "ParserNotFound": "The provided argument '{0}' could not be parsed. No valid parser could be found."
+        "ParserNotFound": "The provided argument '{0}' could not be parsed. No valid parser could be found.",
+        "InvalidSettings": "Invalid settings, {0} is invalid."
     }
 }

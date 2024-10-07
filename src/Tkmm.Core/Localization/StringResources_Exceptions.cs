@@ -8,4 +8,9 @@ public class StringResources_Exceptions
     public Exception ParserNotFound(string argument) => new(
         string.Format(_parserNotFound, argument)
     );
+    
+    private readonly string _invalidSettings = GetStringResource(GROUP, nameof(InvalidSettings));
+    public string InvalidSettings(string targetSettingName) => new(
+        string.Format(_invalidSettings, targetSettingName)
+    );
 }
