@@ -22,7 +22,7 @@ public sealed partial class ImportActions : ActionsBase<ImportActions>
     protected override string ActionGroupName { get; } = nameof(ImportActions).Humanize();
 
     [RelayCommand]
-    public async ValueTask ImportFromFile(CancellationToken ct = default)
+    public async Task ImportFromFile(CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -55,7 +55,7 @@ public sealed partial class ImportActions : ActionsBase<ImportActions>
     }
 
     [RelayCommand]
-    public async ValueTask ImportFromFolder(CancellationToken ct = default)
+    public async Task ImportFromFolder(CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -87,7 +87,7 @@ public sealed partial class ImportActions : ActionsBase<ImportActions>
     }
 
     [RelayCommand]
-    public async ValueTask ImportFromArgument(CancellationToken ct = default)
+    public async Task ImportFromArgument(CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;

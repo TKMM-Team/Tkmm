@@ -12,7 +12,7 @@ public sealed partial class MergeActions : ActionsBase<MergeActions>
     protected override string ActionGroupName { get; } = nameof(MergeActions).Humanize();
     
     [RelayCommand]
-    public async ValueTask Merge(CancellationToken ct = default)
+    public async Task Merge(CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -28,7 +28,7 @@ public sealed partial class MergeActions : ActionsBase<MergeActions>
     } 
     
     [RelayCommand]
-    public async ValueTask MergeProfile(ITkProfile profile, CancellationToken ct = default)
+    public async Task MergeProfile(ITkProfile profile, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
