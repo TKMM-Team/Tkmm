@@ -1,9 +1,9 @@
 ﻿using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Xaml.Interactions.DragAndDrop;
-using Tkmm.Core.Models.Mods;
-using Tkmm.Core.Services;
-using Tkmm.Helpers;
+using Tkmm.Components;
+using Tkmm.Core;
+using Tkmm.Core.Abstractions;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Behaviors;
@@ -12,23 +12,24 @@ public class InstallModDropHandler : DropHandlerBase
 {
     public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
     {
-        return e.Data.GetFiles()?.Any(x => Path.Exists(x.Path.LocalPath) && ModReaderProviderService.GetReader(x.Path.LocalPath) is not null) == true
-            || e.Data.GetText() is string text && ModReaderProviderService.GetReader(text) is not null;
+        return true;
     }
 
     public override async void Drop(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
     {
-        Mod? targetMod = null;
+        // TODO: Handle errors here
+        
+        ITkMod? targetMod = null;
 
         if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
-            foreach (var path in paths.Select(x => x.Path.LocalPath)) {
-                if (await ModHelper.Import(path) is Mod mod) {
+            foreach (string path in paths.Select(x => x.Path.LocalPath)) {
+                if (await TKMM.ModManager.Import(path) is ITkMod mod) {
                     targetMod = mod;
                 }
             }
         }
         else if (e.Data.GetText() is string arg) {
-            if (await ModHelper.Import(arg) is Mod mod) {
+            if (await TKMM.ModManager.Import(arg) is ITkMod mod) {
                 targetMod = mod;
             }
         }
@@ -38,7 +39,7 @@ public class InstallModDropHandler : DropHandlerBase
         }
 
         PageManager.Shared.Get<HomePageViewModel>(Page.Home).Current = targetMod;
-        ProfilesPageViewModel profilesPage = PageManager.Shared.Get<ProfilesPageViewModel>(Page.Profiles);
+        var profilesPage = PageManager.Shared.Get<ProfilesPageViewModel>(Page.Profiles);
         profilesPage.MasterSelected = targetMod;
         profilesPage.Selected = targetMod;
     }
