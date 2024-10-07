@@ -14,7 +14,7 @@ using Tkmm.Dialogs;
 
 namespace Tkmm.Actions;
 
-public sealed partial class MergeActions : ActionsBase<MergeActions>
+public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 {
     protected override string ActionGroupName { get; } = nameof(MergeActions).Humanize();
     

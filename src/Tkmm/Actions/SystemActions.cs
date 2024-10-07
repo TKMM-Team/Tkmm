@@ -8,7 +8,7 @@ using Tkmm.Dialogs;
 
 namespace Tkmm.Actions;
 
-public sealed partial class SystemActions : ActionsBase<SystemActions>
+public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 {
     protected override string ActionGroupName { get; } = nameof(SystemActions).Humanize();
     

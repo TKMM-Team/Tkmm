@@ -7,7 +7,7 @@ using Tkmm.Core;
 
 namespace Tkmm.Actions;
 
-public abstract class ActionsBase<TSingleton> where TSingleton : ActionsBase<TSingleton>, new()
+public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedActionGroup<TSingleton>, new()
 {
     protected abstract string ActionGroupName { get; }
 

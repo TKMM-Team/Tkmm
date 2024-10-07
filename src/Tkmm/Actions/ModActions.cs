@@ -9,7 +9,7 @@ using Tkmm.Dialogs;
 
 namespace Tkmm.Actions;
 
-public sealed partial class ModActions : ActionsBase<ModActions>
+public sealed partial class ModActions : GuardedActionGroup<ModActions>
 {
     protected override string ActionGroupName { get; } = nameof(ModActions).Humanize();
     

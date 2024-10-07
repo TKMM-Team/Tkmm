@@ -9,7 +9,7 @@ using Tkmm.Dialogs;
 
 namespace Tkmm.Actions;
 
-public sealed partial class ImportActions : ActionsBase<ImportActions>
+public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
 {
     public static readonly FilePickerFileType SupportedFormats = new("Supported Formats") {
         Patterns = ["*.tkcl","*.zip","*.rar","*.7z"]
