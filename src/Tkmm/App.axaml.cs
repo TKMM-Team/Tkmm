@@ -20,17 +20,15 @@ using MenuFactory.Abstractions;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Builders;
-using Tkmm.Builders.MenuModels;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Abstractions.Common;
+using Tkmm.Core.Localization;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
-using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
-using TotkCommon;
 using PageManager = Tkmm.Components.PageManager;
 
 namespace Tkmm;
@@ -100,7 +98,9 @@ public class App : Application
                 };
             };
 
-            MenuFactory = new AvaloniaMenuFactory(XamlRoot);
+            MenuFactory = new AvaloniaMenuFactory(XamlRoot,
+                localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
+            );
             MenuFactory.ConfigureMenu();
 
             shellView.MainMenu.ItemsSource = MenuFactory.Items;
