@@ -1,11 +1,12 @@
+using System.Windows.Input;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Avalonia.Helpers;
 using ConfigFactory.Core.Attributes;
-using System.Windows.Input;
 using Tkmm.Core.Models;
 
-namespace Tkmm.Builders.Controls;
+namespace Tkmm.Controls;
+
 public partial class ExportLocationCollectionEditor : UserControl
 {
     public static readonly ICommand BrowseCommand = new AsyncRelayCommand<ExportLocation>(Browse);
