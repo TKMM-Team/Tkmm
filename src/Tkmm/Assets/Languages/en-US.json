@@ -20,9 +20,11 @@
         "Tools": "Tools",
         "ToolsExportToSdCard": "Export to SD card",
         "ToolsCheckDumpIntegrity": "Check dump integrity",
-        "View": "View",
         "Debug": "Debug",
-        "Help": "Help"
+        "DebugOpenModFolder": "Open mod folder",
+        "Help": "Help",
+        "HelpCheckForUpdates": "Check for updates",
+        "HelpAbout": "About"
     },
     "Pages": {
         "Home": "Home",

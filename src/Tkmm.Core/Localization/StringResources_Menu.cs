@@ -23,7 +23,10 @@ public class StringResources_Menu
     public const string TOOLS_EXPORT_TO_SD_CARD = "ToolsExportToSdCard";
     public const string TOOLS_CHECK_DUMP_INTEGRITY = "ToolsCheckDumpIntegrity";
     
-    public const string VIEW_MENU = "View";
     public const string DEBUG_MENU = "Debug";
+    public const string DEBUG_OPEN_MOD_FOLDER = "DebugOpenModFolder";
+    
     public const string HELP_MENU = "Help";
+    public const string HELP_CHECK_FOR_UPDATES = "HelpCheckForUpdates";
+    public const string HELP_ABOUT = "HelpAbout";
 }
