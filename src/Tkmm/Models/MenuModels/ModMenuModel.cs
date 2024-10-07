@@ -45,6 +45,6 @@ public class ModMenuModel
     [Menu(MOD_MERGE, MOD_MENU, InputGesture = "Ctrl + M", Icon = "fa-solid fa-list-check")]
     public static Task MergeMods()
     {
-        return MergerOperations.Merge();
+        return MergeActions.Instance.Merge();
     }
 }
