@@ -11,6 +11,7 @@ public static class StringResources
     private static readonly LocalizationResources _resources = LoadResources();
 
     public static readonly StringResources_Exceptions Exceptions = new();
+    public static readonly StringResources_Menu MenuMsg = new();
     public static readonly StringResources_Status StatusMsg = new();
     public static readonly StringResources_System SystemMsg = new();
 

@@ -2,6 +2,19 @@
     "System": {
         "DefaultProfileName": "Default"
     },
+    "Menu": {
+        "File": "File",
+        "FileInstallFile": "Install File",
+        "FileInstallFolder": "Install Folder",
+        "FileInstallArgument": "Install from Argument",
+        "FileClearTemporaryFiles": "Clear Temporary Files",
+        "FileExit": "Exit",
+        "Mod": "Mod",
+        "Tools": "Tools",
+        "View": "View",
+        "Debug": "Debug",
+        "Help": "Help"
+    },
     "Status": {
         "Ready": "Ready"
     },
