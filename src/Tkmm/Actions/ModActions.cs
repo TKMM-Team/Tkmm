@@ -48,6 +48,19 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         // TODO: Fetch message template from locale
         TkStatus.SetTemporaryShort($"'{target.Mod.Name}' was exported successfully!", TkIcons.CIRCLE_CHECK);
     }
+
+    [RelayCommand]
+    public async Task OpenModFolder()
+    {
+        await CanActionRun(showError: false);
+        
+        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+            return;
+        }
+
+        // Determine storage system to get folder
+        throw new NotImplementedException();
+    }
     
     [RelayCommand]
     public async Task ConfigureModOptions()
