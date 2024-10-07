@@ -18,6 +18,8 @@
         "ModEditExportLocations": "Edit export locations",
         "ModMerge": "Merge",
         "Tools": "Tools",
+        "ToolsExportToSdCard": "Export to SD card",
+        "ToolsCheckDumpIntegrity": "Check dump integrity",
         "View": "View",
         "Debug": "Debug",
         "Help": "Help"

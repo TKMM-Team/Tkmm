@@ -20,6 +20,9 @@ public class StringResources_Menu
     public const string MOD_MERGE = "ModMerge";
     
     public const string TOOLS_MENU = "Tools";
+    public const string TOOLS_EXPORT_TO_SD_CARD = "ToolsExportToSdCard";
+    public const string TOOLS_CHECK_DUMP_INTEGRITY = "ToolsCheckDumpIntegrity";
+    
     public const string VIEW_MENU = "View";
     public const string DEBUG_MENU = "Debug";
     public const string HELP_MENU = "Help";
