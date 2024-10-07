@@ -41,7 +41,7 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
         throw new NotImplementedException();
     }
 
-    public async ValueTask InitializeAsync()
+    public async ValueTask Initialize()
     {
         ProfilesMetadata? profilesMetadata = await _fs.GetMetadata(
             PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
@@ -56,6 +56,11 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
         CurrentProfile = profilesMetadata?.Profiles
                              .FirstOrDefault(x => x.Id == profilesMetadata.CurrentProfileId)
                          ?? new TkProfile();
+    }
+
+    public ValueTask SaveState()
+    {
+        throw new NotImplementedException();
     }
 
     private record ProfilesMetadata(List<TkProfile> Profiles, Ulid CurrentProfileId);

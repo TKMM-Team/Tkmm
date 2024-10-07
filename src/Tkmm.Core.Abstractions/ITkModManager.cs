@@ -78,5 +78,7 @@ public interface ITkModManager
     
     ValueTask Merge(ITkProfile profile, CancellationToken ct = default);
 
-    ValueTask InitializeAsync();
+    ValueTask Initialize();
+    
+    ValueTask SaveState();
 }
