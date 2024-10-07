@@ -6,7 +6,7 @@ using ConfigFactory.Core;
 using ConfigFactory.Generics;
 using FluentAvalonia.UI.Controls;
 using System.Reflection;
-using Tkmm.Builders.Controls;
+using Tkmm.Controls;
 using Tkmm.Core;
 using Tkmm.Core.Models;
 
