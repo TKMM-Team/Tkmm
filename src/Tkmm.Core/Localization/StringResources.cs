@@ -32,7 +32,7 @@ public static class StringResources
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string GetStringResource(string group, string name)
+    public static string GetStringResource(string group, string name)
     {
         return _resources[group][name];
     }
