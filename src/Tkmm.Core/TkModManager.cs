@@ -57,9 +57,16 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
                          ?? new TkProfile();
     }
 
-    public ValueTask SaveState()
+    public async ValueTask SaveState()
     {
-        throw new NotImplementedException();
+        // TODO: Re-serialize every mod to ensure options are saved 
+        
+        ProfilesMetadata metadata = new(
+            [.._profiles.Cast<TkProfile>()], CurrentProfile.Id
+        );
+        
+        await TKMM.FS.SetMetadata(
+            metadata, PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
     }
 
     private record ProfilesMetadata(List<TkProfile> Profiles, Ulid CurrentProfileId);
