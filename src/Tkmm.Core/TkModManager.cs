@@ -41,7 +41,7 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
         throw new NotImplementedException();
     }
 
-    public async ValueTask Initialize()
+    public async ValueTask Initialize(CancellationToken ct)
     {
         ProfilesMetadata? profilesMetadata = await _fs.GetMetadata(
             PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
