@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Revrs.Buffers;
 using Tkmm.Core.Abstractions;
 
@@ -9,6 +10,14 @@ internal class TkModChangelog : TkItem, ITkModChangelog
 
     public ArraySegmentOwner<byte> GetChangelogData(string fileName)
     {
-        return TKMM.FS.OpenReadAndDecompress(fileName, out _);
+        using Stream stream = TKMM.FS.OpenModFile(this, fileName);
+        int size = Convert.ToInt32(stream.Length);
+        
+        ArraySegmentOwner<byte> result = ArraySegmentOwner<byte>.Allocate(size);
+        int read = stream.Read(result.Segment);
+        
+        Debug.Assert(read == size);
+        
+        return result;
     }
 }
