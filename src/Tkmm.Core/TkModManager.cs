@@ -46,8 +46,7 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
         ProfilesMetadata? profilesMetadata = await _fs.GetMetadata(
             PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
 
-        _mods = await _fs.GetMetadata<ObservableCollection<ITkMod>>("mods")
-                ?? [];
+        _mods = await _fs.GetMods<ObservableCollection<ITkMod>>();
 
         _profiles = profilesMetadata is not null
             ? [..profilesMetadata.Profiles]

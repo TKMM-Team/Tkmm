@@ -11,18 +11,22 @@ namespace Tkmm.IO.Desktop;
 
 public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFileSystem
 {
+    private static readonly string _modsFolder = Path.Combine(AppContext.BaseDirectory, ".mods");
     private readonly ITkModParser _systemModParser = modParserManager.GetSystemParser();
     
     public ValueTask<T?> GetMetadata<T>(string metadataName, JsonTypeInfo<T>? typeInfo = null)
     {
-        if (File.Exists(metadataName)) {
-            return GetJsonMetadata(metadataName, typeInfo);
-        }
-        
-        return metadataName switch {
-            "mods" => GetMods<T>(),
-            _ => GetJsonMetadata(Path.Combine(AppContext.BaseDirectory, metadataName), typeInfo)
-        };
+        return GetJsonMetadata(
+            File.Exists(metadataName)
+                ? metadataName
+                : Path.Combine(AppContext.BaseDirectory, metadataName),
+            typeInfo);
+    }
+
+    public Stream OpenModFile(ITkMod mod, string fileName)
+    {
+        string targetFile = Path.Combine(_modsFolder, mod.Id.ToString(), fileName);
+        return File.OpenRead(targetFile);
     }
 
     private static ValueTask<T?> GetJsonMetadata<T>(string targetFile, JsonTypeInfo<T>? typeInfo = null)
@@ -38,24 +42,28 @@ public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFile
         };
     }
 
-    private async ValueTask<T?> GetMods<T>()
+    public async ValueTask<TList> GetMods<TList>(Func<ITkMod, ValueTask>? initializeMod) where TList : IList<ITkMod>, new()
     {
-        string targetFolder = Path.Combine(AppContext.BaseDirectory, "mods");
-        
-        IList<ITkMod> mods = [];
-        if (!Directory.Exists(targetFolder)) {
+        TList mods = [];
+        if (!Directory.Exists(_modsFolder)) {
             goto Result;
         }
 
-        foreach (string modFolder in Directory.EnumerateDirectories(targetFolder).Where(x => File.Exists(Path.Combine(x, "info.json")))) {
+        foreach (string modFolder in Directory.EnumerateDirectories(_modsFolder).Where(x => File.Exists(Path.Combine(x, "info.json")))) {
             ITkMod? target = await _systemModParser.Parse(modFolder);
-            if (target is not null) {
-                mods.Add(target);
+            if (target is null) {
+                continue;
+            }
+            
+            mods.Add(target);
+            
+            if (initializeMod is not null) {
+                await initializeMod(target);
             }
         }
         
     Result:
-        return (T)mods;
+        return mods;
     }
 
     public ArraySegmentOwner<byte> OpenReadAndDecompress(string file, out int zsDictionaryId)
