@@ -3,8 +3,9 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
-        <entry key="Tkmm/App.axaml" value="Clients/Tkmm.Desktop/Tkmm.Desktop.csproj" />
-        <entry key="Tkmm/Dialogs/ErrorDialog.axaml" value="Clients/Tkmm.Desktop/Tkmm.Desktop.csproj" />
+        <entry key="Clients/Tkmm/Views/Common/GameBananaInstallPreview.axaml" value="Clients/Tkmm/Tkmm.csproj" />
+        <entry key="Tkmm/App.axaml" value="Clients/Tkmm/Tkmm.csproj" />
+        <entry key="Tkmm/Dialogs/ErrorDialog.axaml" value="Clients/Tkmm/Tkmm.csproj" />
       </map>
     </option>
   </component>

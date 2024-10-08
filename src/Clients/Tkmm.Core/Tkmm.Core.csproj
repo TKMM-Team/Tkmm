@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Tkmm.Abstractions\Tkmm.Abstractions.csproj" />
+      <ProjectReference Include="..\..\Tkmm.GameBanana.Core\Tkmm.GameBanana.Core.csproj" />
+      <ProjectReference Include="..\..\Tkmm.Models.Mvvm\Tkmm.Models.Mvvm.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ConfigFactory.Core" Version="0.4.2" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="TotkCommon" Version="1.3.3" />
+    </ItemGroup>
+
+</Project>
