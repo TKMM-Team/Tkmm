@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core.Abstractions;
+using Tkmm.Core.Abstractions.Common;
 using Tkmm.Core.Abstractions.IO;
 using Tkmm.Core.Abstractions.Parsers;
 
@@ -46,7 +47,15 @@ internal sealed partial class TkModManager(ITkFileSystem fs, ITkModParserManager
         ProfilesMetadata? profilesMetadata = await _fs.GetMetadata(
             PROFILES_FILE, ProfilesMetadataSerializerContext.Default.ProfilesMetadata);
 
-        _mods = await _fs.GetMods<ObservableCollection<ITkMod>>();
+        _mods = await _fs.GetMods<ObservableCollection<ITkMod>>(async (mod) => {
+            if (mod.Thumbnail is not { IsResolved: false } thumbnail) {
+                return;
+            }
+
+            await using Stream thumbnailStream = _fs.OpenModFile(mod, thumbnail.ThumbnailPath);
+            thumbnail.Bitmap = IThumbnail.CreateBitmap?.Invoke(thumbnailStream);
+            thumbnail.IsResolved = thumbnail.Bitmap is not null;
+        });
 
         _profiles = profilesMetadata is not null
             ? [..profilesMetadata.Profiles]
