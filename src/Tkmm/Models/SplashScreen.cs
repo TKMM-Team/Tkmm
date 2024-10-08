@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Core;
-using Tkmm.Helpers;
 using Tkmm.Views.Common;
 using PageManager = Tkmm.Components.PageManager;
 
@@ -21,10 +20,8 @@ public class SplashScreen : IApplicationSplashScreen
 
     public async Task RunTasks(CancellationToken cancellationToken)
     {
-        await Task.WhenAll([
-            ..TKMM.ModManager.Mods.Select(tkMod => ModHelper.ResolveThumbnail(tkMod))
-        ]);
-
+        await TKMM.ModManager.Initialize(cancellationToken);
+        
         PageManager.Shared.Focus(PageManager.Shared.Default);
     }
 }
