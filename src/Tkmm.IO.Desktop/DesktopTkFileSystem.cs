@@ -17,10 +17,16 @@ public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFile
     public ValueTask<T?> GetMetadata<T>(string metadataName, JsonTypeInfo<T>? typeInfo = null)
     {
         return GetJsonMetadata(
-            File.Exists(metadataName)
-                ? metadataName
-                : Path.Combine(AppContext.BaseDirectory, metadataName),
+            Path.Combine(AppContext.BaseDirectory, metadataName),
             typeInfo);
+    }
+
+    public Task SetMetadata<T>(T metadata, string metadataName, JsonTypeInfo<T>? typeInfo = null)
+    {
+        return SaveJsonMetadata(
+            metadata,
+            Path.Combine(AppContext.BaseDirectory, metadataName),
+            typeInfo); 
     }
 
     public Stream OpenModFile(ITkModChangelog mod, string fileName)
@@ -39,6 +45,19 @@ public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFile
         return typeInfo switch {
             null => JsonSerializer.DeserializeAsync<T>(fs),
             _ => JsonSerializer.DeserializeAsync(fs, typeInfo)
+        };
+    }
+
+    private static Task SaveJsonMetadata<T>(T metadata, string targetFile, JsonTypeInfo<T>? typeInfo = null)
+    {
+        if (Path.GetDirectoryName(targetFile) is string folder) {
+            Directory.CreateDirectory(folder);
+        }
+
+        using FileStream fs = File.Create(targetFile);
+        return typeInfo switch {
+            null => JsonSerializer.SerializeAsync(fs, metadata),
+            _ => JsonSerializer.SerializeAsync(fs, metadata, typeInfo)
         };
     }
 

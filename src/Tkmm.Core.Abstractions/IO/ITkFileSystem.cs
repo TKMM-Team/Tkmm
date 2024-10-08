@@ -13,6 +13,16 @@ public interface ITkFileSystem
     /// <typeparam name="T">The type to deserialize to.</typeparam>
     /// <returns></returns>
     ValueTask<T?> GetMetadata<T>(string metadataName, JsonTypeInfo<T>? typeInfo = null);
+
+    /// <summary>
+    /// Serialize and persist system metadata.
+    /// </summary>
+    /// <param name="metadata"></param>
+    /// <param name="metadataName"></param>
+    /// <param name="typeInfo"></param>
+    /// <typeparam name="T">The type to deserialize to.</typeparam>
+    /// <returns></returns>
+    Task SetMetadata<T>(T metadata, string metadataName, JsonTypeInfo<T>? typeInfo = null);
     
     /// <summary>
     /// Open a <see cref="Stream"/> to the requested <paramref name="fileName"/> in the provided <paramref name="mod"/>. 
