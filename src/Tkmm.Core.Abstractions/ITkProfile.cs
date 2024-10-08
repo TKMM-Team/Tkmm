@@ -2,6 +2,8 @@ namespace Tkmm.Core.Abstractions;
 
 public interface ITkProfile : ITkItem
 {
+    Ulid Id { get; }
+    
     /// <summary>
     /// The <see cref="ITkMod"/> references in this <see cref="ITkProfile"/>.
     /// </summary>
