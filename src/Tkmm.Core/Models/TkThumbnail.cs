@@ -13,7 +13,7 @@ public partial class TkThumbnail : ObservableObject, IThumbnail
     
     [ObservableProperty]
     [property: JsonIgnore]
-    private object? _thumbnail;
+    private object? _bitmap;
 
     [JsonIgnore]
     public bool IsResolved { get; set; }

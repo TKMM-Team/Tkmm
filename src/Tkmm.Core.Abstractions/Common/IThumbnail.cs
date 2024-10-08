@@ -6,5 +6,5 @@ public interface IThumbnail
     
     string ThumbnailPath { get; }
     bool IsResolved { get; set; }
-    object? Thumbnail { get; set; }
+    object? Bitmap { get; set; }
 }
