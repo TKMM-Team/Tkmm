@@ -20,7 +20,7 @@ public interface ITkFileSystem
     /// <param name="mod"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    Stream OpenModFile(ITkMod mod, string fileName);
+    Stream OpenModFile(ITkModChangelog mod, string fileName);
     
     /// <summary>
     /// Retrieve a list of persisted mods. 

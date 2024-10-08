@@ -23,7 +23,7 @@ public class DesktopTkFileSystem(ITkModParserManager modParserManager) : ITkFile
             typeInfo);
     }
 
-    public Stream OpenModFile(ITkMod mod, string fileName)
+    public Stream OpenModFile(ITkModChangelog mod, string fileName)
     {
         string targetFile = Path.Combine(_modsFolder, mod.Id.ToString(), fileName);
         return File.OpenRead(targetFile);
