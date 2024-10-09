@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../lib/MalsMerger" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../lib/RsdbMerger" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../lib/TKMM-SARC" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../lib/TotK-RstbCalculator" vcs="Git" />
   </component>
 </project>
