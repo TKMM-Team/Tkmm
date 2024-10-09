@@ -6,13 +6,13 @@ using Tkmm.Abstractions.Providers;
 using Tkmm.GameBanana.Core.Helpers;
 using Tkmm.Models.Mvvm;
 
-namespace Tkmm.GameBanana.Core.Parsers;
+namespace Tkmm.GameBanana.Core.Readers;
 
 public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
 {
     private readonly IModReaderProvider _readerProvider = readerProvider;
     
-    public async ValueTask<ITkMod?> ReadMod<T>(T? input, Ulid predefinedModId = default, CancellationToken ct = default) where T : class
+    public async ValueTask<ITkMod?> ReadMod<T>(T? input, Stream? stream = null, Ulid predefinedModId = default, CancellationToken ct = default) where T : class
     {
         if (input is not string arg) {
             return null;
@@ -82,7 +82,7 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
         await using Stream stream = await GameBanana.Get(fileUrl, ct);
         IModReader? parser = _readerProvider.GetReader(target.Name);
         
-        return parser?.ReadMod(stream, Unsafe.BitCast<long, Ulid>(fileId), ct) switch {
+        return parser?.ReadMod(stream, stream: null, ct) switch {
             { } result => await result,
             _ => null
         };
