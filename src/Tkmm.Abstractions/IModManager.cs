@@ -32,15 +32,6 @@ public interface IModManager : IModStorage
     ValueTask Merge(ITkProfile profile, CancellationToken ct = default);
 
     /// <summary>
-    /// Attempts to install the provided <paramref name="input"/> into the mod manager. 
-    /// </summary>
-    /// <param name="input">The object to import.</param>
-    /// <param name="stream">An optional stream to provide the input data.</param>
-    /// <param name="ct">Cancellation token.</param>
-    /// <returns>The installed mod if the operation was successful, otherwise null.</returns>
-    ValueTask<ITkMod?> Install(object? input, Stream? stream = null, CancellationToken ct = default);
-
-    /// <summary>
     /// Attempts to install the provided <paramref name="input"/> into the mod manager using the
     /// provided <paramref name="id"/> when applicable. 
     /// </summary>
@@ -49,7 +40,7 @@ public interface IModManager : IModStorage
     /// <param name="stream">An optional stream to provide the input data.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>The installed mod if the operation was successful, otherwise null.</returns>
-    ValueTask<ITkMod?> InstallWithId(object? input, Ulid id, Stream? stream = null, CancellationToken ct = default);
+    ValueTask<ITkMod?> Install(object? input, Stream? stream = null, Ulid id = default, CancellationToken ct = default);
     
     /// <summary>
     /// Gets the contents of the specified file and returns a stream to the data.

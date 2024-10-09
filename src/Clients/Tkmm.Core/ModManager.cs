@@ -20,12 +20,7 @@ public sealed class ModManager : TkModStorage, IModManager
         throw new NotImplementedException();
     }
 
-    public ValueTask<ITkMod?> Install(object? input, Stream? stream = null, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public ValueTask<ITkMod?> InstallWithId(object? input, Ulid id, Stream? stream = null, CancellationToken ct = default)
+    public ValueTask<ITkMod?> Install(object? input, Stream? stream = null, Ulid id = default, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
