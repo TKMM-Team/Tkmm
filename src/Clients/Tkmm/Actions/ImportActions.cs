@@ -45,7 +45,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         foreach (IStorageFile targetFile in results) {
             try {
                 await using Stream stream = await targetFile.OpenReadAsync();
-                await TKMM.ModManager.Install(targetFile.Name, stream, ct);
+                await TKMM.ModManager.Install(targetFile.Name, stream, ct: ct);
             }
             catch (Exception ex) {
                 TKMM.Logger.LogError(ex, "An error occured while importing the file '{TargetFile}'.", targetFile?.Name);
@@ -76,7 +76,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
                     continue;
                 }
                 
-                await TKMM.ModManager.Install(folder, stream: null, ct);
+                await TKMM.ModManager.Install(folder, ct: ct);
             }
             catch (Exception ex) {
                 TKMM.Logger.LogError(ex, "An error occured while importing the folder '{TargetFolder}'.", targetFolder?.Name);
@@ -109,7 +109,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         if (dialog.Content is TextBox { Text: not null } textBox) {
             string argument = textBox.Text;
             try {
-                await TKMM.ModManager.Install(argument, stream: null, ct);
+                await TKMM.ModManager.Install(argument, ct: ct);
             }
             catch (Exception ex) {
                 TKMM.Logger.LogError(ex, "An error occured while importing the argument '{Argument}'.", argument);
