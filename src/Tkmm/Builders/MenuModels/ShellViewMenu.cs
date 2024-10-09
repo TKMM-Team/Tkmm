@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
 using Avalonia.Platform;
@@ -20,6 +22,7 @@ using Tkmm.Core.Models;
 using Tkmm.Core.Models.Mods;
 using Tkmm.Helpers;
 using Tkmm.ViewModels.Pages;
+using Tkmm.Views;
 using TotkCommon;
 using TotkCommon.Components;
 using WindowsOperations = Tkmm.Core.Helpers.Windows.WindowsOperations;
@@ -57,22 +60,58 @@ public class ShellViewMenu
     [Menu("Install from Argument", "File", InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
     public static async Task ImportArgument()
     {
-        ContentDialog dialog = new() {
+    #if SWITCH
+        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            var shellView = desktopLifetime.MainWindow as ShellView;
+            if (shellView != null)
+            {
+                var invisibleTextBox = new TextBox
+                {
+                    Width = 0,
+                    Height = 0,
+                    Opacity = 0,
+                    IsHitTestVisible = false,
+                    Focusable = true
+                };
+                (shellView.Content as Panel)?.Children.Add(invisibleTextBox);
+                invisibleTextBox.KeyDown += async (sender, e) =>
+                {
+                    if (e.Key == Key.Enter)
+                    {
+                        string? input = invisibleTextBox.Text;
+                        if (!string.IsNullOrEmpty(input))
+                        {
+                            await ModHelper.Import(input.Replace("\"", string.Empty));
+                        }
+                        (shellView.Content as Panel)?.Children.Remove(invisibleTextBox);
+                    }
+                };
+                invisibleTextBox.Focus();
+            }
+        }
+    #else
+        ContentDialog dialog = new()
+        {
             Title = "Import Argument",
-            Content = new TextBox {
+            Content = new TextBox
+            {
                 Watermark = "Argument (File, Folder, URL, Mod ID)"
             },
             PrimaryButtonText = "Import",
             SecondaryButtonText = "Cancel",
         };
 
-        if (await dialog.ShowAsync() != ContentDialogResult.Primary) {
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
             return;
         }
 
-        if (dialog.Content is TextBox tb && tb.Text is not null) {
+        if (dialog.Content is TextBox tb && tb.Text is not null)
+        {
             await ModHelper.Import(tb.Text.Replace("\"", string.Empty));
         }
+    #endif
     }
 
     [Menu("Cleanup Temporary Files", "File", InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
