@@ -20,4 +20,4 @@ public enum ChangelogType
     Ignore
 }
 
-public record struct ChangelogEntry(ChangelogType Type);
+public record struct ChangelogEntry(ChangelogType Type, TkFileAttributes Attributes, int ZsDictionaryId);
