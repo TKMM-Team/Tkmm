@@ -6,12 +6,45 @@ namespace Tkmm.Abstractions.IO;
 
 public interface IRomfs
 {
+    IDictionary<string, string> AddressTable { get; }
+
+    /// <inheritdoc cref="GetVanilla(System.String,Tkmm.Abstractions.TkFileAttributes,out int)"/>
+    ArraySegmentOwner<byte> GetVanilla(ReadOnlySpan<char> canonical, TkFileAttributes attributes)
+        => GetVanilla(canonical, attributes, out _);
+    
+    /// <inheritdoc cref="GetVanilla(System.String,Tkmm.Abstractions.TkFileAttributes,out int)"/>
+    ArraySegmentOwner<byte> GetVanilla(ReadOnlySpan<char> canonical, TkFileAttributes attributes, out int zsDictionaryId)
+    {
+        string canonicalManaged = canonical.ToString();
+        return GetVanilla(canonicalManaged, attributes, out zsDictionaryId);
+    }
+
+    /// <inheritdoc cref="GetVanilla(System.String,Tkmm.Abstractions.TkFileAttributes,out int)"/>
+    ArraySegmentOwner<byte> GetVanilla(string canonical, TkFileAttributes attributes)
+        => GetVanilla(canonical, attributes, out _);
+
     /// <summary>
     /// Reads and decompresses the requested vanilla file.
     /// </summary>
-    /// <param name="fileName">The relative path to the vanilla file.</param>
+    /// <param name="canonical">The canonical file name.</param>
+    /// <param name="attributes">The attributes of the file.</param>
+    /// <param name="zsDictionaryId">The dictionary id used to decompress the file.</param>
     /// <returns></returns>
-    ArraySegmentOwner<byte> GetVanilla(string fileName) => GetVanilla(fileName, out _);
+    ArraySegmentOwner<byte> GetVanilla(string canonical, TkFileAttributes attributes, out int zsDictionaryId)
+    {
+        string fileName = AddressTable.TryGetValue(canonical, out string? versionedFileName)
+            ? versionedFileName : canonical;
+
+        if (attributes.HasFlag(TkFileAttributes.HasZsExtension)) {
+            fileName += ".zs";
+        }
+        
+        return GetVanilla(fileName, out zsDictionaryId);
+    }
+    
+    /// <inheritdoc cref="GetVanilla(System.ReadOnlySpan{char},Tkmm.Abstractions.TkFileAttributes)"/>
+    ArraySegmentOwner<byte> GetVanilla(string fileName)
+        => GetVanilla(fileName, out _);
     
     /// <summary>
     /// Reads and decompresses the requested vanilla file.
@@ -20,6 +53,14 @@ public interface IRomfs
     /// <param name="zsDictionaryId">The ID of the dictionary used to compress the requested vanilla file.</param>
     /// <returns></returns>
     ArraySegmentOwner<byte> GetVanilla(string fileName, out int zsDictionaryId);
+    
+    /// <summary>
+    /// Decomrpesses the input stream using the loaded zstd dictionaries.
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="zsDictionaryId"></param>
+    /// <returns></returns>
+    ArraySegmentOwner<byte> Decompress(in Stream stream, out int zsDictionaryId);
     
     /// <summary>
     /// Log information about the <see cref="IRomfs"/> implementation. 
