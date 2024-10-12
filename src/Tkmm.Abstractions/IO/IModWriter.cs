@@ -2,5 +2,5 @@ namespace Tkmm.Abstractions.IO;
 
 public interface IModWriter
 {
-    ValueTask CreateFile(string manifestFileName, Span<byte> contents);
+    ValueTask<Stream> OpenWrite(string manifestFileName);
 }
