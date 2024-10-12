@@ -1,21 +1,21 @@
-using Revrs.Buffers;
+using Tkmm.Abstractions.IO.Buffers;
 using TotkCommon;
 
 namespace Tkmm.Core.IO;
 
 public static class TkFile
 {
-    public static ArraySegmentOwner<byte> OpenReadAndDecompress(string file, out int zsDictionaryId)
+    public static RentedBuffer<byte> OpenReadAndDecompress(string file, out int zsDictionaryId)
     {
         using FileStream fs = File.OpenRead(file);
         int size = Convert.ToInt32(fs.Length);
-        ArraySegmentOwner<byte> buffer = ArraySegmentOwner<byte>.Allocate(size);
-        _ = fs.Read(buffer.Segment);
+        RentedBuffer<byte> buffer = RentedBuffer<byte>.Allocate(size);
+        _ = fs.Read(buffer.Span);
 
         if (Zstd.IsCompressed(buffer.Segment)) {
             int decompressedSize = Zstd.GetDecompressedSize(buffer.Segment);
-            ArraySegmentOwner<byte> decompressed = ArraySegmentOwner<byte>.Allocate(decompressedSize);
-            Totk.Zstd.Decompress(buffer.Segment, decompressed.Segment, out zsDictionaryId);
+            RentedBuffer<byte> decompressed = RentedBuffer<byte>.Allocate(decompressedSize);
+            Totk.Zstd.Decompress(buffer.Span, decompressed.Span, out zsDictionaryId);
             buffer.Dispose();
             return decompressed;
         }

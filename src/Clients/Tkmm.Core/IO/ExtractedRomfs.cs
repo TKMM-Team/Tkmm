@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Revrs.Buffers;
 using Tkmm.Abstractions.IO;
+using Tkmm.Abstractions.IO.Buffers;
 using TotkCommon;
 
 namespace Tkmm.Core.IO;
@@ -9,11 +9,20 @@ namespace Tkmm.Core.IO;
 public sealed class ExtractedRomfs : IRomfs
 {
     public static readonly ExtractedRomfs Instance = new();
-    
-    public ArraySegmentOwner<byte> GetVanilla(string fileName, out int zsDictionaryId)
+
+    public IDictionary<string, string> AddressTable => Totk.AddressTable
+        ?? throw new Exception("No address table has been loaded by the romfs implementation.");
+
+    public RentedBuffer<byte> GetVanilla(string fileName, out int zsDictionaryId)
     {
         string absoluteFilePath = Path.Combine(Totk.Config.GamePath, fileName);
         return TkFile.OpenReadAndDecompress(absoluteFilePath, out zsDictionaryId);
+    }
+
+    public RentedBuffer<byte> Decompress(in Stream stream, out int zsDictionaryId)
+    {
+        // IRomfs should handle loading zstd dictionaries
+        throw new NotImplementedException();
     }
 
     public void LogInfo(ILogger logger)
