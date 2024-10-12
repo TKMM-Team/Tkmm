@@ -3,6 +3,9 @@ using Tkmm.Abstractions;
 
 namespace Tkmm.Common.Extensions;
 
+/// <summary>
+/// Provides extension methods for TotK file paths and the <see cref="TkFileInfo"/> struct.
+/// </summary>
 public static class TkFileExtensions
 {
     public static TkFileInfo GetTkFileInfo(this string filePath, string romfs)

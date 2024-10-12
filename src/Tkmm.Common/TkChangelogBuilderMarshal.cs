@@ -8,10 +8,21 @@ using Tkmm.Common.Extensions;
 
 namespace Tkmm.Common;
 
-public class TkChangelogBuilderMarshal(IChangelogBuilderProvider changelogBuilderProvider)
+/// <summary>
+/// Simple marshal over the <see cref="IChangelogBuilderProvider"/> to build changelogs for an <see cref="IModSource"/>.
+/// </summary>
+/// <param name="changelogBuilderProvider"></param>
+public sealed class TkChangelogBuilderMarshal(IChangelogBuilderProvider changelogBuilderProvider)
 {
     private readonly IChangelogBuilderProvider _changelogBuilderProvider = changelogBuilderProvider;
 
+    /// <summary>
+    /// Builds changelogs for the <see cref="IModSource"/> in parallel.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="writer"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     public Task BuildChangelogs(IModSource source, IModWriter writer, CancellationToken ct = default)
     {
         return Parallel.ForEachAsync(source.Files, ct, async (file, cancellationToken) => {
