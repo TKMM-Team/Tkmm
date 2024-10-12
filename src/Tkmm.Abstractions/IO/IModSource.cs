@@ -16,6 +16,7 @@ public interface IModSource
     /// Open a stream to the requested <paramref name="file"/>.
     /// </summary>
     /// <param name="file">The file to open.</param>
+    /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
     ValueTask<(Stream Stream, long StreamLength)> OpenRead(string file, CancellationToken ct = default);
     
