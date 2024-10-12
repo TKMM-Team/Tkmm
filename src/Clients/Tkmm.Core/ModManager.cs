@@ -25,12 +25,7 @@ public sealed class ModManager : TkModStorage, IModManager
         throw new NotImplementedException();
     }
 
-    public ValueTask<Stream> GetModFile(ITkMod targetMod, string manifestFileName, CancellationToken ct = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public ValueTask CreateModFile(ITkMod targetMod, string manifestFileName, Span<byte> data, CancellationToken ct = default)
+    public ValueTask<(Stream Stream, int Size)> OpenModFile(ITkModChangelog target, string manifestFileName, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
