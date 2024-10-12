@@ -49,5 +49,5 @@ public interface IModManager : IModStorage
     /// <param name="manifestFileName">The manifest name of the file to retrieve.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
-    ValueTask<Stream> GetModFile(ITkModChangelog target, string manifestFileName, CancellationToken ct = default);
+    ValueTask<(Stream Stream, int Size)> OpenModFile(ITkModChangelog target, string manifestFileName, CancellationToken ct = default);
 }
