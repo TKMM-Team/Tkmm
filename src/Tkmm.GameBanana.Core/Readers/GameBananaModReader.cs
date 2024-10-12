@@ -12,7 +12,7 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
 {
     private readonly IModReaderProvider _readerProvider = readerProvider;
     
-    public async ValueTask<ITkMod?> ReadMod<T>(T? input, Stream? stream = null, Ulid predefinedModId = default, CancellationToken ct = default) where T : class
+    public async ValueTask<ITkMod?> ReadMod<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
     {
         if (input is not string arg) {
             return null;
@@ -80,9 +80,11 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
         }
         
         await using Stream stream = await GameBanana.Get(fileUrl, ct);
-        IModReader? parser = _readerProvider.GetReader(target.Name);
+        IModReader? reader = _readerProvider.GetReader(target.Name);
+
+        Ulid id = Unsafe.BitCast<long, Ulid>(fileId);
         
-        return parser?.ReadMod(stream, stream: null, ct) switch {
+        return reader?.ReadMod(stream, stream: null, new ModContext(id), ct) switch {
             { } result => await result,
             _ => null
         };
