@@ -1,4 +1,3 @@
-using Tkmm.Abstractions.IO;
 using Tkmm.Abstractions.Services;
 
 namespace Tkmm.Abstractions.Providers;
@@ -6,9 +5,9 @@ namespace Tkmm.Abstractions.Providers;
 public interface IMergerProvider
 {
     /// <summary>
-    /// Attempt to retreive a <see cref="IMerger"/> from the provided <paramref name="fileName"/>.
+    /// Attempt to retreive a <see cref="IMerger"/> from the provided <paramref name="fileInfo"/>.
     /// </summary>
-    /// <param name="fileName"></param>
+    /// <param name="fileInfo"></param>
     /// <returns>The located <see cref="IMerger"/> or null if none could be found.</returns>
-    ValueTask<IMerger?> GetMerger(string fileName);
+    IMerger? GetMerger(in TkFileInfo fileInfo);
 }
