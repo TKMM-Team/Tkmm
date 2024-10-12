@@ -5,9 +5,9 @@ namespace Tkmm.Abstractions.Providers;
 public interface IMergerProvider
 {
     /// <summary>
-    /// Attempt to retreive a <see cref="IMerger"/> from the provided <paramref name="fileInfo"/>.
+    /// Attempt to retreive a <see cref="IMerger"/> from the <paramref name="canonical"/> file name.
     /// </summary>
-    /// <param name="fileInfo"></param>
+    /// <param name="canonical"></param>
     /// <returns>The located <see cref="IMerger"/> or null if none could be found.</returns>
-    IMerger? GetMerger(in TkFileInfo fileInfo);
+    IMerger? GetMerger(in ReadOnlySpan<char> canonical);
 }
