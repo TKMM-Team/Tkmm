@@ -1,7 +1,7 @@
 namespace Tkmm.Abstractions;
 
 [Flags]
-public enum RomfsFileAttributes
+public enum TkFileAttributes
 {
     None = 0,
     HasZsExtension = 1,
@@ -14,7 +14,7 @@ public readonly ref struct TkFileInfo(
     string romfsPath,
     ReadOnlySpan<char> canonical,
     ReadOnlySpan<char> extension,
-    RomfsFileAttributes attributes)
+    TkFileAttributes attributes)
 {
     public string FilePath { get; } = filePath;
 
@@ -24,5 +24,5 @@ public readonly ref struct TkFileInfo(
 
     public ReadOnlySpan<char> Extension { get; } = extension;
 
-    public RomfsFileAttributes Attributes { get; } = attributes;
+    public TkFileAttributes Attributes { get; } = attributes;
 }
