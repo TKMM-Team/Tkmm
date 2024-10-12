@@ -5,14 +5,19 @@ public interface IModSource
     /// <summary>
     /// The files contained in this mod source.
     /// </summary>
-    List<string> Files { get; }
-    
+    IEnumerable<string> Files { get; }
+
+    /// <summary>
+    /// The path to the romfs root folder contained in the <see cref="Files"/>.  
+    /// </summary>
+    string RomfsPath { get; }
+
     /// <summary>
     /// Open a stream to the requested <paramref name="file"/>.
     /// </summary>
     /// <param name="file">The file to open.</param>
     /// <returns></returns>
-    ValueTask<Stream> OpenRead(string file);
+    ValueTask<(Stream Stream, long StreamLength)> OpenRead(string file, CancellationToken ct = default);
     
     /// <summary>
     /// Determine if the provided input can be read by this <see cref="IModSource"/>.
