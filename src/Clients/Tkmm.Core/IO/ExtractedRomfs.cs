@@ -13,6 +13,8 @@ public sealed class ExtractedRomfs : IRomfs
     public IDictionary<string, string> AddressTable => Totk.AddressTable
         ?? throw new Exception("No address table has been loaded by the romfs implementation.");
 
+    public string Version => Totk.Config.Version.ToString();
+
     public RentedBuffer<byte> GetVanilla(string fileName, out int zsDictionaryId)
     {
         string absoluteFilePath = Path.Combine(Totk.Config.GamePath, fileName);
@@ -40,17 +42,17 @@ public sealed class ExtractedRomfs : IRomfs
     public bool IsStateValid([MaybeNullWhen(true)] out string invalidReason)
     {
         invalidReason = null;
-        
+
         if (!Directory.Exists(Totk.Config.GamePath)) {
             invalidReason = $"Game path does not exist: '{Totk.Config.GamePath}'.";
             return false;
         }
-        
+
         if (!File.Exists(Totk.Config.ZsDicPath)) {
             invalidReason = "Incomplete extracted game dump.";
             return false;
         }
-        
+
         if (Totk.Config.Version <= 100) {
             invalidReason = $"Invalid game version: '{Totk.Config.Version}'.";
             return false;
