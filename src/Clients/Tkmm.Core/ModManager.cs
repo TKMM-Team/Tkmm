@@ -29,4 +29,9 @@ public sealed class ModManager : TkModStorage, IModManager
     {
         throw new NotImplementedException();
     }
+
+    public IEnumerable<ITkModChangelog> GetConfiguredOptions(ITkMod target)
+    {
+        throw new NotImplementedException();
+    }
 }
