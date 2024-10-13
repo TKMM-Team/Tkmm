@@ -88,7 +88,7 @@ public partial class VirtualKeyboard : UserControl
             {
                 
                 source.Text = TextBox_.Text;
-                
+                SimulateEnterKeyPress(source);
                 Close();
             }
         };
