@@ -1,17 +1,12 @@
 
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Input.TextInput;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard;
@@ -152,7 +147,6 @@ public partial class VirtualKeyboard : UserControl
     {
         
         source.Text = TextBox_.Text;
-        
         Close();
         
     }
