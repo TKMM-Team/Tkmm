@@ -8,9 +8,24 @@ public interface ITkModChangelog
     Ulid Id { get; }
     
     /// <summary>
-    /// The tracked files contained in this changelog.
+    /// The tracked romfs files contained in this mod changelog.
     /// </summary>
     IDictionary<string, ChangelogEntry> Manifest { get; }
+    
+    /// <summary>
+    /// Exefs patches contained in this mod changelog.
+    /// </summary>
+    IList<TkPatch> Patches { get; }
+    
+    /// <summary>
+    /// The tracked subsdk files contained in this mod changelog.
+    /// </summary>
+    IList<string> SubSdkFiles { get; }
+    
+    /// <summary>
+    /// The tracked cheats contained in this mod changelog.
+    /// </summary>
+    IList<string> Cheats { get; }
 }
 
 public enum ChangelogType
