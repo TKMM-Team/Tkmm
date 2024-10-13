@@ -50,4 +50,11 @@ public interface IModManager : IModStorage
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
     ValueTask<(Stream Stream, int Size)> OpenModFile(ITkModChangelog target, string manifestFileName, CancellationToken ct = default);
+    
+    /// <summary>
+    /// Gets the user configured options from the specified mod.
+    /// </summary>
+    /// <param name="target">The mod to query.</param>
+    /// <returns></returns>
+    IEnumerable<ITkModChangelog> GetConfiguredOptions(ITkMod target);
 }
