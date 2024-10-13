@@ -24,14 +24,16 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
     /// <param name="ct"></param>
     public async Task Merge(ITkProfile profile, IModWriter mergedOutputWriter, CancellationToken ct = default)
     {
-        IEnumerable<OrderedTarget> targets = profile.Mods
+        IEnumerable<ITkModChangelog> changelogs = profile.Mods
             .Where(profileMod => profileMod.IsEnabled)
             .SelectMany(
                 profileMod => _manager
                     .GetConfiguredOptions(profileMod.Mod)
                     .Append(profileMod.Mod)
             )
-            .Reverse()
+            .Reverse();
+
+        IEnumerable<OrderedTarget> targets = changelogs
             .SelectMany(
                 changelog => changelog.Manifest
                     .Select(kvp => (FileName: kvp.Key, Entry: kvp.Value, Mod: changelog))
@@ -70,30 +72,32 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
 
             if (!vanilla.Span.IsEmpty) {
                 await merger.Merge(buffers, vanilla.Segment,
-                    await OpenWriteOutput(canonical, entry.Attributes, mergedOutputWriter),
+                    await OpenWriteRomfsOutput(canonical, entry.Attributes, mergedOutputWriter),
                     resourceSizeTable, ct);
                 continue;
             }
 
             await merger.Merge(buffers,
-                await OpenWriteOutput(canonical, entry.Attributes, mergedOutputWriter),
+                await OpenWriteRomfsOutput(canonical, entry.Attributes, mergedOutputWriter),
                 resourceSizeTable, ct);
         }
+        
+        // TODO: Merge patches, subsdk and cheats
 
         await using Stream restblOutputStream = await mergedOutputWriter.OpenWrite(
             Path.Combine("System", "Resource", $"ResourceSizeTable.Product.{_romfs.Version}.rsizetable.zs"));
         await resourceSizeTable.Write(restblOutputStream, ct);
     }
 
-    private ValueTask<Stream> OpenWriteOutput(string canonical, TkFileAttributes attributes, IModWriter writer)
+    private ValueTask<Stream> OpenWriteRomfsOutput(string canonical, TkFileAttributes attributes, IModWriter writer)
     {
         string fileName = _romfs.AddressTable.TryGetValue(canonical, out string? versionedFileName)
             ? versionedFileName
             : canonical;
 
-        if (attributes.HasFlag(TkFileAttributes.HasZsExtension)) {
-            fileName += ".zs";
-        }
+        fileName = attributes.HasFlag(TkFileAttributes.HasZsExtension)
+            ? $"romfs{Path.DirectorySeparatorChar}{fileName}.zs"
+            : $"romfs{Path.DirectorySeparatorChar}{fileName}";
 
         return writer.OpenWrite(fileName);
     }
