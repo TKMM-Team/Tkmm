@@ -1,8 +1,8 @@
 using Tkmm.Abstractions.IO;
 
-namespace Tkmm.Core.IO;
+namespace Tkmm.Core.IO.ModWriters;
 
-public class SystemModWriter(Ulid id) : IModWriter
+public sealed class SystemModWriter(Ulid id) : IModWriter
 {
     private readonly string _id = id.ToString();
 
