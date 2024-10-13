@@ -8,5 +8,5 @@ public interface IModWriterProvider
     /// Get a <see cref="IModWriter"/> that will write content directly into the system.  
     /// </summary>
     /// <returns></returns>
-    IModWriter GetSystemWriter();
+    IModWriter GetSystemWriter(ModContext context);
 }
