@@ -64,9 +64,24 @@ internal static class GameBanana
             _ => string.Format(FEED_ENDPOINT, gameId, page, sort)
         };
         
-        return await Get(
-            endpoint,
-            GameBananaFeedJsonContext.Default.GameBananaFeed, ct
-        );
+        GameBananaFeed result = new();
+
+        for (int i = 0; i < 2; i++) {
+            GameBananaFeed? feed = await Get(
+                endpoint,
+                GameBananaFeedJsonContext.Default.GameBananaFeed, ct
+            );
+            
+            if (feed is null) {
+                return result;
+            }
+            
+            result.Metadata = feed.Metadata;
+            foreach (GameBananaModRecord record in feed.Records) {
+                result.Records.Add(record);
+            }
+        }
+
+        return result;
     }
 }
