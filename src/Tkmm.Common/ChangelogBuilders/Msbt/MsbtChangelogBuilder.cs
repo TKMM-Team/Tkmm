@@ -8,7 +8,7 @@ public sealed class MsbtChangelogBuilder : IChangelogBuilder
 {
     public static readonly MsbtChangelogBuilder Instance = new();
     
-    public ValueTask<bool> LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
+    public ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

@@ -8,7 +8,7 @@ public sealed class BymlChangelogBuilder : IChangelogBuilder
 {
     public static readonly BymlChangelogBuilder Instance = new();
     
-    public ValueTask<bool> LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
+    public ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

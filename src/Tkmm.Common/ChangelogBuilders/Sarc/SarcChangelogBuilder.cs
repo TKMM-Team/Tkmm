@@ -8,7 +8,7 @@ internal sealed class SarcChangelogBuilder : IChangelogBuilder
 {
     public static readonly SarcChangelogBuilder Instance = new();
 
-    public ValueTask<bool> LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input,
+    public ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input,
         Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
         throw new NotImplementedException();
