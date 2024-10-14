@@ -11,13 +11,17 @@ namespace Tkmm.GameBanana.Core.Readers;
 public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
 {
     private readonly IModReaderProvider _readerProvider = readerProvider;
-    
+
     public async ValueTask<ITkMod?> ReadMod<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
     {
+        if (input is GameBananaFile file) {
+            return await ParseFromFileUrl(file.DownloadUrl, file.Id, file, ct);
+        }
+        
         if (input is not string arg) {
             return null;
         }
-        
+
         if (!GbUrlHelper.TryGetId(arg, out long id)) {
             return null;
         }
@@ -31,11 +35,12 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
 
     public bool IsKnownInput<T>(T? input) where T : class
     {
-        return input is string arg && (
-            arg.Contains("gamebanana.com/mods/") || arg.Contains("gamebanana.com/dl/")
-        ) && GbUrlHelper.TryGetId(arg, out _);
+        return input is GameBananaFile
+               || (input is string arg && (
+                   arg.Contains("gamebanana.com/mods/") || arg.Contains("gamebanana.com/dl/")
+               ) && GbUrlHelper.TryGetId(arg, out _));
     }
-    
+
     public async ValueTask<ITkMod?> ParseFromModId(long modId, CancellationToken ct)
     {
         GameBananaMod? gbMod = await GameBanana.GetMod(modId, ct);
@@ -54,7 +59,7 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
         if (mod is null) {
             return null;
         }
-        
+
         mod.Name = gbMod.Name;
         mod.Author = gbMod.Submitter.Name;
         mod.Description = new Converter(new Config {
@@ -64,27 +69,30 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
         }).Convert(gbMod.Text);
         mod.Thumbnail = new TkThumbnail();
         mod.Version = gbMod.Version;
-        
+
         foreach (GameBananaAuthor author in gbMod.Credits.SelectMany(group => group.Authors)) {
             mod.Contributors.Add(new TkModContributor(author.Name, author.Role));
         }
-        
+
         return mod;
     }
-    
+
     public async ValueTask<ITkMod?> ParseFromFileUrl(string fileUrl, long fileId, GameBananaFile? target = default, CancellationToken ct = default)
     {
         target ??= await GameBanana.Get($"File/{fileId}", GameBananaModJsonContext.Default.GameBananaFile, ct);
+        
         if (target is null) {
             return null;
         }
-        
-        await using Stream stream = await GameBanana.Get(fileUrl, ct);
-        IModReader? reader = _readerProvider.GetReader(target.Name);
 
+        IModReader? reader = _readerProvider.GetReader(target.Name);
         Ulid id = Unsafe.BitCast<long, Ulid>(fileId);
         
-        return reader?.ReadMod(stream, stream: null, new ModContext(id), ct) switch {
+        byte[] data = await DownloadHelper.DownloadAndVerify(
+            fileUrl, Convert.FromHexString(target.Checksum), ct: ct);
+
+        await using MemoryStream ms = new(data);
+        return reader?.ReadMod(fileUrl, ms, new ModContext(id), ct) switch {
             { } result => await result,
             _ => null
         };
