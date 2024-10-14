@@ -9,6 +9,8 @@ public enum GameBananaSortMode
 
 public interface IGameBananaSource
 {
+    public static GameBananaSortMode[] GameBananaSortModes => Enum.GetValues<GameBananaSortMode>();
+    
     /// <summary>
     /// The 0-based page index.
     /// </summary>
