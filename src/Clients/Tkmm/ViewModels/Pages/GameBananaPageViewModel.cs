@@ -1,30 +1,25 @@
 ﻿using System.Text.Json;
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
+using Tkmm.Core;
 using Tkmm.GameBanana.Core;
-using Tkmm.Helpers;
+using Tkmm.GameBanana.Core.Helpers;
 using Tkmm.Views.Common;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class GameBananaPageViewModel : ObservableObject
 {
-    private static readonly HttpClient _client = new();
+    private const int GAME_ID = 7617;
 
-    private const string GAME_ID = "7617";
-    private const string FEED_ENDPOINT = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_csvModelInclusions=Mod";
-    private const string FEED_ENDPOINT_SEARCH = $"/Game/{GAME_ID}/Subfeed?_nPage={{0}}&_sSort={{1}}&_sName={{2}}&_csvModelInclusions=Mod";
-
-    private static GameBananaFeed? _sugestedModsFeed = GetSuggestedFeed();
+    private static readonly GameBananaFeed? _sugestedModsFeed = GetSuggestedFeed();
 
     [ObservableProperty]
     private string _searchArgument = string.Empty;
-
-    [ObservableProperty]
-    private int _page;
 
     [ObservableProperty]
     private bool _isShowingSuggested;
@@ -39,31 +34,29 @@ public partial class GameBananaPageViewModel : ObservableObject
     private bool _isLoadSuccess;
 
     [ObservableProperty]
-    private GameBananaFeed _feed = new();
+    private IGameBananaSource _source = new GameBananaSource(GAME_ID);
 
     public GameBananaPageViewModel()
     {
-        _ = Refresh();
-
-        DownloadOperations.OnDownloadStarted += () => {
+        DownloadHelper.OnDownloadStarted += () => {
             IsLoading = true;
-            return new Progress<double>((value) => {
-                LoadProgress = value;
-            });
+            return new Progress<double>((value) => { LoadProgress = value; });
         };
 
-        DownloadOperations.OnDownloadCompleted += () => {
+        DownloadHelper.OnDownloadCompleted += () => {
             IsLoading = false;
             IsLoadSuccess = true;
             LoadProgress = 0;
         };
 
-        Config.Shared.PropertyChanged += async (_, e) => {
+        _ = ReloadPage();
+
+        TKMM.Config.PropertyChanged += async (_, e) => {
             if (e.PropertyName is not nameof(Config.GameBananaSortMode)) {
                 return;
             }
 
-            await UpdatePage();
+            await ReloadPage();
             Config.Shared.Save();
         };
     }
@@ -71,52 +64,55 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task Search(ScrollViewer modsViewer)
     {
-        Page = 0;
-        await UpdatePage();
+        Source.CurrentPage = 0;
+        await ReloadPage();
         modsViewer.ScrollToHome();
     }
 
     [RelayCommand]
     public async Task ResetSearch(ScrollViewer modsViewer)
     {
-        Page = 0;
+        Source.CurrentPage = 0;
         SearchArgument = string.Empty;
-        await UpdatePage();
+        await ReloadPage();
         modsViewer.ScrollToHome();
     }
 
     [RelayCommand]
     public async Task NextPage(ScrollViewer modsViewer)
     {
-        Page++;
-        await UpdatePage();
+        Source.CurrentPage++;
+        await ReloadPage();
         modsViewer.ScrollToHome();
     }
 
     [RelayCommand]
     public async Task PrevPage(ScrollViewer modsViewer)
     {
-        Page--;
-        await UpdatePage();
+        Source.CurrentPage--;
+        await ReloadPage();
         modsViewer.ScrollToHome();
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanShowSuggested))]
     public async Task ShowSuggested(ScrollViewer modsViewer)
     {
-        _sugestedModsFeed ??= GetSuggestedFeed();
-
-        if (IsShowingSuggested == false) {
-            await UpdatePage();
-            modsViewer.ScrollToHome();
+        if (IsShowingSuggested) {
+            await ReloadPage();
             return;
         }
 
-        await UpdatePage(_sugestedModsFeed);
+        await ReloadPage(_sugestedModsFeed);
+        modsViewer.ScrollToHome();
+    }
+
+    private static bool CanShowSuggested()
+    {
+        return _sugestedModsFeed is not null;
     }
 
     [RelayCommand]
-    public static async Task InstallMod(GameBananaModInfo mod)
+    public static async Task InstallMod(GameBananaModRecord mod)
     {
         ArgumentNullException.ThrowIfNull(mod.Full, nameof(mod.Full));
 
@@ -145,23 +141,12 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
 
         if (await dialog.ShowAsync() == ContentDialogResult.Primary && target is not null) {
-            AppStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", isWorkingStatus: true);
-            await ModHelper.Import(target, mod.Full.FromFile);
+            TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
+            await TKMM.ModManager.Install(target);
         }
     }
 
-    [RelayCommand]
-    public async Task Refresh()
-    {
-        try {
-            await UpdatePage();
-        }
-        catch (Exception ex) {
-            AppLog.Log(ex);
-        }
-    }
-
-    private async Task UpdatePage(GameBananaFeed? customFeed = null)
+    private async Task ReloadPage(GameBananaFeed? customFeed = null)
     {
         IsLoadSuccess = IsLoading = true;
 
@@ -170,12 +155,14 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
 
         try {
-            Feed = await Fetch(Page + 1, SearchArgument, customFeed);
+            await Source.LoadPage(Source.CurrentPage, SearchArgument, customFeed);
             IsLoadSuccess = true;
         }
         catch (Exception ex) {
             IsLoadSuccess = false;
-            AppLog.Log(ex);
+            TKMM.Logger.LogError(ex,
+                "An error occured when reloading page {CurrentPage} with search {SearchArgument}",
+                Source.CurrentPage, SearchArgument);
             App.ToastError(ex);
         }
         finally {
@@ -183,54 +170,15 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
     }
 
-    private static async Task<GameBananaFeed> Fetch(int page, string search, GameBananaFeed? customFeed = null)
-    {
-        string sort = Config.Shared.GameBananaSortMode.ToString().ToLower();
-        search = search.Trim();
-        string endpoint = !string.IsNullOrEmpty(search) && search.Length > 2
-            ? string.Format(FEED_ENDPOINT_SEARCH, page, sort, search)
-            : string.Format(FEED_ENDPOINT, page, sort);
-
-        await using Stream stream = await GameBananaHelper.Get(endpoint);
-        GameBananaFeed feed = customFeed ?? JsonSerializer.Deserialize<GameBananaFeed>(stream)
-            ?? throw new InvalidOperationException($"Could not parse feed from '{FEED_ENDPOINT}'");
-
-        await Task.WhenAll(feed.Records.Select(x => x.FetchMetadata()));
-        feed.Records = [.. feed.Records.Where(x =>
-            x is {
-                Full: {
-                    IsTrashed: false, IsFlagged: false, IsPrivate: false
-                },
-                IsObsolete: false, IsContentRated: false
-            }
-        )];
-
-        _ = Task.Run(() => DownloadThumbnails(feed));
-        return feed;
-    }
-
-    private static async Task DownloadThumbnails(GameBananaFeed feed)
-    {
-        foreach (GameBananaModInfo mod in feed.Records) {
-            if (mod.Media.Images.FirstOrDefault() is not GameBananaImage img) {
-                continue;
-            }
-
-            byte[] image = await _client
-                .GetByteArrayAsync($"{img.BaseUrl}/{img.SmallFile}");
-            using MemoryStream ms = new(image);
-            mod.Thumbnail = new Bitmap(ms);
-        }
-    }
-
     private static GameBananaFeed? GetSuggestedFeed()
     {
-        string path = Path.Combine(Config.Shared.StaticStorageFolder, "suggested.json");
+        string path = Path.Combine(AppContext.BaseDirectory, ".gamebanana", "suggested.json");
+
         if (!File.Exists(path)) {
             return null;
         }
 
-        using FileStream fs = File.OpenRead(path);
-        return JsonSerializer.Deserialize<GameBananaFeed>(fs);
+        using Stream stream = AssetLoader.Open(new Uri("GameBanana/Suggested.json"), App.AssetsUri);
+        return JsonSerializer.Deserialize(stream, GameBananaFeedJsonContext.Default.GameBananaFeed);
     }
 }
