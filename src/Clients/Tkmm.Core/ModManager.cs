@@ -24,7 +24,7 @@ public sealed class ModManager : TkModStorage, IModManager
         await TKMM.MergerMarshal.Merge(profile, MergedOutputModWriter.Instance, ct);
     }
 
-    public ValueTask<ITkMod?> Install(object? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default)
+    public ValueTask<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
     {
         throw new NotImplementedException();
     }

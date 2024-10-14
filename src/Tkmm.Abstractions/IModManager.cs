@@ -40,7 +40,7 @@ public interface IModManager : IModStorage
     /// <param name="stream">An optional stream to provide the input data.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>The installed mod if the operation was successful, otherwise null.</returns>
-    ValueTask<ITkMod?> Install(object? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default);
+    ValueTask<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class;
     
     /// <summary>
     /// Gets the contents of the specified file and returns a stream to the data.
