@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
+using Tkmm.GameBanana.Core;
 using TotkCommon;
 
 namespace Tkmm.Core;
@@ -104,4 +105,7 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Define custom locations to export the merged mod to.",
         Group = "Merging")]
     private ExportLocations _exportLocations = [];
+    
+    [ObservableProperty]
+    private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
 }
