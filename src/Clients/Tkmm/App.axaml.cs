@@ -41,6 +41,8 @@ public class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
         .InformationalVersion.Split('+')[0] ?? SystemMsg.UndefinedVersion;
 
+    public static readonly Uri AssetsUri = new("avares://Tkmm/Assets/");
+
     public static string Title { get; } = $"TotK Mod Manager";
 
     public static string ShortTitle { get; } = $"TKMM v{Version}";
