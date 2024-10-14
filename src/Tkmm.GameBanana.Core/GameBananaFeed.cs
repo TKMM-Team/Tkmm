@@ -13,4 +13,4 @@ public class GameBananaFeed
 }
 
 [JsonSerializable(typeof(GameBananaFeed))]
-internal partial class GameBananaFeedJsonContext : JsonSerializerContext;
+public partial class GameBananaFeedJsonContext : JsonSerializerContext;

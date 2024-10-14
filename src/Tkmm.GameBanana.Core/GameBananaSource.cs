@@ -14,18 +14,8 @@ public sealed partial class GameBananaSource(int gameId) : ObservableObject, IGa
 
     [ObservableProperty]
     private GameBananaFeed? _feed;
-
-    public ValueTask Search(string searchTerm, CancellationToken ct)
-    {
-        return LoadPage(CurrentPage = 0, searchTerm, customFeed: null, ct);
-    }
     
-    public ValueTask LoadPage(int page, GameBananaFeed? customFeed, CancellationToken ct)
-    {
-        return LoadPage(page, null, customFeed, ct);
-    }
-    
-    private async ValueTask LoadPage(int page, string? searchTerm, GameBananaFeed? customFeed, CancellationToken ct)
+    public async ValueTask LoadPage(int page, string? searchTerm = null, GameBananaFeed? customFeed = null, CancellationToken ct = default)
     {
         string sort = SortMode.ToString().ToLower();
         GameBananaFeed? feed = customFeed ?? await GameBanana.GetFeed(_gameId, page + 1, sort, searchTerm, ct);
