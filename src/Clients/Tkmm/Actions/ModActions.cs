@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -70,22 +71,21 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 
         try {
             // TODO: Export packaged mod
+            // TODO: Fetch message template from locale
+            TkStatus.SetTemporaryShort($"'{target.Mod.Name}' was exported successfully!", TkIcons.CIRCLE_CHECK);
         }
         catch (Exception ex) {
             TKMM.Logger.LogError(ex, "An error occured while exporting the mod '{ModName}' to '{TargetFile}'.",
                 target.Mod.Name, result.Name);
             await ErrorDialog.ShowAsync(ex);
         }
-
-        // TODO: Fetch message template from locale
-        TkStatus.SetTemporaryShort($"'{target.Mod.Name}' was exported successfully!", TkIcons.CIRCLE_CHECK);
     }
 
     [RelayCommand]
     public async Task OpenModFolder()
     {
         await CanActionRun(showError: false);
-        
+
         if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
             return;
         }
@@ -106,12 +106,12 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             await ErrorDialog.ShowAsync(ex);
         }
     }
-    
+
     [RelayCommand]
     public async Task ConfigureModOptions()
     {
         await CanActionRun(showError: false);
-        
+
         if (TKMM.ModManager.CurrentProfile.Selected is ITkProfileMod target) {
             target.IsEditingOptions = !target.IsEditingOptions;
         }
@@ -141,7 +141,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 
     [RelayCommand]
     public async Task UninstallMod()
-    {    
+    {
         if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
             await CanActionRun(showError: false);
             return;
@@ -149,7 +149,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 
         await UninstallMod(target.Mod);
     }
-    
+
     public async Task UninstallMod(ITkMod target)
     {
         await CanActionRun(showError: false);
@@ -158,7 +158,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             Title = "Permenently uninstall?",
             Content = $"""
                 WARNING: THIS CANNOT BE UNDONE
-                
+
                 Are you sure you would like to permenently uninstall the mod '{target.Name}'?
                 """,
             IsPrimaryButtonEnabled = true,
@@ -171,7 +171,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
             return;
         }
-        
+
         try {
             // TODO: Uninstall the target mod
         }
