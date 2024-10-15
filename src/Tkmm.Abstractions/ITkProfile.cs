@@ -15,13 +15,23 @@ public interface ITkProfile : ITkItem
     /// <summary>
     /// The current selected <see cref="ITkProfileMod"/>.
     /// </summary>
-    ITkProfileMod? Selected { get; set; }
+    ITkProfileMod Selected { get; set; }
+    
+    /// <summary>
+    /// Moves the <see cref="Selected"/> mod up in the <see cref="Mods"/> collection.
+    /// </summary>
+    ITkProfileMod MoveUp() => MoveUp(Selected);
     
     /// <summary>
     /// Moves the <paramref name="target"/> up in the <see cref="Mods"/> collection.
     /// </summary>
     /// <param name="target">The target <see cref="ITkMod"/> to be repositioned.</param>
     ITkProfileMod MoveUp(ITkProfileMod target) => Move(target, direction: -1);
+    
+    /// <summary>
+    /// Moves the <see cref="Selected"/> mod up in the <see cref="Mods"/> collection.
+    /// </summary>
+    ITkProfileMod MoveDown() => MoveDown(Selected);
 
     /// <summary>
     /// Moves the <paramref name="target"/> down in the <see cref="Mods"/> collection.
