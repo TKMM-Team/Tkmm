@@ -217,11 +217,11 @@
                                                     VerticalAlignment="Stretch"
                                                     Background="{DynamicResource ControlStrokeColorDefault}"
                                                     IsVisible="{Binding Description.Length}" />
+                                            <!-- TODO: Bind selected items for configuring -->
                                             <ListBox ItemsSource="{Binding Options}"
-                                                     SelectedItems="{Binding SelectedOptions}"
                                                      SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                                 <ListBox.ItemTemplate>
-                                                    <DataTemplate x:DataType="{x:Type tk:ITkModOP}">
+                                                    <DataTemplate x:DataType="{x:Type tk:ITkModOption}">
                                                         <TextBlock HorizontalAlignment="Stretch"
                                                                    Background="Transparent"
                                                                    Text="{Binding Name}">
