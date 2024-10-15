@@ -22,6 +22,8 @@ public static class TKMM
     public static Config Config => Config.Shared;
 
     public static IModManager ModManager { get; } = new ModManager();
+    
+    public static ITkShopManager ShopManager { get; } = new TkShopManager();
 
     public static IMergerProvider MergerProvider { get; } = new TkMergerProvider();
 
