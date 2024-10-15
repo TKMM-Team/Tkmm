@@ -58,8 +58,21 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return;
         }
 
-        // Determine storage system to get folder
-        throw new NotImplementedException();
+        string outputModFolder = Path.Combine(ModManager.SystemModsFolder, target.Mod.Id.ToString());
+
+        try {
+            ProcessStartInfo info = new() {
+                FileName = outputModFolder,
+                UseShellExecute = true
+            };
+
+            Process.Start(info);
+        }
+        catch (Exception ex) {
+            TKMM.Logger.LogError(ex, "An error occured while opening the mod folder for '{ModName}'.",
+                target.Mod.Name);
+            await ErrorDialog.ShowAsync(ex);
+        }
     }
     
     [RelayCommand]
