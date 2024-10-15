@@ -4,8 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:core="using:Tkmm.Core"
-             xmlns:models="using:Tkmm.Core.Models.GameBanana"
-             xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:gb="using:Tkmm.GameBanana.Core"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages1="clr-namespace:Tkmm.ViewModels.Pages"
              d:DesignHeight="450"
@@ -64,7 +63,7 @@
             <ComboBox Grid.Column="4"
                       Width="100"
                       Margin="5,0,0,0"
-                      ItemsSource="{x:Static core:Config.GameBananaSortModes}"
+                      ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                       SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
                       ToolTip.Tip="Sort Mode" />
         </Grid>
@@ -80,14 +79,14 @@
                       Grid.Row="1"
                       IsScrollInertiaEnabled="True"
                       IsVisible="{Binding IsLoadSuccess}">
-            <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Feed.Records}">
+            <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Source.Feed.Records}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:GameBananaModInfo}">
+                    <DataTemplate DataType="{x:Type gb:GameBananaModRecord}">
                         <Grid>
                             <Border Width="300"
                                     Margin="13"
@@ -140,14 +139,14 @@
             <Button Margin="5"
                     Command="{Binding PrevPageCommand}"
                     CommandParameter="{Binding #ModsViewer}"
-                    IsEnabled="{Binding Page}">
+                    IsEnabled="{Binding Source.CurrentPage}">
                 <pi:Icon Value="fa-solid fa-chevron-left" />
             </Button>
             <Button Grid.Column="1"
                     Margin="5"
                     Command="{Binding NextPageCommand}"
                     CommandParameter="{Binding #ModsViewer}"
-                    IsEnabled="{Binding !Feed.Metadata.IsCompleted}">
+                    IsEnabled="{Binding !Source.Feed.Metadata.IsCompleted}">
                 <pi:Icon Value="fa-solid fa-chevron-right" />
             </Button>
         </Grid>
