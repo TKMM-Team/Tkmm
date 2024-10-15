@@ -3,15 +3,11 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-               xmlns:app="using:Tkmm"
-               xmlns:comp="using:Tkmm.Core.Components"
-               xmlns:core="clr-namespace:Tkmm.Core;assembly=Tkmm.Core"
+               xmlns:core="using:Tkmm.Core"
+               xmlns:tkmm="using:Tkmm"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
-               xmlns:vm="using:Tkmm.ViewModels"
-               xmlns:components="clr-namespace:Tkmm.Components"
-               xmlns:helperModels="clr-namespace:Tkmm.Models"
                xmlns:desktop="clr-namespace:Tkmm"
                xmlns:viewModels="clr-namespace:Tkmm.ViewModels"
                xmlns:components1="clr-namespace:Tkmm.Components"
@@ -96,18 +92,18 @@
               ColumnDefinitions="Auto,Auto,*,Auto,Auto"
               IsHitTestVisible="False">
             <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
-            <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static core:AppStatus.Shared}}" />
+            <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static tkmm:TkStatus.Shared}}" />
             <TextBlock Grid.Column="1"
                        Margin="5,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource UbuntuMono}"
-                       Text="{Binding Status, Source={x:Static core:AppStatus.Shared}}" />
+                       Text="{Binding Status, Source={x:Static tkmm:TkStatus.Shared}}" />
             <TextBlock Grid.Column="3"
                        Margin="5,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource UbuntuMono}"
                        FontSize="12">
-                <Run Text="{Binding Current.Name, Source={x:Static comp:ProfileManager.Shared}}" />
+                <Run Text="{Binding CurrentProfile.Name, Source={x:Static core:TKMM.ModManager}}" />
                 <Run Text=" |" />
                 <Run Text="{x:Static desktop:App.Title}" />
                 <Run Text=" |" />
