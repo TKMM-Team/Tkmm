@@ -75,10 +75,23 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     public async Task RemoveModFromProfile()
     {
         await CanActionRun(showError: false);
-        
-        if (TKMM.ModManager.CurrentProfile.Selected is ITkProfileMod target) {
-            TKMM.ModManager.CurrentProfile.Mods.Remove(target);
+
+        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+            return;
         }
+
+        int removeIndex = TKMM.ModManager.CurrentProfile.Mods.IndexOf(target);
+        TKMM.ModManager.CurrentProfile.Mods.RemoveAt(removeIndex);
+
+        if (TKMM.ModManager.CurrentProfile.Mods.Count is 0) {
+            return;
+        }
+
+        while (removeIndex >= TKMM.ModManager.CurrentProfile.Mods.Count) {
+            removeIndex--;
+        }
+
+        TKMM.ModManager.CurrentProfile.Selected = TKMM.ModManager.CurrentProfile.Mods[removeIndex];
     }
 
     [RelayCommand]
