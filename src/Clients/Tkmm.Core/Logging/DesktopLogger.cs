@@ -2,33 +2,34 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
-namespace Tkmm.Core.IO;
+namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
-    private const string GENERIC_USERNAME = "%username%";
-    
-    private static readonly string _userName = Path.GetFileName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
     private static readonly string _targetLogFile = Path.Combine(AppContext.BaseDirectory, "log.txt");
+
+    private readonly string _group;
     private readonly StreamWriter _writer;
 
-    public DesktopLogger()
+    public DesktopLogger(string group)
     {
+        _group = group;
+
         FileStream fs = File.Create(_targetLogFile);
         _writer = new StreamWriter(fs);
     }
-    
+
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         string log = $"""
-            [{eventId.Id,2}: {logLevel,-12}]
-                 TKMM - {formatter(state, exception).Replace(_userName, GENERIC_USERNAME)}
+            [{eventId.Id,2}: {logLevel,-12}] [{DateTime.UtcNow:s}]
+                 {_group} - {formatter(state, exception).HideUsername()}
             """;
-        
+
 #if DEBUG
         Debug.WriteLine(log);
 #endif
-        
+
         _writer.WriteLine(log);
     }
 
