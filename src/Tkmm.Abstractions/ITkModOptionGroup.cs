@@ -8,8 +8,8 @@ public enum OptionGroupType
     SingleRequired
 }
 
-public interface ITkModOptionGroup
-{
+public interface ITkModOptionGroup : ITkItem
+{   
     /// <summary>
     /// The type of option group.
     /// </summary>
