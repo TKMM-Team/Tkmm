@@ -13,10 +13,4 @@ public sealed class ToolsMenuModel
     {
         return MergeActions.Instance.ExportToSdCard();
     }
-
-    [Menu(TOOLS_CHECK_DUMP_INTEGRITY, TOOLS_MENU, Icon = TkIcons.PROGRESS, IsSeparator = true)]
-    public static Task CheckDumpIntegrity()
-    {
-        return ValidationActions.Instance.CheckAndReportDumpIntegrity();
-    }
 }
