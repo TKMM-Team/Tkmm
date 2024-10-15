@@ -12,7 +12,39 @@ namespace Tkmm.Actions;
 public sealed partial class ModActions : GuardedActionGroup<ModActions>
 {
     protected override string ActionGroupName { get; } = nameof(ModActions).Humanize();
-    
+
+    public Task<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
+        => Install(input, TKMM.ModManager.CurrentProfile, stream, context, ct);
+
+    public async Task<ITkMod?> Install<T>(T? input, ITkProfile profile, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
+    {
+        await CanActionRun(showError: false);
+
+        try {
+            if (await TKMM.ModManager.Install(input, stream, context, ct) is not ITkMod mod) {
+                // TODO: Fetch message template from locale
+                TKMM.Logger.LogError("The input of type '{InputType}' ('{Input}') failed to install.",
+                    typeof(T), input);
+                return null;
+            }
+
+            ITkProfileMod profileMod = mod.GetProfileMod();
+            profile.Mods.Add(profileMod);
+            profile.Selected = profileMod;
+            
+            // TODO: Fetch message template from locale
+            TkStatus.SetTemporaryShort($"{mod.Name} was installed successfully!", TkIcons.CIRCLE_CHECK);
+            return mod;
+        }
+        catch (Exception ex) {
+            TKMM.Logger.LogError(ex, "An error occured while installing an input of type '{InputType}' ('{Input}').",
+                typeof(T), input);
+            await ErrorDialog.ShowAsync(ex);
+        }
+
+        return null;
+    }
+
     [RelayCommand]
     public async Task ExportMod()
     {
