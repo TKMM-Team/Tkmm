@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="using:Tkmm.Core.Models"
-             xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:tk="using:Tkmm.Abstractions"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages1="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:converters="clr-namespace:Tkmm.Converters"
@@ -21,17 +20,17 @@
         <Grid Margin="0,0,0,10">
             <StackPanel Spacing="3">
                 <TextBlock FontSize="17"
-                           Text="{Binding CurrentShop.ShopName}"
-                           ToolTip.Tip="{Binding CurrentShop.NpcActorName}" />
-                <Grid Background="Transparent" ToolTip.Tip="{Binding CurrentShop}">
+                           Text="{Binding ShopManager.Selected.ShopName}"
+                           ToolTip.Tip="{Binding ShopManager.Selected.NpcActorName}" />
+                <Grid Background="Transparent" ToolTip.Tip="{Binding ShopManager.Selected}">
                     <TextBlock FontSize="14"
                                FontStyle="Italic"
                                TextTrimming="CharacterEllipsis">
-                        <Run FontWeight="Medium" Text="{Binding CurrentShop.NpcName}" />
+                        <Run FontWeight="Medium" Text="{Binding ShopManager.Selected.NpcName}" />
                         <Run Text="in" />
-                        <Run FontWeight="Medium" Text="{Binding CurrentShop.Location}" />
+                        <Run FontWeight="Medium" Text="{Binding ShopManager.Selected.Location}" />
                         <Run Text="after completing" />
-                        <Run FontWeight="Medium" Text="{Binding CurrentShop.RequiredQuest}" />
+                        <Run FontWeight="Medium" Text="{Binding ShopManager.Selected.RequiredQuest}" />
                     </TextBlock>
                 </Grid>
             </StackPanel>
@@ -63,7 +62,8 @@
                                 CornerRadius="5">
                             <Viewbox>
                                 <Grid Width="12000" Height="10000">
-                                    <Image Source="{Binding CurrentShop.Map, Converter={x:Static converters:MapImageConverter.Shared}}" />
+                                    <Image Source="{Binding ShopManager.Selected.Map, Converter={x:Static converters:MapImageConverter.Shared}}" />
+                                    <Image Source="{Binding ShopManager.Selected.Map, Converter={x:Static converters:MapImageConverter.Shared}}" />
                                     <Border>
                                         <Grid>
                                             <Border Width="44"
@@ -82,7 +82,7 @@
                                                      StrokeThickness="10" />
                                         </Grid>
                                         <Border.RenderTransform>
-                                            <TranslateTransform X="{Binding CurrentShop.Coordinates.X}" Y="{Binding CurrentShop.Coordinates.Y}" />
+                                            <TranslateTransform X="{Binding ShopManager.Selected.Coordinates.X}" Y="{Binding ShopManager.Selected.Coordinates.Y}" />
                                         </Border.RenderTransform>
                                     </Border>
                                 </Grid>
@@ -112,9 +112,9 @@
               Grid.RowSpan="2"
               Grid.Column="2"
               Margin="0,0,0,15">
-            <ListBox ItemsSource="{Binding Shops}" SelectedItem="{Binding CurrentShop}">
+            <ListBox ItemsSource="{Binding ShopManager.OverflowShops}" SelectedItem="{Binding ShopManager.Selected}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:Shop}">
+                    <DataTemplate DataType="{x:Type tk:ITkShop}">
                         <TextBlock Background="Transparent"
                                    TextTrimming="CharacterEllipsis"
                                    ToolTip.Tip="{Binding}">
@@ -135,9 +135,6 @@
                 </Button>
                 <Button VerticalAlignment="Stretch" Command="{Binding MoveDownCommand}">
                     <pi:Icon Value="fa-solid fa-caret-down" />
-                </Button>
-                <Button Command="{Binding ApplyCommand}">
-                    <pi:Icon Value="fa-solid fa-list-check" />
                 </Button>
             </StackPanel>
         </Grid>

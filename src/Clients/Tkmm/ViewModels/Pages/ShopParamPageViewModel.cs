@@ -1,46 +1,48 @@
-﻿using System.Collections.ObjectModel;
-using System.Text.Json;
+﻿using System.ComponentModel;
 using Avalonia.Controls.PanAndZoom;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tkmm.Abstractions;
+using Tkmm.Core;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class ShopParamPageViewModel : ObservableObject
 {
-    private static readonly string _shopsFile = Path.Combine(Config.Shared.StaticStorageFolder, "shops.json");
-
     private readonly ZoomBorder _zoomBorder;
 
-    [ObservableProperty]
-    private Shop? _currentShop;
-
-    [ObservableProperty]
-    private ObservableCollection<Shop> _shops = [];
+    public static ITkShopManager ShopManager => TKMM.ShopManager;
 
     public ShopParamPageViewModel(ZoomBorder zoomBorder)
     {
         _zoomBorder = zoomBorder;
 
-        if (File.Exists(_shopsFile)) {
-            using FileStream fs = File.OpenRead(_shopsFile);
-            Shops = JsonSerializer.Deserialize<ObservableCollection<Shop>>(fs) ?? [];
-            CurrentShop = Enumerable.FirstOrDefault(Shops);
+        // ReSharper disable once SuspiciousTypeConversion.Global
+        if (ShopManager is not INotifyPropertyChanged vm) {
+            return;
         }
+        
+        vm.PropertyChanged += (_, args) => {
+            if (args.PropertyName is not nameof(ITkShopManager.Selected)) {
+                return;
+            }
+            
+            GotoSelected();
+        };
     }
 
     [RelayCommand]
-    private Task MoveUp()
+    private static async Task MoveUp()
     {
-        Move(-1);
-        return Task.CompletedTask;
+        TKMM.ShopManager.MoveUp();
+        await TKMM.ShopManager.Save();
     }
 
     [RelayCommand]
-    private Task MoveDown()
+    private static async Task MoveDown()
     {
-        Move(1);
-        return Task.CompletedTask;
+        TKMM.ShopManager.MoveDown();
+        await TKMM.ShopManager.Save();
     }
 
     [RelayCommand]
@@ -52,46 +54,15 @@ public partial class ShopParamPageViewModel : ObservableObject
     [RelayCommand]
     private void GotoSelected()
     {
-        if (CurrentShop is null) {
+        ITkShop? selected;
+        if ((selected = ShopManager.Selected) is null) {
             return;
         }
 
         const int zoom = 6;
         _zoomBorder.Zoom(zoom,
-            CurrentShop.Coordinates.X + (CurrentShop.Coordinates.X / zoom) + 6000,
-            CurrentShop.Coordinates.Y + (CurrentShop.Coordinates.Y / zoom) + 5000
+            selected.Coordinates.X + selected.Coordinates.X / zoom + 6000,
+            selected.Coordinates.Y + selected.Coordinates.Y / zoom + 5000
         );
-    }
-
-    private void Move(int offset)
-    {
-        if (CurrentShop is null) {
-            return;
-        }
-
-        int currentIndex = Shops.IndexOf(CurrentShop);
-        int newIndex = currentIndex + offset;
-
-        if (newIndex < 0 || newIndex >= Shops.Count) {
-            return;
-        }
-
-        Shop store = Shops[newIndex];
-        Shops[newIndex] = CurrentShop;
-        Shops[currentIndex] = store;
-
-        CurrentShop = Shops[newIndex];
-    }
-
-    [RelayCommand]
-    private void Apply()
-    {
-        using FileStream fs = File.Create(_shopsFile);
-        JsonSerializer.Serialize(fs, Shops);
-    }
-
-    partial void OnCurrentShopChanged(Shop? value)
-    {
-        GotoSelected();
     }
 }
