@@ -16,6 +16,7 @@ public enum Page
 
     About,
     Logs,
+    NetworkSettings,
     Settings,
 }
 

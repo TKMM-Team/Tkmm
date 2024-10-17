@@ -1,0 +1,20 @@
+<UserControl x:Class="Tkmm.Views.Pages.NetworkSettingsPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:local="clr-namespace:Tkmm.Converters"
+             mc:Ignorable="d"
+             x:DataType="pages:NetworkSettingsPageViewModel">
+
+    <UserControl.Resources>
+        <local:NullToBoolConverter x:Key="NullToBoolConverter"/>
+    </UserControl.Resources>
+
+    <StackPanel Margin="15" Spacing="10">
+        <TextBlock Text="Available Networks" FontSize="16" FontWeight="Bold"/>
+        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}"/>
+        <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+    </StackPanel>
+</UserControl>

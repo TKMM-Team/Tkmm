@@ -60,5 +60,8 @@
     <Compile Update="Views\Pages\ShopParamPageView.axaml.cs">
       <DependentUpon>ShopParamPageView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Pages\NetworkSettingsPageView.axaml.cs">
+      <DependentUpon>NetworkSettingsPageView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
