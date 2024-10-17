@@ -14,7 +14,7 @@
 
     <StackPanel Margin="15" Spacing="10">
         <TextBlock Text="Available Networks" FontSize="16" FontWeight="Bold"/>
-        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}"/>
+        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}" DisplayMemberPath="Ssid"/>
         
         <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
                  IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>

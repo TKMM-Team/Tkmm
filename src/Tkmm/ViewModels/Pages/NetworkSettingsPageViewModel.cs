@@ -1,89 +1,84 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Input;
+using Avalonia.Controls;
+using ReactiveUI;
 using Tkmm.Managers;
 
-namespace Tkmm.ViewModels.Pages;
-
-public partial class NetworkSettingsPageViewModel : ObservableObject
+namespace Tkmm.ViewModels.Pages
 {
-    private readonly Connman _connman;
-
-    [ObservableProperty]
-    private ObservableCollection<string> availableNetworks = new();
-
-    [ObservableProperty]
-    private string? selectedNetwork;
-
-    [ObservableProperty]
-    private string? networkPassword;
-
-    public NetworkSettingsPageViewModel()
+    public class NetworkSettingsPageViewModel : INotifyPropertyChanged
     {
-        _connman = new Connman();
-        LoadNetworks();
-    }
+        private ObservableCollection<Connman.WifiNetworkInfo> availableNetworks;
+        private Connman.WifiNetworkInfo selectedNetwork;
+        private string networkPassword;
+        private readonly Connman.ConnmanT connman;
 
-    private void LoadNetworks()
-    {
-        try
+        public NetworkSettingsPageViewModel()
         {
-            AvailableNetworks.Clear();
-            var connmanInstance = Connman.ConnmanctlInit();
-            Connman.ConnmanctlRefreshServices(connmanInstance);
+            connman = Connman.ConnmanctlInit();
+            AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
+            ConnectToNetworkCommand = ReactiveCommand.Create(ConnectToNetwork);
+            ScanForNetworksCommand = ReactiveCommand.Create(ScanForNetworks);
+        }
 
-            if (connmanInstance.Scan?.NetList != null)
+        public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks
+        {
+            get => availableNetworks;
+            set
             {
-                foreach (var network in connmanInstance.Scan.NetList)
-                {
-                    AvailableNetworks.Add(network.Ssid);
-                    Console.WriteLine($"Network found: {network.Ssid}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No networks found or Scan is null.");
+                availableNetworks = value;
+                OnPropertyChanged(nameof(AvailableNetworks));
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error loading networks: " + ex.Message);
-        }
-    }
 
-    [RelayCommand]
-    private void ConnectToNetwork()
-    {
-        if (SelectedNetwork is null) return;
-
-        try
+        public Connman.WifiNetworkInfo SelectedNetwork
         {
-            var connmanInstance = Connman.ConnmanctlInit();
-            var networkInfo = connmanInstance.Scan.NetList.FirstOrDefault(n => n.Ssid == SelectedNetwork);
-            if (!string.IsNullOrEmpty(networkInfo.NetId))
+            get => selectedNetwork;
+            set
             {
-                networkInfo.Passphrase = NetworkPassword;
-                Connman.ConnmanctlConnectSsid(connmanInstance, networkInfo);
+                selectedNetwork = value;
+                OnPropertyChanged(nameof(SelectedNetwork));
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error connecting to network: " + ex.Message);
-        }
-    }
 
-    [RelayCommand]
-    private void ScanForNetworks()
-    {
-        try
+        public string NetworkPassword
         {
-            var connmanInstance = Connman.ConnmanctlInit();
-            Connman.ConnmanctlScan(connmanInstance);
-            LoadNetworks();
+            get => networkPassword;
+            set
+            {
+                networkPassword = value;
+                OnPropertyChanged(nameof(NetworkPassword));
+            }
         }
-        catch (Exception ex)
+
+        public ICommand ConnectToNetworkCommand { get; }
+        public ICommand ScanForNetworksCommand { get; }
+
+        private void ConnectToNetwork()
         {
-            Console.WriteLine("Error scanning for networks: " + ex.Message);
+            if (SelectedNetwork != null)
+            {
+                SelectedNetwork.Passphrase = NetworkPassword;
+                Connman.ConnmanctlConnectSsid(connman, SelectedNetwork);
+            }
+        }
+
+        private void ScanForNetworks()
+        {
+            Connman.ConnmanctlScan(connman);
+            var networks = Connman.ConnmanctlGetSsids(connman).NetList;
+
+            AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
+                networks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
