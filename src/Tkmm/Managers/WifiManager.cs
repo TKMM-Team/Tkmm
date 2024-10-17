@@ -32,7 +32,13 @@ public class Connman
 
     public static ConnmanT ConnmanctlInit()
     {
-        var connman = new ConnmanT();
+        var connman = new ConnmanT
+        {
+            Scan = new WifiNetworkScan
+            {
+                NetList = Array.Empty<WifiNetworkInfo>()
+            }
+        };
         return connman;
     }
 
@@ -53,6 +59,12 @@ public class Connman
 
     public static void ConnmanctlRefreshServices(ConnmanT connman)
     {
+        if (connman == null || connman.Scan == null)
+        {
+            Console.WriteLine("Connman or Scan is null.");
+            return;
+        }
+
         using (var servFile = ExecuteCommand("connmanctl services"))
         {
             if (connman.Scan.NetList != null)
@@ -61,8 +73,11 @@ public class Connman
             string line;
             while ((line = servFile.ReadLine()) != null)
             {
+                if (string.IsNullOrWhiteSpace(line) || !line.Contains("wifi_"))
+                    continue;
+
                 var entry = new WifiNetworkInfo();
-                var list = line.Substring(4).Split(' ');
+                var list = line.Substring(4).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 entry.Connected = line[2] == 'R' || line[2] == 'O';
                 entry.SavedPassword = line[0] == '*';
@@ -227,6 +242,11 @@ public class Connman
 
     private static StreamReader ExecuteCommand(string command)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("")));
+        }
+
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
