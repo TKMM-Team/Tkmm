@@ -15,6 +15,8 @@
     <StackPanel Margin="15" Spacing="10">
         <TextBlock Text="Available Networks" FontSize="16" FontWeight="Bold"/>
         <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}"/>
+        <PasswordBox Password="{Binding NetworkPassword, Mode=TwoWay}" PlaceholderText="Enter Password"/>
         <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+        <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
     </StackPanel>
 </UserControl>

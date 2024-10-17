@@ -15,6 +15,9 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? _selectedNetwork;
 
+    [ObservableProperty]
+    private string? _networkPassword;
+
     public NetworkSettingsPageViewModel()
     {
         _connman = new Connman();
@@ -52,12 +55,35 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
     {
         if (_selectedNetwork is null) return;
 
-        var connmanInstance = Connman.ConnmanctlInit();
-        var networkInfo = connmanInstance.Scan.NetList.FirstOrDefault(n => n.Ssid == _selectedNetwork);
-
-        if (!string.IsNullOrEmpty(networkInfo.NetId))
+        try
         {
-            Connman.ConnmanctlConnectSsid(connmanInstance, networkInfo);
+            var connmanInstance = Connman.ConnmanctlInit();
+            var networkInfo = connmanInstance.Scan.NetList.FirstOrDefault(n => n.Ssid == _selectedNetwork);
+            if (!string.IsNullOrEmpty(networkInfo.NetId))
+            {
+                // Use the entered password to connect
+                networkInfo.Passphrase = _networkPassword;
+                Connman.ConnmanctlConnectSsid(connmanInstance, networkInfo);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error connecting to network: " + ex.Message);
+        }
+    }
+
+    [RelayCommand]
+    private void ScanForNetworks()
+    {
+        try
+        {
+            var connmanInstance = Connman.ConnmanctlInit();
+            Connman.ConnmanctlScan(connmanInstance);
+            LoadNetworks(); // Refresh the list after scanning
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error scanning for networks: " + ex.Message);
         }
     }
 }
