@@ -4,9 +4,11 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Octokit;
 using Tkmm.Abstractions;
 using Tkmm.Actions;
 using Tkmm.Core;
+using Tkmm.Helpers;
 using Tkmm.Models;
 
 namespace Tkmm.ViewModels.Pages;
@@ -68,16 +70,17 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
         _ = Task.Run<Task>(async () => {
-            await Task.Delay(TimeSpan.FromSeconds(5));
-
-            (bool hasUpdate, string tag) = await AppManager.HasUpdate();
-            if (hasUpdate) {
-                App.Toast($"TKMM {tag} is available! (Click here to install)", "Update Available",
-                    // ReSharper disable once AsyncVoidLambda
-                    NotificationType.Information, TimeSpan.FromSeconds(10), async () => {
-                        await SystemActions.Instance.RequestUpdate();
-                    });
+            if (await ApplicationUpdatesHelper.HasAvailableUpdates() is not Release release) {
+                return;
             }
+            
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            
+            App.Toast($"TKMM {release.TagName} is available! (Click here to install)", "Update Available",
+                // ReSharper disable once AsyncVoidLambda
+                NotificationType.Information, TimeSpan.FromSeconds(10), async () => {
+                    await SystemActions.Instance.RequestUpdate(release);
+                });
         });
     }
 }
