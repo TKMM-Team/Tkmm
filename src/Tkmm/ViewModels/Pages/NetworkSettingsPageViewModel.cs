@@ -23,13 +23,27 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
 
     private void LoadNetworks()
     {
-        // Simulate loading networks
-        _availableNetworks.Clear();
-        var connmanInstance = Connman.ConnmanctlInit();
-        Connman.ConnmanctlRefreshServices(connmanInstance);
-        foreach (var network in connmanInstance.Scan.NetList)
+        try
         {
-            _availableNetworks.Add(network.Ssid);
+            _availableNetworks.Clear();
+            var connmanInstance = Connman.ConnmanctlInit();
+            Connman.ConnmanctlRefreshServices(connmanInstance);
+
+            if (connmanInstance.Scan?.NetList != null)
+            {
+                foreach (var network in connmanInstance.Scan.NetList)
+                {
+                    _availableNetworks.Add(network.Ssid);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No networks found or Scan is null.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error loading networks: " + ex.Message);
         }
     }
 
