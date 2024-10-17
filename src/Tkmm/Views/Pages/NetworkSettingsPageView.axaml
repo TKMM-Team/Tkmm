@@ -14,12 +14,18 @@
 
     <StackPanel Margin="15" Spacing="10">
         <TextBlock Text="Available Networks" FontSize="16" FontWeight="Bold"/>
-        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}" DisplayMemberPath="Ssid"/>
+        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Ssid}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         
         <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
                  IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
         
-        <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork}"/>
+        <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork.HasValue}"/>
         <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
     </StackPanel>
 </UserControl>

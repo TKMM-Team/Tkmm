@@ -11,7 +11,7 @@ namespace Tkmm.ViewModels.Pages
     public class NetworkSettingsPageViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<Connman.WifiNetworkInfo> availableNetworks;
-        private Connman.WifiNetworkInfo selectedNetwork;
+        private Connman.WifiNetworkInfo? selectedNetwork;
         private string networkPassword;
         private readonly Connman.ConnmanT connman;
 
@@ -33,7 +33,7 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        public Connman.WifiNetworkInfo SelectedNetwork
+        public Connman.WifiNetworkInfo? SelectedNetwork
         {
             get => selectedNetwork;
             set
@@ -58,10 +58,11 @@ namespace Tkmm.ViewModels.Pages
 
         private void ConnectToNetwork()
         {
-            if (SelectedNetwork != null)
+            if (SelectedNetwork.HasValue)
             {
-                SelectedNetwork.Passphrase = NetworkPassword;
-                Connman.ConnmanctlConnectSsid(connman, SelectedNetwork);
+                var network = SelectedNetwork.Value;
+                network.Passphrase = NetworkPassword;
+                Connman.ConnmanctlConnectSsid(connman, network);
             }
         }
 

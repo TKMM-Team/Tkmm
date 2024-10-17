@@ -10,11 +10,11 @@ public class Connman
 {
     public struct WifiNetworkInfo
     {
-        public string Ssid;
-        public string NetId;
-        public bool Connected;
-        public bool SavedPassword;
-        public string Passphrase;
+        public string Ssid { get; set; }
+        public string NetId { get; set; }
+        public bool Connected { get; set; }
+        public bool SavedPassword { get; set; }
+        public string Passphrase { get; set; }
     }
 
     public class ConnmanT
