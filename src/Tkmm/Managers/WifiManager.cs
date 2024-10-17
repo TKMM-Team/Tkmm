@@ -159,7 +159,7 @@ public class Connman
             {
                 settingsFile.WriteLine($"[{netid}]");
                 settingsFile.WriteLine($"Name={netinfo.Ssid}");
-                settingsFile.WriteLine("SSID=" + BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid.ToLower())).Replace("-", ""));
+                settingsFile.WriteLine("SSID=" + (BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid)).Replace("-", "")).ToLower());
                 settingsFile.WriteLine("Favorite=true");
                 settingsFile.WriteLine("AutoConnect=true");
                 settingsFile.WriteLine($"Passphrase={netinfo.Passphrase}");
