@@ -8,15 +8,15 @@ namespace Tkmm.ViewModels.Pages;
 public partial class NetworkSettingsPageViewModel : ObservableObject
 {
     private readonly Connman _connman;
-    
-    [ObservableProperty]
-    private ObservableCollection<string> _availableNetworks = new();
 
     [ObservableProperty]
-    private string? _selectedNetwork;
+    private ObservableCollection<string> availableNetworks = new();
 
     [ObservableProperty]
-    private string? _networkPassword;
+    private string? selectedNetwork;
+
+    [ObservableProperty]
+    private string? networkPassword;
 
     public NetworkSettingsPageViewModel()
     {
@@ -28,7 +28,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
     {
         try
         {
-            _availableNetworks.Clear();
+            AvailableNetworks.Clear();
             var connmanInstance = Connman.ConnmanctlInit();
             Connman.ConnmanctlRefreshServices(connmanInstance);
 
@@ -36,7 +36,8 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
             {
                 foreach (var network in connmanInstance.Scan.NetList)
                 {
-                    _availableNetworks.Add(network.Ssid);
+                    AvailableNetworks.Add(network.Ssid);
+                    Console.WriteLine($"Network found: {network.Ssid}");
                 }
             }
             else
@@ -53,16 +54,15 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
     [RelayCommand]
     private void ConnectToNetwork()
     {
-        if (_selectedNetwork is null) return;
+        if (SelectedNetwork is null) return;
 
         try
         {
             var connmanInstance = Connman.ConnmanctlInit();
-            var networkInfo = connmanInstance.Scan.NetList.FirstOrDefault(n => n.Ssid == _selectedNetwork);
+            var networkInfo = connmanInstance.Scan.NetList.FirstOrDefault(n => n.Ssid == SelectedNetwork);
             if (!string.IsNullOrEmpty(networkInfo.NetId))
             {
-                // Use the entered password to connect
-                networkInfo.Passphrase = _networkPassword;
+                networkInfo.Passphrase = NetworkPassword;
                 Connman.ConnmanctlConnectSsid(connmanInstance, networkInfo);
             }
         }
@@ -79,7 +79,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         {
             var connmanInstance = Connman.ConnmanctlInit();
             Connman.ConnmanctlScan(connmanInstance);
-            LoadNetworks(); // Refresh the list after scanning
+            LoadNetworks();
         }
         catch (Exception ex)
         {
