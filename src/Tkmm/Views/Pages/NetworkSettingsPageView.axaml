@@ -25,7 +25,10 @@
         <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
                  IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
         
-        <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork.HasValue}"/>
-        <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork.HasValue}"/>
+            <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
+            <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBooleanConverter}}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

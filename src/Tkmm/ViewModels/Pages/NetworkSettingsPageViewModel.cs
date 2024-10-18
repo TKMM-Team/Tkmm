@@ -21,6 +21,7 @@ namespace Tkmm.ViewModels.Pages
             AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
             ConnectToNetworkCommand = ReactiveCommand.Create(ConnectToNetwork);
             ScanForNetworksCommand = ReactiveCommand.Create(ScanForNetworks);
+            ForgetSsidCommand = ReactiveCommand.Create(ForgetSsid);
         }
 
         public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks
@@ -53,8 +54,23 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
+        public ICommand ForgetSsidCommand { get; }
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
+
+        private void ForgetSsid()
+        {
+            if (SelectedNetwork.HasValue)
+            {
+                var network = SelectedNetwork.Value;
+                bool result = Connman.ConnmanctlForgetSsid(connman, network);
+                if (result)
+                {
+                    AvailableNetworks.Remove(network);
+                    SelectedNetwork = null;
+                }
+            }
+        }
 
         private void ConnectToNetwork()
         {
