@@ -119,7 +119,7 @@ public partial class VirtualKey : TemplatedControl
 
                             break;
                         case VirtualKeyboardState.Capslock:
-                            toggleButton.IsChecked = SpecialKey == Key.CapsLock;
+                            toggleButton.IsChecked = SpecialKey == Key.CapsLock || SpecialKey == Key.LeftShift || SpecialKey == Key.RightShift;
                             break;
                         case VirtualKeyboardState.AltCtrl:
                             toggleButton.IsChecked = SpecialKey == Key.RightAlt;

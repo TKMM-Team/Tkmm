@@ -1,4 +1,7 @@
-
+using System;
+using System.Collections.Generic;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.TextInput;
@@ -6,7 +9,6 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using ReactiveUI;
-using System.Reactive.Subjects;
 using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard;
@@ -23,6 +25,8 @@ public partial class VirtualKeyboard : UserControl
 {
     private static List<Type> Layouts { get; } = new List<Type>();
     private static Func<Type> DefaultLayout { get; set; }
+    private DateTime lastShiftPressTime;
+    private const int DoublePressThreshold = 300; 
 
     public static void AddLayout<TLayout>() where TLayout : KeyboardLayout => Layouts.Add(typeof(TLayout));
 
@@ -174,14 +178,30 @@ public partial class VirtualKeyboard : UserControl
     {
         if (key == Key.LeftShift || key == Key.RightShift)
         {
-            if (_keyboardStateStream.Value == VirtualKeyboardState.Shift)
+            var currentTime = DateTime.Now;
+            if ((currentTime - lastShiftPressTime).TotalMilliseconds <= DoublePressThreshold)
             {
-                _keyboardStateStream.OnNext(VirtualKeyboardState.Default);
+                if (_keyboardStateStream.Value == VirtualKeyboardState.Capslock)
+                {
+                    _keyboardStateStream.OnNext(VirtualKeyboardState.Default);
+                }
+                else
+                {
+                    _keyboardStateStream.OnNext(VirtualKeyboardState.Capslock);
+                }
             }
             else
             {
-                _keyboardStateStream.OnNext(VirtualKeyboardState.Shift);
+                if (_keyboardStateStream.Value == VirtualKeyboardState.Shift || _keyboardStateStream.Value == VirtualKeyboardState.Capslock)
+                {
+                    _keyboardStateStream.OnNext(VirtualKeyboardState.Default);
+                }
+                else
+                {
+                    _keyboardStateStream.OnNext(VirtualKeyboardState.Shift);
+                }
             }
+            lastShiftPressTime = currentTime;
         }
         else if (key == Key.RightAlt)
         {
