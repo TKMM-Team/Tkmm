@@ -82,13 +82,37 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        private void ScanForNetworks()
+
+        private async void ScanForNetworks()
         {
             Connman.ConnmanctlScan(connman);
-            var networks = Connman.ConnmanctlGetSsids(connman).NetList;
+            var initialNetworks = Connman.ConnmanctlGetSsids(connman).NetList;
 
-            AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
-                networks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
+            while (true)
+            {
+                await Task.Delay(3500);
+                var currentNetworks = Connman.ConnmanctlGetSsids(connman).NetList;
+
+                if (!currentNetworks.SequenceEqual(initialNetworks, new WifiNetworkInfoComparer()))
+                {
+                    AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
+                        currentNetworks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
+                    break;
+                }
+            }
+        }
+
+        private class WifiNetworkInfoComparer : IEqualityComparer<Connman.WifiNetworkInfo>
+        {
+            public bool Equals(Connman.WifiNetworkInfo x, Connman.WifiNetworkInfo y)
+            {
+                return x.Ssid == y.Ssid && x.NetId == y.NetId;
+            }
+
+            public int GetHashCode(Connman.WifiNetworkInfo obj)
+            {
+                return HashCode.Combine(obj.Ssid, obj.NetId);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
