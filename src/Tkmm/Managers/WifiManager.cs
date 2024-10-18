@@ -187,13 +187,32 @@ public class Connman
                 {
                     net.SavedPassword = false;
                     File.Delete(settingsPath);
-                    connman.Scan.NetList[i] = net; // Update the modified net back to the array
+                    connman.Scan.NetList[i] = net;
                 }
                 return net.Connected;
             }
         }
 
         return false;
+    }
+
+    public static bool ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
+    {
+        var netid = netinfo.NetId;
+        var settingsPath = Path.Combine(CONNMAN_DIR, netid, "settings");
+
+        if (File.Exists(settingsPath))
+        {
+            File.Delete(settingsPath);
+            Console.WriteLine($"Settings for SSID {netinfo.Ssid} have been removed.");
+            ConnmanctlRefreshServices(connman);
+            return true;
+        }
+        else
+        {
+            Console.WriteLine($"No settings found for SSID {netinfo.Ssid}.");
+            return false;
+        }
     }
 
     public static void ConnmanctlGetConnectedSsid(ConnmanT connman, StringBuilder ssid, int bufferSize)
