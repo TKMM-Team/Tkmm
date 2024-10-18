@@ -12,22 +12,32 @@
         <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
     </UserControl.Resources>
 
-    <StackPanel Margin="15" Spacing="10">
-        <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
-        <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Ssid}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        
-        <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
-                 IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
-        
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
-            <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="15" Spacing="10">
+            <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
+            <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Ssid}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
+                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+            
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+                <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}" />
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="15" Spacing="10">
+        </StackPanel>
+    </Grid>
 </UserControl>
