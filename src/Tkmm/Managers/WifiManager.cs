@@ -230,31 +230,13 @@ public class Connman
     {
         if (bufferSize < 1) return;
 
-        var temp = new StringBuilder(bufferSize);
-        connman.Command = $"for serv in {CONNMAN_DIR}/wifi_*/ ; do if [ -d $serv ] ; then basename $serv ; fi ; done";
-
+        connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{print $NF}'";
         using (var commandFile = ExecuteCommand(connman.Command))
         {
-            string line;
-            while ((line = commandFile.ReadLine()) != null)
+            var line = commandFile.ReadLine()?.TrimEnd('\n');
+            if (!string.IsNullOrEmpty(line))
             {
-                temp.Clear().Append(line.TrimEnd('\n'));
-
-                if (temp.Length == 0)
-                {
-                    continue;
-                }
-
-                connman.Command = $"connmanctl services {temp} | grep \"^  State = \\(online\\|ready\\)\" | wc -l";
-                using (var serviceFile = ExecuteCommand(connman.Command))
-                {
-                    var ln = serviceFile.ReadLine()?.TrimEnd('\n');
-                    if (ln == "1")
-                    {
-                        serviceName.Clear().Append(temp);
-                        return;
-                    }
-                }
+                serviceName.Clear().Append(line);
             }
         }
     }
