@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using Avalonia.Controls;
 using ReactiveUI;
@@ -22,6 +23,7 @@ namespace Tkmm.ViewModels.Pages
             ConnectToNetworkCommand = ReactiveCommand.Create(ConnectToNetwork);
             ScanForNetworksCommand = ReactiveCommand.Create(ScanForNetworks);
             ForgetSsidCommand = ReactiveCommand.Create(ForgetSsid);
+            ScanForNetworks();
         }
 
         public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks
@@ -72,33 +74,37 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        private void ConnectToNetwork()
+        private async void ConnectToNetwork()
         {
             if (SelectedNetwork.HasValue)
             {
                 var network = SelectedNetwork.Value;
                 network.Passphrase = NetworkPassword;
                 Connman.ConnmanctlConnectSsid(connman, network);
+                await Task.Delay(3500);
+                ScanForNetworks();
             }
         }
-
 
         private async void ScanForNetworks()
         {
             Connman.ConnmanctlScan(connman);
-            var initialNetworks = Connman.ConnmanctlGetSsids(connman).NetList;
+            await Task.Delay(3500);
+            UpdateAvailableNetworks();
+        }
 
-            while (true)
+        private void UpdateAvailableNetworks()
+        {
+            var networks = Connman.ConnmanctlGetSsids(connman).NetList;
+
+            if (networks == null)
             {
-                await Task.Delay(3500);
-                var currentNetworks = Connman.ConnmanctlGetSsids(connman).NetList;
-
-                if (!currentNetworks.SequenceEqual(initialNetworks, new WifiNetworkInfoComparer()))
-                {
-                    AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
-                        currentNetworks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
-                    break;
-                }
+                AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
+            }
+            else
+            {
+                AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
+                    networks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
             }
         }
 
