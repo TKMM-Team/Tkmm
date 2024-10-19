@@ -114,7 +114,6 @@ namespace Tkmm.ViewModels.Pages
             if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
                 Connman.ConnmanctlForgetSsid(connman, SelectedNetwork.Value);
-                await Task.Delay(3500);
                 await ScanForNetworksAsync();
             }
         }

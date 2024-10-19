@@ -84,11 +84,10 @@ public class Connman
                 var entry = new WifiNetworkInfo();
                 var list = line.Substring(4).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                entry.Connected = line[2] == 'R' || line[2] == 'O';
-                entry.SavedPassword = line[0] == '*';
-
                 entry.Ssid = string.Join(" ", list, 0, list.Length - 1);
                 entry.NetId = list[list.Length - 1];
+                entry.Connected = line[2] == 'R' || line[2] == 'O';
+                entry.SavedPassword = File.Exists(Path.Combine(CONNMAN_DIR, entry.NetId, "settings"));
 
                 if (entry.NetId.StartsWith("wifi_"))
                 {
