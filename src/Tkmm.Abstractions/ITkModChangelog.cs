@@ -8,6 +8,11 @@ public interface ITkModChangelog
     Ulid Id { get; }
     
     /// <summary>
+    /// The relative path to prefix the <see cref="Manifest"/> files (usually the option group path).
+    /// </summary>
+    string? RelativePath { get; }
+    
+    /// <summary>
     /// The tracked romfs files contained in this mod changelog.
     /// </summary>
     IDictionary<string, ChangelogEntry> Manifest { get; }
