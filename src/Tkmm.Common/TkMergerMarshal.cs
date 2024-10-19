@@ -3,7 +3,7 @@ using Tkmm.Abstractions.IO;
 using Tkmm.Abstractions.IO.Buffers;
 using Tkmm.Abstractions.Providers;
 using Tkmm.Abstractions.Services;
-using OrderedTarget = (string FileName, Tkmm.Abstractions.ChangelogEntry Entry, System.Collections.Generic.IEnumerable<Tkmm.Abstractions.ITkModChangelog> Mods);
+using OrderedTarget = (string FileName, string Canonical, Tkmm.Abstractions.ChangelogEntry Entry, System.Collections.Generic.IEnumerable<Tkmm.Abstractions.ITkModChangelog> Mods);
 
 namespace Tkmm.Common;
 
@@ -36,18 +36,23 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
         IEnumerable<OrderedTarget> targets = changelogs
             .SelectMany(
                 changelog => changelog.Manifest
-                    .Select(kvp => (FileName: kvp.Key, Entry: kvp.Value, Mod: changelog))
+                    .Select(kvp => (
+                        FilePath: changelog.RelativePath is null ? kvp.Key : Path.Combine(changelog.RelativePath, kvp.Key),
+                        Canonical: kvp.Key, Entry: kvp.Value, Mod: changelog)
+                    )
             )
             .GroupBy(
                 tuple => (
-                    tuple.FileName,
+                    tuple.FilePath,
+                    tuple.Canonical,
                     tuple.Entry
                 ),
                 tuple => tuple.Mod
             )
             .Select(
                 grouping => (
-                    grouping.Key.FileName,
+                    grouping.Key.FilePath,
+                    grouping.Key.Canonical,
                     grouping.Key.Entry,
                     grouping.AsEnumerable()
                 )
@@ -55,7 +60,7 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
 
         TkResourceSizeTable resourceSizeTable = new();
 
-        foreach ((string canonical, ChangelogEntry entry, IEnumerable<ITkModChangelog> mods) in targets) {
+        foreach ((string filePath, string canonical, ChangelogEntry entry, IEnumerable<ITkModChangelog> mods) in targets) {
             IMerger? merger = _mergerProvider.GetMerger(canonical);
             if (merger is null) {
                 continue;
@@ -63,7 +68,7 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
 
             (Stream Stream, int Size)[] inputs = await Task.WhenAll(
                 mods.Select(
-                    mod => Task.Run(async () => await _manager.OpenModFile(mod, canonical, ct), ct)
+                    mod => Task.Run(async () => await _manager.OpenModFile(mod, filePath, ct), ct)
                 )
             );
 
@@ -81,7 +86,7 @@ public sealed class TkMergerMarshal(IModManager manager, IMergerProvider mergerP
                 await OpenWriteRomfsOutput(canonical, entry.Attributes, mergedOutputWriter),
                 resourceSizeTable, ct);
         }
-        
+
         // TODO: Merge patches, subsdk and cheats
 
         await using Stream restblOutputStream = await mergedOutputWriter.OpenWrite(
