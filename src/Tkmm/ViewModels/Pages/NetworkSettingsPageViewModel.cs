@@ -13,6 +13,7 @@ namespace Tkmm.ViewModels.Pages
         private ObservableCollection<Connman.WifiNetworkInfo> availableNetworks;
         private Connman.WifiNetworkInfo? selectedNetwork;
         private string networkPassword;
+        private bool isWifiEnabled;
         private readonly Connman.ConnmanT connman;
 
         public NetworkSettingsPageViewModel()
@@ -27,6 +28,7 @@ namespace Tkmm.ViewModels.Pages
             EnableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(true));
             DisableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(false));
 
+            InitializeWifiStatus();
             ScanForNetworksCommand.Execute(null);
         }
 
@@ -46,6 +48,12 @@ namespace Tkmm.ViewModels.Pages
         {
             get => networkPassword;
             set => this.RaiseAndSetIfChanged(ref networkPassword, value);
+        }
+
+        public bool IsWifiEnabled
+        {
+            get => isWifiEnabled;
+            set => this.RaiseAndSetIfChanged(ref isWifiEnabled, value);
         }
 
         public ICommand ForgetSsidCommand { get; }
@@ -98,6 +106,7 @@ namespace Tkmm.ViewModels.Pages
             Connman.ConnmanctlEnable(connman, enable);
             await Task.Delay(3500);
             UpdateAvailableNetworks();
+            IsWifiEnabled = Connman.IsWifiEnabled();
         }
 
         private void UpdateAvailableNetworks()
@@ -110,6 +119,11 @@ namespace Tkmm.ViewModels.Pages
         private bool IsDefault(Connman.WifiNetworkInfo netinfo)
         {
             return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
+        }
+
+        private void InitializeWifiStatus()
+        {
+            IsWifiEnabled = Connman.IsWifiEnabled();
         }
     }
 }

@@ -42,6 +42,14 @@ public class Connman
         return connman;
     }
 
+    public static bool IsWifiEnabled()
+    {
+        return ExecuteCommand("connmanctl technologies").ReadToEnd()
+            .Split(new[] { "/net/connman/technology/" }, StringSplitOptions.None)
+            .Any(section => section.TrimStart().StartsWith("wifi", StringComparison.OrdinalIgnoreCase) &&
+                            section.Contains("Powered = True", StringComparison.OrdinalIgnoreCase));
+    }
+
     private static bool IsDefault(WifiNetworkInfo netinfo)
     {
         return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId) && !netinfo.Connected && !netinfo.SavedPassword && string.IsNullOrEmpty(netinfo.Passphrase);
@@ -197,7 +205,6 @@ public class Connman
 
             if (connman.Scan?.NetList == null)
             {
-                Trace.WriteLine("NetList is null.");
                 return false;
             }
 

@@ -40,8 +40,9 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Margin="15" Spacing="10">
-            <!-- Additional UI elements can be added here -->
+        <StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" Spacing="10">
+            <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}" />
+            <TextBlock Text="WiFi" VerticalAlignment="Center" />
         </StackPanel>
     </Grid>
 </UserControl>
