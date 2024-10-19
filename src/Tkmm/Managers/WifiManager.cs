@@ -15,6 +15,10 @@ public class Connman
         public bool Connected { get; set; }
         public bool SavedPassword { get; set; }
         public string Passphrase { get; set; }
+        public string MacAddress { get; set; }
+        public string IpAddress { get; set; }
+        public string Netmask { get; set; }
+        public string Gateway { get; set; }
     }
 
     public class ConnmanT
@@ -89,6 +93,8 @@ public class Connman
                 entry.Connected = line[2] == 'R' || line[2] == 'O';
                 entry.SavedPassword = File.Exists(Path.Combine(CONNMAN_DIR, entry.NetId, "settings"));
 
+                GetNetworkDetails(entry);
+
                 if (entry.NetId.StartsWith("wifi_"))
                 {
                     var netList = new List<WifiNetworkInfo>(connman.Scan.NetList ?? Array.Empty<WifiNetworkInfo>());
@@ -97,6 +103,44 @@ public class Connman
                 }
             }
         }
+    }
+
+    private static void GetNetworkDetails(WifiNetworkInfo network)
+    {
+        using (var detailFile = ExecuteCommand($"connmanctl services {network.NetId}"))
+        {
+            string detailLine;
+            while ((detailLine = detailFile.ReadLine()) != null)
+            {
+                if (detailLine.Contains("Ethernet"))
+                {
+                    network.MacAddress = ExtractValue(detailLine, "Address");
+                }
+                else if (detailLine.Contains("IPv4"))
+                {
+                    network.IpAddress = ExtractValue(detailLine, "Address");
+                    network.Netmask = ExtractValue(detailLine, "Netmask");
+                    network.Gateway = ExtractValue(detailLine, "Gateway");
+                }
+            }
+        }
+
+        network.MacAddress ??= "null";
+        network.IpAddress ??= "null";
+        network.Netmask ??= "null";
+        network.Gateway ??= "null";
+    }
+
+    private static string ExtractValue(string line, string key)
+    {
+        var startIndex = line.IndexOf(key + "=");
+        if (startIndex == -1) return "null";
+
+        startIndex += key.Length + 1;
+        var endIndex = line.IndexOf(',', startIndex);
+        if (endIndex == -1) endIndex = line.IndexOf(']', startIndex);
+
+        return endIndex == -1 ? "null" : line.Substring(startIndex, endIndex - startIndex).Trim();
     }
 
     public static void ConnmanctlScan(ConnmanT connman)
