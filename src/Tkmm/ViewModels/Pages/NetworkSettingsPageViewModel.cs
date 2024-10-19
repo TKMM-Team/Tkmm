@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
@@ -26,6 +24,8 @@ namespace Tkmm.ViewModels.Pages
             ScanForNetworksCommand = ReactiveCommand.CreateFromTask(ScanForNetworksAsync);
             ForgetSsidCommand = ReactiveCommand.CreateFromTask(ForgetSsidAsync);
             DisconnectSsidCommand = ReactiveCommand.CreateFromTask(DisconnectSsidAsync);
+            EnableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(true));
+            DisableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(false));
 
             ScanForNetworksCommand.Execute(null);
         }
@@ -52,6 +52,8 @@ namespace Tkmm.ViewModels.Pages
         public ICommand DisconnectSsidCommand { get; }
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
+        public ICommand EnableWifiCommand { get; }
+        public ICommand DisableWifiCommand { get; }
 
         private async Task ForgetSsidAsync()
         {
@@ -87,6 +89,13 @@ namespace Tkmm.ViewModels.Pages
         private async Task ScanForNetworksAsync()
         {
             Connman.ConnmanctlScan(connman);
+            await Task.Delay(3500);
+            UpdateAvailableNetworks();
+        }
+
+        private async Task ToggleWifiAsync(bool enable)
+        {
+            Connman.ConnmanctlEnable(connman, enable);
             await Task.Delay(3500);
             UpdateAvailableNetworks();
         }
