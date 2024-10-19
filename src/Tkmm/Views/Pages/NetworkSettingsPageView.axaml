@@ -47,20 +47,17 @@
                 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}" 
-                                OffContent="WiFi Service" OnContent="WiFi Service" 
-                                Command="{Binding ToggleWifiCommand}" />
+                                OffContent="WiFi Service" OnContent="WiFi Service" />
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <ToggleSwitch IsChecked="{Binding IsSshEnabled, Mode=TwoWay}" 
-                                OffContent="SSH Service" OnContent="SSH Service" 
-                                Command="{Binding ToggleSshCommand}" />
+                                OffContent="SSH Service" OnContent="SSH Service" />
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <ToggleSwitch IsChecked="{Binding IsSmbEnabled, Mode=TwoWay}" 
-                                OffContent="SMB Service" OnContent="SMB Service" 
-                                Command="{Binding ToggleSmbCommand}" />
+                                OffContent="SMB Service" OnContent="SMB Service" />
                 </StackPanel>
             </StackPanel>
 

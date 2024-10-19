@@ -1,7 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
 using Tkmm.Managers;
@@ -25,19 +22,14 @@ namespace Tkmm.ViewModels.Pages
             networkServices = new NetworkServices();
             AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
 
-            // Initialize the states
             IsWifiEnabled = networkServices.IsWiFiEnabled();
             IsSshEnabled = networkServices.IsSSHEnabled();
             IsSmbEnabled = networkServices.IsSMBEnabled();
 
-            // Define commands
             ConnectToNetworkCommand = ReactiveCommand.CreateFromTask(ConnectToNetworkAsync);
             ScanForNetworksCommand = ReactiveCommand.CreateFromTask(ScanForNetworksAsync);
             ForgetSsidCommand = ReactiveCommand.CreateFromTask(ForgetSsidAsync);
             DisconnectSsidCommand = ReactiveCommand.CreateFromTask(DisconnectSsidAsync);
-            ToggleWifiCommand = ReactiveCommand.Create<bool>(ToggleWifi);
-            ToggleSshCommand = ReactiveCommand.Create<bool>(ToggleSsh);
-            ToggleSmbCommand = ReactiveCommand.Create<bool>(ToggleSmb);
 
             ScanForNetworksCommand.Execute(null);
         }
@@ -63,28 +55,58 @@ namespace Tkmm.ViewModels.Pages
         public bool IsWifiEnabled
         {
             get => isWifiEnabled;
-            set => this.RaiseAndSetIfChanged(ref isWifiEnabled, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref isWifiEnabled, value);
+                if (value)
+                {
+                    networkServices.EnableWiFi();
+                }
+                else
+                {
+                    networkServices.DisableWiFi();
+                }
+            }
         }
 
         public bool IsSshEnabled
         {
             get => isSshEnabled;
-            set => this.RaiseAndSetIfChanged(ref isSshEnabled, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref isSshEnabled, value);
+                if (value)
+                {
+                    networkServices.EnableSSH();
+                }
+                else
+                {
+                    networkServices.DisableSSH();
+                }
+            }
         }
 
         public bool IsSmbEnabled
         {
             get => isSmbEnabled;
-            set => this.RaiseAndSetIfChanged(ref isSmbEnabled, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref isSmbEnabled, value);
+                if (value)
+                {
+                    networkServices.EnableSMB();
+                }
+                else
+                {
+                    networkServices.DisableSMB();
+                }
+            }
         }
 
         public ICommand ForgetSsidCommand { get; }
         public ICommand DisconnectSsidCommand { get; }
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
-        public ReactiveCommand<bool, Unit> ToggleWifiCommand { get; }
-        public ReactiveCommand<bool, Unit> ToggleSshCommand { get; }
-        public ReactiveCommand<bool, Unit> ToggleSmbCommand { get; }
 
         private async Task ForgetSsidAsync()
         {
@@ -122,45 +144,6 @@ namespace Tkmm.ViewModels.Pages
             Connman.ConnmanctlScan(connman);
             await Task.Delay(3500);
             UpdateAvailableNetworks();
-        }
-
-        private void ToggleWifi(bool enable)
-        {
-            if (enable)
-            {
-                networkServices.EnableWiFi();
-            }
-            else
-            {
-                networkServices.DisableWiFi();
-            }
-            IsWifiEnabled = networkServices.IsWiFiEnabled();
-        }
-
-        private void ToggleSsh(bool enable)
-        {
-            if (enable)
-            {
-                networkServices.EnableSSH();
-            }
-            else
-            {
-                networkServices.DisableSSH();
-            }
-            IsSshEnabled = networkServices.IsSSHEnabled();
-        }
-
-        private void ToggleSmb(bool enable)
-        {
-            if (enable)
-            {
-                networkServices.EnableSMB();
-            }
-            else
-            {
-                networkServices.DisableSMB();
-            }
-            IsSmbEnabled = networkServices.IsSMBEnabled();
         }
 
         private void UpdateAvailableNetworks()
