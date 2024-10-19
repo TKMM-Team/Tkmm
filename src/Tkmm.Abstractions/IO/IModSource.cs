@@ -3,14 +3,14 @@ namespace Tkmm.Abstractions.IO;
 public interface IModSource
 {
     /// <summary>
-    /// The files contained in this mod source.
-    /// </summary>
-    IEnumerable<string> Files { get; }
-
-    /// <summary>
-    /// The path to the romfs root folder contained in the <see cref="Files"/>.  
+    /// The path to the romfs root folder contained in the <see cref="RomfsFiles"/>.  
     /// </summary>
     string RomfsPath { get; }
+
+    /// <summary>
+    /// The files contained in this mod source.
+    /// </summary>
+    IEnumerable<string> RomfsFiles { get; }
 
     /// <summary>
     /// Open a stream to the requested <paramref name="file"/>.
