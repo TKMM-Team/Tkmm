@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using ReactiveUI;
 using Tkmm.Managers;
+using System.Diagnostics;
 
 namespace Tkmm.ViewModels.Pages
 {
@@ -60,30 +61,39 @@ namespace Tkmm.ViewModels.Pages
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
 
-        private void ForgetSsid()
+        private async void ForgetSsid()
         {
-            if (SelectedNetwork.HasValue)
+            if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
                 var network = SelectedNetwork.Value;
                 bool result = Connman.ConnmanctlForgetSsid(connman, network);
-                if (result)
-                {
-                    AvailableNetworks.Remove(network);
-                    SelectedNetwork = null;
-                }
+                await Task.Delay(3500);
+                ScanForNetworks();
             }
         }
 
         private async void ConnectToNetwork()
         {
-            if (SelectedNetwork.HasValue)
+            if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
                 var network = SelectedNetwork.Value;
                 network.Passphrase = NetworkPassword;
-                Connman.ConnmanctlConnectSsid(connman, network);
+                try
+                {
+                    Connman.ConnmanctlConnectSsid(connman, network);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error connecting to network: {ex.Message}");
+                }
                 await Task.Delay(3500);
                 ScanForNetworks();
             }
+        }
+
+        private bool IsDefault(Connman.WifiNetworkInfo netinfo)
+        {
+            return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
         }
 
         private async void ScanForNetworks()
@@ -95,7 +105,7 @@ namespace Tkmm.ViewModels.Pages
 
         private void UpdateAvailableNetworks()
         {
-            var networks = Connman.ConnmanctlGetSsids(connman).NetList;
+            var networks = Connman.ConnmanctlGetSsids(connman)?.NetList;
 
             if (networks == null)
             {

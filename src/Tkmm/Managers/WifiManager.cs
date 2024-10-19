@@ -42,6 +42,11 @@ public class Connman
         return connman;
     }
 
+    private static bool IsDefault(WifiNetworkInfo netinfo)
+    {
+        return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId) && !netinfo.Connected && !netinfo.SavedPassword && string.IsNullOrEmpty(netinfo.Passphrase);
+    }
+
     public static void ConnmanctlFree(ConnmanT connman)
     {
         if (connman.Scan.NetList != null)
@@ -61,7 +66,7 @@ public class Connman
     {
         if (connman == null || connman.Scan == null)
         {
-            Console.WriteLine("Connman or Scan is null.");
+            Trace.WriteLine("Connman or Scan is null.");
             return;
         }
 
@@ -137,60 +142,84 @@ public class Connman
         return false;
     }
 
-    public static bool ConnmanctlDisconnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
-    {
-        connman.Command = $"connmanctl disconnect {netinfo.NetId} 2>&1";
-        ExecuteCommand(connman.Command);
-        ConnmanctlRefreshServices(connman);
-        return true;
-    }
-
     public static bool ConnmanctlConnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
     {
-        var netid = netinfo.NetId;
-        var settingsDir = Path.Combine(CONNMAN_DIR, netid);
-        var settingsPath = Path.Combine(settingsDir, "settings");
-
-        Directory.CreateDirectory(settingsDir);
-
-        if (!netinfo.SavedPassword)
+        if (connman == null)
         {
-            using (var settingsFile = new StreamWriter(settingsPath))
-            {
-                settingsFile.WriteLine($"[{netid}]");
-                settingsFile.WriteLine($"Name={netinfo.Ssid}");
-                settingsFile.WriteLine("SSID=" + (BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid)).Replace("-", "")).ToLower());
-                settingsFile.WriteLine("Favorite=true");
-                settingsFile.WriteLine("AutoConnect=true");
-                settingsFile.WriteLine($"Passphrase={netinfo.Passphrase}");
-                settingsFile.WriteLine("IPv4.method=dhcp");
-            }
-
-            ExecuteCommand("systemctl restart connman.service");
-        }
-        else if (!File.Exists(settingsPath))
-        {
-            ExecuteCommand("systemctl restart connman.service");
+            Trace.WriteLine("Connman is null.");
             return false;
         }
 
-        connman.Command = $"connmanctl connect {netinfo.NetId}";
-        ExecuteCommand(connman.Command);
-        ConnmanctlRefreshServices(connman);
-
-        for (int i = 0; i < connman.Scan.NetList.Length; i++)
+        if (IsDefault(netinfo))
         {
-            var net = connman.Scan.NetList[i];
-            if (net.NetId == netid)
+            Trace.WriteLine("Network info is in its default state.");
+            return false;
+        }
+
+        var netid = netinfo.NetId;
+        if (string.IsNullOrEmpty(netid))
+        {
+            Trace.WriteLine("NetId is null or empty.");
+            return false;
+        }
+
+        var settingsDir = Path.Combine(CONNMAN_DIR, netid);
+        var settingsPath = Path.Combine(settingsDir, "settings");
+
+        try
+        {
+            Directory.CreateDirectory(settingsDir);
+
+            if (!netinfo.SavedPassword)
             {
-                if (!net.Connected)
+                using (var settingsFile = new StreamWriter(settingsPath))
                 {
-                    net.SavedPassword = false;
-                    File.Delete(settingsPath);
-                    connman.Scan.NetList[i] = net;
+                    settingsFile.WriteLine($"[{netid}]");
+                    settingsFile.WriteLine($"Name={netinfo.Ssid}");
+                    settingsFile.WriteLine("SSID=" + (BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid)).Replace("-", "")).ToLower());
+                    settingsFile.WriteLine("Favorite=true");
+                    settingsFile.WriteLine("AutoConnect=true");
+                    settingsFile.WriteLine($"Passphrase={netinfo.Passphrase}");
+                    settingsFile.WriteLine("IPv4.method=dhcp");
                 }
-                return net.Connected;
+
+                ExecuteCommand("systemctl restart connman.service");
             }
+            else if (!File.Exists(settingsPath))
+            {
+                ExecuteCommand("systemctl restart connman.service");
+                return false;
+            }
+
+            connman.Command = $"connmanctl connect {netinfo.NetId}";
+            ExecuteCommand(connman.Command);
+            ConnmanctlRefreshServices(connman);
+
+            if (connman.Scan?.NetList == null)
+            {
+                Trace.WriteLine("NetList is null.");
+                return false;
+            }
+
+            for (int i = 0; i < connman.Scan.NetList.Length; i++)
+            {
+                var net = connman.Scan.NetList[i];
+                if (net.NetId == netid)
+                {
+                    if (!net.Connected)
+                    {
+                        net.SavedPassword = false;
+                        File.Delete(settingsPath);
+                        connman.Scan.NetList[i] = net;
+                    }
+                    return net.Connected;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"Error in ConnmanctlConnectSsid: {ex.Message}");
+            return false;
         }
 
         return false;
@@ -199,18 +228,28 @@ public class Connman
     public static bool ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
     {
         var netid = netinfo.NetId;
-        var settingsPath = Path.Combine(CONNMAN_DIR, netid, "settings");
+        var settingsDir = Path.Combine(CONNMAN_DIR, netid);
 
-        if (File.Exists(settingsPath))
+        if (Directory.Exists(settingsDir))
         {
-            File.Delete(settingsPath);
-            Console.WriteLine($"Settings for SSID {netinfo.Ssid} have been removed.");
+            bool isConnectedNetwork = netinfo.Connected;
+
+            if (isConnectedNetwork)
+            {
+                ExecuteCommand("systemctl stop connman.service");
+                Directory.Delete(settingsDir, true);
+                ExecuteCommand("systemctl start connman.service");
+            } else {
+                Directory.Delete(settingsDir, true);
+            }
+            
+            Trace.WriteLine($"Settings for SSID {netinfo.Ssid} have been removed.");
             ConnmanctlRefreshServices(connman);
             return true;
         }
         else
         {
-            Console.WriteLine($"No settings found for SSID {netinfo.Ssid}.");
+            Trace.WriteLine($"No settings found for SSID {netinfo.Ssid}.");
             return false;
         }
     }
@@ -222,7 +261,11 @@ public class Connman
         connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{for (i=2; i<NF; i++) printf $i \" \"; print \"\"}'";
         using (var commandFile = ExecuteCommand(connman.Command))
         {
-            ssid.Append(commandFile.ReadLine()?.TrimEnd('\n'));
+            var line = commandFile.ReadLine()?.TrimEnd('\n');
+            if (!string.IsNullOrEmpty(line))
+            {
+                ssid.Append(line);
+            }
         }
     }
 
