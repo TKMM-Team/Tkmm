@@ -8,6 +8,7 @@
     <UserControl.Resources>
         <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
         <converters:NullableConnectedToBoolConverter x:Key="NullableConnectedToBoolConverter"/>
+        <converters:NullableWifiNetworkInfoToBoolConverter x:Key="NullableWifiNetworkInfoToBoolConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -32,12 +33,12 @@
             </ListBox>
             
             <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
-                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullableWifiNetworkInfoToBoolConverter}, ConverterParameter=Inverse}"/>
             
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
                 <Button Content="Disconnect" Command="{Binding DisconnectSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullableConnectedToBoolConverter}}" />
-                <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}" />
+                <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullableWifiNetworkInfoToBoolConverter}}"/>
             </StackPanel>
         </StackPanel>
 
