@@ -1,11 +1,8 @@
 <UserControl x:Class="Tkmm.Views.Pages.NetworkSettingsPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:converters="clr-namespace:Tkmm.Converters"
-             mc:Ignorable="d"
              x:DataType="pages:NetworkSettingsPageViewModel">
 
     <UserControl.Resources>
@@ -27,14 +24,14 @@
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <TextBlock Text="{Binding Ssid}"/>
                             <TextBlock Text="Connected" Foreground="Green" Margin="5,0,0,0"
-                                    IsVisible="{Binding Connected}"/>
+                                       IsVisible="{Binding Connected}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             
             <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password"
-                    IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
+                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
             
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}" IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullToBoolConverter}}"/>
@@ -44,6 +41,7 @@
         </StackPanel>
 
         <StackPanel Grid.Column="1" Margin="15" Spacing="10">
+            <!-- Additional UI elements can be added here -->
         </StackPanel>
     </Grid>
 </UserControl>

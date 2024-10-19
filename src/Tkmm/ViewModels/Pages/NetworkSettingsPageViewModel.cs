@@ -1,16 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
 using ReactiveUI;
 using Tkmm.Managers;
-using System.Diagnostics;
 
 namespace Tkmm.ViewModels.Pages
 {
-    public class NetworkSettingsPageViewModel : INotifyPropertyChanged
+    public class NetworkSettingsPageViewModel : ReactiveObject
     {
         private ObservableCollection<Connman.WifiNetworkInfo> availableNetworks;
         private Connman.WifiNetworkInfo? selectedNetwork;
@@ -21,41 +21,31 @@ namespace Tkmm.ViewModels.Pages
         {
             connman = Connman.ConnmanctlInit();
             AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
-            ConnectToNetworkCommand = ReactiveCommand.Create(ConnectToNetwork);
-            ScanForNetworksCommand = ReactiveCommand.Create(ScanForNetworks);
-            ForgetSsidCommand = ReactiveCommand.Create(ForgetSsid);
-            DisconnectSsidCommand = ReactiveCommand.Create(DisconnectSsid);
-            ScanForNetworks();
+
+            ConnectToNetworkCommand = ReactiveCommand.CreateFromTask(ConnectToNetworkAsync);
+            ScanForNetworksCommand = ReactiveCommand.CreateFromTask(ScanForNetworksAsync);
+            ForgetSsidCommand = ReactiveCommand.CreateFromTask(ForgetSsidAsync);
+            DisconnectSsidCommand = ReactiveCommand.CreateFromTask(DisconnectSsidAsync);
+
+            ScanForNetworksCommand.Execute(null);
         }
 
         public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks
         {
             get => availableNetworks;
-            set
-            {
-                availableNetworks = value;
-                OnPropertyChanged(nameof(AvailableNetworks));
-            }
+            set => this.RaiseAndSetIfChanged(ref availableNetworks, value);
         }
 
         public Connman.WifiNetworkInfo? SelectedNetwork
         {
             get => selectedNetwork;
-            set
-            {
-                selectedNetwork = value;
-                OnPropertyChanged(nameof(SelectedNetwork));
-            }
+            set => this.RaiseAndSetIfChanged(ref selectedNetwork, value);
         }
 
         public string NetworkPassword
         {
             get => networkPassword;
-            set
-            {
-                networkPassword = value;
-                OnPropertyChanged(nameof(NetworkPassword));
-            }
+            set => this.RaiseAndSetIfChanged(ref networkPassword, value);
         }
 
         public ICommand ForgetSsidCommand { get; }
@@ -63,52 +53,38 @@ namespace Tkmm.ViewModels.Pages
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
 
-        private async void ForgetSsid()
+        private async Task ForgetSsidAsync()
         {
             if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
-                var network = SelectedNetwork.Value;
-                bool result = Connman.ConnmanctlForgetSsid(connman, network);
+                Connman.ConnmanctlForgetSsid(connman, SelectedNetwork.Value);
                 await Task.Delay(3500);
-                ScanForNetworks();
+                await ScanForNetworksAsync();
             }
         }
 
-        private void DisconnectSsid()
+        private async Task DisconnectSsidAsync()
         {
             if (SelectedNetwork.HasValue)
             {
-                var network = SelectedNetwork.Value;
-                Connman.ConnmanctlDisconnectSsid(connman, network);
-                ScanForNetworks();
+                Connman.ConnmanctlDisconnectSsid(connman, SelectedNetwork.Value);
+                await ScanForNetworksAsync();
             }
         }
 
-        private async void ConnectToNetwork()
+        private async Task ConnectToNetworkAsync()
         {
             if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
                 var network = SelectedNetwork.Value;
                 network.Passphrase = NetworkPassword;
-                try
-                {
-                    Connman.ConnmanctlConnectSsid(connman, network);
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"Error connecting to network: {ex.Message}");
-                }
+                Connman.ConnmanctlConnectSsid(connman, network);
                 await Task.Delay(3500);
-                ScanForNetworks();
+                await ScanForNetworksAsync();
             }
         }
 
-        private bool IsDefault(Connman.WifiNetworkInfo netinfo)
-        {
-            return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
-        }
-
-        private async void ScanForNetworks()
+        private async Task ScanForNetworksAsync()
         {
             Connman.ConnmanctlScan(connman);
             await Task.Delay(3500);
@@ -118,23 +94,13 @@ namespace Tkmm.ViewModels.Pages
         private void UpdateAvailableNetworks()
         {
             var networks = Connman.ConnmanctlGetSsids(connman)?.NetList;
-
-            if (networks == null)
-            {
-                AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
-            }
-            else
-            {
-                AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
-                    networks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
-            }
+            AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
+                networks?.Where(n => !string.IsNullOrEmpty(n.Ssid)) ?? Enumerable.Empty<Connman.WifiNetworkInfo>());
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        private bool IsDefault(Connman.WifiNetworkInfo netinfo)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
         }
     }
 }
