@@ -24,6 +24,7 @@ namespace Tkmm.ViewModels.Pages
             ConnectToNetworkCommand = ReactiveCommand.Create(ConnectToNetwork);
             ScanForNetworksCommand = ReactiveCommand.Create(ScanForNetworks);
             ForgetSsidCommand = ReactiveCommand.Create(ForgetSsid);
+            DisconnectSsidCommand = ReactiveCommand.Create(DisconnectSsid);
             ScanForNetworks();
         }
 
@@ -58,6 +59,7 @@ namespace Tkmm.ViewModels.Pages
         }
 
         public ICommand ForgetSsidCommand { get; }
+        public ICommand DisconnectSsidCommand { get; }
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
 
@@ -68,6 +70,16 @@ namespace Tkmm.ViewModels.Pages
                 var network = SelectedNetwork.Value;
                 bool result = Connman.ConnmanctlForgetSsid(connman, network);
                 await Task.Delay(3500);
+                ScanForNetworks();
+            }
+        }
+
+        private void DisconnectSsid()
+        {
+            if (SelectedNetwork.HasValue)
+            {
+                var network = SelectedNetwork.Value;
+                Connman.ConnmanctlDisconnectSsid(connman, network);
                 ScanForNetworks();
             }
         }
@@ -115,19 +127,6 @@ namespace Tkmm.ViewModels.Pages
             {
                 AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>(
                     networks.Where(n => !string.IsNullOrEmpty(n.Ssid)));
-            }
-        }
-
-        private class WifiNetworkInfoComparer : IEqualityComparer<Connman.WifiNetworkInfo>
-        {
-            public bool Equals(Connman.WifiNetworkInfo x, Connman.WifiNetworkInfo y)
-            {
-                return x.Ssid == y.Ssid && x.NetId == y.NetId;
-            }
-
-            public int GetHashCode(Connman.WifiNetworkInfo obj)
-            {
-                return HashCode.Combine(obj.Ssid, obj.NetId);
             }
         }
 

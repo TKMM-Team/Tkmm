@@ -225,6 +225,14 @@ public class Connman
         return false;
     }
 
+    public static bool ConnmanctlDisconnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
+    {
+        connman.Command = $"connmanctl disconnect {netinfo.NetId} 2>&1";
+        ExecuteCommand(connman.Command);
+        ConnmanctlRefreshServices(connman);
+        return true;
+    }
+
     public static bool ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
     {
         var netid = netinfo.NetId;
