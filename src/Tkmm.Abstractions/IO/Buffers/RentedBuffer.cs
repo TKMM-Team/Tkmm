@@ -4,10 +4,10 @@ using System.Runtime.CompilerServices;
 
 namespace Tkmm.Abstractions.IO.Buffers;
 
-public readonly struct RentedBuffer<T> : IDisposable where T : unmanaged
+public struct RentedBuffer<T> : IDisposable where T : unmanaged
 {
     private readonly T[] _buffer;
-    private readonly int _size;
+    private int _size;
 
     public static readonly RentedBuffer<T> Empty = new();
 
@@ -58,6 +58,8 @@ public readonly struct RentedBuffer<T> : IDisposable where T : unmanaged
     public ArraySegment<T> Segment {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private set;
     }
 
     public RentedBuffer()
@@ -71,6 +73,12 @@ public readonly struct RentedBuffer<T> : IDisposable where T : unmanaged
         _buffer = ArrayPool<T>.Shared.Rent(size);
         _size = size;
         Segment = new ArraySegment<T>(_buffer, 0, _size);
+    }
+
+    public void Resize(int size)
+    {
+        _size = size;
+        Segment = new ArraySegment<T>(_buffer, 0, size);
     }
 
     public void Dispose()
