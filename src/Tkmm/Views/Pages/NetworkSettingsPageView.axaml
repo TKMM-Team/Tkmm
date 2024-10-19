@@ -17,7 +17,8 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Margin="15" Spacing="10">
-            <Button Content="Scan for Networks" Command="{Binding ScanForNetworksCommand}"/>
+            <TextBlock Text="WiFi Networks" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+            <Button Content="Refresh Network List" Command="{Binding ScanForNetworksCommand}" IsEnabled="{Binding IsWifiEnabled}"/>
             <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -40,9 +41,30 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" Spacing="10">
-            <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}" />
-            <TextBlock Text="WiFi" VerticalAlignment="Center" />
-        </StackPanel>
+        <Grid Grid.Column="1" Margin="15" VerticalAlignment="Top" RowDefinitions="Auto, *">
+            <StackPanel Grid.Row="0" Spacing="10">
+                <TextBlock Text="Network Services" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}" Command="{Binding ToggleWifiCommand}" />
+                    <TextBlock Text="WiFi Service" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ToggleSwitch IsChecked="{Binding IsSshEnabled, Mode=TwoWay}" Command="{Binding ToggleSshCommand}" />
+                    <TextBlock Text="SSH Service" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ToggleSwitch IsChecked="{Binding IsSmbEnabled, Mode=TwoWay}" Command="{Binding ToggleSmbCommand}" />
+                    <TextBlock Text="SMB Service" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Spacing="10" Margin="0,10,0,0">
+                <TextBlock Text="Network Information" FontWeight="Bold" FontSize="16" Margin="0,10,0,10"/>
+                <TextBlock Text="IP Address: 192.168.1.130" />
+                <TextBlock Text="Subnet Mask: 255.255.255.0" />
+                <TextBlock Text="Gateway: 192.168.1.1" />
+                <TextBlock Text="MAC Address: 00:1A:2B:3C:4D:5E" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

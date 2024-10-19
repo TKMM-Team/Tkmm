@@ -14,21 +14,31 @@ namespace Tkmm.ViewModels.Pages
         private Connman.WifiNetworkInfo? selectedNetwork;
         private string networkPassword;
         private bool isWifiEnabled;
+        private bool isSshEnabled;
+        private bool isSmbEnabled;
         private readonly Connman.ConnmanT connman;
+        private readonly NetworkServices networkServices;
 
         public NetworkSettingsPageViewModel()
         {
             connman = Connman.ConnmanctlInit();
+            networkServices = new NetworkServices();
             AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
 
+            // Initialize the states
+            IsWifiEnabled = networkServices.IsWiFiEnabled();
+            IsSshEnabled = networkServices.IsSSHEnabled();
+            IsSmbEnabled = networkServices.IsSMBEnabled();
+
+            // Define commands
             ConnectToNetworkCommand = ReactiveCommand.CreateFromTask(ConnectToNetworkAsync);
             ScanForNetworksCommand = ReactiveCommand.CreateFromTask(ScanForNetworksAsync);
             ForgetSsidCommand = ReactiveCommand.CreateFromTask(ForgetSsidAsync);
             DisconnectSsidCommand = ReactiveCommand.CreateFromTask(DisconnectSsidAsync);
-            EnableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(true));
-            DisableWifiCommand = ReactiveCommand.CreateFromTask(() => ToggleWifiAsync(false));
+            ToggleWifiCommand = ReactiveCommand.Create<bool>(ToggleWifi);
+            ToggleSshCommand = ReactiveCommand.Create<bool>(ToggleSsh);
+            ToggleSmbCommand = ReactiveCommand.Create<bool>(ToggleSmb);
 
-            InitializeWifiStatus();
             ScanForNetworksCommand.Execute(null);
         }
 
@@ -56,12 +66,25 @@ namespace Tkmm.ViewModels.Pages
             set => this.RaiseAndSetIfChanged(ref isWifiEnabled, value);
         }
 
+        public bool IsSshEnabled
+        {
+            get => isSshEnabled;
+            set => this.RaiseAndSetIfChanged(ref isSshEnabled, value);
+        }
+
+        public bool IsSmbEnabled
+        {
+            get => isSmbEnabled;
+            set => this.RaiseAndSetIfChanged(ref isSmbEnabled, value);
+        }
+
         public ICommand ForgetSsidCommand { get; }
         public ICommand DisconnectSsidCommand { get; }
         public ICommand ConnectToNetworkCommand { get; }
         public ICommand ScanForNetworksCommand { get; }
-        public ICommand EnableWifiCommand { get; }
-        public ICommand DisableWifiCommand { get; }
+        public ReactiveCommand<bool, Unit> ToggleWifiCommand { get; }
+        public ReactiveCommand<bool, Unit> ToggleSshCommand { get; }
+        public ReactiveCommand<bool, Unit> ToggleSmbCommand { get; }
 
         private async Task ForgetSsidAsync()
         {
@@ -101,12 +124,43 @@ namespace Tkmm.ViewModels.Pages
             UpdateAvailableNetworks();
         }
 
-        private async Task ToggleWifiAsync(bool enable)
+        private void ToggleWifi(bool enable)
         {
-            Connman.ConnmanctlEnable(connman, enable);
-            await Task.Delay(3500);
-            UpdateAvailableNetworks();
-            IsWifiEnabled = Connman.IsWifiEnabled();
+            if (enable)
+            {
+                networkServices.EnableWiFi();
+            }
+            else
+            {
+                networkServices.DisableWiFi();
+            }
+            IsWifiEnabled = networkServices.IsWiFiEnabled();
+        }
+
+        private void ToggleSsh(bool enable)
+        {
+            if (enable)
+            {
+                networkServices.EnableSSH();
+            }
+            else
+            {
+                networkServices.DisableSSH();
+            }
+            IsSshEnabled = networkServices.IsSSHEnabled();
+        }
+
+        private void ToggleSmb(bool enable)
+        {
+            if (enable)
+            {
+                networkServices.EnableSMB();
+            }
+            else
+            {
+                networkServices.DisableSMB();
+            }
+            IsSmbEnabled = networkServices.IsSMBEnabled();
         }
 
         private void UpdateAvailableNetworks()
@@ -119,11 +173,6 @@ namespace Tkmm.ViewModels.Pages
         private bool IsDefault(Connman.WifiNetworkInfo netinfo)
         {
             return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
-        }
-
-        private void InitializeWifiStatus()
-        {
-            IsWifiEnabled = Connman.IsWifiEnabled();
         }
     }
 }
