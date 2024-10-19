@@ -9,6 +9,7 @@ namespace Tkmm.ViewModels.Pages
     {
         private ObservableCollection<Connman.WifiNetworkInfo> availableNetworks;
         private Connman.WifiNetworkInfo? selectedNetwork;
+        private Connman.WifiNetworkInfo? connectedNetwork;
         private string networkPassword;
         private bool isWifiEnabled;
         private bool isSshEnabled;
@@ -44,6 +45,34 @@ namespace Tkmm.ViewModels.Pages
         {
             get => selectedNetwork;
             set => this.RaiseAndSetIfChanged(ref selectedNetwork, value);
+        }
+
+        public Connman.WifiNetworkInfo? ConnectedNetwork
+        {
+            get => connectedNetwork;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref connectedNetwork, value);
+                UpdateNetworkDetails();
+            }
+        }
+
+        public string IpAddress { get; private set; }
+        public string Netmask { get; private set; }
+        public string Gateway { get; private set; }
+        public string MacAddress { get; private set; }
+
+        private void UpdateNetworkDetails()
+        {
+            IpAddress = connectedNetwork?.IpAddress ?? "N/A";
+            Netmask = connectedNetwork?.Netmask ?? "N/A";
+            Gateway = connectedNetwork?.Gateway ?? "N/A";
+            MacAddress = connectedNetwork?.MacAddress ?? "N/A";
+
+            this.RaisePropertyChanged(nameof(IpAddress));
+            this.RaisePropertyChanged(nameof(Netmask));
+            this.RaisePropertyChanged(nameof(Gateway));
+            this.RaisePropertyChanged(nameof(MacAddress));
         }
 
         public string NetworkPassword
@@ -114,7 +143,7 @@ namespace Tkmm.ViewModels.Pages
             if (SelectedNetwork.HasValue && !IsDefault(SelectedNetwork.Value))
             {
                 Connman.ConnmanctlForgetSsid(connman, SelectedNetwork.Value);
-                await ScanForNetworksAsync();
+                UpdateAvailableNetworks();
             }
         }
 
@@ -144,6 +173,7 @@ namespace Tkmm.ViewModels.Pages
             Connman.ConnmanctlScan(connman);
             await Task.Delay(3500);
             UpdateAvailableNetworks();
+            ConnectedNetwork = AvailableNetworks.FirstOrDefault(n => n.Connected);
         }
 
         private void UpdateAvailableNetworks()

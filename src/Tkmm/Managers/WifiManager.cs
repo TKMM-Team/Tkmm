@@ -124,11 +124,6 @@ public class Connman
                 }
             }
         }
-
-        network.MacAddress ??= "null";
-        network.IpAddress ??= "null";
-        network.Netmask ??= "null";
-        network.Gateway ??= "null";
     }
 
     private static string ExtractValue(string line, string key)
