@@ -61,7 +61,6 @@ namespace Tkmm.ViewModels.Pages
                 if (value)
                 {
                     networkServices.EnableWiFi();
-                    ScanForNetworksCommand.Execute(null);
                 }
                 else
                 {
