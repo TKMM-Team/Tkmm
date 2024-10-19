@@ -12,4 +12,8 @@
       <ProjectReference Include="..\Tkmm.Abstractions\Tkmm.Abstractions.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ZstdSharp.Port" Version="0.8.1" />
+    </ItemGroup>
+
 </Project>
