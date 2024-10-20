@@ -41,7 +41,7 @@ public sealed class ProfileActions : GuardedActionGroup<ProfileActions>
         int removeIndex = TKMM.ModManager.Profiles.IndexOf(profile);
         TKMM.ModManager.Profiles.RemoveAt(removeIndex);
         
-        while (removeIndex >= TKMM.ModManager.CurrentProfile.Mods.Count) {
+        while (removeIndex >= TKMM.ModManager.Profiles.Count) {
             removeIndex--;
         }
 
