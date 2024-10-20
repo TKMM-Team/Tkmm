@@ -47,9 +47,10 @@ public partial class GameBananaModRecord : ObservableObject
             return;
         }
 
-        Stream image = await GameBanana.Get($"{img.BaseUrl}/{img.SmallFile}", ct);
-        MemoryStream ms = new();
+        await using Stream image = await GameBanana.Get($"{img.BaseUrl}/{img.SmallFile}", ct);
+        await using MemoryStream ms = new();
         await image.CopyToAsync(ms, ct);
+        ms.Seek(0, SeekOrigin.Begin);
         
         Thumbnail = ITkThumbnail.CreateBitmap(ms);
     }
