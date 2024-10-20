@@ -157,6 +157,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         try {
             Config.Shared.Save();
             await TKMM.ModManager.Save();
+            await TKMM.ShopManager.Save();
             Environment.Exit(0);
         }
         catch (Exception ex) {
