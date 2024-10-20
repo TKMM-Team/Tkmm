@@ -32,8 +32,15 @@ namespace Tkmm.ViewModels.Pages
             ForgetSsidCommand = ReactiveCommand.CreateFromTask(ForgetSsidAsync);
             DisconnectSsidCommand = ReactiveCommand.CreateFromTask(DisconnectSsidAsync);
 
+            Connman.NetworkDetailsChanged += RefreshNetworkDetails;
+
             ScanForNetworksCommand.Execute(null);
         }
+
+        public string IpAddress => Connman.IpAddress;
+        public string Netmask => Connman.Netmask;
+        public string Gateway => Connman.Gateway;
+        public string MacAddress => Connman.MacAddress;
 
         public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks
         {
@@ -50,29 +57,7 @@ namespace Tkmm.ViewModels.Pages
         public Connman.WifiNetworkInfo? ConnectedNetwork
         {
             get => connectedNetwork;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref connectedNetwork, value);
-                UpdateNetworkDetails();
-            }
-        }
-
-        public string IpAddress { get; private set; }
-        public string Netmask { get; private set; }
-        public string Gateway { get; private set; }
-        public string MacAddress { get; private set; }
-
-        private void UpdateNetworkDetails()
-        {
-            IpAddress = connectedNetwork?.IpAddress ?? "N/A";
-            Netmask = connectedNetwork?.Netmask ?? "N/A";
-            Gateway = connectedNetwork?.Gateway ?? "N/A";
-            MacAddress = connectedNetwork?.MacAddress ?? "N/A";
-
-            this.RaisePropertyChanged(nameof(IpAddress));
-            this.RaisePropertyChanged(nameof(Netmask));
-            this.RaisePropertyChanged(nameof(Gateway));
-            this.RaisePropertyChanged(nameof(MacAddress));
+            set => this.RaiseAndSetIfChanged(ref connectedNetwork, value);
         }
 
         public string NetworkPassword
@@ -186,6 +171,14 @@ namespace Tkmm.ViewModels.Pages
         private bool IsDefault(Connman.WifiNetworkInfo netinfo)
         {
             return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
+        }
+
+        private void RefreshNetworkDetails()
+        {
+            this.RaisePropertyChanged(nameof(IpAddress));
+            this.RaisePropertyChanged(nameof(Netmask));
+            this.RaisePropertyChanged(nameof(Gateway));
+            this.RaisePropertyChanged(nameof(MacAddress));
         }
     }
 }

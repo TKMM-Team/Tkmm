@@ -1,8 +1,7 @@
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Tkmm.Managers;
 
@@ -15,10 +14,75 @@ public class Connman
         public bool Connected { get; set; }
         public bool SavedPassword { get; set; }
         public string Passphrase { get; set; }
-        public string MacAddress { get; set; }
-        public string IpAddress { get; set; }
-        public string Netmask { get; set; }
-        public string Gateway { get; set; }
+    }
+
+    private static string macAddress;
+    private static string ipAddress;
+    private static string netmask;
+    private static string gateway;
+
+    public static event Action NetworkDetailsChanged;
+
+    public static string MacAddress
+    {
+        get => macAddress;
+        private set
+        {
+            if (macAddress != value)
+            {
+                macAddress = value;
+                NetworkDetailsChanged?.Invoke();
+            }
+        }
+    }
+
+    public static string IpAddress
+    {
+        get => ipAddress;
+        private set
+        {
+            if (ipAddress != value)
+            {
+                ipAddress = value;
+                NetworkDetailsChanged?.Invoke();
+            }
+        }
+    }
+
+    public static string Netmask
+    {
+        get => netmask;
+        private set
+        {
+            if (netmask != value)
+            {
+                netmask = value;
+                NetworkDetailsChanged?.Invoke();
+            }
+        }
+    }
+
+    public static string Gateway
+    {
+        get => gateway;
+        private set
+        {
+            if (gateway != value)
+            {
+                gateway = value;
+                NetworkDetailsChanged?.Invoke();
+            }
+        }
+    }
+
+    public static void RetrieveMacAddress()
+    {
+        using (var output = ExecuteCommand("ip link show wlan0"))
+        {
+            string result = output.ReadToEnd();
+            var match = Regex.Match(result, @"link/ether (\S+)");
+            MacAddress = match.Success ? match.Groups[1].Value.ToUpper() : string.Empty;
+        }
     }
 
     public class ConnmanT
@@ -73,6 +137,7 @@ public class Connman
             Trace.WriteLine("Connman or Scan is null.");
             return;
         }
+        RetrieveMacAddress();
 
         using (var servFile = ExecuteCommand("connmanctl services"))
         {
@@ -93,7 +158,10 @@ public class Connman
                 entry.Connected = line[2] == 'R' || line[2] == 'O';
                 entry.SavedPassword = File.Exists(Path.Combine(CONNMAN_DIR, entry.NetId, "settings"));
 
-                GetNetworkDetails(entry);
+                if (entry.Connected)
+                {
+                    GetNetworkDetails(entry.NetId);
+                }
 
                 if (entry.NetId.StartsWith("wifi_"))
                 {
@@ -105,22 +173,22 @@ public class Connman
         }
     }
 
-    private static void GetNetworkDetails(WifiNetworkInfo network)
+    private static void GetNetworkDetails(string netId)
     {
-        using (var detailFile = ExecuteCommand($"connmanctl services {network.NetId}"))
+        using (var detailFile = ExecuteCommand($"connmanctl services {netId}"))
         {
             string detailLine;
             while ((detailLine = detailFile.ReadLine()) != null)
             {
-                if (detailLine.Contains("Ethernet"))
+                if (detailLine.Contains("Ethernet ="))
                 {
-                    network.MacAddress = ExtractValue(detailLine, "Address");
+                    MacAddress = ExtractValue(detailLine, "Address");
                 }
-                else if (detailLine.Contains("IPv4"))
+                else if (detailLine.Contains("IPv4 ="))
                 {
-                    network.IpAddress = ExtractValue(detailLine, "Address");
-                    network.Netmask = ExtractValue(detailLine, "Netmask");
-                    network.Gateway = ExtractValue(detailLine, "Gateway");
+                    IpAddress = ExtractValue(detailLine, "Address");
+                    Netmask = ExtractValue(detailLine, "Netmask");
+                    Gateway = ExtractValue(detailLine, "Gateway");
                 }
             }
         }
@@ -129,13 +197,14 @@ public class Connman
     private static string ExtractValue(string line, string key)
     {
         var startIndex = line.IndexOf(key + "=");
-        if (startIndex == -1) return "null";
+        if (startIndex == -1) return "N/A";
 
         startIndex += key.Length + 1;
         var endIndex = line.IndexOf(',', startIndex);
         if (endIndex == -1) endIndex = line.IndexOf(']', startIndex);
 
-        return endIndex == -1 ? "null" : line.Substring(startIndex, endIndex - startIndex).Trim();
+        var extractedValue = endIndex == -1 ? string.Empty : line.Substring(startIndex, endIndex - startIndex).Trim();
+        return string.IsNullOrEmpty(extractedValue) ? "N/A" : extractedValue;
     }
 
     public static void ConnmanctlScan(ConnmanT connman)
