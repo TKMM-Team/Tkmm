@@ -19,15 +19,13 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     protected async ValueTask<bool> CanActionRun([CallerMemberName] string? actionName = null, bool showError = true)
     {
         TKMM.Logger.LogInformation(
-            "[TKMM] [{UtcNow}] Validatiing {ActionName} from {ActionGroupName}.",
-            DateTime.UtcNow, actionName, ActionGroupName);
+            "Validatiing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
         
         LogInfo();
 
         if (EnsureConfiguration()) {
             TKMM.Logger.LogInformation(
-                "[TKMM] [{UtcNow}] Executing {ActionName} from {ActionGroupName}.",
-                DateTime.UtcNow, actionName, ActionGroupName);
+                "Executing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
             
             return true;
         }
@@ -38,8 +36,8 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
         }
         
         TKMM.Logger.LogCritical(
-            "[TKMM] [{UtcNow}] Failed to run {ActionName} from {ActionGroupName}, the configuration was invalid.",
-            DateTime.UtcNow, actionName, ActionGroupName);
+            "Failed to run {ActionName} from {ActionGroupName}, the configuration was invalid.",
+            actionName, ActionGroupName);
         
         await ShowFailureDialog(actionName,
             "The application configuration is invalid, the invoked action cannot run.");
@@ -73,7 +71,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
         TKMM.Romfs.LogInfo(TKMM.Logger);
         
         TKMM.Logger.LogInformation(
-            "[TKMM] [{UtcNow}] Game Language: {GameLanguage}.", DateTime.UtcNow, TKMM.Config.GameLanguage);
+            "Game Language: {GameLanguage}.", TKMM.Config.GameLanguage);
     }
 
     /// <summary>

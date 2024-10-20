@@ -40,13 +40,13 @@ public sealed class ExtractedRomfs : IRomfs
     public void LogInfo(ILogger logger)
     {
         logger.LogInformation(
-            "[TKMM] [DESKTOP] [IO] [{UtcNow}] RomFS: Extracted", DateTime.UtcNow);
+            "[RomFS] Type: Extracted");
         logger.LogInformation(
-            "[TKMM] [DESKTOP] [IO] [{UtcNow}] Game Path: {GamePath}", DateTime.UtcNow, Totk.Config.GamePath);
+            "[RomFS] Game Path: {GamePath}", Totk.Config.GamePath);
         logger.LogInformation(
-            "[TKMM] [DESKTOP] [IO] [{UtcNow}] Game Version: {GameVersion}", DateTime.UtcNow, Totk.Config.Version);
+            "[RomFS] Game Version: {GameVersion}", Totk.Config.Version);
         logger.LogInformation(
-            "[TKMM] [DESKTOP] [IO] [{UtcNow}] Has ZSTD Dictionaries: {HasZstd}", DateTime.UtcNow, File.Exists(Totk.Config.ZsDicPath));
+            "[RomFS] Has ZSTD Dictionaries: {HasZstd}", File.Exists(Totk.Config.ZsDicPath));
     }
 
     public bool IsStateValid([MaybeNullWhen(true)] out string invalidReason)

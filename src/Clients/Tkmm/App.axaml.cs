@@ -57,7 +57,7 @@ public class App : Application
     public App()
     {
         TKMM.Logger.LogInformation(
-            "[TKMM] [{UtcNow}] Version: {Version}", DateTime.UtcNow, Version);
+            "Version: {Version}", Version);
         
         TaskScheduler.UnobservedTaskException += async (_, e) => {
             object errorReportResult = await ErrorDialog.ShowAsync(e.Exception, TaskDialogButton.OKButton, TaskDialogButton.RetryButton);

@@ -17,6 +17,7 @@ public class DesktopLogger : ILogger
 
         FileStream fs = File.Create(_targetLogFile);
         _writer = new StreamWriter(fs);
+        _writer.AutoFlush = true;
     }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
