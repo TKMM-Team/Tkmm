@@ -163,7 +163,8 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         catch (Exception ex) {
             TKMM.Logger.LogError(ex, "An error occured while saving the mod manager state.");
 
-            object errorReportResult = await ErrorDialog.ShowAsync(ex, TaskDialogButton.CloseButton, TaskDialogButton.CancelButton);
+            object errorReportResult = await ErrorDialog.ShowAsync(ex,
+                TaskDialogStandardResult.Close, TaskDialogStandardResult.Cancel);
             if (Equals(errorReportResult, TaskDialogButton.CloseButton)) {
                 Environment.Exit(-1);
             }

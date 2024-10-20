@@ -63,14 +63,8 @@ public class App : Application
             TKMM.Logger.LogError(
                 eventArgs.Exception, "Unobserved task exception");
 
-            object errorReportResult =
-                await ErrorDialog.ShowAsync(eventArgs.Exception, TaskDialogButton.OKButton, TaskDialogButton.RetryButton);
-
+            await ErrorDialog.ShowAsync(eventArgs.Exception, TaskDialogStandardResult.OK);
             eventArgs.SetObserved();
-
-            if (errorReportResult is not TaskDialogStandardResult.Retry) {
-                await SystemActions.Instance.SoftClose();
-            }
         };
     }
 
