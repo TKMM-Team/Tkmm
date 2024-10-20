@@ -6,7 +6,7 @@ namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
-    private static readonly string _targetLogFile = Path.Combine(AppContext.BaseDirectory, "log.txt");
+    private static readonly string _targetLogFile = Path.Combine(AppContext.BaseDirectory, ".log");
 
     private readonly string _group;
     private readonly StreamWriter _writer;
@@ -15,7 +15,9 @@ public class DesktopLogger : ILogger
     {
         _group = group;
 
-        FileStream fs = File.Create(_targetLogFile);
+        FileStream fs = File.OpenWrite(_targetLogFile);
+        fs.Seek(0, SeekOrigin.End);
+        
         _writer = new StreamWriter(fs);
         _writer.AutoFlush = true;
     }
