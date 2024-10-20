@@ -7,6 +7,8 @@
              x:Class="Tkmm.Dialogs.ErrorDialog"
              x:DataType="system:Exception">
     <Grid>
-        <TextBox Text="{Binding Mode=OneWay}" TextWrapping="WrapWithOverflow" />
+        <TextBox Text="{Binding Mode=OneWay}"
+                 TextWrapping="WrapWithOverflow"
+                 IsReadOnly="True" />
     </Grid>
 </UserControl>

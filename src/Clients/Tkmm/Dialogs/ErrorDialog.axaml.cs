@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 
@@ -18,16 +19,18 @@ public partial class ErrorDialog : UserControl
                 TaskDialogButton.OKButton
             ];
         }
-        
-        TaskDialog dialog = new() {
-            XamlRoot = App.XamlRoot,
-            Title = $"{ex.GetType().Name.Humanize()}",
-            Content = new ErrorDialog() {
-                DataContext = ex
-            },
-            Buttons = buttons
-        };
 
-        return await dialog.ShowAsync();
+        return await Dispatcher.UIThread.InvokeAsync(async () => {
+            TaskDialog dialog = new() {
+                XamlRoot = App.XamlRoot,
+                Title = $"{ex.GetType().Name.Humanize()}",
+                Content = new ErrorDialog() {
+                    DataContext = ex
+                },
+                Buttons = buttons
+            };
+            
+            return await dialog.ShowAsync();
+        });
     }
 }
