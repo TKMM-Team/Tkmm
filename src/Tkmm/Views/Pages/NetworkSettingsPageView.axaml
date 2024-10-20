@@ -10,11 +10,6 @@
         <converters:NullableConnectedToBoolConverter x:Key="NullableConnectedToBoolConverter"/>
         <converters:SavedPasswordToBoolConverter x:Key="SavedPasswordToBoolConverter"/>
         <converters:NoSavedPasswordToBoolConverter x:Key="NoSavedPasswordToBoolConverter"/>
-        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -27,18 +22,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="WiFi Networks" Style="{StaticResource SectionHeaderStyle}" Grid.Column="0" Grid.Row="0"/>
-        <TextBlock Text="Network Services" Style="{StaticResource SectionHeaderStyle}" Grid.Column="1" Grid.Row="0" TextAlignment="Center"/>
-
-        <Grid Grid.Column="0" Grid.Row="1" Margin="0,10,10,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,10,10,0" Spacing="10">
+            <TextBlock Text="Wireless Networks" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" TextAlignment="Center"/>
             <Button Content="Refresh Network List" Command="{Binding ScanForNetworksCommand}" IsEnabled="{Binding IsWifiEnabled}" Margin="0,0,0,10"/>
-            <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}" Grid.Row="1">
+            <ListBox ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Spacing="10">
@@ -50,8 +37,8 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <TextBox Text="{Binding NetworkPassword, Mode=TwoWay}" Watermark="Enter Password" PasswordChar="*"
-                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NoSavedPasswordToBoolConverter}}" Grid.Row="2" Margin="0,10,0,0"/>
-            <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="2" Margin="0,10,0,0">
+                     IsVisible="{Binding SelectedNetwork, Converter={StaticResource NoSavedPasswordToBoolConverter}}" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
                 <Button Content="Connect" Command="{Binding ConnectToNetworkCommand}"
                         IsEnabled="{Binding SelectedNetwork, Converter={StaticResource NullableConnectedToBoolConverter}, ConverterParameter=Invert}"/>
                 <Button Content="Disconnect" Command="{Binding DisconnectSsidCommand}"
@@ -59,31 +46,25 @@
                 <Button Content="Forget SSID" Command="{Binding ForgetSsidCommand}"
                         IsEnabled="{Binding SelectedNetwork, Converter={StaticResource SavedPasswordToBoolConverter}}"/>
             </StackPanel>
-        </Grid>
+        </StackPanel>
 
-        <Grid Grid.Column="1" Grid.Row="1" Margin="10,10,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Grid.Row="0">
+        <StackPanel Grid.Column="1" Grid.Row="1" Margin="10,10,0,0" Spacing="20">
+            <TextBlock Text="Network Services" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" TextAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                 <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}" 
                               OffContent="WiFi Service" OnContent="WiFi Service" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                 <ToggleSwitch IsChecked="{Binding IsSshEnabled, Mode=TwoWay}" 
                               OffContent="SSH Service" OnContent="SSH Service" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Grid.Row="2">
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                 <ToggleSwitch IsChecked="{Binding IsSmbEnabled, Mode=TwoWay}" 
                               OffContent="SMB Service" OnContent="SMB Service" />
             </StackPanel>
 
-            <TextBlock Text="Network Information" Style="{StaticResource SectionHeaderStyle}" Grid.Row="3" TextAlignment="Center"/>
-            <Grid Grid.Row="3" Margin="0,10,0,0">
+            <TextBlock Text="Network Information" FontSize="20" FontWeight="Bold" Margin="0,10,0,10" TextAlignment="Center"/>
+            <Grid HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -123,6 +104,6 @@
                     <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5"/>
                 </Border>
             </Grid>
-        </Grid>
+        </StackPanel>
     </Grid>
 </UserControl>
