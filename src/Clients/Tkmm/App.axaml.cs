@@ -46,7 +46,7 @@ public class App : Application
     public static string ShortTitle { get; } = $"TKMM v{Version}";
 
     public static IMenuFactory MenuFactory { get; private set; } = null!;
-    
+
     public static TopLevel XamlRoot { get; private set; } = null!;
 
     static App()
@@ -58,15 +58,19 @@ public class App : Application
     {
         TKMM.Logger.LogInformation(
             "Version: {Version}", Version);
-        
-        TaskScheduler.UnobservedTaskException += async (_, e) => {
-            object errorReportResult = await ErrorDialog.ShowAsync(e.Exception, TaskDialogButton.OKButton, TaskDialogButton.RetryButton);
-            if (Equals(errorReportResult, TaskDialogButton.RetryButton)) {
-                e.SetObserved();
-                return;
-            }
 
-            await SystemActions.Instance.SoftClose();
+        TaskScheduler.UnobservedTaskException += async (_, eventArgs) => {
+            TKMM.Logger.LogError(
+                eventArgs.Exception, "Unobserved task exception");
+
+            object errorReportResult =
+                await ErrorDialog.ShowAsync(eventArgs.Exception, TaskDialogButton.OKButton, TaskDialogButton.RetryButton);
+
+            eventArgs.SetObserved();
+
+            if (errorReportResult is not TaskDialogStandardResult.Retry) {
+                await SystemActions.Instance.SoftClose();
+            }
         };
     }
 
@@ -144,7 +148,7 @@ public class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
-    
+
     private void OnThemeChanged(string theme)
     {
         RequestedThemeVariant = theme switch {
