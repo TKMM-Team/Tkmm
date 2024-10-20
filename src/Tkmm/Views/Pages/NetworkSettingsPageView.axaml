@@ -40,14 +40,14 @@
 									 PasswordChar="*"/>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <Button Content="Connect"
-										Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
+                                        Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
                                         IsEnabled="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource NullableConnectedToBoolConverter}, ConverterParameter=Invert}"/>
                                 <Button Content="Disconnect"
-										Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
+                                        Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
                                         IsEnabled="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource NullableConnectedToBoolConverter}}" />
                                 <Button Content="Remove saved settings"
-										Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}"
-                                        IsEnabled="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource SavedPasswordToBoolConverter}}"/>
+                                        Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}"
+                                        IsEnabled="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource SavedPasswordToBoolConverter}}" />
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
