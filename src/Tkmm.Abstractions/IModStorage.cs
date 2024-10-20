@@ -15,5 +15,5 @@ public interface IModStorage
     /// <summary>
     /// The current profile in use.
     /// </summary>
-    ITkProfile CurrentProfile { get; set; }
+    ITkProfile? CurrentProfile { get; set; }
 }

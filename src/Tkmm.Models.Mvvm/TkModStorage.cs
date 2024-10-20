@@ -14,5 +14,5 @@ public partial class TkModStorage : ObservableObject, IModStorage
     public IList<ITkProfile> Profiles => _profiles;
 
     [ObservableProperty]
-    private ITkProfile _currentProfile;
+    private ITkProfile? _currentProfile;
 }

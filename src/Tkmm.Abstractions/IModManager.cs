@@ -17,11 +17,11 @@ public interface IModManager : IModStorage
     ValueTask Save(CancellationToken ct = default);
 
     /// <summary>
-    /// Merge the current selected profile.
+    /// Merge the current selected profile or the first profile if the selection is null.
     /// </summary>
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
-    ValueTask Merge(CancellationToken ct = default) => Merge(CurrentProfile, ct);
+    ValueTask Merge(CancellationToken ct = default) => Merge(CurrentProfile ?? Profiles.First(), ct);
     
     /// <summary>
     /// Merge the provided <paramref name="profile"/>.
