@@ -1,16 +1,16 @@
 using Revrs.Extensions;
 using Tkmm.Abstractions.IO.Buffers;
-using ZstdSharp;
 
-namespace Tkmm.Common.IO;
+namespace Tkmm.Abstractions.IO;
 
 public interface IZstd
 {
     public const uint ZSTD_MAGIC = 0xFD2FB528;
-    
+
     int CompressionLevel { get; set; }
 
-    public byte[] Decompress(ReadOnlySpan<byte> data) => Decompress(data, out _);
+    public byte[] Decompress(ReadOnlySpan<byte> data)
+        => Decompress(data, out _);
     public byte[] Decompress(ReadOnlySpan<byte> data, out int zsDictionaryId)
     {
         int size = GetDecompressedSize(data);
@@ -19,18 +19,11 @@ public interface IZstd
         return result;
     }
 
-    public void Decompress(ReadOnlySpan<byte> data, Span<byte> dst) => Decompress(data, dst, out _);
+    public void Decompress(ReadOnlySpan<byte> data, Span<byte> dst)
+        => Decompress(data, dst, out _);
     public void Decompress(ReadOnlySpan<byte> data, Span<byte> dst, out int zsDictionaryId);
-    
-    public RentedBuffer<byte> Compress(ReadOnlySpan<byte> data, int zsDictionaryId = -1)
-    {
-        int bounds = Compressor.GetCompressBound(data.Length);
-        RentedBuffer<byte> result = RentedBuffer<byte>.Allocate(bounds);
-        int size = Compress(data, result.Span, zsDictionaryId);
-        result.Resize(size);
-        return result;
-    }
 
+    public RentedBuffer<byte> Compress(ReadOnlySpan<byte> data, int zsDictionaryId = -1);
     public int Compress(ReadOnlySpan<byte> data, Span<byte> dst, int zsDictionaryId = -1);
 
     public static bool IsCompressed(ReadOnlySpan<byte> data)

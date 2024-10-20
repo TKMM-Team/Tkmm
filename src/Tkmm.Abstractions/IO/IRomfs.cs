@@ -9,6 +9,8 @@ public interface IRomfs
     IDictionary<string, string> AddressTable { get; }
 
     string Version { get; }
+    
+    IZstd Zstd { get; }
 
     /// <inheritdoc cref="GetVanilla(System.String,Tkmm.Abstractions.TkFileAttributes,out int)"/>
     RentedBuffer<byte> GetVanilla(ReadOnlySpan<char> canonical, TkFileAttributes attributes)
