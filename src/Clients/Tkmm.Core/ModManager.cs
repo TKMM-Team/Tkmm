@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Tkmm.Abstractions;
 using Tkmm.Core.IO.ModReaders;
@@ -20,8 +19,8 @@ public sealed class ModManager : TkModStorage, IModManager
     {
         if (File.Exists(_path)) {
             await using FileStream fs = File.OpenRead(_path);
-            ModManager? stored = await JsonSerializer.DeserializeAsync(
-                fs, ModManagerJsonContext.Default.ModManager, ct);
+            TkModStorage? stored = await JsonSerializer.DeserializeAsync(
+                fs, TkJsonContext.Default.TkModStorage, ct);
 
             if (stored is null || stored.Profiles.Count < 1) {
                 goto Defaults;
@@ -66,7 +65,7 @@ public sealed class ModManager : TkModStorage, IModManager
         Directory.CreateDirectory(SystemFolder);
         
         await using FileStream fs = File.Create(_path);
-        await JsonSerializer.SerializeAsync(fs, this, ModManagerJsonContext.Default.ModManager, ct);
+        await JsonSerializer.SerializeAsync(fs, this, TkJsonContext.Default.TkModStorage, ct);
     }
 
     public async ValueTask Merge(ITkProfile profile, CancellationToken ct = default)
@@ -94,6 +93,3 @@ public sealed class ModManager : TkModStorage, IModManager
         throw new NotImplementedException();
     }
 }
-
-[JsonSerializable(typeof(ModManager))]
-public sealed partial class ModManagerJsonContext : JsonSerializerContext;
