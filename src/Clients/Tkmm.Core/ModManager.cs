@@ -8,8 +8,8 @@ public sealed class ModManager : TkModStorage, IModManager
 {
     public static readonly string SystemModsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".system", "mods"); 
     public static readonly string MergedModsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".merged");
-    
-    public ValueTask Initialize(CancellationToken ct = default)
+
+    public async Task Initialize(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

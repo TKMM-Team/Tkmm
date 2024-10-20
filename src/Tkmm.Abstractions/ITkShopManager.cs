@@ -31,7 +31,7 @@ public interface ITkShopManager
         Selected = OverflowShops[newIndex];
     }
     
-    public ValueTask Initialize(CancellationToken ct = default);
+    public Task Initialize(CancellationToken ct = default);
     
-    public ValueTask Save(CancellationToken ct = default);
+    public Task Save(CancellationToken ct = default);
 }

@@ -21,7 +21,10 @@ public class SplashScreen : IApplicationSplashScreen
 
     public async Task RunTasks(CancellationToken cancellationToken)
     {
-        await TKMM.ModManager.Initialize(cancellationToken);
+        await Task.WhenAll(
+            TKMM.ModManager.Initialize(cancellationToken),
+            TKMM.ShopManager.Initialize(cancellationToken)
+        );
         
         PageManager.Shared.Focus(PageManager.Shared.Default);
     }

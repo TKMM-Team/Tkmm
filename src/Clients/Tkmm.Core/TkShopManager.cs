@@ -18,7 +18,7 @@ public partial class TkShopManager : ObservableObject, ITkShopManager
 
     public ObservableCollection<ITkShop> OverflowShops { get; set; } = [];
 
-    public async ValueTask Initialize(CancellationToken ct = default)
+    public async Task Initialize(CancellationToken ct = default)
     {
         if (!File.Exists(_shopsFile)) {
             await InitializeFromEmbedded(ct);
@@ -51,7 +51,7 @@ public partial class TkShopManager : ObservableObject, ITkShopManager
         }
     }
 
-    public ValueTask Save(CancellationToken ct = default)
+    public Task Save(CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

@@ -7,14 +7,14 @@ public interface IModManager : IModStorage
     /// </summary>
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
-    ValueTask Initialize(CancellationToken ct = default);
+    Task Initialize(CancellationToken ct = default);
     
     /// <summary>
     /// Persist the current state of the mod manager.
     /// </summary>
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
-    ValueTask Save(CancellationToken ct = default);
+    Task Save(CancellationToken ct = default);
 
     /// <summary>
     /// Merge the current selected profile or the first profile if the selection is null.
