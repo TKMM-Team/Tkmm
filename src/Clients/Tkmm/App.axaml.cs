@@ -41,8 +41,6 @@ public class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
         .InformationalVersion.Split('+')[0] ?? SystemMsg.UndefinedVersion;
 
-    public static readonly Uri AssetsUri = new("avares://Tkmm/Assets/");
-
     public static string Title { get; } = $"TotK Mod Manager";
 
     public static string ShortTitle { get; } = $"TKMM v{Version}";
@@ -134,6 +132,7 @@ public class App : Application
 
             PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
             PageManager.Shared.Register(Page.Profiles, PageMsg.Profiles, new ProfilesPageView(), Symbol.OtherUser, PageMsg.ProfilesDescription);
+            PageManager.Shared.Register(Page.Tools, PageMsg.Tools, new ProjectsPageView(), Symbol.CodeHTML, PageMsg.ToolsDescription);
             PageManager.Shared.Register(Page.ShopParam, PageMsg.ShopParam, new ShopParamPageView(), Symbol.Sort, PageMsg.ShopParamDescription);
             PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
 

@@ -185,7 +185,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     private static GameBananaFeed? GetSuggestedFeed()
     {
         try {
-            using Stream stream = AssetLoader.Open(new Uri("GameBanana/Suggested.json"), App.AssetsUri);
+            using Stream stream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/GameBanana/Suggested.json"));
             return JsonSerializer.Deserialize(stream, GameBananaFeedJsonContext.Default.GameBananaFeed);
         }
         catch (Exception ex) {
