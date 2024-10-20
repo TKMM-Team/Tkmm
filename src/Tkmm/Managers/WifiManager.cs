@@ -144,6 +144,8 @@ public class Connman
             if (connman.Scan.NetList != null)
                 connman.Scan.NetList = null;
 
+            bool isAnyNetworkConnected = false;
+
             string line;
             while ((line = servFile.ReadLine()) != null)
             {
@@ -161,6 +163,7 @@ public class Connman
                 if (entry.Connected)
                 {
                     GetNetworkDetails(entry.NetId);
+                    isAnyNetworkConnected = true;
                 }
 
                 if (entry.NetId.StartsWith("wifi_"))
@@ -169,6 +172,11 @@ public class Connman
                     netList.Add(entry);
                     connman.Scan.NetList = netList.ToArray();
                 }
+            }
+
+            if (!isAnyNetworkConnected)
+            {
+                ResetNetworkDetails();
             }
         }
     }
@@ -205,6 +213,25 @@ public class Connman
 
         var extractedValue = endIndex == -1 ? string.Empty : line.Substring(startIndex, endIndex - startIndex).Trim();
         return string.IsNullOrEmpty(extractedValue) ? "N/A" : extractedValue;
+    }
+
+    public static void CheckAndResetNetworkDetails(ConnmanT connman)
+    {
+        bool isAnyNetworkConnected = connman.Scan.NetList?.Any(network => network.Connected) ?? false;
+
+        if (!isAnyNetworkConnected)
+        {
+            ResetNetworkDetails();
+        }
+
+        NetworkDetailsChanged?.Invoke();
+    }
+
+    public static void ResetNetworkDetails()
+    {
+        IpAddress = "N/A";
+        Netmask = "N/A";
+        Gateway = "N/A";
     }
 
     public static void ConnmanctlScan(ConnmanT connman)
@@ -244,24 +271,8 @@ public class Connman
 
     public static bool ConnmanctlConnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
     {
-        if (connman == null)
-        {
-            Trace.WriteLine("Connman is null.");
-            return false;
-        }
-
-        if (IsDefault(netinfo))
-        {
-            Trace.WriteLine("Network info is in its default state.");
-            return false;
-        }
 
         var netid = netinfo.NetId;
-        if (string.IsNullOrEmpty(netid))
-        {
-            Trace.WriteLine("NetId is null or empty.");
-            return false;
-        }
 
         var settingsDir = Path.Combine(CONNMAN_DIR, netid);
         var settingsPath = Path.Combine(settingsDir, "settings");
@@ -284,44 +295,16 @@ public class Connman
                 }
 
                 ExecuteCommand("systemctl restart connman.service");
+                ExecuteCommand($"sleep 5");
             }
-            else if (!File.Exists(settingsPath))
-            {
-                ExecuteCommand("systemctl restart connman.service");
-                return false;
-            }
-
-            connman.Command = $"connmanctl connect {netinfo.NetId}";
-            ExecuteCommand(connman.Command);
-            ConnmanctlRefreshServices(connman);
-
-            if (connman.Scan?.NetList == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < connman.Scan.NetList.Length; i++)
-            {
-                var net = connman.Scan.NetList[i];
-                if (net.NetId == netid)
-                {
-                    if (!net.Connected)
-                    {
-                        net.SavedPassword = false;
-                        File.Delete(settingsPath);
-                        connman.Scan.NetList[i] = net;
-                    }
-                    return net.Connected;
-                }
-            }
+            ExecuteCommand($"connmanctl connect {netinfo.NetId}");
+            return false;
         }
         catch (Exception ex)
         {
             Trace.WriteLine($"Error in ConnmanctlConnectSsid: {ex.Message}");
             return false;
         }
-
-        return false;
     }
 
     public static bool ConnmanctlDisconnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
@@ -350,7 +333,6 @@ public class Connman
                 Directory.Delete(settingsDir, true);
             }
             
-            Trace.WriteLine($"Settings for SSID {netinfo.Ssid} have been removed.");
             ConnmanctlRefreshServices(connman);
             return true;
         }

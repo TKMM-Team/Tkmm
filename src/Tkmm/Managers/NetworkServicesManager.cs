@@ -53,12 +53,18 @@ namespace Tkmm.Managers
 
         public void EnableWiFi()
         {
-            ExecuteCommand("connmanctl enable wifi");
+            if (!IsWiFiEnabled())
+            {
+                ExecuteCommand("connmanctl enable wifi");
+            }
         }
 
         public void DisableWiFi()
         {
-            ExecuteCommand("connmanctl disable wifi");
+            if (IsWiFiEnabled())
+            {
+                ExecuteCommand("connmanctl disable wifi");
+            }
         }
 
         public bool IsWiFiEnabled()
@@ -66,9 +72,10 @@ namespace Tkmm.Managers
             var outputReader = ExecuteCommand("connmanctl technologies");
             var output = outputReader?.ReadToEnd() ?? string.Empty;
 
-            return output.Split(new[] { "/net/connman/technology/" }, StringSplitOptions.None)
-                         .Any(section => section.TrimStart().StartsWith("wifi", StringComparison.OrdinalIgnoreCase) &&
-                                         section.Contains("Powered = True", StringComparison.OrdinalIgnoreCase));
+            bool isEnabled = output.Split(new[] { "/net/connman/technology/" }, StringSplitOptions.None)
+                                    .Any(section => section.TrimStart().StartsWith("wifi", StringComparison.OrdinalIgnoreCase) &&
+                                                    section.Contains("Powered = True", StringComparison.OrdinalIgnoreCase));
+            return isEnabled;
         }
 
         private StreamReader ExecuteCommand(string command)
