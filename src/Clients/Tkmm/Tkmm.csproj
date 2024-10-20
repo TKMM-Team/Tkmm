@@ -15,6 +15,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="icon.ico" Link="Assets\icon.ico" />
+    <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
   <ItemGroup>

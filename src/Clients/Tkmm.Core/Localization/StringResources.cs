@@ -7,7 +7,7 @@ namespace Tkmm.Core.Localization;
 
 public static class StringResources
 {
-    private static readonly string _localizationsFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Languages");
+    private static readonly string _localizationsFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Languages");
     private static readonly LocalizationResources _resources = LoadResources();
 
     public static readonly StringResources_Exceptions Exceptions = new();
