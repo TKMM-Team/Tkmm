@@ -18,17 +18,17 @@ public sealed partial class GameBananaSource(int gameId) : ObservableObject, IGa
     public async ValueTask LoadPage(int page, string? searchTerm = null, GameBananaFeed? customFeed = null, CancellationToken ct = default)
     {
         string sort = SortMode.ToString().ToLower();
-        GameBananaFeed? feed = customFeed ?? await GameBanana.GetFeed(_gameId, page + 1, sort, searchTerm, ct);
 
-        if (feed is null) {
-            goto UpdateFeed; 
+        if (customFeed is null) {
+            Feed = new GameBananaFeed();
+            await GameBanana.FillFeed(Feed, _gameId, page, sort, searchTerm, ct);
+        }
+        else {
+            Feed = customFeed;
         }
 
-        await FilterRecords(feed, ct);
-        _ = DownloadThumbnails(feed, ct);
-
-    UpdateFeed:
-        Feed = feed;
+        await FilterRecords(Feed, ct);
+        _ = DownloadThumbnails(Feed, ct);
     }
 
     private static async ValueTask FilterRecords(GameBananaFeed feed, CancellationToken ct)

@@ -159,7 +159,7 @@
             <ProgressBar.IsIndeterminate>
                 <MultiBinding Converter="{x:Static BoolConverters.And}">
                     <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="LoadProgress" />
-                    <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="IsLoading" />
+                    <Binding Path="IsLoading" />
                 </MultiBinding>
             </ProgressBar.IsIndeterminate>
         </ProgressBar>

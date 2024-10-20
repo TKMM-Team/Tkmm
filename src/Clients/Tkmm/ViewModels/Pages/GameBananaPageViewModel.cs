@@ -59,7 +59,8 @@ public partial class GameBananaPageViewModel : ObservableObject
                 return;
             }
 
-            await ReloadPage();
+            Source.SortMode = TKMM.Config.GameBananaSortMode;
+            await Refresh();
             Config.Shared.Save();
         };
     }
@@ -107,12 +108,12 @@ public partial class GameBananaPageViewModel : ObservableObject
     public async Task ShowSuggested(ScrollViewer modsViewer)
     {
         if (IsShowingSuggested) {
-            await ReloadPage();
+            await ReloadPage(_suggestedModsFeed);
+            modsViewer.ScrollToHome();
             return;
         }
 
-        await ReloadPage(_suggestedModsFeed);
-        modsViewer.ScrollToHome();
+        await ReloadPage();
     }
 
     private static bool CanShowSuggested()
@@ -160,11 +161,8 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     private async Task ReloadPage(GameBananaFeed? customFeed = null)
     {
+        Source.Feed?.Records.Clear();
         IsLoadSuccess = IsLoading = true;
-
-        if (customFeed is null) {
-            IsShowingSuggested = false;
-        }
 
         try {
             await Source.LoadPage(Source.CurrentPage, SearchArgument, customFeed);

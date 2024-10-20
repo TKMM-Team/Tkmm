@@ -48,31 +48,34 @@ internal static class GameBanana
         );
     }
 
-    public static async ValueTask<GameBananaFeed?> GetFeed(int gameId, int page, string sort, string? searchTerm, CancellationToken ct = default)
+    public static async ValueTask<GameBananaFeed?> FillFeed(GameBananaFeed feed, int gameId, int page, string sort, string? searchTerm, CancellationToken ct = default)
     {
-        string endpoint = searchTerm switch {
-            { Length: > 2 } => string.Format(FEED_ENDPOINT_SEARCH, gameId, page, sort, searchTerm),
-            _ => string.Format(FEED_ENDPOINT, gameId, page, sort)
-        };
-        
-        GameBananaFeed result = new();
+        page *= 2;
 
         for (int i = 0; i < 2; i++) {
-            GameBananaFeed? feed = await Get(
-                endpoint,
+            GameBananaFeed? response = await Get(
+                GetEndpoint(gameId, page + i + 1, sort, searchTerm),
                 GameBananaFeedJsonContext.Default.GameBananaFeed, ct
             );
             
-            if (feed is null) {
-                return result;
+            if (response is null) {
+                return feed;
             }
             
-            result.Metadata = feed.Metadata;
-            foreach (GameBananaModRecord record in feed.Records) {
-                result.Records.Add(record);
+            feed.Metadata = response.Metadata;
+            foreach (GameBananaModRecord record in response.Records) {
+                feed.Records.Add(record);
             }
         }
 
-        return result;
+        return feed;
+    }
+
+    private static string GetEndpoint(int gameId, int page, string sort, string? searchTerm)
+    {
+        return searchTerm switch {
+            { Length: > 2 } => string.Format(FEED_ENDPOINT_SEARCH, gameId, page, sort, searchTerm),
+            _ => string.Format(FEED_ENDPOINT, gameId, page, sort)
+        };
     }
 }
