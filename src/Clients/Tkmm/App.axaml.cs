@@ -134,7 +134,6 @@ public class App : Application
 
             PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
             PageManager.Shared.Register(Page.Profiles, PageMsg.Profiles, new ProfilesPageView(), Symbol.OtherUser, PageMsg.ProfilesDescription);
-            PageManager.Shared.Register(Page.Tools, PageMsg.Tools, new PackagingPageView(), Symbol.CodeHTML, PageMsg.ToolsDescription);
             PageManager.Shared.Register(Page.ShopParam, PageMsg.ShopParam, new ShopParamPageView(), Symbol.Sort, PageMsg.ShopParamDescription);
             PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
 
