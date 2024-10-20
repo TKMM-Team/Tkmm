@@ -43,7 +43,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Margin="15" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+        <StackPanel Grid.Column="1" Margin="15" HorizontalAlignment="Center" Spacing="20">
             <TextBlock Text="Network Services" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" TextAlignment="Center"/>
             
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
@@ -74,31 +74,31 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="0" Grid.Column="0">
                     <TextBlock Text="IP Address:" Margin="15,5,15,5"/>
                 </Border>
-                <Border Grid.Row="0" Grid.Column="1" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="0" Grid.Column="1">
                     <TextBlock Text="{Binding IpAddress}" Margin="15,5,15,5"/>
                 </Border>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="Subnet Mask:" Margin="15,5,15,5"/>
                 </Border>
-                <Border Grid.Row="1" Grid.Column="1" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="1" Grid.Column="1">
                     <TextBlock Text="{Binding Netmask}" Margin="15,5,15,5"/>
                 </Border>
 
-                <Border Grid.Row="2" Grid.Column="0" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="2" Grid.Column="0">
                     <TextBlock Text="Gateway:" Margin="15,5,15,5"/>
                 </Border>
-                <Border Grid.Row="2" Grid.Column="1" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="2" Grid.Column="1">
                     <TextBlock Text="{Binding Gateway}" Margin="15,5,15,5"/>
                 </Border>
 
-                <Border Grid.Row="3" Grid.Column="0" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="3" Grid.Column="0">
                     <TextBlock Text="MAC Address:" Margin="15,5,15,5"/>
                 </Border>
-                <Border Grid.Row="3" Grid.Column="1" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1">
+                <Border Grid.Row="3" Grid.Column="1">
                     <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5"/>
                 </Border>
             </Grid>
