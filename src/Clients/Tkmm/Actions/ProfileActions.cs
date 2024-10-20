@@ -11,7 +11,7 @@ public sealed class ProfileActions : GuardedActionGroup<ProfileActions>
     protected override string ActionGroupName { get; } = nameof(ProfileActions).Humanize();
 
     public Task DeleteProfile()
-        => DeleteProfile(TKMM.ModManager.CurrentProfile);
+        => DeleteProfile(TKMM.ModManager.CurrentProfile ?? TKMM.ModManager.Profiles[0]);
     
     public async Task DeleteProfile(ITkProfile profile)
     {
