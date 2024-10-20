@@ -40,5 +40,5 @@ public static class TKMM
 
     public static IChangelogBuilderProvider ChangelogBuilderProvider { get; } = new TkChangelogBuilderProvider();
 
-    public static TkChangelogBuilderMarshal ChangelogBuilderMarshal { get; } = new(ChangelogBuilderProvider);
+    public static TkChangelogBuilderMarshal ChangelogBuilderMarshal { get; } = new(Romfs.Zstd, ChangelogBuilderProvider);
 }
