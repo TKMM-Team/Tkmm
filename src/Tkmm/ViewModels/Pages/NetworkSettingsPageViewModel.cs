@@ -226,11 +226,12 @@ namespace Tkmm.ViewModels.Pages
 
             Connman.ConnmanctlScan(connman);
             await Task.Delay(5000);
-            UpdateAvailableNetworks();
+            Connman.ConnmanctlRefreshServices(connman);
             ConnectedNetwork = AvailableNetworks.FirstOrDefault(n => n.Connected);
 
             if (updateStatus)
             {
+                UpdateAvailableNetworks();
                 AppStatus.Set($"Scan completed",
                     "fa-circle-check",
                     isWorkingStatus: false,
