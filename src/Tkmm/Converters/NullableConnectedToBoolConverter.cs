@@ -10,7 +10,12 @@ public class NullableConnectedToBoolConverter : IValueConverter
     {
         if (value is Managers.Connman.WifiNetworkInfo network)
         {
-            return network.Connected;
+            bool isConnected = network.Connected;
+            if (parameter is string param && param.Equals("Invert", StringComparison.OrdinalIgnoreCase))
+            {
+                return !isConnected;
+            }
+            return isConnected;
         }
         return false;
     }
