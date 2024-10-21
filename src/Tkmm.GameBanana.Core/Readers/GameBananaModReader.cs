@@ -86,7 +86,7 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
         }
 
         IModReader? reader = _readerProvider.GetReader(target.Name);
-        Ulid id = Unsafe.BitCast<long, Ulid>(fileId);
+        Ulid id = Unsafe.As<long, Ulid>(ref fileId);
         
         byte[] data = await DownloadHelper.DownloadAndVerify(
             fileUrl, Convert.FromHexString(target.Checksum), ct: ct);
