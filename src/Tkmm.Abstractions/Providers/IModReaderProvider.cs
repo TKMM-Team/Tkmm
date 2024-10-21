@@ -9,11 +9,11 @@ public interface IModReaderProvider
     /// </summary>
     /// <param name="input"></param>
     /// <returns>The located <see cref="IModReader"/> or null if none could be found.</returns>
-    IModReader? GetReader(object? input);
+    IModReader? GetReader<T>(T? input) where T : class;
     
     /// <summary>
     /// Determine if the provided <paramref name="input"/> can be read.
     /// </summary>
     /// <param name="input"></param>
-    bool CanRead(object? input);
+    bool CanRead<T>(T? input) where T : class;
 }
