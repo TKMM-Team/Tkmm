@@ -6,6 +6,8 @@ namespace Tkmm.Core.Logging;
 
 public class EventLogger(string group) : ILogger
 {
+    public static event Action<LogLevel, EventId, Exception?, string> OnLog = (_, _, _, _) => { };
+
     public static ObservableCollection<EventLog> Logs { get; } = [];
 
     private readonly string _group = group;
@@ -15,9 +17,11 @@ public class EventLogger(string group) : ILogger
         Logs.Add(new EventLog(
             logLevel,
             eventId,
-            $"{_group} - {formatter(state, exception).HideUsername()}",
+            $"[{_group}] {formatter(state, exception).HideUsername()}",
             exception)
         );
+
+        OnLog(logLevel, eventId, exception, formatter(state, exception));
     }
 
     public bool IsEnabled(LogLevel logLevel)
