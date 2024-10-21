@@ -15,7 +15,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     protected override string ActionGroupName { get; } = nameof(ModActions).Humanize();
 
     public Task<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
-        => Install(input, TKMM.ModManager.CurrentProfile, stream, context, ct);
+        => Install(input, TKMM.ModManager.CurrentProfile ?? TKMM.ModManager.Profiles[0], stream, context, ct);
 
     public async Task<ITkMod?> Install<T>(T? input, ITkProfile profile, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
     {
@@ -32,7 +32,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             ITkProfileMod profileMod = mod.GetProfileMod();
             profile.Mods.Add(profileMod);
             profile.Selected = profileMod;
-            
+
             // TODO: Fetch message template from locale
             TkStatus.SetTemporaryShort($"{mod.Name} was installed successfully!", TkIcons.CIRCLE_CHECK);
             return mod;
@@ -41,6 +41,9 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             TKMM.Logger.LogError(ex, "An error occured while installing an input of type '{InputType}' ('{Input}').",
                 typeof(T), input);
             await ErrorDialog.ShowAsync(ex);
+        }
+        finally {
+            TkStatus.Reset();
         }
 
         return null;
@@ -51,7 +54,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+        if (TKMM.ModManager.CurrentProfile?.Selected is not ITkProfileMod target) {
             return;
         }
 
@@ -86,7 +89,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+        if (TKMM.ModManager.CurrentProfile?.Selected is not ITkProfileMod target) {
             return;
         }
 
@@ -112,7 +115,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        if (TKMM.ModManager.CurrentProfile.Selected is ITkProfileMod target) {
+        if (TKMM.ModManager.CurrentProfile?.Selected is ITkProfileMod target) {
             target.IsEditingOptions = !target.IsEditingOptions;
         }
     }
@@ -121,7 +124,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+        if (TKMM.ModManager.CurrentProfile?.Selected is not ITkProfileMod target) {
             return;
         }
 
@@ -142,7 +145,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     [RelayCommand]
     public async Task UninstallMod()
     {
-        if (TKMM.ModManager.CurrentProfile.Selected is not ITkProfileMod target) {
+        if (TKMM.ModManager.CurrentProfile?.Selected is not ITkProfileMod target) {
             await CanActionRun(showError: false);
             return;
         }
