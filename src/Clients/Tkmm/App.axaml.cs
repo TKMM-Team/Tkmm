@@ -24,12 +24,11 @@ using Tkmm.Builders;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Localization;
-using Tkmm.Extensions;
 using Tkmm.Dialogs;
+using Tkmm.Extensions;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
-using PageManager = Tkmm.Components.PageManager;
 
 namespace Tkmm;
 
@@ -65,6 +64,7 @@ public class App : Application
 
             await ErrorDialog.ShowAsync(eventArgs.Exception, TaskDialogStandardResult.OK);
             eventArgs.SetObserved();
+            TkStatus.Reset();
         };
     }
 
