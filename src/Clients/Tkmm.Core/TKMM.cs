@@ -6,6 +6,7 @@ using Tkmm.Common;
 using Tkmm.Common.Providers;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Providers;
+using Tkmm.Core.Studio;
 
 namespace Tkmm.Core;
 
@@ -30,9 +31,11 @@ public static class TKMM
 
     public static Config Config => Config.Shared;
 
-    public static IModManager ModManager { get; } = new ModManager();
+    public static IModManager ModManager { get; } = new ModManager(new ModReaderProvider());
 
     public static ITkShopManager ShopManager { get; } = new TkShopManager();
+    
+    public static TkProjectManager ProjectManager { get; } = new TkProjectManager();
 
     public static IMergerProvider MergerProvider { get; } = new TkMergerProvider();
 

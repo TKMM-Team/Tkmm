@@ -1,19 +1,23 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Tkmm.Abstractions;
+using Tkmm.Abstractions.IO;
+using Tkmm.Abstractions.Providers;
 using Tkmm.Core.IO.ModReaders;
 using Tkmm.Core.IO.ModWriters;
 using Tkmm.Models.Mvvm;
 
 namespace Tkmm.Core;
 
-public sealed class ModManager : TkModStorage, IModManager
+public sealed class ModManager(IModReaderProvider readerProvider) : TkModStorage, IModManager
 {
     private static readonly string _path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".system", "profiles.json");
-
+    
     public static readonly string SystemFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".system");
     public static readonly string SystemModsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".system", "mods");
     public static readonly string MergedModsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".merged");
+
+    private readonly IModReaderProvider _readerProvider = readerProvider;
 
     public async Task Initialize(CancellationToken ct = default)
     {
@@ -73,9 +77,13 @@ public sealed class ModManager : TkModStorage, IModManager
         await TKMM.MergerMarshal.Merge(profile, MergedOutputModWriter.Instance, ct);
     }
 
-    public ValueTask<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
+    public async ValueTask<ITkMod?> Install<T>(T? input, Stream? stream = null, ModContext context = default, CancellationToken ct = default) where T : class
     {
-        throw new NotImplementedException();
+        if (_readerProvider.GetReader(input) is not IModReader reader) {
+            return null;
+        }
+        
+        return await reader.ReadMod(input, stream, context, ct);
     }
 
     public ValueTask<(Stream Stream, int Size)> OpenModFile(ITkModChangelog target, string manifestFileName, CancellationToken ct = default)
