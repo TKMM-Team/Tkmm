@@ -23,7 +23,7 @@ public sealed partial class EventLog(LogLevel logLevel, EventId eventId, string 
     public string ToMarkdown()
     {
         return $"""
-            [`{EventId.Id,2}`: `{LogLevel,-12}`]
+            `[{EventId.Id}: {LogLevel}]`
                  {Content}
             """;
     }
