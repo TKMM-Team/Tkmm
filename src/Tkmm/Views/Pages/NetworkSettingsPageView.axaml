@@ -6,10 +6,7 @@
              x:DataType="pages:NetworkSettingsPageViewModel">
 
     <UserControl.Resources>
-        <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
-        <converters:NullableConnectedToBoolConverter x:Key="NullableConnectedToBoolConverter"/>
-        <converters:SavedPasswordToBoolConverter x:Key="SavedPasswordToBoolConverter"/>
-        <converters:NoSavedPasswordToBoolConverter x:Key="NoSavedPasswordToBoolConverter"/>
+        <converters:TextBoxVisibilityConverter x:Key="TextBoxVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -45,19 +42,25 @@
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,5"
                                         IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
                                 <TextBox Text="{Binding $parent[UserControl].DataContext.NetworkPassword, Mode=TwoWay}" 
-                                         IsVisible="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource NoSavedPasswordToBoolConverter}}"
-                                         Watermark="Enter Password"
-                                         PasswordChar="*"
-                                         Width="200"/>
+                                        Watermark="Enter Password"
+                                        PasswordChar="*"
+                                        Width="200">
+                                    <TextBox.IsVisible>
+                                        <MultiBinding Converter="{StaticResource TextBoxVisibilityConverter}">
+                                            <Binding Path="SavedPassword"/>
+                                            <Binding Path="Connected"/>
+                                        </MultiBinding>
+                                    </TextBox.IsVisible>
+                                </TextBox>
                                 <Button Content="Connect"
                                         Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
-                                        IsVisible="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource NullableConnectedToBoolConverter}, ConverterParameter=Invert}"/>
+                                        IsVisible="{Binding !Connected}"/>
                                 <Button Content="Disconnect"
                                         Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
                                         IsVisible="{Binding Connected}"/>
                                 <Button Content="Remove saved settings"
                                         Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}"
-                                        IsVisible="{Binding $parent[UserControl].DataContext.SelectedNetwork, Converter={StaticResource SavedPasswordToBoolConverter}}"/>
+                                        IsVisible="{Binding SavedPassword}"/>
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
