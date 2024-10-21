@@ -15,6 +15,7 @@ using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
+using Humanizer;
 using MenuFactory;
 using MenuFactory.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ using Tkmm.Builders;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Localization;
+using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.ViewModels;
@@ -77,6 +79,16 @@ public class App : Application
     {
         BindingPlugins.DataValidators.RemoveAt(0);
         ITkThumbnail.CreateBitmap = stream => new Bitmap(stream);
+
+        EventLogger.OnLog += (level, eventId, exception, message) => {
+            if (level is not LogLevel.Error) {
+                return;
+            }
+            
+            Toast(message, $"{exception?.GetType().Name.Humanize() ?? "Error"} ({eventId})", NotificationType.Error, action: () => {
+                PageManager.Shared.Focus(Page.Logs);
+            });
+        };
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
             ShellView shellView = new() {
@@ -174,7 +186,9 @@ public class App : Application
     {
         Dispatcher.UIThread.Invoke(() => {
             _notificationManager?.Show(new Notification(
-                ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => { PageManager.Shared.Focus(Page.Logs); }));
+                ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => {
+                    PageManager.Shared.Focus(Page.Logs);
+                }));
         });
     }
 }
