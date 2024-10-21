@@ -5,10 +5,6 @@
              xmlns:converters="clr-namespace:Tkmm.Converters"
              x:DataType="pages:NetworkSettingsPageViewModel">
 
-    <UserControl.Resources>
-        <converters:TextBoxVisibilityConverter x:Key="TextBoxVisibilityConverter"/>
-    </UserControl.Resources>
-
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
@@ -46,9 +42,9 @@
                                         PasswordChar="*"
                                         Width="200">
                                     <TextBox.IsVisible>
-                                        <MultiBinding Converter="{StaticResource TextBoxVisibilityConverter}">
-                                            <Binding Path="SavedPassword"/>
-                                            <Binding Path="Connected"/>
+                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                            <Binding Path="SavedPassword"  Converter="{x:Static BoolConverters.Not}"/>
+                                            <Binding Path="Connected"  Converter="{x:Static BoolConverters.Not}"/>
                                         </MultiBinding>
                                     </TextBox.IsVisible>
                                 </TextBox>

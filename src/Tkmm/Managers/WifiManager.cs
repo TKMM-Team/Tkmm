@@ -269,20 +269,17 @@ public class Connman
         return false;
     }
 
-    public static bool ConnmanctlConnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
+    public static async Task<bool> ConnmanctlConnectSsidAsync(ConnmanT connman, WifiNetworkInfo netinfo)
     {
-
         var netid = netinfo.NetId;
-
         var settingsDir = Path.Combine(CONNMAN_DIR, netid);
         var settingsPath = Path.Combine(settingsDir, "settings");
 
         try
         {
-            Directory.CreateDirectory(settingsDir);
-
-            if (!netinfo.SavedPassword)
+            if (!File.Exists(settingsPath))
             {
+                Directory.CreateDirectory(settingsDir);
                 using (var settingsFile = new StreamWriter(settingsPath))
                 {
                     settingsFile.WriteLine($"[{netid}]");
@@ -295,10 +292,12 @@ public class Connman
                 }
 
                 ExecuteCommand("systemctl restart connman.service");
-                ExecuteCommand($"sleep 5");
+                await Task.Delay(1000);
+                ConnmanctlScan(connman);
+                await Task.Delay(2000);
             }
-            ExecuteCommand($"connmanctl connect {netinfo.NetId}");
-            return false;
+            else { ExecuteCommand($"connmanctl connect {netinfo.NetId}"); }
+            return true;
         }
         catch (Exception ex)
         {
@@ -309,8 +308,7 @@ public class Connman
 
     public static bool ConnmanctlDisconnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
     {
-        connman.Command = $"connmanctl disconnect {netinfo.NetId} 2>&1";
-        ExecuteCommand(connman.Command);
+        ExecuteCommand($"connmanctl disconnect {netinfo.NetId}");
         ConnmanctlRefreshServices(connman);
         return true;
     }
@@ -322,53 +320,46 @@ public class Connman
 
         if (Directory.Exists(settingsDir))
         {
-            bool isConnectedNetwork = netinfo.Connected;
-
-            if (isConnectedNetwork)
-            {
-                ExecuteCommand("systemctl stop connman.service");
-                Directory.Delete(settingsDir, true);
-                ExecuteCommand("systemctl start connman.service");
-            } else {
-                Directory.Delete(settingsDir, true);
-            }
-            
+            Directory.Delete(settingsDir, true);
             ConnmanctlRefreshServices(connman);
-            return true;
+
+            netinfo.SavedPassword = false;
         }
-        else
+        
+        UpdateNetworkList(connman, netid, network =>
         {
-            Trace.WriteLine($"No settings found for SSID {netinfo.Ssid}.");
-            return false;
-        }
+            network.SavedPassword = false;
+            return network;
+        });
+        return true;
     }
 
-    public static void ConnmanctlGetConnectedSsid(ConnmanT connman, StringBuilder ssid, int bufferSize)
+    public static void ConnmanctlGetConnectedSsid(ConnmanT connman)
     {
-        if (bufferSize < 1) return;
-
-        connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{for (i=2; i<NF; i++) printf $i \" \"; print \"\"}'";
-        using (var commandFile = ExecuteCommand(connman.Command))
-        {
-            var line = commandFile.ReadLine()?.TrimEnd('\n');
-            if (!string.IsNullOrEmpty(line))
-            {
-                ssid.Append(line);
-            }
-        }
-    }
-
-    public static void ConnmanctlGetConnectedServiceName(ConnmanT connman, StringBuilder serviceName, int bufferSize)
-    {
-        if (bufferSize < 1) return;
-
         connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{print $NF}'";
         using (var commandFile = ExecuteCommand(connman.Command))
         {
-            var line = commandFile.ReadLine()?.TrimEnd('\n');
-            if (!string.IsNullOrEmpty(line))
+            var connectedNetId = commandFile.ReadLine()?.TrimEnd('\n');
+
+            UpdateNetworkList(connman, connectedNetId, network =>
             {
-                serviceName.Clear().Append(line);
+                network.Connected = network.NetId == connectedNetId;
+                return network;
+            });
+        }
+    }
+
+    private static void UpdateNetworkList(ConnmanT connman, string netId, Func<WifiNetworkInfo, WifiNetworkInfo> updateAction)
+    {
+        if (connman.Scan.NetList != null)
+        {
+            for (int i = 0; i < connman.Scan.NetList.Length; i++)
+            {
+                if (connman.Scan.NetList[i].NetId == netId)
+                {
+                    connman.Scan.NetList[i] = updateAction(connman.Scan.NetList[i]);
+                    break;
+                }
             }
         }
     }

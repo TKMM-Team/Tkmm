@@ -186,17 +186,27 @@ namespace Tkmm.ViewModels.Pages
 
                 while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60)
                 {
-                    Connman.ConnmanctlConnectSsid(connman, network);
-                    await Task.Delay(5000);
-                    await ScanForNetworksAsync();
+                    await Connman.ConnmanctlConnectSsidAsync(connman, network);
 
-                    if (ConnectedNetwork.HasValue && ConnectedNetwork.Value.Ssid == network.Ssid)
+                    for (int i = 0; i < 50; i++)
                     {
-                        App.Toast(
-                            $"Successfully connected to {network.Ssid}", "WiFi", NotificationType.Success, TimeSpan.FromSeconds(3)
-                        );
-                        Trace.WriteLine($"Successfully connected to {network.Ssid}");
-                        isConnected = true;
+                        await Task.Delay(200);
+                        Connman.ConnmanctlGetConnectedSsid(connman);
+
+                        if (ConnectedNetwork.HasValue && ConnectedNetwork.Value.Ssid == network.Ssid)
+                        {
+                            App.Toast(
+                                $"Successfully connected to {network.Ssid}", "WiFi", NotificationType.Success, TimeSpan.FromSeconds(3)
+                            );
+                            Trace.WriteLine($"Successfully connected to {network.Ssid}");
+                            isConnected = true;
+                            break;
+                        }
+                    }
+
+                    if (!isConnected)
+                    {
+                        await ScanForNetworksAsync();
                     }
                 }
 
@@ -225,7 +235,7 @@ namespace Tkmm.ViewModels.Pages
             }
 
             Connman.ConnmanctlScan(connman);
-            await Task.Delay(5000);
+            await Task.Delay(3500);
             Connman.ConnmanctlRefreshServices(connman);
             ConnectedNetwork = AvailableNetworks.FirstOrDefault(n => n.Connected);
 
