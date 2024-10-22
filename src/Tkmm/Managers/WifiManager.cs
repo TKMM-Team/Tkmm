@@ -194,7 +194,7 @@ namespace Tkmm.Managers
             ConnmanctlRefreshServices(connman);
         }
 
-        public WifiNetworkScan ConnmanctlGetSsids(ConnmanT connman)
+        public static WifiNetworkScan ConnmanctlGetSsids(ConnmanT connman)
         {
             return connman.Scan;
         }
@@ -243,7 +243,7 @@ namespace Tkmm.Managers
             ConnmanctlRefreshServices(connman);
         }
 
-        public void ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
+        public static void ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
         {
             var settingsDir = Path.Combine(CONNMAN_DIR, netinfo.NetId);
 
@@ -259,7 +259,7 @@ namespace Tkmm.Managers
             });
         }
 
-        public void ConnmanctlGetConnectedSsid(ConnmanT connman)
+        public static void ConnmanctlGetConnectedSsid(ConnmanT connman)
         {
             connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{print $NF}'";
             using var commandFile = ExecuteCommand(connman.Command);
@@ -273,7 +273,7 @@ namespace Tkmm.Managers
             });
         }
 
-        private void UpdateNetworkList(ConnmanT connman, string? netId, Func<WifiNetworkInfo, WifiNetworkInfo> updateAction)
+        private static void UpdateNetworkList(ConnmanT connman, string? netId, Func<WifiNetworkInfo, WifiNetworkInfo> updateAction)
         {
             for (var i = 0; i < connman.Scan.NetList.Length; i++)
             {

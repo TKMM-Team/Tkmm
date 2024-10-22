@@ -40,13 +40,14 @@
                                         Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
                                         IsVisible="{Binding Connected}"/>
                                 <Button Content="Remove saved settings"
-                                        Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}"/>
+                                        Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}">
                                     <Button.IsVisible>
                                         <MultiBinding Converter="{x:Static BoolConverters.And}">
                                             <Binding Path="SavedPassword"/>
                                             <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
                                         </MultiBinding>
                                     </Button.IsVisible>
+                                </Button>
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>

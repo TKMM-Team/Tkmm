@@ -153,7 +153,7 @@ namespace Tkmm.ViewModels.Pages
             {
                 await Task.Run(() => 
                 {
-                    _connmanInstance.ConnmanctlForgetSsid(_connman, _selectedNetwork.Value);
+                    Connman.ConnmanctlForgetSsid(_connman, _selectedNetwork.Value);
                     Trace.WriteLine($"Settings for SSID {_selectedNetwork.Value.Ssid} have been removed.");
                     UpdateAvailableNetworks();
                 });
@@ -167,7 +167,6 @@ namespace Tkmm.ViewModels.Pages
                 await Task.Run(() => 
                 {
                     _connmanInstance.ConnmanctlDisconnectSsid(_connman, _selectedNetwork.Value);
-                    UpdateAvailableNetworks();
                 });
             }
         }
@@ -191,7 +190,7 @@ namespace Tkmm.ViewModels.Pages
                     for (int i = 0; i < 50; i++)
                     {
                         await Task.Delay(200);
-                        _connmanInstance.ConnmanctlGetConnectedSsid(_connman);
+                        Connman.ConnmanctlGetConnectedSsid(_connman);
 
                         if (_connectedNetwork != null && _connectedNetwork.Value.Ssid == network.Ssid)
                         {
@@ -212,7 +211,7 @@ namespace Tkmm.ViewModels.Pages
 
                 if (!isConnected)
                 {
-                    _connmanInstance.ConnmanctlForgetSsid(_connman, network);
+                    Connman.ConnmanctlForgetSsid(_connman, network);
                     UpdateAvailableNetworks();
                     App.Toast(
                         $"Failed to connect to {network.Ssid}.\n\nPlease verify your password and try again.", "WiFi", NotificationType.Error, TimeSpan.FromSeconds(3)
@@ -253,7 +252,7 @@ namespace Tkmm.ViewModels.Pages
         private void UpdateAvailableNetworks()
         {
             _connmanInstance.ConnmanctlRefreshServices(_connman);
-            var networks = _connmanInstance.ConnmanctlGetSsids(_connman).NetList;
+            var networks = Connman.ConnmanctlGetSsids(_connman).NetList;
             AvailableNetworks.Clear();
             foreach (var network in networks.Where(n => !string.IsNullOrEmpty(n.Ssid)))
             {
