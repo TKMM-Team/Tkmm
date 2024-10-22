@@ -245,18 +245,14 @@ namespace Tkmm.Managers
 
         public void ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
         {
-            var netid = netinfo.NetId;
-            var settingsDir = Path.Combine(CONNMAN_DIR, netid);
+            var settingsDir = Path.Combine(CONNMAN_DIR, netinfo.NetId);
 
             if (Directory.Exists(settingsDir))
             {
                 Directory.Delete(settingsDir, true);
-                ConnmanctlRefreshServices(connman);
-
-                netinfo.SavedPassword = false;
             }
 
-            UpdateNetworkList(connman, netid, network =>
+            UpdateNetworkList(connman, netinfo.NetId, network =>
             {
                 network.SavedPassword = false;
                 return network;
