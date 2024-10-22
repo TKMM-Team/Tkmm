@@ -29,7 +29,7 @@ public sealed class TkChangelogBuilderMarshal(IZstd zstd, IChangelogBuilderProvi
     public Task BuildChangelogs(IModSource source, IModWriter writer, IDictionary<string, ChangelogEntry> manifest, CancellationToken ct = default)
     {
         return Parallel.ForEachAsync(source.RomfsFiles, ct, async (file, cancellationToken) => {
-            TkFileInfo fileInfo = file.GetTkFileInfo(source.RomfsPath);
+            TkFileInfo fileInfo = file.FileName.GetTkFileInfo(source.RomfsPath);
             IChangelogBuilder? builder = _changelogBuilderProvider.GetChangelogBuilder(fileInfo);
             
             if (builder is null) {
@@ -39,7 +39,7 @@ public sealed class TkChangelogBuilderMarshal(IZstd zstd, IChangelogBuilderProvi
             TkFileAttributes attributes = fileInfo.Attributes;
             string canonical = fileInfo.Canonical.ToString();
             
-            (Stream input, long streamLength) = await source.OpenRead(file, cancellationToken);
+            (Stream input, long streamLength) = await source.OpenRead(file.FileEntry, cancellationToken);
             await BuildChangelog(canonical, attributes, builder, input, streamLength, writer, manifest, cancellationToken);
             await input.DisposeAsync();
         });
