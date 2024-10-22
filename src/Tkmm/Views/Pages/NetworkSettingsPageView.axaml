@@ -15,8 +15,8 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate x:CompileBindings="False">
                         <StackPanel Orientation="Vertical" Spacing="10" Margin="0,10,0,15">
-                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,5,0,0">
-                                <TextBlock Text="{Binding Ssid}" Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                                <TextBlock Text="{Binding Ssid}" Margin="0,0,0,5"/>
                                 <TextBlock Text="Connected" Foreground="Green" Margin="5,0,0,0"
                                            IsVisible="{Binding Connected}"/>
                             </StackPanel>
