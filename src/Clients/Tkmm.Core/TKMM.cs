@@ -31,11 +31,11 @@ public static class TKMM
 
     public static Config Config => Config.Shared;
 
-    public static IModManager ModManager { get; } = new ModManager(new ModReaderProvider());
+    public static IModManager ModManager { get; }
 
     public static ITkShopManager ShopManager { get; } = new TkShopManager();
     
-    public static TkProjectManager ProjectManager { get; } = new TkProjectManager();
+    public static TkProjectManager ProjectManager { get; } = new();
 
     public static IMergerProvider MergerProvider { get; } = new TkMergerProvider();
 
@@ -44,4 +44,9 @@ public static class TKMM
     public static IChangelogBuilderProvider ChangelogBuilderProvider { get; } = new TkChangelogBuilderProvider();
 
     public static TkChangelogBuilderMarshal ChangelogBuilderMarshal { get; } = new(Romfs.Zstd, ChangelogBuilderProvider);
+
+    static TKMM()
+    {
+        ModManager = new ModManager(new ModReaderProvider(ChangelogBuilderMarshal));
+    }
 }
