@@ -10,15 +10,15 @@ public interface IModSource
     /// <summary>
     /// The files contained in this mod source.
     /// </summary>
-    IEnumerable<string> RomfsFiles { get; }
+    IEnumerable<(object FileEntry, string FileName)> RomfsFiles { get; }
 
     /// <summary>
-    /// Open a stream to the requested <paramref name="file"/>.
+    /// Open a stream to the requested <paramref name="romfsFileInput"/>.
     /// </summary>
-    /// <param name="file">The file to open.</param>
+    /// <param name="romfsFileInput">The file to open.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns></returns>
-    ValueTask<(Stream Stream, long StreamLength)> OpenRead(string file, CancellationToken ct = default);
+    ValueTask<(Stream Stream, long StreamLength)> OpenRead(object romfsFileInput, CancellationToken ct = default);
     
     /// <summary>
     /// Determine if the provided input can be read by this <see cref="IModSource"/>.
