@@ -6,9 +6,8 @@ namespace Tkmm.Managers
     public static class NetworkServices
     {
         private const string SSH_CONFIG_PATH = "/storage/.cache/services/sshd.conf";
-        private const string SMB_CONFIG_PATH = "/storage/.cache/services/samba.conf";
+        private const string SMB_DISABLED_PATH = "/storage/.cache/services/samba.disabled";
         private const string COMMAND_RESTART_SSH = "systemctl restart sshd";
-        private const string COMMAND_STOP_SMB = "systemctl stop smbd";
         private const string COMMAND_RESTART_SMB = "systemctl restart smbd";
         private const string COMMAND_ENABLE_WIFI = "connmanctl enable wifi";
         private const string COMMAND_DISABLE_WIFI = "connmanctl disable wifi";
@@ -33,19 +32,19 @@ namespace Tkmm.Managers
 
         public static void EnableSmb()
         {
-            CreateAndDisposeFile(SMB_CONFIG_PATH);
+            DeleteFileIfExists(SMB_DISABLED_PATH);
             ExecuteCommand(COMMAND_RESTART_SMB);
         }
 
         public static void DisableSmb()
         {
-            DeleteFileIfExists(SMB_CONFIG_PATH);
-            ExecuteCommand(COMMAND_STOP_SMB);
+            CreateAndDisposeFile(SMB_DISABLED_PATH);
+            ExecuteCommand(COMMAND_RESTART_SMB);
         }
 
         public static bool IsSmbEnabled()
         {
-            return File.Exists(SMB_CONFIG_PATH);
+            return !File.Exists(SMB_DISABLED_PATH);
         }
 
         public static void EnableWifi()
