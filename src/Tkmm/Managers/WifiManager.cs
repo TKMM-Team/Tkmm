@@ -119,8 +119,7 @@ namespace Tkmm.Managers
 
             bool isAnyNetworkConnected = false;
 
-            string? line;
-            while ((line = servFile.ReadLine()) != null)
+            while (servFile.ReadLine() is { } line)
             {
                 if (string.IsNullOrWhiteSpace(line) || !line.Contains("wifi_"))
                     continue;
@@ -154,8 +153,7 @@ namespace Tkmm.Managers
         private void GetNetworkDetails(string netId)
         {
             using var detailFile = ExecuteCommand($"connmanctl services {netId}");
-            string? detailLine;
-            while ((detailLine = detailFile.ReadLine()) != null)
+            while (detailFile.ReadLine() is { } detailLine)
             {
                 if (detailLine.Contains("Ethernet ="))
                 {
@@ -274,7 +272,7 @@ namespace Tkmm.Managers
             UpdateNetworkList(connman, connectedNetId, network =>
             {
                 network.Connected = network.NetId == connectedNetId;
-                network.SavedPassword = network.SavedPassword; // Explicitly use the property to suppress the warning for the getter
+                network.SavedPassword = network.SavedPassword;
                 return network;
             });
         }
