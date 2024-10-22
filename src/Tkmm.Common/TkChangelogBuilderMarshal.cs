@@ -58,7 +58,7 @@ public sealed class TkChangelogBuilderMarshal(IZstd zstd, IChangelogBuilderProvi
         if (IZstd.IsCompressed(bufferSegment)) {
             size = IZstd.GetDecompressedSize(bufferSegment);
             byte[] decompressedBuffer = ArrayPool<byte>.Shared.Rent(size);
-            ArraySegment<byte> decompressedBufferSegment = new(buffer, 0, size);
+            ArraySegment<byte> decompressedBufferSegment = new(decompressedBuffer, 0, size);
             _zstd.Decompress(bufferSegment, decompressedBufferSegment, out zsDictionaryId);
             ArrayPool<byte>.Shared.Return(buffer);
             
