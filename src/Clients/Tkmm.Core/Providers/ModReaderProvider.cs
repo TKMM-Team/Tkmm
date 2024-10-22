@@ -1,5 +1,7 @@
 using Tkmm.Abstractions.IO;
 using Tkmm.Abstractions.Providers;
+using Tkmm.Common;
+using Tkmm.Common.IO.ModReaders;
 using Tkmm.GameBanana.Core.Readers;
 
 namespace Tkmm.Core.Providers;
@@ -8,10 +10,11 @@ public class ModReaderProvider : IModReaderProvider
 {
     private readonly IModReader[] _readers;
 
-    public ModReaderProvider()
+    public ModReaderProvider(TkChangelogBuilderMarshal changelogBuilderMarshal)
     {
         _readers = [
             new GameBananaModReader(this),
+            new ArchiveModReader(ModWriterProvider.Instance, changelogBuilderMarshal),
         ];
     }
     
