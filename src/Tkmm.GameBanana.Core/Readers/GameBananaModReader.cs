@@ -92,7 +92,7 @@ public class GameBananaModReader(IModReaderProvider readerProvider) : IModReader
             fileUrl, Convert.FromHexString(target.Checksum), ct: ct);
 
         await using MemoryStream ms = new(data);
-        return reader?.ReadMod(fileUrl, ms, new ModContext(id), ct) switch {
+        return reader?.ReadMod(target.Name, ms, new ModContext(id), ct) switch {
             { } result => await result,
             _ => null
         };
