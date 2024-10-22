@@ -1,84 +1,93 @@
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Tkmm.Managers
 {
-    public class NetworkServices
+    public static class NetworkServices
     {
-        private const string SshConfigPath = "/storage/.cache/services/sshd.conf";
-        private const string SmbConfigPath = "/storage/.cache/services/samba.conf";
+        private const string SSH_CONFIG_PATH = "/storage/.cache/services/sshd.conf";
+        private const string SMB_CONFIG_PATH = "/storage/.cache/services/samba.conf";
+        private const string COMMAND_RESTART_SSH = "systemctl restart sshd";
+        private const string COMMAND_STOP_SMB = "systemctl stop smbd";
+        private const string COMMAND_RESTART_SMB = "systemctl restart smbd";
+        private const string COMMAND_ENABLE_WIFI = "connmanctl enable wifi";
+        private const string COMMAND_DISABLE_WIFI = "connmanctl disable wifi";
+        private const string COMMAND_CHECK_WIFI = "connmanctl technologies";
 
-        public void EnableSSH()
+        public static void EnableSsh()
         {
-            File.Create(SshConfigPath).Dispose();
-            ExecuteCommand("systemctl restart sshd");
+            CreateAndDisposeFile(SSH_CONFIG_PATH);
+            ExecuteCommand(COMMAND_RESTART_SSH);
         }
 
-        public void DisableSSH()
+        public static void DisableSsh()
         {
-            if (File.Exists(SshConfigPath))
+            DeleteFileIfExists(SSH_CONFIG_PATH);
+            ExecuteCommand(COMMAND_RESTART_SSH);
+        }
+
+        public static bool IsSshEnabled()
+        {
+            return File.Exists(SSH_CONFIG_PATH);
+        }
+
+        public static void EnableSmb()
+        {
+            CreateAndDisposeFile(SMB_CONFIG_PATH);
+            ExecuteCommand(COMMAND_RESTART_SMB);
+        }
+
+        public static void DisableSmb()
+        {
+            DeleteFileIfExists(SMB_CONFIG_PATH);
+            ExecuteCommand(COMMAND_STOP_SMB);
+        }
+
+        public static bool IsSmbEnabled()
+        {
+            return File.Exists(SMB_CONFIG_PATH);
+        }
+
+        public static void EnableWifi()
+        {
+            if (!IsWifiEnabled())
             {
-                File.Delete(SshConfigPath);
-            }
-            ExecuteCommand("systemctl restart sshd");
-        }
-
-        public bool IsSSHEnabled()
-        {
-            return File.Exists(SshConfigPath);
-        }
-
-        public void EnableSMB()
-        {
-            File.Create(SmbConfigPath).Dispose();
-            ExecuteCommand("systemctl restart smbd");
-        }
-
-        public void DisableSMB()
-        {
-            if (File.Exists(SmbConfigPath))
-            {
-                File.Delete(SmbConfigPath);
-            }
-            ExecuteCommand("systemctl stop smbd");
-        }
-
-        public bool IsSMBEnabled()
-        {
-            return File.Exists(SmbConfigPath);
-        }
-
-        public void EnableWiFi()
-        {
-            if (!IsWiFiEnabled())
-            {
-                ExecuteCommand("connmanctl enable wifi");
-            }
-        }
-
-        public void DisableWiFi()
-        {
-            if (IsWiFiEnabled())
-            {
-                ExecuteCommand("connmanctl disable wifi");
+                ExecuteCommand(COMMAND_ENABLE_WIFI);
             }
         }
 
-        public bool IsWiFiEnabled()
+        public static void DisableWifi()
         {
-            var outputReader = ExecuteCommand("connmanctl technologies");
+            if (IsWifiEnabled())
+            {
+                ExecuteCommand(COMMAND_DISABLE_WIFI);
+            }
+        }
+
+        public static bool IsWifiEnabled()
+        {
+            var outputReader = ExecuteCommand(COMMAND_CHECK_WIFI);
             var output = outputReader?.ReadToEnd() ?? string.Empty;
 
-            bool isEnabled = output.Split(new[] { "/net/connman/technology/" }, StringSplitOptions.None)
-                                    .Any(section => section.TrimStart().StartsWith("wifi", StringComparison.OrdinalIgnoreCase) &&
-                                                    section.Contains("Powered = True", StringComparison.OrdinalIgnoreCase));
-            return isEnabled;
+            return output.Split(new[] { "/net/connman/technology/" }, StringSplitOptions.None)
+                .Any(section => section.TrimStart().StartsWith("wifi", StringComparison.OrdinalIgnoreCase) &&
+                                section.Contains("Powered = True", StringComparison.OrdinalIgnoreCase));
         }
 
-        private StreamReader ExecuteCommand(string command)
+        private static void CreateAndDisposeFile(string path)
+        {
+            File.Create(path).Dispose();
+        }
+
+        private static void DeleteFileIfExists(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        private static StreamReader? ExecuteCommand(string command)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

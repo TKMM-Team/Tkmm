@@ -2,25 +2,10 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
-             xmlns:converters="clr-namespace:Tkmm.Converters"
              x:DataType="pages:NetworkSettingsPageViewModel">
 
-    <Grid Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-		
-        <Grid Grid.Column="0" Grid.Row="1" Margin="0,10,10,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
+    <Grid Margin="20" ColumnDefinitions="2*,*" RowDefinitions="Auto,*">
+        <Grid Grid.Column="0" Grid.Row="1" Margin="0,10,10,0" RowDefinitions="Auto,*">
             <StackPanel Grid.Row="0" Orientation="Vertical" Spacing="10">
                 <TextBlock Text="Wireless Networks" FontSize="20" FontWeight="Bold" Margin="0,0,0,15" TextAlignment="Center"/>
                 <Button Content="Refresh Network List" Command="{Binding ScanForNetworksCommand}" IsEnabled="{Binding IsWifiEnabled}" Margin="0,0,0,10"/>
@@ -80,17 +65,7 @@
             </StackPanel>
 
             <TextBlock Text="Network Information" FontSize="20" FontWeight="Bold" Margin="0,10,0,10" TextAlignment="Center"/>
-            <Grid HorizontalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
 
                 <Border Grid.Row="0" Grid.Column="0">
                     <TextBlock Text="IP Address:" Margin="15,5,15,5"/>
