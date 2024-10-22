@@ -12,7 +12,7 @@ public static class TkFileExtensions
     {
         ReadOnlySpan<char> canonical = GetCanonical(filePath, romfs, out TkFileAttributes attributes);
         ReadOnlySpan<char> extension = Path.GetExtension(canonical);
-        
+
         return new TkFileInfo(
             filePath,
             romfs,
@@ -21,7 +21,7 @@ public static class TkFileExtensions
             attributes
         );
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<char> GetCanonical(this string fileRelativeToRomfs)
     {
@@ -66,8 +66,7 @@ public static class TkFileExtensions
 
     public static unsafe ReadOnlySpan<char> GetCanonical(this ReadOnlySpan<char> file, ReadOnlySpan<char> romfs, out TkFileAttributes attributes)
     {
-        if (file.Length < romfs.Length)
-        {
+        if (file.Length < romfs.Length) {
             throw new ArgumentException(
                 $"The provided {nameof(romfs)} path is longer than the input {nameof(file)}.", nameof(romfs)
             );
@@ -87,14 +86,12 @@ public static class TkFileExtensions
 
         Span<char> canonical;
 
-        fixed (char* ptr = result)
-        {
+        fixed (char* ptr = result) {
             canonical = new Span<char>(ptr, size);
         }
 
         int state = 0;
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             ref char @char = ref canonical[i];
 
             state = (@char, size - i) switch {
