@@ -248,12 +248,6 @@ namespace Tkmm.ViewModels.Pages
                     temporaryStatusTime: 1.5
                 );
             }
-
-            Trace.WriteLine("Networks found: ");
-            foreach (var network in AvailableNetworks)
-            {
-                Trace.WriteLine($"Ssid: {network.Ssid}, Connected: {network.Connected}");
-            }
         }
 
         private void UpdateAvailableNetworks()
