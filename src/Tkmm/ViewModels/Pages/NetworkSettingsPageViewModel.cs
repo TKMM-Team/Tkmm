@@ -71,10 +71,7 @@ namespace Tkmm.ViewModels.Pages
             .DistinctUntilChanged()
             .Subscribe(_ =>
             {
-                if (!IsConnecting)
-                {
-                    UpdateAvailableNetworks();
-                }
+                UpdateAvailableNetworks();
             });
         }
 
