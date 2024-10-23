@@ -190,13 +190,6 @@ namespace Tkmm.ViewModels.Pages
             IsConnecting = true;
             _networkUpdateTimer.Stop();
 
-            if (_connectedNetwork.HasValue)
-            {
-                var connectedNetwork = _connectedNetwork.Value;
-                connectedNetwork.Connected = false;
-                _connectedNetwork = connectedNetwork; 
-            }
-
             var network = _selectedNetwork.Value;
             network.Passphrase = _networkPassword;
 
