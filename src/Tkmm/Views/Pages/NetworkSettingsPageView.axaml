@@ -74,10 +74,13 @@
                                         Margin="15,0,0,0"
                                         IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
                                 <li:LoadingIndicator Mode="Arcs"
-                                                     SpeedRatio="1.2"
+                                                     SpeedRatio="0.9"
+                                                     Foreground="{DynamicResource SystemAccentColor}"
+                                                     Width="70"
                                                      IsActive="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
                                 <TextBlock Text="Connecting..."
                                            VerticalAlignment="Center"
+                                           FontSize="16"
                                            Margin="5,0,0,0"
                                            IsVisible="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
                             </StackPanel>
