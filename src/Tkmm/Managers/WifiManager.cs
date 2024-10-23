@@ -30,10 +30,9 @@ namespace Tkmm.Managers
             get => _macAddress;
             private set
             {
-                if (_macAddress != value)
+                if (_macAddress == null && value != null)
                 {
                     _macAddress = value;
-                    NetworkDetailsChanged?.Invoke();
                 }
             }
         }
