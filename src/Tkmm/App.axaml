@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://LoadingIndicators.Avalonia/LoadingIndicators.axaml" />
                 <ResourceDictionary>
                     <FontFamily x:Key="UbuntuMono">avares://Tkmm/Assets/Fonts/UbuntuMono/#Ubuntu Mono</FontFamily>
                     <FontFamily x:Key="HyliaGlyph">avares://Tkmm/Assets/Fonts/Nin-ZeldaGlyphs-v2/Nin-ZeldaGlyphs-v2-Deco.bfotf.ttf#Nin-Zelda Glyphs v2, Deco</FontFamily>

@@ -11,6 +11,10 @@ namespace Tkmm.ViewModels.Pages
 {
     public class NetworkSettingsPageViewModel : ReactiveObject, IDisposable
     {
+        public string IpAddress => _connmanInstance.IpAddress ?? "N/A";
+        public string Netmask => _connmanInstance.Netmask ?? "N/A";
+        public string Gateway => _connmanInstance.Gateway ?? "N/A";
+        public string MacAddress => _connmanInstance.MacAddress ?? "N/A";
         private Connman.WifiNetworkInfo? _selectedNetwork;
         private Connman.WifiNetworkInfo? _connectedNetwork;
         private string _networkPassword = string.Empty;
@@ -21,12 +25,20 @@ namespace Tkmm.ViewModels.Pages
         private readonly Connman _connmanInstance;
         private readonly Connman.ConnmanT _connman;
         private readonly System.Timers.Timer _networkUpdateTimer;
+        public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks { get; init; }
+
+        private bool _isConnecting;
+        public bool IsConnecting
+        {
+            get => _isConnecting;
+            private set => this.RaiseAndSetIfChanged(ref _isConnecting, value);
+        }
 
         public NetworkSettingsPageViewModel()
         {
             _connmanInstance = new Connman();
             _connman = Connman.ConnmanctlInit();
-            AvailableNetworks = new ObservableCollection<Connman.WifiNetworkInfo>();
+            AvailableNetworks = new();
 
             _isWifiEnabled = NetworkServices.IsWifiEnabled();
             _isSshEnabled = NetworkServices.IsSshEnabled();
@@ -56,16 +68,15 @@ namespace Tkmm.ViewModels.Pages
                 x => x.Netmask,
                 x => x.Gateway
             ).Throttle(TimeSpan.FromMilliseconds(2500))
-             .DistinctUntilChanged()
-             .Subscribe(_ => UpdateAvailableNetworks());
+            .DistinctUntilChanged()
+            .Subscribe(_ =>
+            {
+                if (!IsConnecting)
+                {
+                    UpdateAvailableNetworks();
+                }
+            });
         }
-
-        public string IpAddress => _connmanInstance.IpAddress ?? "N/A";
-        public string Netmask => _connmanInstance.Netmask ?? "N/A";
-        public string Gateway => _connmanInstance.Gateway ?? "N/A";
-        public string MacAddress => _connmanInstance.MacAddress ?? "N/A";
-
-        public ObservableCollection<Connman.WifiNetworkInfo> AvailableNetworks { get; init; }
 
         public Connman.WifiNetworkInfo? SelectedNetwork
         {
@@ -173,54 +184,66 @@ namespace Tkmm.ViewModels.Pages
 
         private async Task ConnectToNetworkAsync()
         {
-            if (_selectedNetwork != null && !IsDefault(_selectedNetwork.Value))
+            if (_selectedNetwork == null || IsDefault(_selectedNetwork.Value)) 
+                return;
+
+            IsConnecting = true;
+            _networkUpdateTimer.Stop();
+
+            if (_connectedNetwork.HasValue)
             {
-                var network = _selectedNetwork.Value;
-                network.Passphrase = _networkPassword;
+                var connectedNetwork = _connectedNetwork.Value;
+                connectedNetwork.Connected = false;
+                _connectedNetwork = connectedNetwork; 
+            }
 
-                AppStatus.Set($"Connecting to {network.Ssid}", "fa-solid fa-wifi", isWorkingStatus: true);
+            var network = _selectedNetwork.Value;
+            network.Passphrase = _networkPassword;
 
-                bool isConnected = false;
-                var startTime = DateTime.UtcNow;
+            AppStatus.Set($"Connecting to {network.Ssid}", "fa-solid fa-wifi", isWorkingStatus: true);
 
-                while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60)
+            bool isConnected = false;
+            var startTime = DateTime.UtcNow;
+
+            while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60)
+            {
+                await _connmanInstance.ConnmanctlConnectSsidAsync(_connman, network);
+
+                for (var i = 0; i < 50; i++)
                 {
-                    await _connmanInstance.ConnmanctlConnectSsidAsync(_connman, network);
+                    await Task.Delay(200);
+                    Connman.ConnmanctlGetConnectedSsid(_connman);
 
-                    for (int i = 0; i < 50; i++)
-                    {
-                        await Task.Delay(200);
-                        Connman.ConnmanctlGetConnectedSsid(_connman);
+                    if (_connectedNetwork == null || _connectedNetwork.Value.Ssid != network.Ssid)
+                        continue;
 
-                        if (_connectedNetwork != null && _connectedNetwork.Value.Ssid == network.Ssid)
-                        {
-                            App.Toast(
-                                $"Successfully connected to {network.Ssid}", "WiFi", NotificationType.Success, TimeSpan.FromSeconds(3)
-                            );
-                            Trace.WriteLine($"Successfully connected to {network.Ssid}");
-                            isConnected = true;
-                            break;
-                        }
-                    }
-
-                    if (!isConnected)
-                    {
-                        await ScanForNetworksAsync();
-                    }
+                    App.Toast(
+                        $"Successfully connected to {network.Ssid}", "WiFi", NotificationType.Success, TimeSpan.FromSeconds(3)
+                    );
+                    Trace.WriteLine($"Successfully connected to {network.Ssid}");
+                    isConnected = true;
+                    break;
                 }
 
                 if (!isConnected)
                 {
-                    Connman.ConnmanctlForgetSsid(_connman, network);
-                    UpdateAvailableNetworks();
-                    App.Toast(
-                        $"Failed to connect to {network.Ssid}.\n\nPlease verify your password and try again.", "WiFi", NotificationType.Error, TimeSpan.FromSeconds(3)
-                    );
-                    Trace.WriteLine($"Failed to connect to {network.Ssid}");
+                    await ScanForNetworksAsync();
                 }
-
-                AppStatus.Reset();
             }
+
+            if (!isConnected)
+            {
+                Connman.ConnmanctlForgetSsid(_connman, network);
+                UpdateAvailableNetworks();
+                App.Toast(
+                    $"Failed to connect to {network.Ssid}.\n\nPlease verify your password and try again.", "WiFi", NotificationType.Error, TimeSpan.FromSeconds(3)
+                );
+                Trace.WriteLine($"Failed to connect to {network.Ssid}");
+            }
+
+            AppStatus.Reset();
+            _networkUpdateTimer.Start();
+            IsConnecting = false;
         }
 
         private async Task ScanForNetworksAsync(bool updateStatus = false)

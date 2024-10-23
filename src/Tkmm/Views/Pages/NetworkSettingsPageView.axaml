@@ -1,6 +1,7 @@
 <UserControl x:Class="Tkmm.Views.Pages.NetworkSettingsPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:li="using:LoadingIndicators.Avalonia"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              x:DataType="pages:NetworkSettingsPageViewModel">
 
@@ -8,48 +9,79 @@
         <Grid Grid.Column="0" Grid.Row="1" Margin="0,10,10,0" RowDefinitions="Auto,*">
             <StackPanel Grid.Row="0" Orientation="Vertical" Spacing="10">
                 <TextBlock Text="Wireless Networks" FontSize="20" FontWeight="Bold" Margin="0,0,0,15" TextAlignment="Center"/>
-                <Button Content="Refresh Network List" Command="{Binding ScanForNetworksCommand}" IsEnabled="{Binding IsWifiEnabled}" Margin="0,0,0,10"/>
+                <Button Content="Refresh Network List" Command="{Binding ScanForNetworksCommand}" Margin="0,0,0,10">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="IsWifiEnabled"/>
+                            <Binding Path="IsConnecting" Converter="{x:Static BoolConverters.Not}"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
             </StackPanel>
 
-            <ListBox Grid.Row="1" ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}">
+            <ListBox Grid.Row="1" ItemsSource="{Binding AvailableNetworks}" SelectedItem="{Binding SelectedNetwork}"
+                     IsEnabled="{Binding IsConnecting, Converter={x:Static BoolConverters.Not}}">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:CompileBindings="False">
-                        <StackPanel Orientation="Vertical" Spacing="10" Margin="0,10,0,15">
-                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
-                                <TextBlock Text="{Binding Ssid}" Margin="0,0,0,5"/>
-                                <TextBlock Text="Connected" Foreground="Green" Margin="5,0,0,0"
-                                           IsVisible="{Binding Connected}"/>
+                        <Grid ColumnDefinitions="Auto,*" Margin="0,10,0,15">
+                            <StackPanel Orientation="Vertical" Spacing="10">
+                                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                                    <TextBlock Text="{Binding Ssid}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Connected" Foreground="Green" Margin="5,0,0,0">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="Connected"/>
+                                                <Binding Path="DataContext.IsConnecting"
+                                                        RelativeSource="{RelativeSource AncestorType=UserControl}"
+                                                        Converter="{x:Static BoolConverters.Not}"/>
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,5"
+                                            IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
+                                    <TextBox Text="{Binding $parent[UserControl].DataContext.NetworkPassword, Mode=TwoWay}" 
+                                            Watermark="Enter Password"
+                                            PasswordChar="*"
+                                            Width="200">
+                                        <TextBox.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="SavedPassword" Converter="{x:Static BoolConverters.Not}"/>
+                                                <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
+                                            </MultiBinding>
+                                        </TextBox.IsVisible>
+                                    </TextBox>
+                                    <Button Content="Connect"
+                                            Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
+                                            IsVisible="{Binding !Connected}"/>
+                                    <Button Content="Disconnect"
+                                            Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
+                                            IsVisible="{Binding Connected}"/>
+                                    <Button Content="Remove saved settings"
+                                            Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}">
+                                        <Button.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="SavedPassword"/>
+                                                <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
+                                            </MultiBinding>
+                                        </Button.IsVisible>
+                                    </Button>
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,5"
+                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Margin="15,0,0,0"
                                         IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
-                                <TextBox Text="{Binding $parent[UserControl].DataContext.NetworkPassword, Mode=TwoWay}" 
-                                        Watermark="Enter Password"
-                                        PasswordChar="*"
-                                        Width="200">
-                                    <TextBox.IsVisible>
-                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                            <Binding Path="SavedPassword" Converter="{x:Static BoolConverters.Not}"/>
-                                            <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
-                                        </MultiBinding>
-                                    </TextBox.IsVisible>
-                                </TextBox>
-                                <Button Content="Connect"
-                                        Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
-                                        IsVisible="{Binding !Connected}"/>
-                                <Button Content="Disconnect"
-                                        Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
-                                        IsVisible="{Binding Connected}"/>
-                                <Button Content="Remove saved settings"
-                                        Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}">
-                                    <Button.IsVisible>
-                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                            <Binding Path="SavedPassword"/>
-                                            <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
-                                        </MultiBinding>
-                                    </Button.IsVisible>
-                                </Button>
+                                <li:LoadingIndicator Mode="Arcs"
+                                                     SpeedRatio="1.2"
+                                                     IsActive="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
+                                <TextBlock Text="Connecting..."
+                                           VerticalAlignment="Center"
+                                           Margin="5,0,0,0"
+                                           IsVisible="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -77,28 +109,37 @@
                     <TextBlock Text="IP Address:" Margin="15,5,15,5"/>
                 </Border>
                 <Border Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="{Binding IpAddress}" Margin="15,5,15,5"/>
+                    <Grid>
+                        <TextBlock Text="{Binding IpAddress}" Margin="15,5,15,5" IsVisible="{Binding !IsConnecting}"/>
+                        <TextBlock Text="N/A" Margin="15,5,15,5" IsVisible="{Binding IsConnecting}"/>
+                    </Grid>
                 </Border>
 
                 <Border Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="Subnet Mask:" Margin="15,5,15,5"/>
                 </Border>
                 <Border Grid.Row="1" Grid.Column="1">
-                    <TextBlock Text="{Binding Netmask}" Margin="15,5,15,5"/>
+                    <Grid>
+                        <TextBlock Text="{Binding Netmask}" Margin="15,5,15,5" IsVisible="{Binding !IsConnecting}"/>
+                        <TextBlock Text="N/A" Margin="15,5,15,5" IsVisible="{Binding IsConnecting}"/>
+                    </Grid>
                 </Border>
 
                 <Border Grid.Row="2" Grid.Column="0">
                     <TextBlock Text="Gateway:" Margin="15,5,15,5"/>
                 </Border>
                 <Border Grid.Row="2" Grid.Column="1">
-                    <TextBlock Text="{Binding Gateway}" Margin="15,5,15,5"/>
+                    <Grid>
+                        <TextBlock Text="{Binding Gateway}" Margin="15,5,15,5" IsVisible="{Binding !IsConnecting}"/>
+                        <TextBlock Text="N/A" Margin="15,5,15,5" IsVisible="{Binding IsConnecting}"/>
+                    </Grid>
                 </Border>
 
                 <Border Grid.Row="3" Grid.Column="0">
                     <TextBlock Text="MAC Address:" Margin="15,5,15,5"/>
                 </Border>
                 <Border Grid.Row="3" Grid.Column="1">
-                    <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5"/>
+                    <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5" IsVisible="{Binding !IsConnecting}"/>
                 </Border>
             </Grid>
         </StackPanel>
