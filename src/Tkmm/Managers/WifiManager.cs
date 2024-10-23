@@ -260,7 +260,7 @@ namespace Tkmm.Managers
 
         public static void ConnmanctlGetConnectedSsid(ConnmanT connman)
         {
-            connman.Command = "connmanctl services | grep wifi_ | grep \"^..\\(R\\|O\\)\" | awk '{print $NF}'";
+            connman.Command = "connmanctl services | grep wifi_ | grep \"^\\*A[OR]\" | awk '{print $NF}'";
             using var commandFile = ExecuteCommand(connman.Command);
             var connectedNetId = commandFile.ReadLine()?.TrimEnd('\n');
 

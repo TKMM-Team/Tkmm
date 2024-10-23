@@ -199,9 +199,9 @@ namespace Tkmm.ViewModels.Pages
             {
                 await _connmanInstance.ConnmanctlConnectSsidAsync(_connman, network);
 
-                for (var i = 0; i < 50; i++)
+                for (var i = 0; i < 100; i++)
                 {
-                    await Task.Delay(200);
+                    await Task.Delay(100);
                     Connman.ConnmanctlGetConnectedSsid(_connman);
 
                     if (_connectedNetwork == null || _connectedNetwork.Value.Ssid != network.Ssid)
