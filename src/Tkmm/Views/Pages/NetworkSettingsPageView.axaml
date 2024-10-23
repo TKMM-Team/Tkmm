@@ -139,7 +139,7 @@
                     <TextBlock Text="MAC Address:" Margin="15,5,15,5"/>
                 </Border>
                 <Border Grid.Row="3" Grid.Column="1">
-                    <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5" IsVisible="{Binding !IsConnecting}"/>
+                    <TextBlock Text="{Binding MacAddress}" Margin="15,5,15,5"/>
                 </Border>
             </Grid>
         </StackPanel>
