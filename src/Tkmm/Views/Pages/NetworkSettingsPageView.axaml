@@ -67,7 +67,8 @@
                                     <TextBox Text="{Binding $parent[UserControl].DataContext.NetworkPassword, Mode=TwoWay}" 
                                             Watermark="Enter Password"
                                             PasswordChar="*"
-                                            Width="200">
+                                            Width="200"
+                                            KeyDown="TextBox_KeyDown">
                                         <TextBox.IsVisible>
                                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                                 <Binding Path="SavedPassword" Converter="{x:Static BoolConverters.Not}"/>
