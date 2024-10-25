@@ -28,11 +28,11 @@ public class BatteryStatusManager
 
     private string GetDischargingIcon(int capacity)
     {
-        if (capacity > 90) return "fa-solid fa-battery-full";
-        if (capacity > 70) return "fa-solid fa-battery-three-quarters";
-        if (capacity > 45) return "fa-solid fa-battery-half";
-        if (capacity > 15) return "fa-solid fa-battery-quarter";
-        if (capacity > 5) return "fa-solid fa-battery-low";
-        return "fa-solid fa-battery-empty"; // For 0-5%
+        if (capacity > 87) return "fa-solid fa-battery-full";
+        if (capacity > 65) return "fa-solid fa-battery-three-quarters";
+        if (capacity > 40) return "fa-solid fa-battery-half";
+        if (capacity > 20) return "fa-solid fa-battery-quarter";
+        if (capacity > 7) return "fa-solid fa-battery-low";
+        return "fa-solid fa-battery-empty";
     }
 }

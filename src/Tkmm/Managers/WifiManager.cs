@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,13 +8,99 @@ namespace Tkmm.Managers
 {
     public partial class Connman
     {
-        public struct WifiNetworkInfo
+        private readonly object _netListLock = new();
+
+        public class WifiNetworkInfo : INotifyPropertyChanged
         {
-            public string Ssid { get; set; }
-            public string NetId { get; set; }
-            public bool Connected { get; set; }
-            public bool SavedPassword { get; set; }
-            public string Passphrase { get; set; }
+            private string _ssid;
+            private string _netId;
+            private bool _connected;
+            private bool _savedPassword;
+            private string _passphrase;
+
+            public WifiNetworkInfo()
+            {
+                _ssid = string.Empty;
+                _netId = string.Empty;
+                _passphrase = string.Empty;
+            }
+
+            public string Ssid
+            {
+                get => _ssid;
+                set
+                {
+                    if (_ssid != value)
+                    {
+                        _ssid = value;
+                        OnPropertyChanged(nameof(Ssid));
+                    }
+                }
+            }
+
+            public string NetId
+            {
+                get => _netId;
+                set
+                {
+                    if (_netId != value)
+                    {
+                        _netId = value;
+                        OnPropertyChanged(nameof(NetId));
+                    }
+                }
+            }
+
+            public bool Connected
+            {
+                get => _connected;
+                set
+                {
+                    if (_connected != value)
+                    {
+                        _connected = value;
+                        OnPropertyChanged(nameof(Connected));
+                    }
+                }
+            }
+
+            public bool SavedPassword
+            {
+                get => _savedPassword;
+                set
+                {
+                    if (_savedPassword != value)
+                    {
+                        _savedPassword = value;
+                        OnPropertyChanged(nameof(SavedPassword));
+                    }
+                }
+            }
+
+            public string Passphrase
+            {
+                get => _passphrase;
+                set
+                {
+                    if (_passphrase != value)
+                    {
+                        _passphrase = value;
+                        OnPropertyChanged(nameof(Passphrase));
+                    }
+                }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            public void NotifyPropertyChanged(string propertyName)
+            {
+                OnPropertyChanged(propertyName);
+            }
+
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private static readonly string[] _splitChars = [" "];
@@ -79,10 +166,10 @@ namespace Tkmm.Managers
         [GeneratedRegex("link/ether (\\S+)")]
         private static partial Regex MacAddressRegex();
 
-        private void RetrieveMacAddress()
+        private async Task RetrieveMacAddressAsync()
         {
-            using var output = ExecuteCommand("ip link show wlan0");
-            var result = output.ReadToEnd();
+            using var output = await ExecuteCommand("ip link show wlan0", true);
+            var result = await output.ReadToEndAsync();
             var match = MacAddressRegex().Match(result);
             MacAddress = match.Success ? match.Groups[1].Value.ToUpper() : string.Empty;
         }
@@ -95,7 +182,7 @@ namespace Tkmm.Managers
 
         public class WifiNetworkScan
         {
-            public WifiNetworkInfo[] NetList { get; set; } = [];
+            public WifiNetworkInfo[] NetList { get; set; } = Array.Empty<WifiNetworkInfo>();
         }
 
         public static ConnmanT ConnmanctlInit()
@@ -104,21 +191,21 @@ namespace Tkmm.Managers
             {
                 Scan = new WifiNetworkScan
                 {
-                    NetList = []
+                    NetList = Array.Empty<WifiNetworkInfo>()
                 }
             };
         }
 
-        public void ConnmanctlRefreshServices(ConnmanT connman)
+        public async Task ConnmanctlRefreshServicesAsync(ConnmanT connman)
         {
-            RetrieveMacAddress();
+            await RetrieveMacAddressAsync();
 
-            using var servFile = ExecuteCommand("connmanctl services");
-            connman.Scan.NetList = [];
+            using var servFile = await ExecuteCommand("connmanctl services", true);
+            var newNetList = new List<WifiNetworkInfo>();
 
             bool isAnyNetworkConnected = false;
 
-            while (servFile.ReadLine() is { } line)
+            while (await servFile.ReadLineAsync() is { } line)
             {
                 if (string.IsNullOrWhiteSpace(line) || !line.Contains("wifi_"))
                     continue;
@@ -133,14 +220,19 @@ namespace Tkmm.Managers
 
                 if (entry.Connected)
                 {
-                    GetNetworkDetails(entry.NetId);
+                    await GetNetworkDetailsAsync(entry.NetId);
                     isAnyNetworkConnected = true;
                 }
 
                 if (entry.NetId.StartsWith("wifi_"))
                 {
-                    connman.Scan.NetList = connman.Scan.NetList.Append(entry).ToArray();
+                    newNetList.Add(entry);
                 }
+            }
+
+            lock (_netListLock)
+            {
+                connman.Scan.NetList = newNetList.ToArray();
             }
 
             if (!isAnyNetworkConnected)
@@ -149,10 +241,10 @@ namespace Tkmm.Managers
             }
         }
 
-        private void GetNetworkDetails(string netId)
+        private async Task GetNetworkDetailsAsync(string netId)
         {
-            using var detailFile = ExecuteCommand($"connmanctl services {netId}");
-            while (detailFile.ReadLine() is { } detailLine)
+            using var detailFile = await ExecuteCommand($"connmanctl services {netId}", true);
+            while (await detailFile.ReadLineAsync() is { } detailLine)
             {
                 if (detailLine.Contains("Ethernet ="))
                 {
@@ -187,10 +279,16 @@ namespace Tkmm.Managers
             Gateway = "N/A";
         }
 
-        public void ConnmanctlScan(ConnmanT connman)
+        public async Task ConnmanctlScanAsync(ConnmanT connman)
         {
-            ExecuteCommand("connmanctl scan wifi");
-            ConnmanctlRefreshServices(connman);
+            await Task.Run(() => ExecuteCommand("connmanctl scan wifi", true));
+            await Task.Run(() => ConnmanctlRefreshServicesAsync(connman));
+        }
+
+        public async Task ConnmanctlRestartAsync(ConnmanT connman)
+        {
+            await Task.Run(() => ExecuteCommand("systemctl restart connman.service", true));
+            await Task.Run(() => ConnmanctlScanAsync(connman));
         }
 
         public static WifiNetworkScan ConnmanctlGetSsids(ConnmanT connman)
@@ -198,48 +296,39 @@ namespace Tkmm.Managers
             return connman.Scan;
         }
 
-        public async Task ConnmanctlConnectSsidAsync(ConnmanT connman, WifiNetworkInfo netinfo)
+        public async Task CreateNetworkConfigAsync(WifiNetworkInfo netinfo, ConnmanT connman)
         {
             var netid = netinfo.NetId;
             var settingsDir = Path.Combine(CONNMAN_DIR, netid);
             var settingsPath = Path.Combine(settingsDir, "settings");
 
-            try
+            if (!File.Exists(settingsPath))
             {
-                if (!File.Exists(settingsPath))
+                Directory.CreateDirectory(settingsDir);
+                using (var settingsFile = new StreamWriter(settingsPath))
                 {
-                    Directory.CreateDirectory(settingsDir);
-                    await using (var settingsFile = new StreamWriter(settingsPath))
-                    {
-                        await settingsFile.WriteLineAsync($"[{netid}]");
-                        await settingsFile.WriteLineAsync($"Name={netinfo.Ssid}");
-                        await settingsFile.WriteLineAsync($"SSID={BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid)).Replace("-", "").ToLowerInvariant()}");
-                        await settingsFile.WriteLineAsync("Favorite=true");
-                        await settingsFile.WriteLineAsync("AutoConnect=true");
-                        await settingsFile.WriteLineAsync($"Passphrase={netinfo.Passphrase}");
-                        await settingsFile.WriteLineAsync("IPv4.method=dhcp");
-                    }
+                    await settingsFile.WriteLineAsync($"[{netid}]");
+                    await settingsFile.WriteLineAsync($"Name={netinfo.Ssid}");
+                    await settingsFile.WriteLineAsync($"SSID={BitConverter.ToString(Encoding.UTF8.GetBytes(netinfo.Ssid)).Replace("-", "").ToLowerInvariant()}");
+                    await settingsFile.WriteLineAsync("Favorite=true");
+                    await settingsFile.WriteLineAsync("AutoConnect=true");
+                    await settingsFile.WriteLineAsync($"Passphrase={netinfo.Passphrase}");
+                    await settingsFile.WriteLineAsync("IPv4.method=dhcp");
+                }
+            }
 
-                    ExecuteCommand("systemctl restart connman.service");
-                    await Task.Delay(1000);
-                    ConnmanctlScan(connman);
-                    await Task.Delay(2000);
-                }
-                else
-                {
-                    ExecuteCommand($"connmanctl connect {netinfo.NetId}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"Error in ConnmanctlConnectSsid: {ex.Message}");
-            }
+            await Task.Run(() => ConnmanctlRestartAsync(connman));
+        }
+
+        public void ConnmanctlConnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
+        {
+            var netid = netinfo.NetId;
+            _ = Task.Run(() => ExecuteCommand($"connmanctl connect {netinfo.NetId}", true));
         }
 
         public void ConnmanctlDisconnectSsid(ConnmanT connman, WifiNetworkInfo netinfo)
         {
-            ExecuteCommand($"connmanctl disconnect {netinfo.NetId}");
-            ConnmanctlRefreshServices(connman);
+            Task.Run(async () => await ExecuteCommand($"connmanctl disconnect {netinfo.NetId}", true));
         }
 
         public static void ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
@@ -258,11 +347,11 @@ namespace Tkmm.Managers
             });
         }
 
-        public static void ConnmanctlGetConnectedSsid(ConnmanT connman)
+        public async Task ConnmanctlGetConnectedSsidAsync(ConnmanT connman)
         {
             connman.Command = "connmanctl services | grep wifi_ | grep \"^\\*A[OR]\" | awk '{print $NF}'";
-            using var commandFile = ExecuteCommand(connman.Command);
-            var connectedNetId = commandFile.ReadLine()?.TrimEnd('\n');
+            using var commandFile = await ExecuteCommand(connman.Command, true);
+            var connectedNetId = (await commandFile.ReadLineAsync())?.TrimEnd('\n');
 
             UpdateNetworkList(connman, connectedNetId, network =>
             {
@@ -274,16 +363,19 @@ namespace Tkmm.Managers
 
         private static void UpdateNetworkList(ConnmanT connman, string? netId, Func<WifiNetworkInfo, WifiNetworkInfo> updateAction)
         {
-            for (var i = 0; i < connman.Scan.NetList.Length; i++)
+            lock (connman.Scan)
             {
-                if (connman.Scan.NetList[i].NetId != netId) continue;
+                for (var i = 0; i < connman.Scan.NetList.Length; i++)
+                {
+                    if (connman.Scan.NetList[i].NetId != netId) continue;
 
-                connman.Scan.NetList[i] = updateAction(connman.Scan.NetList[i]);
-                break;
+                    connman.Scan.NetList[i] = updateAction(connman.Scan.NetList[i]);
+                    break;
+                }
             }
         }
 
-        private static StreamReader ExecuteCommand(string command)
+        private static async Task<StreamReader> ExecuteCommand(string command, bool isAsync = false)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -301,7 +393,18 @@ namespace Tkmm.Managers
                     CreateNoWindow = true
                 }
             };
+
             process.Start();
+
+            if (isAsync)
+            {
+                await process.WaitForExitAsync();
+            }
+            else
+            {
+                process.WaitForExit();
+            }
+
             return process.StandardOutput;
         }
     }
