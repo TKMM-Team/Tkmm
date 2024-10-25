@@ -4,6 +4,7 @@ using Tkmm.Abstractions.Providers;
 using Tkmm.Abstractions.Services;
 using Tkmm.Common.ChangelogBuilders;
 using Tkmm.Common.ChangelogBuilders.GameData;
+using Tkmm.Common.ChangelogBuilders.Mals;
 using Tkmm.Common.ChangelogBuilders.Rsdb;
 
 namespace Tkmm.Common.Providers;
@@ -31,10 +32,10 @@ public sealed class TkChangelogBuilderProvider : IChangelogBuilderProvider
             { Canonical: "GameData/GameDataList.Product.byml" } => _gameDataChangelogBuilder,
             { Canonical: "RSDB/Tag.Product.rstbl.byml" } => _tagDbChangelogBuilder,
             { } when fileInfo.Canonical[..4] is "RSDB" => _rsdbChangelogBuilder,
+            { Extension: ".sarc" } when fileInfo.Canonical[..4] is "Mals" => MalsChangelogBuilder.Instance,
             { Extension: ".bfarc" or ".bkres" or ".blarc" or ".genvb" or ".pack" or ".ta" } => _sarcChangelogBuilder,
             { Extension: ".bgyml" } => BymlChangelogBuilder.Instance,
             { Extension: ".byml" } when fileInfo.Canonical[..4] is not "RSDB" && fileInfo.Canonical[..8] is not "GameData" => BymlChangelogBuilder.Instance,
-            { Extension: ".msbt" } => MsbtChangelogBuilder.Instance,
             _ => null
         };
     }

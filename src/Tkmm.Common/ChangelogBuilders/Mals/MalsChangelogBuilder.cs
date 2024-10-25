@@ -1,12 +1,11 @@
 using Tkmm.Abstractions;
 using Tkmm.Abstractions.Services;
 
-// ReSharper disable once CheckNamespace
-namespace Tkmm.Common.ChangelogBuilders;
+namespace Tkmm.Common.ChangelogBuilders.Mals;
 
-public sealed class MsbtChangelogBuilder : IChangelogBuilder
+public class MalsChangelogBuilder : IChangelogBuilder
 {
-    public static readonly MsbtChangelogBuilder Instance = new();
+    public static readonly MalsChangelogBuilder Instance = new();
     
     public ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
@@ -15,6 +14,8 @@ public sealed class MsbtChangelogBuilder : IChangelogBuilder
 
     public bool IsKnownFile(in TkFileInfo fileInfo)
     {
-        return fileInfo.Extension is ".msbt";
+        return fileInfo.Extension is ".sarc"
+            && fileInfo.Canonical.Length > 4
+            && fileInfo.Canonical[..4] is "Mals";
     }
 }
