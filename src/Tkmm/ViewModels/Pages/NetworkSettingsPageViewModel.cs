@@ -253,17 +253,14 @@ namespace Tkmm.ViewModels.Pages
                     .OrderByDescending(n => n.Connected)
                     .ToList();
 
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                if (!string.IsNullOrEmpty(_selectedNetworkId))
                 {
-                    if (!string.IsNullOrEmpty(_selectedNetworkId))
-                    {
-                        var reselectedNetwork = AvailableNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
-                        SelectedNetwork = reselectedNetwork;
-                    }
+                    var reselectedNetwork = AvailableNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
+                    SelectedNetwork = reselectedNetwork;
+                }
 
-                    this.RaisePropertyChanged(nameof(AvailableNetworks));
-                    this.RaisePropertyChanged(nameof(SelectedNetwork));
-                });
+                this.RaisePropertyChanged(nameof(AvailableNetworks));
+                this.RaisePropertyChanged(nameof(SelectedNetwork));
             }
         }
 
@@ -403,19 +400,16 @@ namespace Tkmm.ViewModels.Pages
 
             if (!AvailableNetworks.SequenceEqual(allNetworks))
             {
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                AvailableNetworks = allNetworks;
+
+                if (!string.IsNullOrEmpty(_selectedNetworkId))
                 {
-                    AvailableNetworks = allNetworks;
+                    var reselectedNetwork = allNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
+                    SelectedNetwork = reselectedNetwork;
+                }
 
-                    if (!string.IsNullOrEmpty(_selectedNetworkId))
-                    {
-                        var reselectedNetwork = allNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
-                        SelectedNetwork = reselectedNetwork;
-                    }
-
-                    this.RaisePropertyChanged(nameof(AvailableNetworks));
-                    this.RaisePropertyChanged(nameof(SelectedNetwork));
-                });
+                this.RaisePropertyChanged(nameof(AvailableNetworks));
+                this.RaisePropertyChanged(nameof(SelectedNetwork));
             }
         }
 
