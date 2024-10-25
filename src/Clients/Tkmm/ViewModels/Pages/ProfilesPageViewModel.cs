@@ -31,8 +31,8 @@ public partial class ProfilesPageViewModel : ObservableObject
     private static void AddToProfile(ITkMod mod)
     {
         ITkProfileMod target = mod.GetProfileMod();
-        TKMM.ModManager.CurrentProfile.Mods.Add(target);
-        TKMM.ModManager.CurrentProfile.Selected = target;
+        TKMM.ModManager.GetCurrentProfile().Mods.Add(target);
+        TKMM.ModManager.GetCurrentProfile().Selected = target;
     }
 
     [RelayCommand]
@@ -44,13 +44,13 @@ public partial class ProfilesPageViewModel : ObservableObject
     [RelayCommand]
     private static void MoveUp()
     {
-        TKMM.ModManager.CurrentProfile.MoveUp();
+        TKMM.ModManager.GetCurrentProfile().MoveUp();
     }
 
     [RelayCommand]
     private static void MoveDown()
     {
-        TKMM.ModManager.CurrentProfile.MoveDown();
+        TKMM.ModManager.GetCurrentProfile().MoveDown();
     }
 
     [RelayCommand]

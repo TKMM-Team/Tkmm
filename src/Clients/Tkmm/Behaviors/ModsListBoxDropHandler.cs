@@ -53,7 +53,7 @@ public class ModsListBoxDropHandler : DropHandlerBase
             return false;
         }
 
-        TKMM.ModManager.CurrentProfile.Mods.Remove(profileMod);
+        TKMM.ModManager.GetCurrentProfile().Mods.Remove(profileMod);
         return true;
 
     }

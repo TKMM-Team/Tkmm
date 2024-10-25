@@ -24,7 +24,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
     [RelayCommand]
     public Task Merge(CancellationToken ct = default)
     {
-        return Merge(TKMM.ModManager.CurrentProfile, ct);
+        return Merge(TKMM.ModManager.GetCurrentProfile(), ct);
     }
 
     public async Task Merge(ITkProfile profile, CancellationToken ct = default)
@@ -83,7 +83,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
     [RelayCommand]
     public Task ExportToSdCard(CancellationToken ct = default)
     {
-        return ExportToSdCard(TKMM.ModManager.CurrentProfile, ct);
+        return ExportToSdCard(TKMM.ModManager.GetCurrentProfile(), ct);
     }
 
     public async Task ExportToSdCard(ITkProfile profile, CancellationToken ct = default)

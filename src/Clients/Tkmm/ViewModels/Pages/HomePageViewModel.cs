@@ -25,7 +25,7 @@ public partial class HomePageViewModel : ObservableObject
         ContentDialog dialog = new() {
             Title = "Contributors",
             Content = new TextBlock {
-                Text = string.Join("\n", TKMM.ModManager.CurrentProfile.Selected?.Mod.Contributors
+                Text = string.Join("\n", TKMM.ModManager.GetCurrentProfile().Selected?.Mod.Contributors
                     .Select(contributor => $"{contributor.Author}: {contributor.Contribution}") ?? []
                 ),
                 TextWrapping = TextWrapping.WrapWithOverflow
@@ -52,13 +52,13 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static void MoveUp()
     {
-        TKMM.ModManager.CurrentProfile.MoveUp();
+        TKMM.ModManager.GetCurrentProfile().MoveUp();
     }
 
     [RelayCommand]
     private static void MoveDown()
     {
-        TKMM.ModManager.CurrentProfile.MoveDown();
+        TKMM.ModManager.GetCurrentProfile().MoveDown();
     }
 
     [RelayCommand]

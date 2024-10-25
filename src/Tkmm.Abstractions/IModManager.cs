@@ -57,4 +57,10 @@ public interface IModManager : IModStorage
     /// <param name="target">The mod to query.</param>
     /// <returns></returns>
     IEnumerable<ITkModChangelog> GetConfiguredOptions(ITkMod target);
+
+    /// <summary>
+    /// Get the current profile or the first profile if there is no selected profile.
+    /// </summary>
+    /// <returns></returns>
+    ITkProfile GetCurrentProfile() => CurrentProfile ?? Profiles[0];
 }

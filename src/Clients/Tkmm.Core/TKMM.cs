@@ -39,14 +39,15 @@ public static class TKMM
 
     public static IMergerProvider MergerProvider { get; } = new TkMergerProvider();
 
-    public static TkMergerMarshal MergerMarshal { get; } = new(ModManager, MergerProvider, Romfs);
+    public static TkMergerMarshal MergerMarshal { get; }
 
-    public static IChangelogBuilderProvider ChangelogBuilderProvider { get; } = new TkChangelogBuilderProvider();
+    public static IChangelogBuilderProvider ChangelogBuilderProvider { get; } = new TkChangelogBuilderProvider(Romfs);
 
     public static TkChangelogBuilderMarshal ChangelogBuilderMarshal { get; } = new(Romfs.Zstd, ChangelogBuilderProvider);
 
     static TKMM()
     {
         ModManager = new ModManager(new ModReaderProvider(ChangelogBuilderMarshal));
+        MergerMarshal = new TkMergerMarshal(ModManager, MergerProvider, Romfs);
     }
 }
