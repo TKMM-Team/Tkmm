@@ -89,7 +89,8 @@
                                         <Button.IsVisible>
                                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                                 <Binding Path="SavedPassword"/>
-                                                <Binding Path="Connected" Converter="{x:Static BoolConverters.Not}"/>
+                                                <Binding Path="Connected" 
+                                                         Converter="{x:Static BoolConverters.Not}"/>
                                                 <Binding Path="DataContext.IsConnecting"
                                                          RelativeSource="{RelativeSource AncestorType=UserControl}"
                                                          Converter="{x:Static BoolConverters.Not}"/>
