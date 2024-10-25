@@ -62,10 +62,10 @@ public interface IRomfs
     /// <summary>
     /// Decomrpesses the input stream using the loaded zstd dictionaries.
     /// </summary>
-    /// <param name="stream"></param>
-    /// <param name="zsDictionaryId"></param>
+    /// <param name="buffer">The buffer to check</param>
+    /// <param name="canonical">The canonical path of the file</param>
     /// <returns></returns>
-    RentedBuffer<byte> Decompress(in Stream stream, out int zsDictionaryId);
+    ValueTask<bool> IsVanilla(in ReadOnlySpan<byte> buffer, in ReadOnlySpan<char> canonical);
 
     /// <summary>
     /// Log information about the <see cref="IRomfs"/> implementation. 
