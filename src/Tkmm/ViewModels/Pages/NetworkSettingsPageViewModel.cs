@@ -293,10 +293,7 @@ namespace Tkmm.ViewModels.Pages
                 {
                     while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60)
                     {
-                        if (!initialSavedPassword)
-                        {
-                            Task.Run(() => _connmanInstance.ConnmanctlScanAsync(_connman)).Wait();
-                        }
+                        Task.Run(() => _connmanInstance.ConnmanctlScanAsync(_connman)).Wait();
                         Task.Delay(1000).Wait();
                         _connmanInstance.ConnmanctlConnectSsid(_connman, network);
 
@@ -304,7 +301,6 @@ namespace Tkmm.ViewModels.Pages
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             Task.Run(() => RefreshAndUpdateNetworkStatusAsync()).Wait();
-                            ReselectNetwork();
                             Task.Delay(300, cancellationToken).Wait();
 
                             _connectedNetwork = AvailableNetworks.FirstOrDefault(n => n.NetId == _selectedNetwork?.NetId && n.Connected);
@@ -420,20 +416,6 @@ namespace Tkmm.ViewModels.Pages
                     this.RaisePropertyChanged(nameof(AvailableNetworks));
                     this.RaisePropertyChanged(nameof(SelectedNetwork));
                 });
-            }
-        }
-        
-
-        private void ReselectNetwork()
-        {
-            if (!string.IsNullOrEmpty(_selectedNetworkId))
-            {
-                var reselectedNetwork = AvailableNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
-                
-                if (reselectedNetwork != null && SelectedNetwork != reselectedNetwork)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => SelectedNetwork = reselectedNetwork);
-                }
             }
         }
 
