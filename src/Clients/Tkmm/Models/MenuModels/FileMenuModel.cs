@@ -9,21 +9,21 @@ namespace Tkmm.Models.MenuModels;
 public sealed class FileMenuModel
 {
     [Menu(FILE_INSTALL_FILE, FILE_MENU, InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
-    public static Task InstallFile(CancellationToken ct = default)
+    public static Task InstallFile()
     {
-        return ImportActions.Instance.ImportFromFile(ct);
+        return ImportActions.Instance.ImportFromFile();
     }
 
     [Menu(FILE_INSTALL_FOLDER, FILE_MENU, InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
-    public static Task InstallFolder(CancellationToken ct = default)
+    public static Task InstallFolder()
     {
-        return ImportActions.Instance.ImportFromFolder(ct);
+        return ImportActions.Instance.ImportFromFolder();
     }
 
     [Menu(FILE_INSTALL_ARGUMENT, FILE_MENU, InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
-    public static Task ImportArgument(CancellationToken ct = default)
+    public static Task ImportArgument()
     {
-        return ImportActions.Instance.ImportFromArgument(ct);
+        return ImportActions.Instance.ImportFromArgument();
     }
 
     [Menu(FILE_CLEAR_TEMP_FILES, FILE_MENU, InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
