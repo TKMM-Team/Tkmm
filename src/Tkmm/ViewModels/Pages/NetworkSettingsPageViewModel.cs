@@ -64,56 +64,53 @@ namespace Tkmm.ViewModels.Pages
                 x => x.Gateway
             ).Throttle(TimeSpan.FromMilliseconds(2500))
             .DistinctUntilChanged()
-            .Subscribe(_ =>
-            {
-                Task.Run(async () => await UpdateAvailableNetworksAsync());
-            });
+            .Subscribe(_ => Task.Run(async () => await UpdateAvailableNetworksAsync()));
 
-            ConnectToNetworkCommand.ThrownExceptions.Subscribe(ex =>
-            {
-                Trace.WriteLine($"Unhandled exception: {ex.Message}");
-                App.Toast($"Unhandled error: {ex.Message}", "Error", NotificationType.Error, TimeSpan.FromSeconds(3));
+            ConnectToNetworkCommand.ThrownExceptions.Subscribe(ex => {
+                App.Toast("Connection attempt was canceled.", "WiFi", NotificationType.Information, TimeSpan.FromSeconds(3));
+                Trace.WriteLine("Connection attempt was canceled.");
             });
 
             this.WhenAnyValue(x => x.AvailableNetworks)
-            .Subscribe(networks =>
-            {
-                foreach (var network in networks)
-                {
+            .Subscribe(networks => {
+                foreach (var network in networks) {
                     network.PropertyChanged += OnNetworkPropertyChanged;
                 }
             });
 
-            if (_isWifiEnabled)
-            {
-                IsScanning = true;
+            if (_isWifiEnabled) {
                 Task.Run(async () => await UpdateAvailableNetworksAsync());
-                IsScanning = false;
             }
 
-            _networkUpdateTimer = new System.Timers.Timer(2500) { AutoReset = false };
+            _networkUpdateTimer = new System.Timers.Timer(2500) { 
+                AutoReset = false
+            };
+
             _networkUpdateTimer.Elapsed += (_, _) => {
-                try { Task.Run(async () => await RefreshAndUpdateNetworkStatusAsync()); } 
-                catch (Exception ex) { Trace.WriteLine($"Error: {ex.Message}"); } 
-                finally { _networkUpdateTimer.Start(); }
+                try {
+                    Task.Run(async () => await RefreshAndUpdateNetworkStatusAsync());
+                }
+                catch (Exception ex) {
+                    Trace.WriteLine($"Error: {ex.Message}");
+                }
+                finally {
+                    _networkUpdateTimer.Start();
+                }
             };
             _networkUpdateTimer.Start();
         }
 
-        private void OnNetworkPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
+        private void OnNetworkPropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(Connman.WifiNetworkInfo.Connected))
                 Task.Run(() => _connmanInstance.ConnmanctlRefreshServicesAsync(_connman));
         }
 
-        public List<Connman.WifiNetworkInfo> AvailableNetworks
-        {
+        public List<Connman.WifiNetworkInfo> AvailableNetworks {
             get => _availableNetworks;
             private set => this.RaiseAndSetIfChanged(ref _availableNetworks, value);
         }
 
-        public bool IsConnecting
-        {
+        public bool IsConnecting {
             get => _isConnecting;
             private set => this.RaiseAndSetIfChanged(ref _isConnecting, value);
         }
@@ -124,8 +121,7 @@ namespace Tkmm.ViewModels.Pages
             private set => this.RaiseAndSetIfChanged(ref _isScanning, value);
         }
 
-        public bool IsBusy
-        {
+        public bool IsBusy {
             get => _isBusy;
             private set => this.RaiseAndSetIfChanged(ref _isBusy, value);
         }
@@ -133,40 +129,32 @@ namespace Tkmm.ViewModels.Pages
         public Connman.WifiNetworkInfo? SelectedNetwork
         {
             get => _selectedNetwork;
-            set
-            {
+            set {
                 this.RaiseAndSetIfChanged(ref _selectedNetwork, value);
                 if (value != null) _selectedNetworkId = value.NetId;
             }
         }
 
-        public Connman.WifiNetworkInfo? ConnectedNetwork
-        {
+        public Connman.WifiNetworkInfo? ConnectedNetwork {
             get => _connectedNetwork;
             set => this.RaiseAndSetIfChanged(ref _connectedNetwork, value);
         }
 
-        public string NetworkPassword
-        {
+        public string NetworkPassword {
             get => _networkPassword;
             set => this.RaiseAndSetIfChanged(ref _networkPassword, value);
         }
 
-        public bool IsWifiEnabled
-        {
+        public bool IsWifiEnabled {
             get => _isWifiEnabled;
-            set
-            {
-                if (_isWifiEnabled != value)
-                {
+            set {
+                if (_isWifiEnabled != value) {
                     this.RaiseAndSetIfChanged(ref _isWifiEnabled, value);
-                    if (value)
-                    {
+                    if (value) {
                         NetworkServices.EnableWifi();
                         UpdateAvailableNetworksAsync().ConfigureAwait(false);
                     }
-                    else
-                    {
+                    else {
                         CancelConnect();
                         NetworkServices.DisableWifi();
                         AvailableNetworks = new List<Connman.WifiNetworkInfo>();
@@ -175,86 +163,78 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        public bool IsSshEnabled
-        {
+        public bool IsSshEnabled {
             get => _isSshEnabled;
-            set
-            {
+            set {
                 this.RaiseAndSetIfChanged(ref _isSshEnabled, value);
                 if (value) NetworkServices.EnableSsh();
                 else NetworkServices.DisableSsh();
             }
         }
 
-        public bool IsSmbEnabled
-        {
+        public bool IsSmbEnabled {
             get => _isSmbEnabled;
-            set
-            {
+            set {
                 this.RaiseAndSetIfChanged(ref _isSmbEnabled, value);
                 if (value) NetworkServices.EnableSmb();
                 else NetworkServices.DisableSmb();
             }
         }
 
-        private async Task ForgetSsidAsync()
-        {
-            if (_selectedNetwork != null && !IsDefault(_selectedNetwork))
-            {
+        private async Task ForgetSsidAsync() {
+            if (_selectedNetwork != null && !IsDefault(_selectedNetwork)) {
                 IsBusy = true;
                 try {
                     await Task.Run(() => Connman.ConnmanctlForgetSsid(_connman, _selectedNetwork));
                     await Task.Run(() => UpdateAvailableNetworksAsync());
                     Trace.WriteLine($"Settings for SSID {_selectedNetwork.Ssid} have been removed.");
                 }
-                finally { IsBusy = false; }
+                finally { 
+                    IsBusy = false;
+                }
             }
         }
 
-        private async Task DisconnectSsidAsync()
-        {
-            if (_selectedNetwork != null)
-            {
+        private async Task DisconnectSsidAsync() {
+            if (_selectedNetwork != null)  {
                 IsBusy = true;
                 try {
                     await Task.Run(() => _connmanInstance.ConnmanctlDisconnectSsid(_connman, _selectedNetwork));
                     await Task.Run(async () => await UpdateAvailableNetworksAsync());
                 }
-                finally { IsBusy = false; }
+                finally { 
+                    IsBusy = false;
+                }
             }
         }
 
-        private async Task RefreshAndUpdateNetworkStatusAsync()
-        {
+        private async Task RefreshAndUpdateNetworkStatusAsync() {
             await Task.Run(async () => await _connmanInstance.ConnmanctlRefreshServicesAsync(_connman));
             var networks = Connman.ConnmanctlGetSsids(_connman).NetList;
             var updatedNetworks = networks.Where(n => !string.IsNullOrEmpty(n.Ssid)).ToList();
             var networkList = new List<Connman.WifiNetworkInfo>(AvailableNetworks);
             bool hasChanges = false;
 
-            foreach (var network in updatedNetworks)
-            {
+            foreach (var network in updatedNetworks) {
                 var existingNetwork = networkList.FirstOrDefault(a => a.NetId == network.NetId);
-                if (existingNetwork == null && !_suspendUIUpdates && network.Connected)
-                {
+
+                if (existingNetwork == null && !_suspendUIUpdates && network.Connected) {
                     networkList.Add(network);
                     hasChanges = true;
                 }
-                else if (existingNetwork != null && existingNetwork.Connected != network.Connected)
-                {
+
+                else if (existingNetwork != null && existingNetwork.Connected != network.Connected) {
                     existingNetwork.Connected = network.Connected;
                     hasChanges = true;
                 }
             }
 
-            if (hasChanges)
-            {
+            if (hasChanges) {
                 AvailableNetworks = networkList
                     .OrderByDescending(n => n.Connected)
                     .ToList();
 
-                if (!string.IsNullOrEmpty(_selectedNetworkId))
-                {
+                if (!string.IsNullOrEmpty(_selectedNetworkId)) {
                     var reselectedNetwork = AvailableNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
                     SelectedNetwork = reselectedNetwork;
                 }
@@ -264,8 +244,7 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        public async Task ConnectToNetworkAsync()
-        {
+        public async Task ConnectToNetworkAsync() {
             if (_selectedNetwork == null) return;
             IsConnecting = true;
             _suspendUIUpdates = true;
@@ -278,24 +257,19 @@ namespace Tkmm.ViewModels.Pages
             bool isConnected = false;
             AppStatus.Set($"Connecting to {network.Ssid}", "fa-solid fa-wifi", isWorkingStatus: true);
 
-            if (!initialSavedPassword)
-            {
+            if (!initialSavedPassword)  {
                 await Task.Run(() => _connmanInstance.CreateNetworkConfigAsync(network, _connman));
                 await Task.Run(() => _connmanInstance.ConnmanctlRestartAsync(_connman));
             }
 
-            try
-            {
-                await Task.Run(() =>
-                {
-                    while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60)
-                    {
+            try {
+                await Task.Run(() => {
+                    while (!isConnected && (DateTime.UtcNow - startTime).TotalSeconds < 60) {
                         Task.Run(() => _connmanInstance.ConnmanctlScanAsync(_connman)).Wait();
                         Task.Delay(1000).Wait();
                         _connmanInstance.ConnmanctlConnectSsid(_connman, network);
 
-                        for (var i = 0; i < 50; i++)
-                        {
+                        for (var i = 0; i < 50; i++) {
                             cancellationToken.ThrowIfCancellationRequested();
                             Task.Run(() => RefreshAndUpdateNetworkStatusAsync()).Wait();
                             Task.Delay(300, cancellationToken).Wait();
@@ -311,20 +285,17 @@ namespace Tkmm.ViewModels.Pages
                     }
                 });
 
-                if (isConnected)
-                {
+                if (isConnected) {
                     await Task.Run(async () => await UpdateAvailableNetworksAsync());
                     App.Toast($"Successfully connected to {network.Ssid}", "WiFi", NotificationType.Success, TimeSpan.FromSeconds(3));
                     Trace.WriteLine($"Successfully connected to {network.Ssid}");
                 }
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 App.Toast("Connection attempt was canceled.", "WiFi", NotificationType.Information, TimeSpan.FromSeconds(3));
                 Trace.WriteLine("Connection attempt was canceled.");
             }
-            finally
-            {
+            finally  {
                 _suspendUIUpdates = false;
                 HandleConnectionEnd(isConnected, initialSavedPassword, network);
                 IsConnecting = false;
@@ -333,15 +304,13 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        private void HandleConnectionEnd(bool isConnected, bool initialSavedPassword, Connman.WifiNetworkInfo network)
-        {
-            if (!isConnected || _cancellationTokenSource?.IsCancellationRequested == true)
-            {
-                if (!initialSavedPassword)
-                { Connman.ConnmanctlForgetSsid(_connman, network); }
+        private void HandleConnectionEnd(bool isConnected, bool initialSavedPassword, Connman.WifiNetworkInfo network) {
+            if (!isConnected || _cancellationTokenSource?.IsCancellationRequested == true) {
+                if (!initialSavedPassword) { 
+                    Connman.ConnmanctlForgetSsid(_connman, network);
+                }
 
-                if (!isConnected && !_cancellationTokenSource?.IsCancellationRequested == true)
-                {
+                if (!isConnected && !_cancellationTokenSource?.IsCancellationRequested == true) {
                     Task.Run(async () => await UpdateAvailableNetworksAsync());
                     App.Toast(
                         $"Failed to connect to {network.Ssid}.\n\nPlease verify your password and try again.", "WiFi", NotificationType.Error, TimeSpan.FromSeconds(3)
@@ -351,8 +320,7 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        private void CancelConnect()
-        {
+        private void CancelConnect() {
             _cancellationTokenSource?.Cancel();
             Task.Run(async () => await DisconnectSsidAsync());
             Task.Run(async () => await UpdateAvailableNetworksAsync());
@@ -360,33 +328,32 @@ namespace Tkmm.ViewModels.Pages
             IsConnecting = false;
         }
 
-        private async Task ScanForNetworksAsync(bool updateStatus = false)
-        {
-            if (!_isConnecting)
-            {
+        private async Task ScanForNetworksAsync(bool updateStatus = false) {
+            if (!_isConnecting) {
                 IsBusy = true;
                 IsScanning = true;
             }
-            if (updateStatus)
-            { AppStatus.Set("Scanning for networks", "fa-solid fa-radar", isWorkingStatus: true); }
+            if (updateStatus) { 
+                AppStatus.Set("Scanning for networks", "fa-solid fa-radar", isWorkingStatus: true);
+            }
+
             await UpdateAvailableNetworksAsync();
 
-            if (updateStatus)
-            {
+            if (updateStatus) {
                 AppStatus.Set("Scan completed", "fa-circle-check", isWorkingStatus: false, temporaryStatusTime: 1.5);
                 App.Toast("Scan completed", "WiFi", NotificationType.Information, TimeSpan.FromSeconds(1));
             }
-            if (!_isConnecting)
-            {
+
+            if (!_isConnecting) {
                 IsBusy = false;
                 IsScanning = false;
             }
         }
 
-        private async Task UpdateAvailableNetworksAsync()
-        {
-            if (_suspendUIUpdates)
+        private async Task UpdateAvailableNetworksAsync() {
+            if (_suspendUIUpdates) {
                 return;
+            }
 
             await _connmanInstance.ConnmanctlScanAsync(_connman);
             await _connmanInstance.ConnmanctlRefreshServicesAsync(_connman);
@@ -398,12 +365,10 @@ namespace Tkmm.ViewModels.Pages
                 .OrderByDescending(n => n.Connected)
                 .ToList();
 
-            if (!AvailableNetworks.SequenceEqual(allNetworks))
-            {
+            if (!AvailableNetworks.SequenceEqual(allNetworks)) {
                 AvailableNetworks = allNetworks;
 
-                if (!string.IsNullOrEmpty(_selectedNetworkId))
-                {
+                if (!string.IsNullOrEmpty(_selectedNetworkId)) {
                     var reselectedNetwork = allNetworks.FirstOrDefault(n => n.NetId == _selectedNetworkId);
                     SelectedNetwork = reselectedNetwork;
                 }
@@ -413,13 +378,11 @@ namespace Tkmm.ViewModels.Pages
             }
         }
 
-        private static bool IsDefault(Connman.WifiNetworkInfo netinfo)
-        {
+        private static bool IsDefault(Connman.WifiNetworkInfo netinfo) {
             return string.IsNullOrEmpty(netinfo.Ssid) && string.IsNullOrEmpty(netinfo.NetId);
         }
 
-        private void RefreshNetworkDetails()
-        {
+        private void RefreshNetworkDetails() {
             this.RaisePropertyChanged(nameof(IpAddress));
             this.RaisePropertyChanged(nameof(Netmask));
             this.RaisePropertyChanged(nameof(Gateway));
@@ -427,18 +390,14 @@ namespace Tkmm.ViewModels.Pages
             this.RaisePropertyChanged(nameof(AvailableNetworks));
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
+        private void Dispose(bool disposing) {
+            if (!_disposed) {
+                if (disposing) {
                     _networkUpdateTimer.Stop();
                     _networkUpdateTimer.Dispose();
                 }

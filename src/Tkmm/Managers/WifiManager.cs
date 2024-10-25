@@ -117,10 +117,7 @@ namespace Tkmm.Managers
             get => _macAddress;
             private set
             {
-                if (_macAddress == null && value != null)
-                {
-                    _macAddress = value;
-                }
+                if (_macAddress == null && value != null) _macAddress = value;
             }
         }
 
@@ -224,21 +221,11 @@ namespace Tkmm.Managers
                     isAnyNetworkConnected = true;
                 }
 
-                if (entry.NetId.StartsWith("wifi_"))
-                {
-                    newNetList.Add(entry);
-                }
+                if (entry.NetId.StartsWith("wifi_")) newNetList.Add(entry);
             }
 
-            lock (_netListLock)
-            {
-                connman.Scan.NetList = newNetList.ToArray();
-            }
-
-            if (!isAnyNetworkConnected)
-            {
-                ResetNetworkDetails();
-            }
+            lock (_netListLock) connman.Scan.NetList = newNetList.ToArray();
+            if (!isAnyNetworkConnected) ResetNetworkDetails();
         }
 
         private async Task GetNetworkDetailsAsync(string netId)
@@ -334,11 +321,7 @@ namespace Tkmm.Managers
         public static void ConnmanctlForgetSsid(ConnmanT connman, WifiNetworkInfo netinfo)
         {
             var settingsDir = Path.Combine(CONNMAN_DIR, netinfo.NetId);
-
-            if (Directory.Exists(settingsDir))
-            {
-                Directory.Delete(settingsDir, true);
-            }
+            if (Directory.Exists(settingsDir)) Directory.Delete(settingsDir, true);
 
             UpdateNetworkList(connman, netinfo.NetId, network =>
             {
@@ -395,16 +378,8 @@ namespace Tkmm.Managers
             };
 
             process.Start();
-
-            if (isAsync)
-            {
-                await process.WaitForExitAsync();
-            }
-            else
-            {
-                process.WaitForExit();
-            }
-
+            if (isAsync) await process.WaitForExitAsync();
+            else process.WaitForExit();
             return process.StandardOutput;
         }
     }
