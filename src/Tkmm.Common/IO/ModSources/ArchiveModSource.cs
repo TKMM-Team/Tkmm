@@ -13,8 +13,10 @@ public sealed class ArchiveModSource(IArchive archive, IArchiveEntry romfs) : Mo
 
     protected override ValueTask<(Stream Stream, long StreamLength)> OpenRead(IArchiveEntry input, CancellationToken ct = default)
     {
-        Stream stream = input.OpenEntryStream();
-        return ValueTask.FromResult((stream, input.Size));
+        lock (_archive) {
+            Stream stream = input.OpenEntryStream();
+            return ValueTask.FromResult((stream, input.Size));
+        }
     }
 
     public override ValueTask<bool> IsKnownInput<TSource>(TSource? input) where TSource : class
