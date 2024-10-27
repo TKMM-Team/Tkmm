@@ -4,13 +4,22 @@ using Tkmm.Abstractions.IO;
 using Tkmm.Abstractions.IO.Buffers;
 using Tkmm.Common.IO;
 using TotkCommon;
+using TotkCommon.Components;
 
 namespace Tkmm.Core.IO;
 
 public sealed class ExtractedRomfs : IRomfs
 {
     private readonly TkZstd _zstd;
+    private static readonly TotkChecksums _checksums;
     public static readonly ExtractedRomfs Instance = new();
+
+    static ExtractedRomfs()
+    {
+        using Stream stream = typeof(ExtractedRomfs).Assembly.GetManifestResourceStream(
+            "Tkmm.Core.Resources.Checksums.bin")!;
+        _checksums = TotkChecksums.FromStream(stream);
+    }
 
     public IDictionary<string, string> AddressTable => Totk.AddressTable
         ?? throw new Exception("No address table has been loaded by the romfs implementation.");
@@ -31,10 +40,11 @@ public sealed class ExtractedRomfs : IRomfs
         return TkFile.OpenReadAndDecompress(absoluteFilePath, out zsDictionaryId);
     }
 
-    public RentedBuffer<byte> Decompress(in Stream stream, out int zsDictionaryId)
+    public ValueTask<bool> IsVanilla(in Span<byte> buffer, in ReadOnlySpan<char> canonical, int version)
     {
-        // IRomfs should handle loading zstd dictionaries
-        throw new NotImplementedException();
+        return ValueTask.FromResult(
+            _checksums.IsFileVanilla(canonical, buffer, version)
+        );
     }
 
     public void LogInfo(ILogger logger)

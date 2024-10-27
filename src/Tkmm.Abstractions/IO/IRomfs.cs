@@ -64,8 +64,9 @@ public interface IRomfs
     /// </summary>
     /// <param name="buffer">The buffer to check</param>
     /// <param name="canonical">The canonical path of the file</param>
+    /// <param name="version"></param>
     /// <returns></returns>
-    ValueTask<bool> IsVanilla(in ReadOnlySpan<byte> buffer, in ReadOnlySpan<char> canonical);
+    ValueTask<bool> IsVanilla(in Span<byte> buffer, in ReadOnlySpan<char> canonical, int version);
 
     /// <summary>
     /// Log information about the <see cref="IRomfs"/> implementation. 
