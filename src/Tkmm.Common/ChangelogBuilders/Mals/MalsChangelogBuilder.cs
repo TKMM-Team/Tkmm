@@ -1,15 +1,28 @@
+using SarcLibrary;
 using Tkmm.Abstractions;
+using Tkmm.Abstractions.IO;
+using Tkmm.Abstractions.IO.Buffers;
 using Tkmm.Abstractions.Services;
+using Tkmm.Common.Extensions;
 
 namespace Tkmm.Common.ChangelogBuilders.Mals;
 
-public class MalsChangelogBuilder : IChangelogBuilder
+public class MalsChangelogBuilder(IRomfs romfs) : IChangelogBuilder
 {
-    public static readonly MalsChangelogBuilder Instance = new();
-    
-    public ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
+    private readonly IRomfs _romfs = romfs;
+
+    public async ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input, Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        int version = canonical.GetVersionFromCanonical();
+        if (await _romfs.IsVanilla(input, canonical, version)) {
+            return;
+        }
+        
+        using RentedBuffer<byte> vanillaBuffer = _romfs.GetVanilla(canonical);
+        Sarc vanilla = Sarc.FromBinary(vanillaBuffer.Segment);
+        
+        Sarc changelog = [];
+        Sarc sarc = Sarc.FromBinary(input);
     }
 
     public bool IsKnownFile(in TkFileInfo fileInfo)
