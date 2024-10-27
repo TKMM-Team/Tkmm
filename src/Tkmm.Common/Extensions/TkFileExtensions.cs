@@ -118,4 +118,9 @@ public static class TkFileExtensions
             _ => canonical[..size]
         };
     }
+
+    public static int GetVersionFromCanonical(this string canonical)
+    {
+        throw new NotImplementedException();
+    }
 }

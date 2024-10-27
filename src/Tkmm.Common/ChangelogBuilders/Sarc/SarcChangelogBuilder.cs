@@ -17,7 +17,9 @@ internal sealed class SarcChangelogBuilder(IRomfs romfs, IChangelogBuilderProvid
     public async ValueTask LogChanges(string canonical, TkFileAttributes attributes, ArraySegment<byte> input,
         Func<ValueTask<Stream>> getOutput, CancellationToken ct = default)
     {
-        if (await _romfs.IsVanilla(input, canonical)) {
+        int version = canonical.GetVersionFromCanonical();
+        
+        if (await _romfs.IsVanilla(input, canonical, version)) {
             return;
         }
 
@@ -38,7 +40,7 @@ internal sealed class SarcChangelogBuilder(IRomfs romfs, IChangelogBuilderProvid
                 _ => $"{canonical}/{name}"
             };
             
-            if (await _romfs.IsVanilla(data, nestedCanonical)) {
+            if (await _romfs.IsVanilla(data, nestedCanonical, version)) {
                 // Vanilla file, ignore
                 continue;
             }
