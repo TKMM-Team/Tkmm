@@ -7,6 +7,11 @@ public static class TkFile
 {
     public static RentedBuffer<byte> OpenReadAndDecompress(string file, out int zsDictionaryId)
     {
+        if (!File.Exists(file)) {
+            zsDictionaryId = -1;
+            return default;
+        }
+        
         using FileStream fs = File.OpenRead(file);
         int size = Convert.ToInt32(fs.Length);
         RentedBuffer<byte> buffer = RentedBuffer<byte>.Allocate(size);
