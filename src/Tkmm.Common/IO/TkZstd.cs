@@ -14,7 +14,7 @@ public sealed class TkZstd : IZstd
 {
     private const uint DICT_MAGIC = 0xEC30A437;
     private const uint SARC_MAGIC = 0x43524153;
-    
+
     private readonly Decompressor _defaultDecompressor = new();
     private readonly Dictionary<int, Decompressor> _decompressors = [];
     private readonly Compressor _defaultCompressor;
@@ -25,7 +25,7 @@ public sealed class TkZstd : IZstd
         _defaultCompressor = new Compressor(CompressionLevel);
         LoadDictionaries(zsDicPack, streamLength);
     }
-    
+
     private int _compressionLevel = 7;
 
     public int CompressionLevel {
@@ -48,19 +48,18 @@ public sealed class TkZstd : IZstd
         }
 
         zsDictionaryId = IZstd.GetDictionaryId(data);
-        if (_decompressors.TryGetValue(zsDictionaryId, out Decompressor? decompressor)) {
-            lock (_decompressors) {
+        lock (_decompressors) {
+            if (_decompressors.TryGetValue(zsDictionaryId, out Decompressor? decompressor)) {
                 decompressor.Unwrap(data, dst);
+                return;
             }
-
-            return;
         }
 
         lock (_defaultDecompressor) {
             _defaultDecompressor.Unwrap(data, dst);
         }
     }
-    
+
     public RentedBuffer<byte> Compress(ReadOnlySpan<byte> data, int zsDictionaryId = -1)
     {
         int bounds = Compressor.GetCompressBound(data.Length);
@@ -86,7 +85,7 @@ public sealed class TkZstd : IZstd
         Debug.Assert(size == read);
         LoadDictionaries(buffer.Span);
     }
-    
+
     public void LoadDictionaries(Stream stream, long streamLength)
     {
         int size = Convert.ToInt32(streamLength);
@@ -95,7 +94,7 @@ public sealed class TkZstd : IZstd
         Debug.Assert(size == read);
         LoadDictionaries(buffer.Span);
     }
-    
+
     public void LoadDictionaries(Span<byte> data)
     {
         byte[]? decompressedBuffer = null;
