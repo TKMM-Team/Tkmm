@@ -96,7 +96,7 @@ public static class TkFileExtensions
 
             state = (@char, size - i) switch {
                 ('.', > 8) => canonical[i..(i + 8)] switch {
-                    ".Product" => ((int)(attributes |= TkFileAttributes.IsProductFile) * (size -= 4) * (i += 8)) + 1,
+                    ".Product" => (int)(attributes |= TkFileAttributes.IsProductFile) * (size -= 4) * (i += 8) + 1,
                     _ => state
                 },
                 _ => state
@@ -119,8 +119,16 @@ public static class TkFileExtensions
         };
     }
 
-    public static int GetVersionFromCanonical(this string canonical)
+    public static int GetVersionFromCanonical(this string canonical) => GetVersionFromCanonical(canonical.AsSpan());
+    public static int GetVersionFromCanonical(this ReadOnlySpan<char> canonical)
     {
-        throw new NotImplementedException();
+        const int defaultVersion = 100;
+        return canonical.IndexOf('.') switch {
+            var productPartIndex when canonical.Length > productPartIndex + 12 
+                => int.TryParse(canonical[(productPartIndex += 9)..(productPartIndex + 3)], out int version)
+                    ? version : defaultVersion,
+            -1 => defaultVersion,
+            _ => defaultVersion
+        };
     }
 }
