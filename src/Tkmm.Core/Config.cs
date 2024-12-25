@@ -108,4 +108,9 @@ public sealed partial class Config : ConfigModule<Config>
     
     [ObservableProperty]
     private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
+
+    public bool ConfigExists()
+    {
+        return File.Exists(LocalPath);
+    }
 }
