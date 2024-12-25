@@ -1,0 +1,167 @@
+<UserControl x:Class="Tkmm.Views.Pages.GameBananaPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:core="using:Tkmm.Core"
+             xmlns:gb="using:TkSharp.Extensions.GameBanana"
+             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="False"
+             x:DataType="pages:GameBananaPageViewModel"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <pages:GameBananaPageViewModel />
+    </UserControl.DataContext>
+    <Grid Margin="15" RowDefinitions="Auto,*,Auto,Auto">
+        <Grid Margin="15"
+              ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+              RowDefinitions="Auto,*,Auto">
+
+            <TextBox Grid.Column="0"
+                     Margin="0,0,5,0"
+                     VerticalAlignment="Center"
+                     KeyDown="TextBox_KeyDown"
+                     Text="{Binding SearchArgument}"
+                     Watermark="Search (must be more than 2 characters)" />
+
+            <Button Grid.Column="1"
+                    Width="30"
+                    Height="30"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding SearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-solid fa-magnifying-glass" />
+            </Button>
+
+            <Button Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Margin="5,0,5,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Command="{Binding ResetSearchCommand}"
+                    CommandParameter="{Binding #ModsViewer}">
+                <pi:Icon Value="fa-regular fa-circle-xmark" />
+            </Button>
+
+            <ToggleButton Grid.Column="3"
+                          Height="30"
+                          Padding="0"
+                          Command="{Binding ShowSuggestedCommand}"
+                          CommandParameter="{Binding #ModsViewer}"
+                          IsChecked="{Binding IsShowingSuggested}">
+                <StackPanel Margin="7,0" Orientation="Horizontal">
+                    <TextBlock Margin="0,0,7,0" Text="Suggested Mods" />
+                    <pi:Icon Value="fa-solid fa-gift" />
+                </StackPanel>
+            </ToggleButton>
+
+            <ComboBox Grid.Column="4"
+                      Width="100"
+                      Margin="5,0,0,0"
+                      ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
+                      SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
+                      ToolTip.Tip="Sort Mode" />
+        </Grid>
+
+        <Grid Grid.Row="1" IsVisible="{Binding !IsLoadSuccess}">
+            <Button HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Content="Retry" />
+        </Grid>
+
+        <ScrollViewer Name="ModsViewer"
+                      Grid.Row="1"
+                      IsScrollInertiaEnabled="True"
+                      IsVisible="{Binding IsLoadSuccess}">
+            <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Source.Feed.Records}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type gb:GameBananaModRecord}">
+                        <Grid>
+                            <Border Width="300"
+                                    Margin="13"
+                                    Padding="10"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource SystemChromeMediumColor}"
+                                    BorderThickness="1"
+                                    BoxShadow="2 2 20 0 #13000000"
+                                    CornerRadius="3">
+                                <StackPanel>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Button Margin="0,0,15,0"
+                                                HorizontalAlignment="Stretch"
+                                                Command="{Binding Path=DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip.Tip="{Binding Name}">
+                                            <TextBlock FontWeight="Medium"
+                                                       Text="{Binding Name}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </Button>
+                                        <HyperlinkButton Grid.Column="1"
+                                                         Width="30"
+                                                         Height="30"
+                                                         Padding="0"
+                                                         NavigateUri="{Binding Url}"
+                                                         ToolTip.Tip="{Binding Name}">
+                                            <pi:Icon Value="fa-solid fa-link" />
+                                        </HyperlinkButton>
+                                    </Grid>
+                                    <Border Height="1"
+                                            Margin="0,10"
+                                            Background="{DynamicResource SystemChromeHighColor}" />
+                                    <Border ClipToBounds="True" CornerRadius="3">
+                                        <Image Height="150"
+                                               Source="{Binding Thumbnail}"
+                                               Stretch="UniformToFill" />
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2"
+              Margin="0,5,0,0"
+              HorizontalAlignment="Center"
+              ColumnDefinitions="Auto,Auto">
+            <Button Margin="5"
+                    Command="{Binding PrevPageCommand}"
+                    CommandParameter="{Binding #ModsViewer}"
+                    IsEnabled="{Binding Source.CurrentPage}">
+                <pi:Icon Value="fa-solid fa-chevron-left" />
+            </Button>
+            <Button Grid.Column="1"
+                    Margin="5"
+                    Command="{Binding NextPageCommand}"
+                    CommandParameter="{Binding #ModsViewer}"
+                    IsEnabled="{Binding !Source.Feed.Metadata.IsCompleted}">
+                <pi:Icon Value="fa-solid fa-chevron-right" />
+            </Button>
+        </Grid>
+
+        <ProgressBar Grid.Row="3"
+                     Margin="0,5,0,0"
+                     IsEffectivelyEnabled="{Binding IsLoading}"
+                     Maximum="1"
+                     Value="{Binding LoadProgress}">
+            <ProgressBar.IsIndeterminate>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="LoadProgress" />
+                    <Binding Path="IsLoading" />
+                </MultiBinding>
+            </ProgressBar.IsIndeterminate>
+        </ProgressBar>
+    </Grid>
+</UserControl>
