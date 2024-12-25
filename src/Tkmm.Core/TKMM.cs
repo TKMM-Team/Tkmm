@@ -62,6 +62,7 @@ public static class TKMM
     static TKMM()
     {
         ModManager = TkModManager.CreatePortable();
+        ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
         const string logCategoryName = nameof(TKMM);
         TkLog.Instance.Register(new DesktopLogger(logCategoryName));
