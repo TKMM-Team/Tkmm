@@ -14,9 +14,9 @@
             <TextBlock TextWrapping="WrapWithOverflow"
                        FontFamily="{StaticResource HyliaGlyph}"
                        FontSize="46"
-                       Text="{Binding WizPage1_Title, Source={x:Static loc:StringResources.SystemMsg}}" />
+                       Text="{Binding WizPage0_Title, Source={x:Static loc:StringResources.SystemMsg}}" />
             <TextBlock TextWrapping="WrapWithOverflow"
-                       Text="{Binding WizPage1_Description, Source={x:Static loc:StringResources.SystemMsg}}" />
+                       Text="{Binding WizPage0_Description, Source={x:Static loc:StringResources.SystemMsg}}" />
             <HyperlinkButton NavigateUri="https://discord.gg/BbVXenRFVc" Content="discord.gg/BbVXenRFVc" />
         </StackPanel>
         
@@ -24,7 +24,7 @@
             <Button Classes="accent"
                     Command="{Binding StartSetupCommand}"
                     CommandParameter="{Binding $parent[UserControl].Tag}"
-                    Content="{Binding WizPage1_Action, Source={x:Static loc:StringResources.SystemMsg}}" />
+                    Content="{Binding WizPage0_Action, Source={x:Static loc:StringResources.SystemMsg}}" />
         </StackPanel>
     </Grid>
 </UserControl>
