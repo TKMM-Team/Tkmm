@@ -24,7 +24,7 @@ public static class ApplicationUpdatesHelper
         
         if (stream is null) {
             TkLog.Instance.LogError(
-                "Update failed: Could not lcoate and/or download release assets from '{Tag}'.",
+                "Update failed: Could not locate and/or download release assets from '{Tag}'.",
                 release.TagName);
             return;
         }

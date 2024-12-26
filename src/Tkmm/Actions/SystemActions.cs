@@ -1,8 +1,8 @@
 using System.Diagnostics;
-using System.Runtime.Versioning;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -85,7 +85,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex,
-                "An error occured while checking for application udpates.");
+                "An error occured while checking for application updates.");
             await ErrorDialog.ShowAsync(ex);
         }
         
@@ -96,7 +96,13 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }.ShowAsync();
     }
 
-    public async Task RequestUpdate(Release release, CancellationToken ct = default)
+    public Task RequestUpdate(Release release, CancellationToken ct = default)
+    {
+        return Dispatcher.UIThread.InvokeAsync(
+            () => RequestUpdateInternal(release, ct));
+    }
+    
+    private async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
     {
         await CanActionRun(showError: false);
         
