@@ -14,6 +14,7 @@
                xmlns:models="clr-namespace:Tkmm.Models"
                Title="{x:Static desktop:App.ShortTitle}"
                xmlns:wiz="using:Tkmm.Views.Wizard"
+               CanResize="{Binding !IsFirstTimeSetup}"
                Width="870"
                Height="550"
                MinWidth="650"
