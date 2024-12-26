@@ -21,7 +21,7 @@ public partial class ShellView : AppWindow
         Icon = bitmap.CreateScaledBitmap(new PixelSize(48, 48));
 
         PageManager.Shared.PropertyChanged += (_, e) => {
-            if (e.PropertyName == nameof(Tkmm.Components.PageManager.Current)) {
+            if (e.PropertyName == nameof(PageManager.Current)) {
                 MainNavigation.Content = PageManager.Shared.Current?.Content;
             }
         };
