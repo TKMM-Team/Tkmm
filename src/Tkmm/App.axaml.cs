@@ -78,6 +78,10 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) {
+            return;
+        }
+        
         BindingPlugins.DataValidators.RemoveAt(0);
         TkThumbnail.CreateBitmap = stream => new Bitmap(stream);
 
@@ -91,66 +95,64 @@ public class App : Application
             });
         };
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            ShellView shellView = new() {
-                DataContext = new ShellViewModel()
+        ShellView shellView = new() {
+            DataContext = new ShellViewModel()
+        };
+
+        shellView.Closed += async (_, _) => {
+            await SystemActions.Instance.SoftClose();
+        };
+
+        XamlRoot = shellView;
+        shellView.Loaded += (_, _) => {
+            _notificationManager = new WindowNotificationManager(XamlRoot) {
+                Position = NotificationPosition.BottomRight,
+                MaxItems = 5,
+                Margin = new Thickness(0, 0, 4, 30)
             };
+        };
 
-            shellView.Closed += async (_, _) => {
-                await SystemActions.Instance.SoftClose();
-            };
+        MenuFactory = new AvaloniaMenuFactory(XamlRoot,
+            localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
+        );
+        MenuFactory.ConfigureMenu();
 
-            XamlRoot = shellView;
-            shellView.Loaded += (_, _) => {
-                _notificationManager = new WindowNotificationManager(XamlRoot) {
-                    Position = NotificationPosition.BottomRight,
-                    MaxItems = 5,
-                    Margin = new Thickness(0, 0, 4, 30)
-                };
-            };
+        shellView.MainMenu.ItemsSource = MenuFactory.Items;
+        desktop.MainWindow = shellView;
 
-            MenuFactory = new AvaloniaMenuFactory(XamlRoot,
-                localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
-            );
-            MenuFactory.ConfigureMenu();
+        // ConfigFactory Configuration
+        BrowserDialog.StorageProvider = shellView.StorageProvider;
 
-            shellView.MainMenu.ItemsSource = MenuFactory.Items;
-            desktop.MainWindow = shellView;
+        Config.Shared.ThemeChanged += OnThemeChanged;
 
-            // ConfigFactory Configuration
-            BrowserDialog.StorageProvider = shellView.StorageProvider;
+        ConfigPage settingsPage = new();
+        bool isValid = false;
 
-            Config.Shared.ThemeChanged += OnThemeChanged;
+        if (settingsPage.DataContext is ConfigPageModel settingsModel) {
+            settingsModel.SecondaryButtonIsEnabled = false;
 
-            ConfigPage settingsPage = new();
-            bool isValid = false;
+            isValid = ConfigModule<Config>.Shared.Validate(out string? _, out ConfigProperty? target);
+            settingsModel.Append<Config>();
 
-            if (settingsPage.DataContext is ConfigPageModel settingsModel) {
-                settingsModel.SecondaryButtonIsEnabled = false;
+            if (!isValid && target?.Attribute is not null) {
+                settingsModel.SelectedGroup = settingsModel.Categories
+                    .Where(x => x.Header == target.Attribute.Category)
+                    .SelectMany(x => x.Groups)
+                    .FirstOrDefault(x => x.Header == target.Attribute.Group);
 
-                isValid = ConfigModule<Config>.Shared.Validate(out string? _, out ConfigProperty? target);
-                settingsModel.Append<Config>();
-
-                if (!isValid && target?.Attribute is not null) {
-                    settingsModel.SelectedGroup = settingsModel.Categories
-                        .Where(x => x.Header == target.Attribute.Category)
-                        .SelectMany(x => x.Groups)
-                        .FirstOrDefault(x => x.Header == target.Attribute.Group);
-
-                    TkStatus.Set(Exceptions.InvalidSettings(target.Property.Name), TkIcons.WARNING);
-                }
+                TkStatus.Set(Exceptions.InvalidSettings(target.Property.Name), TkIcons.WARNING);
             }
-
-            PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
-            PageManager.Shared.Register(Page.Profiles, PageMsg.Profiles, new ProfilesPageView(), Symbol.OtherUser, PageMsg.ProfilesDescription);
-            PageManager.Shared.Register(Page.Tools, PageMsg.Tools, new ProjectsPageView(), Symbol.CodeHTML, PageMsg.ToolsDescription);
-            PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
-
-            PageManager.Shared.Register(Page.Logs, PageMsg.Logs, new LogsPageView(), Symbol.AllApps, PageMsg.LogsDescription, isFooter: true);
-            PageManager.Shared.Register(Page.Settings, PageMsg.Settings, settingsPage, Symbol.Settings, PageMsg.SettingsDescription, isFooter: true, isDefault: isValid == false);
-
-            OnThemeChanged(Config.Shared.Theme);
         }
+
+        PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
+        PageManager.Shared.Register(Page.Profiles, PageMsg.Profiles, new ProfilesPageView(), Symbol.OtherUser, PageMsg.ProfilesDescription);
+        PageManager.Shared.Register(Page.Tools, PageMsg.Tools, new ProjectsPageView(), Symbol.CodeHTML, PageMsg.ToolsDescription);
+        PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
+
+        PageManager.Shared.Register(Page.Logs, PageMsg.Logs, new LogsPageView(), Symbol.AllApps, PageMsg.LogsDescription, isFooter: true);
+        PageManager.Shared.Register(Page.Settings, PageMsg.Settings, settingsPage, Symbol.Settings, PageMsg.SettingsDescription, isFooter: true, isDefault: isValid == false);
+
+        OnThemeChanged(Config.Shared.Theme);
 
         base.OnFrameworkInitializationCompleted();
     }
