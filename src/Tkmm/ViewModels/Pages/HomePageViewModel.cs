@@ -49,13 +49,13 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static void MoveUp()
     {
-        // TODO: TKMM.ModManager.GetCurrentProfile().MoveUp();
+        TKMM.ModManager.GetCurrentProfile().MoveUp();
     }
 
     [RelayCommand]
     private static void MoveDown()
     {
-        // TODO: TKMM.ModManager.GetCurrentProfile().MoveDown();
+        TKMM.ModManager.GetCurrentProfile().MoveDown();
     }
 
     [RelayCommand]
