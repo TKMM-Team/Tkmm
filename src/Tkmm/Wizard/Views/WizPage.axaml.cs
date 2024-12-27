@@ -1,7 +1,6 @@
 using Avalonia.Controls;
-using Tkmm.Components.Wizard;
 
-namespace Tkmm.Views.Wizard;
+namespace Tkmm.Wizard.Views;
 
 public partial class WizPage : UserControl
 {

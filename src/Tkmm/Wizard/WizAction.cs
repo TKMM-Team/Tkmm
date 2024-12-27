@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Tkmm.ViewModels.Wizard;
+using Tkmm.Wizard.ViewModels;
 
-namespace Tkmm.Components.Wizard;
+namespace Tkmm.Wizard;
 
 public partial class WizAction(object? content, int defaultSelection, Func<ValueTask<(bool, int?)>>? onMoveNext = null) : ObservableObject
 {

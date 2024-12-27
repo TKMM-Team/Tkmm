@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Tkmm.Views.Wizard;
+namespace Tkmm.Wizard.Views;
 
 public partial class WizEmulatorSelectionPage : UserControl
 {

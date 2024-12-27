@@ -1,9 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Tkmm.Components.Wizard;
-using WizAction = Tkmm.Components.Wizard.WizAction;
 
-namespace Tkmm.ViewModels.Wizard;
+namespace Tkmm.Wizard.ViewModels;
 
 public partial class WizPageViewModel(int id, WizPageViewModel? lastPage, string title, object? pageContent, List<WizAction> actions) : ObservableObject
 {

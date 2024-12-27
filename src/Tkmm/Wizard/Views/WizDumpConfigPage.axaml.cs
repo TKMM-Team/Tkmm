@@ -1,7 +1,7 @@
 using Avalonia.Controls;
-using Tkmm.ViewModels.Wizard;
+using WizDumpConfigPageViewModel = Tkmm.Wizard.ViewModels.WizDumpConfigPageViewModel;
 
-namespace Tkmm.Views.Wizard;
+namespace Tkmm.Wizard.Views;
 
 public partial class WizDumpConfigPage : UserControl
 {

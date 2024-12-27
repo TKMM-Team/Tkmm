@@ -51,6 +51,18 @@
       <DependentUpon>App.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Wizard\Views\WizDumpConfigPage.axaml.cs">
+      <DependentUpon>WizDumpConfigPage.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Wizard\Views\WizEmulatorSelectionPage.axaml.cs">
+      <DependentUpon>WizEmulatorSelectionPage.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Wizard\Views\WizPage.axaml.cs">
+      <DependentUpon>WizPage.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

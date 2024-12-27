@@ -3,7 +3,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Tkmm.ViewModels.Wizard;
+namespace Tkmm.Wizard.ViewModels;
 
 public sealed partial class WizDumpConfigPageViewModel : ObservableObject
 {

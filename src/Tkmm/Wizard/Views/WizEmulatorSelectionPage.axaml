@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:loc="using:Tkmm.Core.Localization"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Tkmm.Views.Wizard.WizEmulatorSelectionPage">
+             x:Class="Tkmm.Wizard.Views.WizEmulatorSelectionPage">
     <StackPanel>
         <RadioButton GroupName="selection"
                      Name="RyujinxOption"

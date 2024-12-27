@@ -13,7 +13,7 @@
                xmlns:components1="clr-namespace:Tkmm.Components"
                xmlns:models="clr-namespace:Tkmm.Models"
                Title="{x:Static desktop:App.ShortTitle}"
-               xmlns:wiz="using:Tkmm.Views.Wizard"
+               xmlns:wiz="using:Tkmm.Wizard.Views"
                CanResize="{Binding !IsFirstTimeSetup}"
                Width="870"
                Height="550"

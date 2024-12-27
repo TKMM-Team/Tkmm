@@ -1,7 +1,8 @@
-using Tkmm.ViewModels.Wizard;
-using Tkmm.Views.Wizard;
+using Tkmm.Wizard.ViewModels;
+using WizDumpConfigPage = Tkmm.Wizard.Views.WizDumpConfigPage;
+using WizEmulatorSelectionPage = Tkmm.Wizard.Views.WizEmulatorSelectionPage;
 
-namespace Tkmm.Components.Wizard;
+namespace Tkmm.Wizard;
 
 public class WizLayout
 {

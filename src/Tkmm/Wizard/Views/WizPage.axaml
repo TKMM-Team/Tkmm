@@ -3,12 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:loc="using:Tkmm.Core.Localization"
-             xmlns:local="using:Tkmm.ViewModels.Wizard"
-             xmlns:m="using:Tkmm.Components.Wizard"
-             xmlns:wizard="clr-namespace:Tkmm.Components.Wizard"
-             x:DataType="local:WizPageViewModel"
-             x:Class="Tkmm.Views.Wizard.WizPage">
+             xmlns:viewModels="clr-namespace:Tkmm.Wizard.ViewModels"
+             xmlns:wizard1="clr-namespace:Tkmm.Wizard"
+             x:DataType="viewModels:WizPageViewModel"
+             x:Class="Tkmm.Wizard.Views.WizPage">
     <Grid RowDefinitions="*,Auto" Margin="60">
         <StackPanel VerticalAlignment="Center"
                     Spacing="20"
@@ -19,7 +17,7 @@
                        Text="{Binding Title}" />
             <ContentPresenter Content="{Binding}" TextWrapping="WrapWithOverflow">
                 <ContentPresenter.DataTemplates>
-                    <DataTemplate DataType="{x:Type local:WizPageViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:WizPageViewModel}">
                         <ContentControl Content="{Binding PageContent}" />
                     </DataTemplate>
                 </ContentPresenter.DataTemplates>
@@ -41,7 +39,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type wizard:WizAction}">
+                    <DataTemplate DataType="{x:Type wizard1:WizAction}">
                         <Button Command="{Binding MoveNextCommand}"
                                 CommandParameter="{Binding $parent[UserControl].DataContext}"
                                 Content="{Binding Content}" />
