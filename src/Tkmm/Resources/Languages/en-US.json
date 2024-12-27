@@ -6,10 +6,14 @@
         "WizPage0_Title": "Welcome to the Tears of the Kingdom Mod Manager!",
         "WizPage0_Description": "This setup wizard will guide you through setting up TKMM to work with your computer. If you are having issues, consider joining our Discord server.",
         "WizPage0_Action": "Start Setup",
-        "WizPage1_Content": "Are you playing TotK on an emulator, or a Switch console?",
-        "WizPage1_ChooseEmulator": "Emulator",
-        "WizPage1_ChooseSwitchConsole": "Switch Console",
-        "WizPage1_ChooseBoth": "Both"
+        "WizPage1_Title": "Are you using a Ryujinx-based emulator?",
+        "WizPage1_Description": "Choosing \"Yes\" will start the setup process for Ryujinx. (Recommended for PC users)\nChoosing \"No\" will prompt you to select your emulator executable file.\nChoosing \"Skip\" will not setup any emulator, however you will have to manually setup your game rom configurations.",
+        "WizPage1_ChooseRyujinx": "Yes",
+        "WizPage1_ChooseOther": "No, setup emulator manually",
+        "WizPage1_ChooseSwitchOnly": "Skip emulator setup (Switch users)",
+        "WizPage1A_Title": "Please open Ryujinx and press \"Start\"",
+        "WizPage1A_Description": "Make sure you have the prod and title keys configured and have \"The Legend of Zelda: Tears of the Kingdom\" installed with at least one update.",
+        "WizPage1A_Start": "Start"
     },
     "Menu": {
         "File": "File",

@@ -35,7 +35,7 @@
     </uiw:AppWindow.Transitions>-->
     <Grid>
         <ContentControl IsVisible="{Binding IsFirstTimeSetup}" Name="WizContainer">
-            <wiz:WizPage0 Tag="{Binding #WizContainer}" />
+            <wiz:WizPage Tag="{Binding #WizContainer}" />
         </ContentControl>
         
         <Grid Background="Transparent"
