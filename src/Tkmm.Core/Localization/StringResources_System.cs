@@ -12,10 +12,10 @@ public class StringResources_System
     public string WizPage0_Description { get; } = GetStringResource(GROUP, nameof(WizPage0_Description));
     public string WizPage0_Action { get; } = GetStringResource(GROUP, nameof(WizPage0_Action));
     public string WizPage1_Title { get; } = GetStringResource(GROUP, nameof(WizPage1_Title));
-    public string WizPage1_Description { get; } = GetStringResource(GROUP, nameof(WizPage1_Description));
-    public string WizPage1_Action_ChooseRyujinx { get; } = GetStringResource(GROUP, nameof(WizPage1_Action_ChooseRyujinx));
-    public string WizPage1_Action_ChooseOther { get; } = GetStringResource(GROUP, nameof(WizPage1_Action_ChooseOther));
-    public string WizPage1_Action_ChooseSwitchOnly { get; } = GetStringResource(GROUP, nameof(WizPage1_Action_ChooseSwitchOnly));
+    public string WizPage1_Option_Ryujinx { get; } = GetStringResource(GROUP, nameof(WizPage1_Option_Ryujinx));
+    public string WizPage1_Option_Switch { get; } = GetStringResource(GROUP, nameof(WizPage1_Option_Switch));
+    public string WizPage1_Option_Other { get; } = GetStringResource(GROUP, nameof(WizPage1_Option_Other));
+    public string WizPage1_Action_Next { get; } = GetStringResource(GROUP, nameof(WizPage1_Action_Next));
     public string WizPage1A_Title {get;} = GetStringResource(GROUP, nameof(WizPage1A_Title));
     public string WizPage1A_Description {get;} = GetStringResource(GROUP, nameof(WizPage1A_Description));
     public string WizPage1A_Action_Start {get;} = GetStringResource(GROUP, nameof(WizPage1A_Action_Start));

@@ -21,10 +21,8 @@ public class WizLayout
     
     private static readonly WizPageViewModel _page1 = new(
         id: 1, lastPage: FirstPage,
-        SystemMsg.WizPage1_Title, SystemMsg.WizPage1_Description, [
-            new WizAction(SystemMsg.WizPage1_Action_ChooseSwitchOnly, 2), // TODO: Manual config page
-            new WizAction(SystemMsg.WizPage1_Action_ChooseOther, 1), // TODO: Open folder browser for an exe -> Manual config page
-            new WizAction(SystemMsg.WizPage1_Action_ChooseRyujinx, 0),
+        SystemMsg.WizPage1_Title, WizEmulatorSelectionPage.Instance, [
+            new WizAction(SystemMsg.WizPage1_Action_Next, 0, WizEmulatorSelectionPage.Instance.CheckSelection)
         ]);
     
     private static readonly WizPageViewModel _page1ChoiceA = new(
@@ -35,6 +33,12 @@ public class WizLayout
     
     private static readonly WizPageViewModel _page2 = new(
         id: 2, lastPage: _page1,
+        SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
+            new WizAction(SystemMsg.WizPage2_Action_Verify, 0) // TODO: Verify config
+        ]);
+    
+    private static readonly WizPageViewModel _pageFinal = new(
+        id: -1, lastPage: null,
         SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
             new WizAction(SystemMsg.WizPage2_Action_Verify, 0) // TODO: Verify config
         ]);
