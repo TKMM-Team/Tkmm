@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Tkmm.Components.Wizard;
 using Tkmm.Models.Wizard;
+using WizAction = Tkmm.Components.Wizard.WizAction;
 
 namespace Tkmm.ViewModels.Wizard;
 

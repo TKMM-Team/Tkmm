@@ -6,6 +6,7 @@
              xmlns:loc="using:Tkmm.Core.Localization"
              xmlns:local="using:Tkmm.ViewModels.Wizard"
              xmlns:m="using:Tkmm.Models.Wizard"
+             xmlns:wizard="clr-namespace:Tkmm.Components.Wizard"
              x:DataType="local:WizPageViewModel"
              x:Class="Tkmm.Views.Wizard.WizPage">
     <Grid RowDefinitions="*,Auto" Margin="60">
@@ -40,7 +41,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type m:WizAction}">
+                    <DataTemplate DataType="{x:Type wizard:WizAction}">
                         <Button Command="{Binding MoveNextCommand}"
                                 CommandParameter="{Binding $parent[UserControl].DataContext}"
                                 Content="{Binding Content}" />

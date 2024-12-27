@@ -1,7 +1,8 @@
+using Tkmm.Models.Wizard;
 using Tkmm.ViewModels.Wizard;
 using Tkmm.Views.Wizard;
 
-namespace Tkmm.Models.Wizard;
+namespace Tkmm.Components.Wizard;
 
 public class WizLayout
 {
