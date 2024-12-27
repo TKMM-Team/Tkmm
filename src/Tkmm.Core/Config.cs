@@ -74,9 +74,7 @@ public sealed partial class Config : ConfigModule<Config>
         Header = "Default Author",
         Description = "The default author used when packaging TKCL mods.",
         Group = "Packaging")]
-    private string _defaultAuthor
-        // TODO: Ask users before loading the username 
-        = Path.GetFileName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+    private string _defaultAuthor = string.Empty;
     
     [JsonIgnore, Config(
          Header = "Game Path",
