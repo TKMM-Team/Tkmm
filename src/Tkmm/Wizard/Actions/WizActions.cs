@@ -1,5 +1,6 @@
 using Avalonia.Platform.Storage;
 using LibHac.Common.Keys;
+using Tkmm.Dialogs;
 using Tkmm.Helpers;
 
 namespace Tkmm.Wizard.Actions;
@@ -26,7 +27,6 @@ public static class WizActions
         };
 
         if (emulatorFilePath is null) {
-            // TODO: (Dialog)
             return (false, null);
         }
         
@@ -37,12 +37,16 @@ public static class WizActions
     public static async ValueTask<(bool, int?)> StartRyujinxSetup()
     {
         if (RyujinxHelper.GetRyujinxDataFolder() is not string ryujinxDataFolder) {
-            // TODO: (Dialog)
+            await MessageDialog.Show(
+                "Ryujinx is not running or could not be identified. Please ensure Ryujinx is running.",
+                "Setup Error");
             return (false, null);
         }
 
         if (RyujinxHelper.GetKeys(ryujinxDataFolder, out string ryujinxKeysFolder) is not KeySet keys) {
-            // TODO: (Dialog)
+            await MessageDialog.Show(
+                "The required keys could not be found in your Ryujinx installation.",
+                "Setup Error");
             return (false, null);
         }
         
