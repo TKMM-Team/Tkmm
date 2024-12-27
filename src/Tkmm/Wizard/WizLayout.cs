@@ -36,7 +36,7 @@ public class WizLayout
     private static readonly WizPageViewModel _page2 = new(
         id: 2, lastPage: _page1,
         SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
-            new WizAction(SystemMsg.WizPage2_Action_Verify, 0) // TODO: Verify config
+            new WizAction(SystemMsg.WizPage2_Action_Verify, 0, WizActions.VerifyConfig)
         ]);
     
     private static readonly WizPageViewModel _pageFinal = new(
@@ -64,7 +64,7 @@ public class WizLayout
     {
         return (current.Id, selection) switch {
             (0, _) => _page1,
-            (1, 0) => _pageRyujinxSetup, // ryujinx
+            (1, 0) => _pageRyujinxSetup,
             (1, 1) => _page2,
             _ => _pageFinal
         };

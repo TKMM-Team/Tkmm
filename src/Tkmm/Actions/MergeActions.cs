@@ -47,7 +47,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                             TextWrapping = TextWrapping.WrapWithOverflow
                         },
                         new CheckBox {
-                            Content = "Never show again (recomended for Switch users).",
+                            Content = "Never show again (recommended for Switch users).",
                             DataContext = NamedDialogConfig.Shared,
                             [!ToggleButton.IsCheckedProperty] = NamedDialogConfig.GetBinding(suppressMergeExportLocationsPrompt)
                         }

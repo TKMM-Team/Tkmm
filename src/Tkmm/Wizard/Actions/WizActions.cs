@@ -32,7 +32,7 @@ public static class WizActions
         
         // TODO: Persist exe location
         return (true, null);
-    } 
+    }
     
     public static async ValueTask<(bool, int?)> StartRyujinxSetup()
     {
@@ -48,5 +48,10 @@ public static class WizActions
         
         // TODO: Persist Ryujinx config
         return (true, null);
+    }
+    
+    public static async ValueTask<(bool, int?)> VerifyConfig()
+    {
+        throw new NotImplementedException();
     }
 }
