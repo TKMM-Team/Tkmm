@@ -11,16 +11,19 @@
         "WizPage1_Option_Switch": "Directly on my Switch console",
         "WizPage1_Option_Other": "Using another emulator (Only recommended for SteamDeck and weak hardware)",
         "WizPage1_Action_Next": "Next",
-        "WizPage1A_Title": "Please open Ryujinx and press \"Start\"",
-        "WizPage1A_Description": "Make sure you have the prod and title keys configured and have \"The Legend of Zelda: Tears of the Kingdom\" installed with at least one update.",
-        "WizPage1A_Action_Start": "Start",
+        "WizPageRyujinxSetup_Title": "Please open Ryujinx and press \"Start\"",
+        "WizPageRyujinxSetup_Description": "Make sure you have the prod and title keys configured and have \"The Legend of Zelda: Tears of the Kingdom\" installed with at least one update.",
+        "WizPageRyujinxSetup_Action_Start": "Start",
         "WizPage2_Title": "Setup Game Dump",
         "WizPage2_Action_Verify": "Verify",
         "WizDumpPage_KeysFolderField_Description": "Keys Folder Path",
         "WizDumpPage_BaseGameFileField_Description": "Base Game File Path (XCI/NSP)",
         "WizDumpPage_GameUpdateFileField_Description": "Game Update File Path (NSP)",
         "WizDumpPage_GameDumpFolderField_Description": "Game Dump Folder Path (romfs)",
-        "WizDumpPage_Action_Browse": "..."
+        "WizDumpPage_Action_Browse": "...",
+        "WizPageFinal_Title": "Setup Complete",
+        "WizPageFinal_Description": "I don't know what to put here. Read the docs...",
+        "WizPageFinal_Action_Finish": "Finish"
     },
     "Menu": {
         "File": "File",

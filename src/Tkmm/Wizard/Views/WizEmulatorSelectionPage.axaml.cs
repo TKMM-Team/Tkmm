@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Tkmm.Wizard.Actions;
 
 namespace Tkmm.Wizard.Views;
 
@@ -11,13 +12,13 @@ public partial class WizEmulatorSelectionPage : UserControl
         InitializeComponent();
     }
 
-    public ValueTask<(bool, int?)> CheckSelection()
+    public async ValueTask<(bool, int?)> CheckSelection()
     {
-        return ValueTask.FromResult<(bool, int?)>((RyujinxOption.IsChecked, SwitchOption.IsChecked, OtherOption.IsChecked) switch {
+        return (RyujinxOption.IsChecked, SwitchOption.IsChecked, OtherOption.IsChecked) switch {
             (true, false, false) => (true, 0),
-            (false, true, false) => (true, 1),
-            (false, false, true) => (true, 2),
+            (false, true, false) => (true, null),
+            (false, false, true) => await WizActions.SetupOtherEmulator(),
             _ => (false, null),
-        });
+        };
     }
 }

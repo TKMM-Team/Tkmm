@@ -16,9 +16,9 @@ public class StringResources_System
     public string WizPage1_Option_Switch { get; } = GetStringResource(GROUP, nameof(WizPage1_Option_Switch));
     public string WizPage1_Option_Other { get; } = GetStringResource(GROUP, nameof(WizPage1_Option_Other));
     public string WizPage1_Action_Next { get; } = GetStringResource(GROUP, nameof(WizPage1_Action_Next));
-    public string WizPage1A_Title {get;} = GetStringResource(GROUP, nameof(WizPage1A_Title));
-    public string WizPage1A_Description {get;} = GetStringResource(GROUP, nameof(WizPage1A_Description));
-    public string WizPage1A_Action_Start {get;} = GetStringResource(GROUP, nameof(WizPage1A_Action_Start));
+    public string WizPageRyujinxSetup_Title {get;} = GetStringResource(GROUP, nameof(WizPageRyujinxSetup_Title));
+    public string WizPageRyujinxSetup_Description {get;} = GetStringResource(GROUP, nameof(WizPageRyujinxSetup_Description));
+    public string WizPageRyujinxSetup_Action_Start {get;} = GetStringResource(GROUP, nameof(WizPageRyujinxSetup_Action_Start));
     public string WizPage2_Title {get;} = GetStringResource(GROUP, nameof(WizPage2_Title));
     public string WizPage2_Action_Verify {get;} = GetStringResource(GROUP, nameof(WizPage2_Action_Verify));
     public string WizDumpPage_KeysFolderField_Description {get;} = GetStringResource(GROUP, nameof(WizDumpPage_KeysFolderField_Description));
@@ -26,4 +26,7 @@ public class StringResources_System
     public string WizDumpPage_GameUpdateFileField_Description {get;} = GetStringResource(GROUP, nameof(WizDumpPage_GameUpdateFileField_Description));
     public string WizDumpPage_GameDumpFolderField_Description {get;} = GetStringResource(GROUP, nameof(WizDumpPage_GameDumpFolderField_Description));
     public string WizDumpPage_Action_Browse {get;} = GetStringResource(GROUP, nameof(WizDumpPage_Action_Browse));
+    public string WizPageFinal_Title {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Title));
+    public string WizPageFinal_Description {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Description));
+    public string WizPageFinal_Action_Finish {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Action_Finish));
 }

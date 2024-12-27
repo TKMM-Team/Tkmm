@@ -15,9 +15,9 @@ namespace Tkmm.Helpers;
 
 public class RyujinxHelper
 {
-    public static KeySet? GetKeys(out string systemFolderPath)
+    public static KeySet? GetKeys(string ryujinxDataFolder, out string systemFolderPath)
     {
-        systemFolderPath = Path.Combine(GetRyujinxDataFolder(), "system");
+        systemFolderPath = Path.Combine(ryujinxDataFolder, "system");
         
         string prodKeysFilePath = Path.Combine(systemFolderPath, "prod.keys");
         if (!File.Exists(prodKeysFilePath)) {
@@ -39,9 +39,9 @@ public class RyujinxHelper
         return keys;
     }
     
-    public static IEnumerable<(string FilePath, string Version)> GetTotkFiles(KeySet keys)
+    public static IEnumerable<(string FilePath, string Version)> GetTotkFiles(string ryujinxDataFolder, KeySet keys)
     {
-        RyujinxConfig? config = GetRyujinxConfig();
+        RyujinxConfig? config = GetRyujinxConfig(ryujinxDataFolder);
 
         if (config is null) {
             throw new InvalidOperationException("Ryujinx configuration could not be found.");
@@ -62,9 +62,9 @@ public class RyujinxHelper
         }
     }
 
-    public static RyujinxConfig? GetRyujinxConfig()
+    public static RyujinxConfig? GetRyujinxConfig(string ryujinxDataFolder)
     {
-        string path = Path.Combine(GetRyujinxDataFolder(), "Config.json");
+        string path = Path.Combine(ryujinxDataFolder, "Config.json");
         
         if (!File.Exists(path)) {
             TkLog.Instance.LogError("Ryujinx config file could not be found.");
@@ -75,17 +75,14 @@ public class RyujinxHelper
         return JsonSerializer.Deserialize<RyujinxConfig>(fs);
     }
 
-    public static string GetRyujinxDataFolder(bool failIfNotRunning = false)
+    public static string? GetRyujinxDataFolder()
     {
         Process? ryujinx = Process
             .GetProcesses()
             .FirstOrDefault(x => x.ProcessName.Contains("Ryujinx", StringComparison.OrdinalIgnoreCase));
 
         if (ryujinx is null) {
-            if (failIfNotRunning) throw new InvalidOperationException("Ryujinx is not running.");
-            
-            TkLog.Instance.LogError("Ryujinx is not running, defaulting to AppData installation.");
-            goto UseAppDataInstall;
+            return null;
         }
 
         if (Path.GetDirectoryName(ryujinx?.MainModule?.FileName) is not string ryujinxFolder) {

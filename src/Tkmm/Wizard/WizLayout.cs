@@ -1,3 +1,4 @@
+using Tkmm.Wizard.Actions;
 using Tkmm.Wizard.ViewModels;
 using WizDumpConfigPage = Tkmm.Wizard.Views.WizDumpConfigPage;
 using WizEmulatorSelectionPage = Tkmm.Wizard.Views.WizEmulatorSelectionPage;
@@ -23,13 +24,13 @@ public class WizLayout
     private static readonly WizPageViewModel _page1 = new(
         id: 1, lastPage: FirstPage,
         SystemMsg.WizPage1_Title, WizEmulatorSelectionPage.Instance, [
-            new WizAction(SystemMsg.WizPage1_Action_Next, 0, WizEmulatorSelectionPage.Instance.CheckSelection)
+            new WizAction(SystemMsg.WizPage1_Action_Next, 1, WizEmulatorSelectionPage.Instance.CheckSelection)
         ]);
     
-    private static readonly WizPageViewModel _page1ChoiceA = new(
-        id: 1, lastPage: _page1,
-        SystemMsg.WizPage1A_Title, SystemMsg.WizPage1A_Description, [
-            new WizAction(SystemMsg.WizPage1A_Action_Start, 0) // TODO: Start Ryujinx setup
+    private static readonly WizPageViewModel _pageRyujinxSetup = new(
+        id: 3, lastPage: _page1,
+        SystemMsg.WizPageRyujinxSetup_Title, SystemMsg.WizPageRyujinxSetup_Description, [
+            new WizAction(SystemMsg.WizPageRyujinxSetup_Action_Start, 0, WizActions.StartRyujinxSetup)
         ]);
     
     private static readonly WizPageViewModel _page2 = new(
@@ -40,17 +41,13 @@ public class WizLayout
     
     private static readonly WizPageViewModel _pageFinal = new(
         id: -1, lastPage: null,
-        SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
-            new WizAction(SystemMsg.WizPage2_Action_Verify, 0) // TODO: Verify config
+        SystemMsg.WizPageFinal_Title, SystemMsg.WizPageFinal_Description, [
+            new WizAction(SystemMsg.WizPageFinal_Action_Finish, 0)
         ]);
 
     public static void NextPage(WizPageViewModel current, int selection)
     {
-        if (GetNextPage(current, selection) is not WizPageViewModel nextPage) {
-            // TODO: Set to last page
-            return;
-        }
-        
+        WizPageViewModel nextPage = GetNextPage(current, selection);
         UpdatePage(current, nextPage);
     }
 
@@ -63,13 +60,13 @@ public class WizLayout
         current.Actions = target.Actions;
     }
     
-    private static WizPageViewModel? GetNextPage(WizPageViewModel current, int selection)
+    private static WizPageViewModel GetNextPage(WizPageViewModel current, int selection)
     {
         return (current.Id, selection) switch {
             (0, _) => _page1,
-            (1, 0) => _page1ChoiceA, // ryujinx
-            (1, 1 or 2) => _page2,
-            _ => null
+            (1, 0) => _pageRyujinxSetup, // ryujinx
+            (1, 1) => _page2,
+            _ => _pageFinal
         };
     }
 }
