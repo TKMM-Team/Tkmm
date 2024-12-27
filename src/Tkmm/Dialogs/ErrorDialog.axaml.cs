@@ -10,10 +10,10 @@ public partial class ErrorDialog : UserControl
         InitializeComponent();
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static async ValueTask<object> ShowAsync(Exception ex, params TaskDialogStandardResult[] buttons)
     {
 #if DEBUG
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         throw ex;
 #else
         return await Dispatcher.UIThread.InvokeAsync(async () => {
