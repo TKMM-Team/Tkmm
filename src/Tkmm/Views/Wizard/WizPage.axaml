@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:loc="using:Tkmm.Core.Localization"
              xmlns:local="using:Tkmm.ViewModels.Wizard"
-             xmlns:m="using:Tkmm.Models.Wizard"
+             xmlns:m="using:Tkmm.Components.Wizard"
              xmlns:wizard="clr-namespace:Tkmm.Components.Wizard"
              x:DataType="local:WizPageViewModel"
              x:Class="Tkmm.Views.Wizard.WizPage">

@@ -1,4 +1,3 @@
-using Tkmm.Models.Wizard;
 using Tkmm.ViewModels.Wizard;
 using Tkmm.Views.Wizard;
 

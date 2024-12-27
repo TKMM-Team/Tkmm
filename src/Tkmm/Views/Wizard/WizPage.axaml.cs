@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Tkmm.Components.Wizard;
-using Tkmm.Models.Wizard;
 
 namespace Tkmm.Views.Wizard;
 
