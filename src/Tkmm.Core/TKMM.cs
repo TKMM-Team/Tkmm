@@ -23,6 +23,13 @@ public static class TKMM
 
     public static TkModManager ModManager { get; }
 
+    public static Task Initialize(ITkThumbnailProvider thumbnailProvider, CancellationToken ct = default)
+    {
+        return Task.WhenAll(
+            ModManager.Mods.Select(x => Task.Run(() => thumbnailProvider.ResolveThumbnail(x, ct), ct))
+        );
+    }
+
     public static async ValueTask<TkMod?> Install(object input, Stream? stream = null, TkModContext context = default, TkProfile? profile = null, CancellationToken ct = default)
     {
         TkModReaderProvider readerProvider = new(ModManager, _romProvider.Value);
