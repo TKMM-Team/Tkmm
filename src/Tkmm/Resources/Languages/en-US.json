@@ -8,12 +8,19 @@
         "WizPage0_Action": "Start Setup",
         "WizPage1_Title": "Are you using a Ryujinx-based emulator?",
         "WizPage1_Description": "Choosing \"Yes\" will start the setup process for Ryujinx. (Recommended for PC users)\nChoosing \"No\" will prompt you to select your emulator executable file.\nChoosing \"Skip\" will not setup any emulator, however you will have to manually setup your game rom configurations.",
-        "WizPage1_ChooseRyujinx": "Yes",
-        "WizPage1_ChooseOther": "No, setup emulator manually",
-        "WizPage1_ChooseSwitchOnly": "Skip emulator setup (Switch users)",
+        "WizPage1_Action_ChooseRyujinx": "Yes",
+        "WizPage1_Action_ChooseOther": "No, setup emulator manually",
+        "WizPage1_Action_ChooseSwitchOnly": "Skip emulator setup (Switch users)",
         "WizPage1A_Title": "Please open Ryujinx and press \"Start\"",
         "WizPage1A_Description": "Make sure you have the prod and title keys configured and have \"The Legend of Zelda: Tears of the Kingdom\" installed with at least one update.",
-        "WizPage1A_Start": "Start"
+        "WizPage1A_Action_Start": "Start",
+        "WizPage2_Title": "Setup Game Dump",
+        "WizPage2_Action_Verify": "Verify",
+        "WizDumpPage_KeysFolderField_Description": "Keys Folder Path",
+        "WizDumpPage_BaseGameFileField_Description": "Base Game File Path (XCI/NSP)",
+        "WizDumpPage_GameUpdateFileField_Description": "Game Update File Path (NSP)",
+        "WizDumpPage_GameDumpFolderField_Description": "Game Dump Folder Path (romfs)",
+        "WizDumpPage_Action_Browse": "..."
     },
     "Menu": {
         "File": "File",

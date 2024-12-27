@@ -1,4 +1,5 @@
 using Tkmm.ViewModels.Wizard;
+using Tkmm.Views.Wizard;
 
 namespace Tkmm.Models.Wizard;
 
@@ -21,15 +22,21 @@ public class WizLayout
     private static readonly WizPageViewModel _page1 = new(
         id: 1, lastPage: FirstPage,
         SystemMsg.WizPage1_Title, SystemMsg.WizPage1_Description, [
-            new WizAction(SystemMsg.WizPage1_ChooseSwitchOnly, 2),
-            new WizAction(SystemMsg.WizPage1_ChooseOther, 1),
-            new WizAction(SystemMsg.WizPage1_ChooseRyujinx, 0),
+            new WizAction(SystemMsg.WizPage1_Action_ChooseSwitchOnly, 2), // TODO: Manual config page
+            new WizAction(SystemMsg.WizPage1_Action_ChooseOther, 1), // TODO: Open folder browser for an exe -> Manual config page
+            new WizAction(SystemMsg.WizPage1_Action_ChooseRyujinx, 0),
         ]);
     
     private static readonly WizPageViewModel _page1ChoiceA = new(
         id: 1, lastPage: _page1,
         SystemMsg.WizPage1A_Title, SystemMsg.WizPage1A_Description, [
-            new WizAction(SystemMsg.WizPage1A_Start, 0)
+            new WizAction(SystemMsg.WizPage1A_Action_Start, 0) // TODO: Start Ryujinx setup
+        ]);
+    
+    private static readonly WizPageViewModel _page2 = new(
+        id: 2, lastPage: _page1,
+        SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
+            new WizAction(SystemMsg.WizPage2_Action_Verify, 0) // TODO: Verify config
         ]);
 
     public static void NextPage(WizPageViewModel current, int selection)
@@ -53,16 +60,10 @@ public class WizLayout
     
     private static WizPageViewModel? GetNextPage(WizPageViewModel current, int selection)
     {
-        return current.Id switch {
-            0 => selection switch {
-                0 => _page1,
-                _ => null
-            },
-            1 => selection switch {
-                0 => _page1ChoiceA, // ryujinx
-                // 0 => _page0A, // switch only
-                // 1 => _page0A, // other emulator
-            },
+        return (current.Id, selection) switch {
+            (0, _) => _page1,
+            (1, 0) => _page1ChoiceA, // ryujinx
+            (1, 1 or 2) => _page2,
             _ => null
         };
     }
