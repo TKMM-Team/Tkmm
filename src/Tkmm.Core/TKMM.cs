@@ -67,7 +67,13 @@ public static class TKMM
             // TODO: Select options
             profile
                 .Mods
-                .Select(x => x.Mod.Changelog), ct
+                .Where(x => x.IsEnabled)
+                .SelectMany(x => x.Mod.OptionGroups
+                    .SelectMany(group => group.Options.Where(profile.IsOptionEnabled))
+                    .Select(option => option.Changelog)
+                    .Prepend(x.Mod.Changelog)
+                )
+                .Reverse(), ct
         );
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
