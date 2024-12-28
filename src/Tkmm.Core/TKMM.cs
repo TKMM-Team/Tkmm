@@ -16,7 +16,8 @@ public static class TKMM
 {
     private static readonly Lazy<ITkRomProvider> _romProvider = new(() => new TkRomProvider());
     private static readonly TkModReaderProvider _readerProvider;
-    
+    private static ITkThumbnailProvider? _thumbnailProvider;
+
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
 
     public static ITkRom Rom => _romProvider.Value.GetRom();
@@ -25,9 +26,10 @@ public static class TKMM
 
     public static TkModManager ModManager { get; }
 
-
     public static Task Initialize(ITkThumbnailProvider thumbnailProvider, CancellationToken ct = default)
     {
+        _thumbnailProvider = thumbnailProvider;
+
         return Task.WhenAll(
             ModManager.Mods.Select(x => Task.Run(() => thumbnailProvider.ResolveThumbnail(x, ct), ct))
         );
@@ -44,7 +46,11 @@ public static class TKMM
             TkLog.Instance.LogError("Failed to parse mod from input: '{Input}'", input);
             return null;
         }
-        
+
+        if (_thumbnailProvider?.ResolveThumbnail(mod, ct) is Task resolveThumbnail) {
+            await resolveThumbnail;
+        }
+
         ModManager.Import(mod, profile);
         return mod;
     }
@@ -52,9 +58,9 @@ public static class TKMM
     public static async ValueTask Merge(TkProfile profile, CancellationToken ct = default)
     {
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
-        
+
         TkMerger merger = new(writer, Rom);
-        
+
         long startTime = Stopwatch.GetTimestamp();
 
         await merger.MergeAsync(
