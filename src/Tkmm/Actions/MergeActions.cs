@@ -14,7 +14,6 @@ using Tkmm.Helpers;
 using Tkmm.Models;
 using TkSharp.Core;
 using TkSharp.Core.Models;
-using TotkCommon;
 
 namespace Tkmm.Actions;
 
@@ -136,7 +135,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         await Merge(profile, ct);
 
         try {
-            string output = Path.Combine(drive.Name, "atmosphere", "contents", Totk.TITLE_ID);
+            string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100f2c0115b6000");
             
             // TODO: Ask before deleting
             // TODO: Abstract romfs, exefs folder names to constants
