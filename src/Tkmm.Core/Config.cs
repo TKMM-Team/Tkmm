@@ -94,7 +94,7 @@ public sealed partial class Config : ConfigModule<Config>
         Header = "Target Language",
         Description = "The target language that MalsMerger should create an archive for.",
         Group = "Merging")]
-    [property: DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "KRko", "CNzh", "TWzh")]
+    [property: DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh")]
     private string _gameLanguage = "USen";
     
     [ObservableProperty]
