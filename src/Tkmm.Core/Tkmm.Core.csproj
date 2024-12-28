@@ -13,7 +13,6 @@
     <ItemGroup>
       <PackageReference Include="ConfigFactory.Core" Version="0.4.2" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-      <PackageReference Include="TotkCommon" Version="1.3.3" />
     </ItemGroup>
 
     <ItemGroup>
