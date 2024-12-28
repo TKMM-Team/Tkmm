@@ -10,25 +10,7 @@ public class EmulatorHelper
     public static KeySet? GetKeys(string emulatorDataFolder, out string keysFolderPath)
     {
         keysFolderPath = Path.Combine(emulatorDataFolder, "keys");
-        
-        string prodKeysFilePath = Path.Combine(keysFolderPath, "prod.keys");
-        if (!File.Exists(prodKeysFilePath)) {
-            TkLog.Instance.LogError("A 'prod.keys' file could not be found in '{EmulatorSystemFolder}'", keysFolderPath);
-            return null;
-        }
-        
-        string titleKeysFilePath = Path.Combine(keysFolderPath, "title.keys");
-        if (!File.Exists(prodKeysFilePath)) {
-            TkLog.Instance.LogError("A 'title.keys' file could not be found in '{EmulatorSystemFolder}'", keysFolderPath);
-            return null;
-        }
-
-        KeySet keys = new();
-        ExternalKeyReader.ReadKeyFile(keys,
-            prodKeysFilename: prodKeysFilePath,
-            titleKeysFilename: titleKeysFilePath);
-
-        return keys;
+        return TkRomHelper.GetKeys(keysFolderPath);
     }
     
     public static IEnumerable<(string FilePath, string Version)> GetTotkFiles(string emulatorName, string emulatorDataFolder, KeySet keys)

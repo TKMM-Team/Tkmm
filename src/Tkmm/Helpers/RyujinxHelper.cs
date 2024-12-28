@@ -14,25 +14,7 @@ public class RyujinxHelper
     public static KeySet? GetKeys(string ryujinxDataFolder, out string systemFolderPath)
     {
         systemFolderPath = Path.Combine(ryujinxDataFolder, "system");
-        
-        string prodKeysFilePath = Path.Combine(systemFolderPath, "prod.keys");
-        if (!File.Exists(prodKeysFilePath)) {
-            TkLog.Instance.LogError("A 'prod.keys' file could not be found in '{RyujinxSystemFolder}'", systemFolderPath);
-            return null;
-        }
-        
-        string titleKeysFilePath = Path.Combine(systemFolderPath, "title.keys");
-        if (!File.Exists(titleKeysFilePath)) {
-            TkLog.Instance.LogError("A 'title.keys' file could not be found in '{RyujinxSystemFolder}'", systemFolderPath);
-            return null;
-        }
-
-        KeySet keys = new();
-        ExternalKeyReader.ReadKeyFile(keys,
-            prodKeysFilename: prodKeysFilePath,
-            titleKeysFilename: titleKeysFilePath);
-
-        return keys;
+        return TkRomHelper.GetKeys(systemFolderPath);
     }
     
     public static IEnumerable<(string FilePath, string Version)> GetTotkFiles(string ryujinxDataFolder, KeySet keys)
