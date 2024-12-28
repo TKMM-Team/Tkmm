@@ -1,10 +1,8 @@
-using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.GameBanana;
-using TotkCommon;
 
 namespace Tkmm.Core;
 
@@ -71,23 +69,26 @@ public sealed partial class Config : ConfigModule<Config>
     
     [ObservableProperty]
     [property: Config(
+        Header = "Emulator Executable Path",
+        Description = "The absolute path to the 7-zip executable used for faster 7z extraction.",
+        Group = "Application")]
+    [property: BrowserConfig(
+        BrowserMode = BrowserMode.OpenFile,
+        InstanceBrowserKey = "emulator-path",
+#if TARGET_WINDOWS
+        Filter = "Executable:*.exe",
+#else
+        Filter = "Executable:*",
+#endif
+        Title = "Select emulator executable")]
+    private string? _emulatorPath;
+    
+    [ObservableProperty]
+    [property: Config(
         Header = "Default Author",
         Description = "The default author used when packaging TKCL mods.",
         Group = "Packaging")]
     private string _defaultAuthor = string.Empty;
-    
-    [JsonIgnore, Config(
-         Header = "Game Path",
-         Description = "The absolute path to your TotK RomFS game dump.",
-         Group = "Merging")]
-    public string GamePath {
-        get => Totk.Config.GamePath;
-        set {
-            OnPropertyChanging();
-            Totk.Config.GamePath = value;
-            OnPropertyChanged();
-        }
-    }
     
     [ObservableProperty]
     [property: Config(
