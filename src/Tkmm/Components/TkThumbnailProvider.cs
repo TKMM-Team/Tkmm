@@ -63,7 +63,8 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         
     UseDefault:
         mod.Thumbnail = new TkThumbnail {
-            Bitmap = _defaultThumbnail
+            Bitmap = _defaultThumbnail,
+            IsDefault = true
         };
     }
 }
