@@ -5,6 +5,7 @@ using Tkmm.Core.Providers;
 using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
+using TkSharp.Extensions.GameBanana.Readers;
 using TkSharp.IO.Writers;
 using TkSharp.Merging;
 
@@ -14,6 +15,7 @@ namespace Tkmm.Core;
 public static class TKMM
 {
     private static readonly Lazy<ITkRomProvider> _romProvider = new(() => new TkRomProvider());
+    private static readonly TkModReaderProvider _readerProvider;
     
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
 
@@ -22,6 +24,7 @@ public static class TKMM
     public static Config Config => Config.Shared;
 
     public static TkModManager ModManager { get; }
+
 
     public static Task Initialize(ITkThumbnailProvider thumbnailProvider, CancellationToken ct = default)
     {
@@ -32,8 +35,7 @@ public static class TKMM
 
     public static async ValueTask<TkMod?> Install(object input, Stream? stream = null, TkModContext context = default, TkProfile? profile = null, CancellationToken ct = default)
     {
-        TkModReaderProvider readerProvider = new(ModManager, _romProvider.Value);
-        if (readerProvider.GetReader(input) is not ITkModReader reader) {
+        if (_readerProvider.GetReader(input) is not ITkModReader reader) {
             TkLog.Instance.LogError("Could not locate mod reader for input: '{Input}'", input);
             return null;
         }
@@ -70,6 +72,9 @@ public static class TKMM
     {
         ModManager = TkModManager.CreatePortable();
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
+
+        _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
+        _readerProvider.Register(new GameBananaModReader(_readerProvider));
 
         const string logCategoryName = nameof(TKMM);
         TkLog.Instance.Register(new DesktopLogger(logCategoryName));
