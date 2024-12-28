@@ -25,18 +25,6 @@ public sealed partial class WizDumpConfigPageViewModel : ObservableObject
         ]
     };
 
-    [ObservableProperty]
-    private string? _keysFolderPath;
-
-    [ObservableProperty]
-    private string? _baseGameFilePath;
-
-    [ObservableProperty]
-    private string? _gameUpdateFilePath;
-
-    [ObservableProperty]
-    private string? _gameDumpFolderPath;
-
     [RelayCommand]
     private static async Task Browse(TextBox target)
     {
