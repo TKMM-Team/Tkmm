@@ -157,7 +157,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
         
         TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
-        await ModActions.Instance.Install(target);
+        await ModActions.Instance.Install((mod.Full, target));
     }
 
     private async Task ReloadPage(GameBananaFeed? customFeed = null)
