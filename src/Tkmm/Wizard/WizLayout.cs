@@ -66,6 +66,7 @@ public class WizLayout
             (0, _) => _page1,
             (1, 0) => _pageRyujinxSetup,
             (1, 1) => _page2,
+            (1, 2) => _pageFinal,
             _ => _pageFinal
         };
     }
