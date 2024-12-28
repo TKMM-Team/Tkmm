@@ -12,6 +12,10 @@ public sealed partial class Config : ConfigModule<Config>
     
     public event Action<string> ThemeChanged = delegate { };
 
+    public string[] GameLanguages { get; set; } = [
+        "USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh"
+    ];
+
     public Config()
     {
         FileInfo configFileInfo = new(LocalPath);
@@ -104,5 +108,5 @@ public sealed partial class Config : ConfigModule<Config>
     public bool ConfigExists()
     {
         return File.Exists(LocalPath);
-    }
+    } 
 }

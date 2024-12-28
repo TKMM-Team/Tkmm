@@ -21,8 +21,7 @@
         "WizDumpPage_GameUpdateFileField_Description": "Game Update File Path (NSP)",
         "WizDumpPage_GameDumpFolderField_Description": "Game Dump Folder Path (romfs)",
         "WizDumpPage_Action_Browse": "...",
-        "WizPageFinal_Title": "Setup Complete",
-        "WizPageFinal_Description": "I don't know what to put here. Read the docs...",
+        "WizPageFinal_Title": "Please select your preferred language",
         "WizPageFinal_Action_Finish": "Finish"
     },
     "Menu": {

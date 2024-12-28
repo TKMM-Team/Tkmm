@@ -27,6 +27,5 @@ public class StringResources_System
     public string WizDumpPage_GameDumpFolderField_Description {get;} = GetStringResource(GROUP, nameof(WizDumpPage_GameDumpFolderField_Description));
     public string WizDumpPage_Action_Browse {get;} = GetStringResource(GROUP, nameof(WizDumpPage_Action_Browse));
     public string WizPageFinal_Title {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Title));
-    public string WizPageFinal_Description {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Description));
     public string WizPageFinal_Action_Finish {get;} = GetStringResource(GROUP, nameof(WizPageFinal_Action_Finish));
 }

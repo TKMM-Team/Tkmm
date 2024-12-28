@@ -1,5 +1,6 @@
 using Tkmm.Wizard.Actions;
 using Tkmm.Wizard.ViewModels;
+using Tkmm.Wizard.Views;
 using WizDumpConfigPage = Tkmm.Wizard.Views.WizDumpConfigPage;
 using WizEmulatorSelectionPage = Tkmm.Wizard.Views.WizEmulatorSelectionPage;
 
@@ -40,8 +41,8 @@ public class WizLayout
         ]);
     
     private static readonly WizPageViewModel _pageFinal = new(
-        id: -1, lastPage: null,
-        SystemMsg.WizPageFinal_Title, SystemMsg.WizPageFinal_Description, [
+        id: -1, lastPage: _page1,
+        SystemMsg.WizPageFinal_Title, new WizLangConfigPage(), [
             new WizAction(SystemMsg.WizPageFinal_Action_Finish, 0, WizActions.CompleteSetup)
         ]);
 
