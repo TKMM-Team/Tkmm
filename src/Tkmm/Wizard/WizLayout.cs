@@ -42,7 +42,7 @@ public class WizLayout
     private static readonly WizPageViewModel _pageFinal = new(
         id: -1, lastPage: null,
         SystemMsg.WizPageFinal_Title, SystemMsg.WizPageFinal_Description, [
-            new WizAction(SystemMsg.WizPageFinal_Action_Finish, 0)
+            new WizAction(SystemMsg.WizPageFinal_Action_Finish, 0, WizActions.CompleteSetup)
         ]);
 
     public static void NextPage(WizPageViewModel current, int selection)

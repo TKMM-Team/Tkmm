@@ -5,6 +5,7 @@ using LibHac.Tools.Fs;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using Tkmm.Helpers;
+using Tkmm.ViewModels;
 
 namespace Tkmm.Wizard.Actions;
 
@@ -179,5 +180,15 @@ public static class WizActions
     Fail:
         await MessageDialog.Show(reasons, "Configuration Errors");
         return (false, null);
+    }
+
+    public static ValueTask<(bool, int?)> CompleteSetup()
+    {
+        Config.Shared.Save();
+        TkConfig.Shared.Save();
+
+        ShellViewModel.Shared.IsFirstTimeSetup = false;
+        
+        return ValueTask.FromResult<(bool, int?)>((true, -1));
     }
 }
