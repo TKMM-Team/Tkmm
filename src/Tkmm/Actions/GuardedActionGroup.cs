@@ -21,7 +21,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     protected async ValueTask<bool> CanActionRun([CallerMemberName] string? actionName = null, bool showError = true)
     {
         TkLog.Instance.LogInformation(
-            "Validatiing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
+            "Validating {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
         
         LogInfo();
 
@@ -70,8 +70,6 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     /// </summary>
     public static void LogInfo()
     {
-        TkRomProvider.LogRomConfigInfo();
-        
         TkLog.Instance.LogInformation(
             "Game Language: {GameLanguage}.", TKMM.Config.GameLanguage);
     }
@@ -81,11 +79,6 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     /// </summary>
     protected virtual bool EnsureConfiguration()
     {
-        if (!TkRomProvider.CanProvideRom(out string? invalidReason)) {
-            TkLog.Instance.LogCritical("Invalid RomFS: {Reason}.", invalidReason);
-            return false;
-        }
-
-        return true;
+        return TkRomProvider.CanProvideRom();
     }
 }
