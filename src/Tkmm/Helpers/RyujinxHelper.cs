@@ -22,7 +22,7 @@ public class RyujinxHelper
         }
         
         string titleKeysFilePath = Path.Combine(systemFolderPath, "title.keys");
-        if (!File.Exists(prodKeysFilePath)) {
+        if (!File.Exists(titleKeysFilePath)) {
             TkLog.Instance.LogError("A 'title.keys' file could not be found in '{RyujinxSystemFolder}'", systemFolderPath);
             return null;
         }

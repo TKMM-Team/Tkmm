@@ -128,7 +128,7 @@ public static class WizActions
             .FilePath;
         
         if (tkFiles.FirstOrDefault(x => x.Version == "1.0.0") is not (FilePath: string, Version: string) baseGameFilePath) {
-            return (false, null);
+            return (true, null);
         }
         
         TkConfig.Shared.BaseGameFilePath = baseGameFilePath.FilePath;
