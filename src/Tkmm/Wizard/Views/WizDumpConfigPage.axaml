@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:loc="using:Tkmm.Core.Localization"
-             xmlns:viewModels="clr-namespace:Tkmm.Wizard.ViewModels"
-             x:DataType="viewModels:WizDumpConfigPageViewModel"
+             xmlns:vm="using:Tkmm.Wizard.ViewModels"
+             xmlns:core="using:Tkmm.Core"
+             x:DataType="vm:WizDumpConfigPageViewModel"
              x:Class="Tkmm.Wizard.Views.WizDumpConfigPage">
     <TabControl Height="270">
         <TabControl.Styles>
@@ -22,7 +23,7 @@
                     <TextBox Grid.Row="1"
                              Name="KeysFolderPathField"
                              Tag="folder"
-                             Text="{Binding KeysFolderPath}"
+                             Text="{Binding KeysFolderPath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
@@ -37,7 +38,7 @@
                     <TextBox Grid.Row="1"
                              Name="BaseGameFilePathField"
                              Tag="xci,nsp"
-                             Text="{Binding BaseGameFilePath}"
+                             Text="{Binding BaseGameFilePath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
@@ -52,7 +53,7 @@
                     <TextBox Grid.Row="1"
                              Name="GameUpdateFilePathField"
                              Tag="nsp"
-                             Text="{Binding GameUpdateFilePath}"
+                             Text="{Binding GameUpdateFilePath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
@@ -71,7 +72,7 @@
                     <TextBox Grid.Row="1"
                              Name="GameDumpFolderPathField"
                              Tag="folder"
-                             Text="{Binding GameDumpFolderPath}"
+                             Text="{Binding GameDumpFolderPath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
