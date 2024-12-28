@@ -1,9 +1,9 @@
 using System.Text;
 using Avalonia.Platform.Storage;
 using LibHac.Common.Keys;
-using LibHac.Tools.Fs;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Providers;
 using Tkmm.Dialogs;
 using Tkmm.ViewModels;
 
@@ -142,42 +142,12 @@ public static class WizActions
     public static async ValueTask<(bool, int?)> VerifyConfig()
     {
         StringBuilder reasons = new();
+        bool result = TkRomProvider.CanProvideRom(message => reasons.AppendLine(message));
 
-        if (string.IsNullOrWhiteSpace(TkConfig.Shared.GameDumpFolderPath)) {
-            reasons.AppendLine("[RomFS Dump] The game dump folder path is empty.");
-            goto UseNspXci;
+        if (result) {
+            return (true, null);
         }
 
-        if (TkRomHelper.GetVersionFromRomfs(TkConfig.Shared.GameDumpFolderPath) is not int version) {
-            reasons.AppendLine("[RomFS Dump] Invalid game dump folder path.");
-            goto UseNspXci;
-        }
-
-        if (version == 100) {
-            reasons.AppendLine("[RomFS Dump] Invalid game dump version (1.0.0), TKMM requires version 1.1.0 or later.");
-        }
-
-    UseNspXci:
-        if (TkConfig.Shared.KeysFolderPath is not string keysFolderPath || TkRomHelper.GetKeys(keysFolderPath) is not KeySet keys) {
-            reasons.AppendLine("[XCI/NSP] The keys folder is invalid.");
-            goto Fail;
-        }
-
-        if (TkConfig.Shared.BaseGameFilePath is not string baseGameFilePath ||
-            !TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0") {
-            reasons.AppendLine("[XCI/NSP] The base game file is invalid.");
-            goto Fail;
-        }
-
-        if (TkConfig.Shared.GameUpdateFilePath is not string gameUpdateFilePath ||
-            !TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0") {
-            reasons.AppendLine("[XCI/NSP] The game update file is invalid.");
-            goto Fail;
-        }
-
-        return (true, null);
-
-    Fail:
         await MessageDialog.Show(reasons, "Configuration Errors");
         return (false, null);
     }
