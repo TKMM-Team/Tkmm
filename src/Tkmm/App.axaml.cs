@@ -11,8 +11,6 @@ using Avalonia.Threading;
 using ConfigFactory;
 using ConfigFactory.Avalonia;
 using ConfigFactory.Avalonia.Helpers;
-using ConfigFactory.Core;
-using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -43,7 +41,7 @@ public class App : Application
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
         .InformationalVersion.Split('+')[0] ?? SystemMsg.UndefinedVersion;
 
-    public static string Title { get; } = $"TotK Mod Manager";
+    public static string Title { get; } = "TotK Mod Manager";
 
     public static string ShortTitle { get; } = $"TKMM v{Version}";
 
@@ -96,7 +94,7 @@ public class App : Application
         };
 
         ShellView shellView = new() {
-            DataContext = new ShellViewModel()
+            DataContext = ShellViewModel.Shared
         };
 
         shellView.Closed += async (_, _) => {

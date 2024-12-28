@@ -5,6 +5,8 @@ namespace Tkmm.ViewModels;
 
 public partial class ShellViewModel : ObservableObject
 {
+    public static readonly ShellViewModel Shared = new();
+    
     [ObservableProperty]
     private bool _isFirstTimeSetup = true;
 
