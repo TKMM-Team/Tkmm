@@ -7,7 +7,7 @@ using TkSharp.Extensions.GameBanana;
 namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
-{
+{   
     public override string Name => "tkmm";
     
     public event Action<string> ThemeChanged = delegate { };
@@ -32,13 +32,6 @@ public sealed partial class Config : ConfigModule<Config>
     {
         ThemeChanged(value);
     }
-
-    [ObservableProperty]
-    [property: Config(
-        Header = "Show Console",
-        Description = "Show the console window for additional information (restart required)",
-        Group = "Application")]
-    private bool _showConsole;
     
     [ObservableProperty]
     [property: Config(
@@ -70,7 +63,7 @@ public sealed partial class Config : ConfigModule<Config>
     [ObservableProperty]
     [property: Config(
         Header = "Emulator Executable Path",
-        Description = "The absolute path to the 7-zip executable used for faster 7z extraction.",
+        Description = "The absolute path to your emulator's executable.",
         Group = "Application")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
