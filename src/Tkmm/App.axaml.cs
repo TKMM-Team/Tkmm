@@ -130,18 +130,9 @@ public class App : Application
 
         if (settingsPage.DataContext is ConfigPageModel settingsModel) {
             settingsModel.SecondaryButtonIsEnabled = false;
-
-            isValid = ConfigModule<Config>.Shared.Validate(out string? _, out ConfigProperty? target);
-            settingsModel.Append<Config>();
-
-            if (!isValid && target?.Attribute is not null) {
-                settingsModel.SelectedGroup = settingsModel.Categories
-                    .Where(x => x.Header == target.Attribute.Category)
-                    .SelectMany(x => x.Groups)
-                    .FirstOrDefault(x => x.Header == target.Attribute.Group);
-
-                TkStatus.Set(Exceptions.InvalidSettings(target.Property.Name), TkIcons.WARNING);
-            }
+            
+            settingsModel.AppendAndValidate<Config>(ref isValid);
+            settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
 
         PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
