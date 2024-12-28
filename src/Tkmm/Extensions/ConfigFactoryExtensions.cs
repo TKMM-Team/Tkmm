@@ -1,3 +1,4 @@
+using ConfigFactory;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
@@ -18,5 +19,7 @@ public static class ConfigFactoryExtensions
 
             TkStatus.Set(Exceptions.InvalidSettings(target.Property.Name), TkIcons.WARNING);
         }
+
+        settingsModel.Append<T>();
     }
 }
