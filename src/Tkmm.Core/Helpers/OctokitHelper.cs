@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Octokit;
 
-namespace Tkmm.Helpers;
+namespace Tkmm.Core.Helpers;
 
 public static class OctokitHelper
 {

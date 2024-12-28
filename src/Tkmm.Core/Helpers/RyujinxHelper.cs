@@ -5,7 +5,7 @@ using LibHac.Common.Keys;
 using Microsoft.Extensions.Logging;
 using TkSharp.Core;
 
-namespace Tkmm.Helpers;
+namespace Tkmm.Core.Helpers;
 
 // TODO: Translate error messages
 

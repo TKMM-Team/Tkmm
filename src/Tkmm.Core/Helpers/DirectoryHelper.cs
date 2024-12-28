@@ -1,4 +1,4 @@
-namespace Tkmm.Helpers;
+namespace Tkmm.Core.Helpers;
 
 public static class DirectoryHelper
 {

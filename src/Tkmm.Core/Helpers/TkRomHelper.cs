@@ -4,12 +4,14 @@ using LibHac.Common.Keys;
 using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;
+using Octokit;
 using TkSharp.Core;
 using TkSharp.Core.IO.Parsers;
 using TkSharp.Extensions.LibHac;
 using TkSharp.Extensions.LibHac.Extensions;
+using Application = LibHac.Tools.Fs.Application;
 
-namespace Tkmm.Helpers;
+namespace Tkmm.Core.Helpers;
 
 public static class TkRomHelper
 {
@@ -60,6 +62,11 @@ public static class TkRomHelper
             titleKeysFilename: titleKeysFilePath);
 
         return keys;
+    }
+
+    public static bool IsRomfsValid(string target)
+    {
+        return Directory.Exists(target) && GetVersionFromRomfs(target) is int version && version != 100;
     }
 
     public static int? GetVersionFromRomfs(string target)

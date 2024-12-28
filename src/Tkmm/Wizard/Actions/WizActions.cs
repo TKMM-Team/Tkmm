@@ -3,8 +3,8 @@ using Avalonia.Platform.Storage;
 using LibHac.Common.Keys;
 using LibHac.Tools.Fs;
 using Tkmm.Core;
+using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
-using Tkmm.Helpers;
 using Tkmm.ViewModels;
 
 namespace Tkmm.Wizard.Actions;
