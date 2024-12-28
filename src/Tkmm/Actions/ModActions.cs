@@ -156,11 +156,11 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         await CanActionRun(showError: false);
 
         ContentDialog dialog = new() {
-            Title = "Permenently uninstall?",
+            Title = "Permanently uninstall?",
             Content = $"""
                 WARNING: THIS CANNOT BE UNDONE
 
-                Are you sure you would like to permenently uninstall the mod '{target.Name}'?
+                Are you sure you would like to permanently uninstall the mod '{target.Name}'?
                 """,
             IsPrimaryButtonEnabled = true,
             IsSecondaryButtonEnabled = true,
@@ -174,7 +174,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
 
         try {
-            // TODO: Uninstall the target mod
+            TKMM.ModManager.Uninstall(target);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while uninstalling the mod '{ModName}'. " +
