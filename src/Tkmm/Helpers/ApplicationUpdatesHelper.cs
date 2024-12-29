@@ -3,7 +3,6 @@ using System.Runtime.Versioning;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Octokit;
-using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using TkSharp.Core;
 

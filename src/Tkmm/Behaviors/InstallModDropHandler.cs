@@ -4,7 +4,6 @@ using Avalonia.Xaml.Interactions.DragAndDrop;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using TkSharp.Core;
-using TkSharp.Core.Models;
 
 namespace Tkmm.Behaviors;
 

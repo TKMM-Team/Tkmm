@@ -6,7 +6,6 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Dialogs;
-using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 

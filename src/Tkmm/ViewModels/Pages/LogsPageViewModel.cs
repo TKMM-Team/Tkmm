@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Models;
-using Tkmm.Views.Pages;
 
 namespace Tkmm.ViewModels.Pages;
 

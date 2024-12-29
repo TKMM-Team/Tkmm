@@ -4,7 +4,6 @@ using LibHac.Common.Keys;
 using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;
-using Octokit;
 using TkSharp.Core;
 using TkSharp.Core.IO.Parsers;
 using TkSharp.Extensions.LibHac;

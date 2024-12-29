@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using LibHac.Common.Keys;
 using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;

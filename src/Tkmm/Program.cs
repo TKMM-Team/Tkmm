@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Components;
-using Tkmm.Core;
 using TkSharp.Core;
 
 namespace Tkmm;
