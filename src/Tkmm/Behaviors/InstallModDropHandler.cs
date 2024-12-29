@@ -19,8 +19,17 @@ public class InstallModDropHandler : DropHandlerBase
     {
         try {
             if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
-                foreach (string path in paths.Select(item => item.Path.LocalPath)) {
-                    await ModActions.Instance.Install(path);
+                foreach (IStorageItem item in paths.Where(file => file is IStorageFile)) {
+                    switch (item) {
+                        case IStorageFile file:
+                            await using (Stream input = await file.OpenReadAsync()) {
+                                await ModActions.Instance.Install(file.Name, input);
+                            }
+                            break;
+                        case IStorageFolder folder when folder.TryGetLocalPath() is string folderPath:
+                            await ModActions.Instance.Install(folderPath);
+                            break;
+                    }
                 }
             }
             else if (e.Data.GetText() is string arg) {
