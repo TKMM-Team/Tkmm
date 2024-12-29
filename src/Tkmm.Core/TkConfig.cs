@@ -66,6 +66,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "game-dump-folder-path",
         Title = "Select game dump folder path (with update 1.1.0 or later)")]
-    [JsonPropertyName("GamePath")]
+    [property: JsonPropertyName("GamePath")]
     private string? _gameDumpFolderPath;
 }
