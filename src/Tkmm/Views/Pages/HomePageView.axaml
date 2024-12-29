@@ -180,7 +180,7 @@
                         <ItemsControl ItemsSource="{Binding ModManager.CurrentProfile.Selected.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type tk:TkModOptionGroup}">
-                                    <Expander Padding="5">
+                                    <Expander Padding="5" Name="OptionGroupRoot">
                                         <Expander.Header>
                                             <StackPanel Background="Transparent" Orientation="Horizontal">
                                                 <pi:Icon Value="{Binding IconName}" />
@@ -218,8 +218,8 @@
                                                     VerticalAlignment="Stretch"
                                                     Background="{DynamicResource ControlStrokeColorDefault}"
                                                     IsVisible="{Binding Description.Length}" />
-                                            <!-- TODO: Bind selected items for configuring -->
                                             <ListBox ItemsSource="{Binding Options}"
+                                                     SelectedItems="{Binding #OptionGroupRoot.DataContext, Converter={x:Static converters:SelectedOptionsToGroupConverter.Instance}}"
                                                      SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate x:DataType="{x:Type tk:TkModOption}">
