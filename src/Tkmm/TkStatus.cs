@@ -75,7 +75,7 @@ public sealed partial class TkStatus : ObservableObject
     /// <param name="icon"></param>
     /// <param name="type"></param>
     /// <param name="duration">The duration of the status in seconds</param>
-    public static void SetTemporary(string status, string icon = TkIcons.READY, StatusType type = StatusType.Static, double duration = double.NaN)
+    public static void SetTemporary(string status, string icon = TkIcons.READY, StatusType type = StatusType.Static, double duration = 2.5)
         => Shared.SetTemporaryInternal(status, icon, type, duration);
     
     /// <inheritdoc cref="Set"/>
@@ -87,7 +87,7 @@ public sealed partial class TkStatus : ObservableObject
     }
 
     /// <inheritdoc cref="SetTemporary"/>
-    private void SetTemporaryInternal(string status, string icon = TkIcons.READY, StatusType type = StatusType.Static, double duration = double.NaN)
+    private void SetTemporaryInternal(string status, string icon = TkIcons.READY, StatusType type = StatusType.Static, double duration = 2.5)
     {
         Set(status, icon, type);
         _ = Task.Run((Func<Task?>)(async () => {

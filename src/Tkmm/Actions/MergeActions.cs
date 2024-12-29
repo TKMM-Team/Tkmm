@@ -69,9 +69,11 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         try {
             // TODO: Start the dumb trivia thing (if enabled)
+            TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             await TKMM.Merge(profile, ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
                 "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
+            TkStatus.SetTemporary("Merge completed", "fa-circle-check");
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured when merging the selected profile '{Profile}'.",

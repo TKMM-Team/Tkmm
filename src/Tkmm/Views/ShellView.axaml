@@ -105,8 +105,10 @@
                 <TextBlock Grid.Column="1"
                            Margin="5,0"
                            VerticalAlignment="Center"
-                           FontFamily="{StaticResource UbuntuMono}"
-                           Text="{Binding Status, Source={x:Static tkmm:TkStatus.Shared}}" />
+                           FontFamily="{StaticResource UbuntuMono}">
+                    <Run Text="{Binding Status, Source={x:Static tkmm:TkStatus.Shared}}" />
+                    <Run Text="{Binding Suffix, Source={x:Static tkmm:TkStatus.Shared}}" />
+                </TextBlock>
                 <TextBlock Grid.Column="3"
                            Margin="5,0"
                            VerticalAlignment="Center"
