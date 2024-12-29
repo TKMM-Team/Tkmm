@@ -63,18 +63,7 @@ public static class TKMM
 
         long startTime = Stopwatch.GetTimestamp();
 
-        await merger.MergeAsync(
-            // TODO: Select options
-            profile
-                .Mods
-                .Where(x => x.IsEnabled)
-                .SelectMany(x => x.Mod.OptionGroups
-                    .SelectMany(group => group.Options.Where(profile.IsOptionEnabled))
-                    .Select(option => option.Changelog)
-                    .Prepend(x.Mod.Changelog)
-                )
-                .Reverse(), ct
-        );
+        await merger.MergeAsync(TkModManager.GetMergeTargets(profile), ct);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
