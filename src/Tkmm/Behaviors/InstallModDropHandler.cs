@@ -18,7 +18,7 @@ public class InstallModDropHandler : DropHandlerBase
     {
         try {
             if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
-                foreach (IStorageItem item in paths.Where(file => file is IStorageFile)) {
+                foreach (IStorageItem item in paths) {
                     switch (item) {
                         case IStorageFile file:
                             await using (Stream input = await file.OpenReadAsync()) {
