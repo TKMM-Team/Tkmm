@@ -1,5 +1,8 @@
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
+#if RELEASE
+using Humanizer;
+#endif
 
 namespace Tkmm.Dialogs;
 
@@ -16,7 +19,7 @@ public partial class ErrorDialog : UserControl
 #if DEBUG
         throw ex;
 #else
-        return await Dispatcher.UIThread.InvokeAsync(async () => {
+        return await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () => {
             if (buttons.Length is 0) {
                 buttons = [
                     TaskDialogStandardResult.OK
