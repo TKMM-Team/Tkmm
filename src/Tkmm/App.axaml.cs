@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Timers;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -25,6 +26,7 @@ using Tkmm.Core.Localization;
 using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
+using Tkmm.Managers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
@@ -36,6 +38,10 @@ namespace Tkmm;
 public class App : Application
 {
     private static WindowNotificationManager? _notificationManager;
+
+    #if SWITCH
+    private System.Timers.Timer? _batteryStatusTimer;
+    #endif
 
     public static readonly string Version = typeof(App).Assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
@@ -115,7 +121,45 @@ public class App : Application
         );
         MenuFactory.ConfigureMenu();
 
-        shellView.MainMenu.ItemsSource = MenuFactory.Items;
+        shellView.MainMenu.ItemsSource = MenuFactory.Items;#if SWITCH
+            var powerOptionsMenu = new AvaloniaMenuFactory(XamlRoot);
+            powerOptionsMenu.AddMenuGroup<PowerOptionsMenu>();
+            shellView.PowerOptionsMenu.ItemsSource = powerOptionsMenu.Items;
+
+            if (XamlRoot is ShellView currentShellView)
+            {
+                var batteryStatusTextBlock = currentShellView.FindControl<TextBlock>("BatteryStatusTextBlock");
+                var viewModel = currentShellView.DataContext as ShellViewModel;
+
+                if (viewModel != null)
+                {
+                    var batteryStatusManager = new BatteryStatusManager(viewModel);
+
+                    // Timer to update battery status every second. Could have been better implemented with something that reads the files dynamically but this is a quick fix
+                    _batteryStatusTimer = new System.Timers.Timer(1000);
+                    _batteryStatusTimer.Elapsed += (sender, e) =>
+                    {
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            if (batteryStatusTextBlock != null)
+                            {
+                                batteryStatusManager.UpdateBatteryStatus(batteryStatusTextBlock);
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException("BatteryStatusTextBlock cannot be null.");
+                            }
+                        });
+                    };
+                    _batteryStatusTimer.AutoReset = true;
+                    _batteryStatusTimer.Start();
+                }
+                else
+                {
+                    throw new InvalidOperationException("ViewModel cannot be null.");
+                }
+            }
+            #endif
         desktop.MainWindow = shellView;
 
         // ConfigFactory Configuration
@@ -139,6 +183,7 @@ public class App : Application
         PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
 
         PageManager.Shared.Register(Page.Logs, PageMsg.Logs, new LogsPageView(), Symbol.AllApps, PageMsg.LogsDescription, isFooter: true);
+        PageManager.Shared.Register(Page.NetworkSettings, "Network Settings", new NetworkSettingsPageView(), Symbol.Wifi4, "Settings for WiFi and other network services");
         PageManager.Shared.Register(Page.Settings, PageMsg.Settings, settingsPage, Symbol.Settings, PageMsg.SettingsDescription, isFooter: true, isDefault: isValid == false);
 
         OnThemeChanged(Config.Shared.Theme);

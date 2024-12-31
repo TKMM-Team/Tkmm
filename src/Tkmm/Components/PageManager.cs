@@ -15,6 +15,7 @@ public enum Page
     GbMods,
     About,
     Logs,
+    NetworkSettings,
     Settings,
 }
 

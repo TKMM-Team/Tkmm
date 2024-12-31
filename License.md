@@ -1,7 +1,7 @@
 The MIT License (MIT)
 =====================
 
-Copyright © `2024` `TKMM-Team`
+Copyright © 2023-2024 TKMM-Team and Contributors
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

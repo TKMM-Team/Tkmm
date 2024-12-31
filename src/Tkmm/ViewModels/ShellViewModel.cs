@@ -10,8 +10,20 @@ public partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private bool _isFirstTimeSetup = true;
 
+    [ObservableProperty]
+    private string _batteryIcon = string.Empty;
+
+    [ObservableProperty]
+    private string _batteryStatus = string.Empty;
+    
     public ShellViewModel()
     {
         IsFirstTimeSetup = !Config.Shared.ConfigExists();
+    }
+
+    public void UpdateBatteryStatus(string status, string icon)
+    {
+        BatteryStatus = status;
+        BatteryIcon = icon;
     }
 }
