@@ -77,9 +77,10 @@
                 </Viewbox>
 
                 <Menu Name="MainMenu" Grid.Column="1" />
-                <Menu Name="PowerOptionsMenu" Grid.Column="2" />
+                <Menu Name="PowerOptionsMenu" IsVisible="False" Grid.Column="2" />
                 
-                <StackPanel Name="NxBatteryStatusPanel" 
+                <StackPanel Name="NxBatteryStatusPanel"
+                            IsVisible="False"
                             Grid.Column="3" 
                             Orientation="Horizontal" 
                             HorizontalAlignment="Right" 
