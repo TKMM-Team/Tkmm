@@ -37,7 +37,7 @@ public class NamedDialogConfig : ObservableCollection<NamedDialog>
         }
         
         using Stream stream = File.OpenRead(configFile);
-        return JsonSerializer.Deserialize(stream, Tkmm.Models.NamedDialogConfigJsonContext.Default.NamedDialogConfig)
+        return JsonSerializer.Deserialize(stream, NamedDialogConfigJsonContext.Default.NamedDialogConfig)
             ?? [];
     }
 }

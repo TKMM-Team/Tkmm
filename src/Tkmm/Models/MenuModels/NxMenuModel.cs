@@ -1,10 +1,11 @@
+#if SWITCH
+
 using System.Diagnostics;
 using MenuFactory.Abstractions.Attributes;
 using static Tkmm.Core.Localization.StringResources_Menu;
 
 namespace Tkmm.Models.MenuModels;
 
-#if !SWITCH
 public class NxMenuModel
 {
     [Menu(NX_REBOOT, NX_MENU, Icon = "fa-solid fa-rotate")]
