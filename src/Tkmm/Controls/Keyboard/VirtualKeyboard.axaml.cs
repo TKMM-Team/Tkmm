@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.TextInput;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.Input;
 using Tkmm.Controls.Keyboard.Layout;
 
 namespace Tkmm.Controls.Keyboard;
@@ -47,19 +44,16 @@ public partial class VirtualKeyboard : UserControl
     public IObservable<VirtualKeyboardState> KeyboardStateStream => _keyboardStateStream;
     private readonly BehaviorSubject<VirtualKeyboardState> _keyboardStateStream;
 
-    public IReactiveCommand CloseCommand { get; }
-
     public VirtualKeyboard()
     {
         InitializeComponent();
         TextBox_ = this.Get<TextBox>("TextBox");
-        TransitioningContentControl_ = this.Get<Avalonia.Controls.TransitioningContentControl>("TransitioningContentControl");
+        TransitioningContentControl_ = this.Get<TransitioningContentControl>("TransitioningContentControl");
         AcceptButton_ = this.Get<Button>("AcceptButton");
         CloseButton_ = this.Get<Button>("CloseButton");
 
         AcceptButton_.AddHandler(Button.ClickEvent, acceptClicked);
         CloseButton_.AddHandler(Button.ClickEvent, closeClicked);
-        CloseCommand = ReactiveCommand.Create(() => { Close(); });
         Initialized += async (sender, args) =>
         {
             
@@ -104,6 +98,7 @@ public partial class VirtualKeyboard : UserControl
         Close();
     }
 
+    [RelayCommand]
     public void Close()
     {
         
@@ -310,7 +305,7 @@ public partial class VirtualKeyboard : UserControl
     {
         var keyEventArgs = new KeyEventArgs
         {
-            RoutedEvent = InputElement.KeyDownEvent,
+            RoutedEvent = KeyDownEvent,
             Key = Key.Enter,
             Source = target,
             KeyModifiers = KeyModifiers.None
