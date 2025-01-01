@@ -20,18 +20,21 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Builders;
 using Tkmm.Components;
-using Tkmm.Components.NX;
 using Tkmm.Core;
 using Tkmm.Core.Localization;
 using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
-using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
 using TkSharp.Core;
 using TkSharp.Core.Models;
+
+#if SWITCH
+using Tkmm.Components.NX;
+using Tkmm.Models.MenuModels;
+#endif
 
 namespace Tkmm;
 
@@ -118,6 +121,9 @@ public class App : Application
         shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
 #if SWITCH
+        shellView.PowerOptionsMenu.IsVisible = true;
+        shellView.NxBatteryStatusPanel.IsVisible = true;
+        
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
             localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
         );
