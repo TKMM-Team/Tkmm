@@ -50,6 +50,7 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
     {
         await Connman.Disconnect(this, ct);
         IsConnected = false;
+        ClearProperties();
     }
 
     [RelayCommand]
