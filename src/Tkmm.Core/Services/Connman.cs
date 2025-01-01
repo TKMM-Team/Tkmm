@@ -2,6 +2,7 @@
 
 using System.Buffers;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
@@ -32,11 +33,14 @@ public static class Connman
     private const string GET_TECHNOLOGIES_COMMAND = "connmanctl technologies";
     private const string ENABLE_TECHNOLOGY_COMMAND = "connmanctl enable {0}";
     private const string DISABLE_TECHNOLOGY_COMMAND = "connmanctl disable {0}";
-    
-    public static async IAsyncEnumerable<NxNetwork> GetNetworks(CancellationToken ct = default)
+
+    public static async ValueTask Scan(CancellationToken ct = default)
     {
         await NxProcessHelper.ExecAsync(SCAN_WIFI_COMMAND, ct);
-        
+    }
+    
+    public static async IAsyncEnumerable<NxNetwork> GetNetworks([EnumeratorCancellation] CancellationToken ct = default)
+    {
         using StreamReader services = NxProcessHelper.ReadCommand(GET_SERVICES_COMMAND);
 
         while (await services.ReadLineAsync(ct) is string service) {
@@ -52,7 +56,12 @@ public static class Connman
             }
 
             string id = service[lastSpaceIndex..];
-            string ssid = service[3..(lastSpaceIndex - 1)];
+
+            if (id.Contains("hidden_managed")) {
+                continue;
+            }
+            
+            string ssid = service[3..(lastSpaceIndex - 1)].Trim();
             
             NxNetwork network = new(id, ssid) {
                 IsConnected = line[2] is 'R' or 'O', // Roaming or Offline
@@ -77,9 +86,6 @@ public static class Connman
             int keyEndIndex = line.IndexOf('=') - 1;
 
             switch (property[2..keyEndIndex]) {
-                case "Ethernet":
-                    network.MacAddress = FindPropertyValue(property, line, "Address");
-                    continue;
                 case "IPv4":
                     network.IpAddress = FindPropertyValue(property, line, "Address");
                     network.SubnetMask = FindPropertyValue(property, line, "Netmask");

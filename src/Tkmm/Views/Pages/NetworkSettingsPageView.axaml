@@ -60,12 +60,18 @@
                                             Command="{Binding ConnectCommand}" />
                                     <TextBox Grid.Column="2"
                                              Margin="5,0,0,0"
-                                             IsVisible="{Binding !IsConnected}"
                                              Text="{Binding Passphrase}"
                                              IsReadOnly="{Binding ConnectCommand.IsRunning}"
                                              KeyDown="PasswordBox_KeyDown"
                                              Watermark="{Binding NetworkSettings_Input_Password_Watermark, Source={x:Static loc:StringResources.SystemMsg}}"
-                                             PasswordChar="*" />
+                                             PasswordChar="*">
+                                        <TextBox.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="!IsConnected" />
+                                                <Binding Path="!IsKnown" />
+                                            </MultiBinding>
+                                        </TextBox.IsVisible>
+                                    </TextBox>
                                     <Button Command="{Binding ConnectCommand.Cancel}"
                                             VerticalAlignment="Center"
                                             Margin="5,0,0,0"
@@ -112,7 +118,6 @@
             <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,*" Grid.Row="1">
                 <Grid.Styles>
                     <Style Selector="TextBlock.Property">
-                        <Setter Property="FontSize" Value="12" />
                         <Setter Property="FontFamily" Value="{StaticResource UbuntuMono}" />
                     </Style>
                     <Style Selector="TextBlock.Value">
@@ -131,7 +136,6 @@
                     <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_IpAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
                     <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_SubnetMaskProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
                     <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_GatewayProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
-                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_MacAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
                 </StackPanel>
 
                 <StackPanel Spacing="5" Grid.Column="1" Grid.Row="1">
@@ -139,7 +143,6 @@
                     <TextBlock Classes="Property Value" Text="{Binding Connected.IpAddress}" />
                     <TextBlock Classes="Property Value" Text="{Binding Connected.SubnetMask}" />
                     <TextBlock Classes="Property Value" Text="{Binding Connected.Gateway}" />
-                    <TextBlock Classes="Property Value" Text="{Binding Connected.MacAddress}" />
                 </StackPanel>
             </Grid>
         </Grid>

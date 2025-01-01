@@ -33,9 +33,6 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
     
     [ObservableProperty]
     private string? _gateway;
-    
-    [ObservableProperty]
-    private string? _macAddress;
 
     [RelayCommand]
     public async Task Connect(CancellationToken ct)
@@ -43,6 +40,7 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
         try {
             await Connman.Connect(this, ct);
             IsConnected = true;
+            Passphrase = string.Empty;
         }
         catch (OperationCanceledException) {
             TkLog.Instance.LogInformation("The connection request to '{SSID}' was canceled.", Ssid);
@@ -62,6 +60,13 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
         await Connman.Disconnect(this, ct);
         await Connman.Forget(this, ct);
         IsConnected = false;
+    }
+
+    private void ClearProperties()
+    {
+        IpAddress = null;
+        SubnetMask = null;
+        Gateway = null;
     }
 }
 #endif

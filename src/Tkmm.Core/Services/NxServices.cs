@@ -20,9 +20,11 @@ public static class NxServices
 
     public static void EnableSsh()
     {
-        Directory.CreateDirectory(CONFIG_FOLDER);
-        File.WriteAllBytes(SSH_CONFIG_PATH, []);
-        RestartSsh();
+        if (!IsSshEnabled()) {
+            Directory.CreateDirectory(CONFIG_FOLDER);
+            File.WriteAllBytes(SSH_CONFIG_PATH, []);
+            RestartSsh();
+        }
     }
 
     public static void DisableSsh()
@@ -46,6 +48,10 @@ public static class NxServices
 
     public static void EnableSmb()
     {
+        if (IsSmbEnabled()) {
+            return;
+        }
+        
         if (File.Exists(SMB_DISABLED_PATH)) {
             File.Delete(SMB_DISABLED_PATH);
         }

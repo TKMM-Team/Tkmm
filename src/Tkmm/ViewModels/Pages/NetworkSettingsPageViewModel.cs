@@ -8,11 +8,14 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class NetworkSettingsPageViewModel : ObservableObject
 {
+    private readonly Timer _autoRefreshTimer; 
+    
     public List<NxNetworkService> NetworkServices { get; }
 
     public NxNetworkService WiFiService { get; }
 
-    public ObservableCollection<NxNetwork> Networks { get; } = [];
+    [ObservableProperty]
+    private ObservableCollection<NxNetwork> _networks = [];
 
     [ObservableProperty]
     private NxNetwork? _connected;
@@ -40,25 +43,21 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         ];
 
         _macAddress = Connman.GetMacAddress();
+        _autoRefreshTimer = new Timer(state => _ = Task.Run(() => RefreshNetworksInternal()));
+        _autoRefreshTimer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1));
     }
 
     [RelayCommand]
     private async Task LocateNetworks()
     {
-        Networks.Clear();
         IsLoading = true;
-
+        Networks.Clear();
+        
         await Task.Run(async () => {
-            await foreach (NxNetwork network in Connman.GetNetworks()) {
-                Networks.Add(network);
-
-                if (network.IsConnected) {
-                    Connected = network;
-                    _ = Task.Run(async () => await Connman.LoadNetworkProperties(network));
-                }
-            }
+            await Connman.Scan();
+            await RefreshNetworksInternal(force: true);
         });
-
+        
         IsLoading = false;
     }
 
@@ -71,6 +70,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         }
         else {
             Networks.Clear();
+            Connected = null;
         }
     }
 
@@ -92,5 +92,50 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         }
 
         NxServices.DisableSmb();
+    }
+
+    private async Task RefreshNetworksInternal(bool force = false, CancellationToken ct = default)
+    {
+        if (IsLoading && !force) {
+            return;
+        }
+        
+        HashSet<string> foundNetworks = [];
+        
+        await foreach (NxNetwork network in Connman.GetNetworks(ct)) {
+            if (Networks.FirstOrDefault(net => net.Id == network.Id) is NxNetwork existing) {
+                if (existing.IsConnected) {
+                    SetConnected(network);
+                }
+                
+                existing.IsConnected = network.IsConnected;
+                existing.IsKnown = network.IsKnown;
+                goto UpdateTrackingList;
+            }
+
+            if (network.IsConnected) {
+                SetConnected(network);
+            }
+            
+            Networks.Add(network);
+            
+        UpdateTrackingList:
+            foundNetworks.Add(network.Id);
+        }
+
+        for (int i = 0; i < Networks.Count; i++) {
+            if (foundNetworks.Contains(Networks[i].Id)) {
+                continue;
+            }
+            
+            Networks.RemoveAt(i);
+            i--;
+        }
+    }
+
+    private void SetConnected(NxNetwork network)
+    {
+        _ = Task.Run(async () => await Connman.LoadNetworkProperties(network));
+        Connected = network;
     }
 }
