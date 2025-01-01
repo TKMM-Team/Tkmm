@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Timers;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -21,12 +20,13 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Builders;
 using Tkmm.Components;
+using Tkmm.Components.NX;
 using Tkmm.Core;
 using Tkmm.Core.Localization;
 using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
-using Tkmm.Managers;
+using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
@@ -39,15 +39,11 @@ public class App : Application
 {
     private static WindowNotificationManager? _notificationManager;
 
-    #if SWITCH
-    private System.Timers.Timer? _batteryStatusTimer;
-    #endif
-
     public static readonly string Version = typeof(App).Assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
         .InformationalVersion.Split('+')[0] ?? SystemMsg.UndefinedVersion;
 
-    public static string Title { get; } = "TotK Mod Manager";
+    public static string Title => "TotK Mod Manager";
 
     public static string ShortTitle { get; } = $"TKMM v{Version}";
 
@@ -85,7 +81,7 @@ public class App : Application
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) {
             return;
         }
-        
+
         BindingPlugins.DataValidators.RemoveAt(0);
         TkThumbnail.CreateBitmap = stream => new Bitmap(stream);
 
@@ -93,19 +89,17 @@ public class App : Application
             if (level is not LogLevel.Error) {
                 return;
             }
-            
-            Toast(message, $"{exception?.GetType().Name.Humanize() ?? "Error"} ({eventId})", NotificationType.Error, action: () => {
-                PageManager.Shared.Focus(Page.Logs);
-            });
+
+            Toast(message, $"{exception?.GetType().Name.Humanize() ?? "Error"} ({eventId})",
+                NotificationType.Error,
+                action: () => PageManager.Shared.Focus(Page.Logs));
         };
 
         ShellView shellView = new() {
             DataContext = ShellViewModel.Shared
         };
 
-        shellView.Closed += async (_, _) => {
-            await SystemActions.Instance.SoftClose();
-        };
+        shellView.Closed += async (_, _) => { await SystemActions.Instance.SoftClose(); };
 
         XamlRoot = shellView;
         shellView.Loaded += (_, _) => {
@@ -119,47 +113,20 @@ public class App : Application
         MenuFactory = new AvaloniaMenuFactory(XamlRoot,
             localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
         );
+
         MenuFactory.ConfigureMenu();
+        shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
-        shellView.MainMenu.ItemsSource = MenuFactory.Items;#if SWITCH
-            var powerOptionsMenu = new AvaloniaMenuFactory(XamlRoot);
-            powerOptionsMenu.AddMenuGroup<PowerOptionsMenu>();
-            shellView.PowerOptionsMenu.ItemsSource = powerOptionsMenu.Items;
+#if SWITCH
+        AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
+            localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
+        );
+        nxSystemMenu.AddMenuGroup<NxMenuModel>();
+        shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
+        
+        BatteryStatusWatcher.Start();
+#endif
 
-            if (XamlRoot is ShellView currentShellView)
-            {
-                var batteryStatusTextBlock = currentShellView.FindControl<TextBlock>("BatteryStatusTextBlock");
-                var viewModel = currentShellView.DataContext as ShellViewModel;
-
-                if (viewModel != null)
-                {
-                    var batteryStatusManager = new BatteryStatusManager(viewModel);
-
-                    // Timer to update battery status every second. Could have been better implemented with something that reads the files dynamically but this is a quick fix
-                    _batteryStatusTimer = new System.Timers.Timer(1000);
-                    _batteryStatusTimer.Elapsed += (sender, e) =>
-                    {
-                        Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            if (batteryStatusTextBlock != null)
-                            {
-                                batteryStatusManager.UpdateBatteryStatus(batteryStatusTextBlock);
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("BatteryStatusTextBlock cannot be null.");
-                            }
-                        });
-                    };
-                    _batteryStatusTimer.AutoReset = true;
-                    _batteryStatusTimer.Start();
-                }
-                else
-                {
-                    throw new InvalidOperationException("ViewModel cannot be null.");
-                }
-            }
-            #endif
         desktop.MainWindow = shellView;
 
         // ConfigFactory Configuration
@@ -172,7 +139,7 @@ public class App : Application
 
         if (settingsPage.DataContext is ConfigPageModel settingsModel) {
             settingsModel.SecondaryButtonIsEnabled = false;
-            
+
             settingsModel.AppendAndValidate<Config>(ref isValid);
             settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
@@ -183,7 +150,9 @@ public class App : Application
         PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
 
         PageManager.Shared.Register(Page.Logs, PageMsg.Logs, new LogsPageView(), Symbol.AllApps, PageMsg.LogsDescription, isFooter: true);
-        PageManager.Shared.Register(Page.NetworkSettings, "Network Settings", new NetworkSettingsPageView(), Symbol.Wifi4, "Settings for WiFi and other network services");
+#if SWITCH
+        PageManager.Shared.Register(Page.NetworkSettings, PageMsg.NetworkSettings, new NetworkSettingsPageView(), Symbol.Wifi4, PageMsg.NetworkSettingsDescription, isFooter: true, isDefault: true);
+#endif
         PageManager.Shared.Register(Page.Settings, PageMsg.Settings, settingsPage, Symbol.Settings, PageMsg.SettingsDescription, isFooter: true, isDefault: isValid == false);
 
         OnThemeChanged(Config.Shared.Theme);
@@ -222,9 +191,7 @@ public class App : Application
     {
         Dispatcher.UIThread.Invoke(() => {
             _notificationManager?.Show(new Notification(
-                ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => {
-                    PageManager.Shared.Focus(Page.Logs);
-                }));
+                ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => { PageManager.Shared.Focus(Page.Logs); }));
         });
     }
 }
