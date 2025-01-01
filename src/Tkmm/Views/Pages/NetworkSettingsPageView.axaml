@@ -2,266 +2,146 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:li="using:LoadingIndicators.Avalonia"
-             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:nx="using:Tkmm.Core.Models.NX"
+             xmlns:loc="using:Tkmm.Core.Localization"
+             xmlns:fa="https://github.com/projektanker/icons.avalonia"
              x:DataType="pages:NetworkSettingsPageViewModel">
-
     <Grid Margin="20"
-          ColumnDefinitions="2*,*"
-          RowDefinitions="Auto,*">
-        <Grid Grid.Column="0"
-              Grid.Row="1"
-              Margin="0,10,10,0"
-              RowDefinitions="Auto,*">
-            <StackPanel Grid.Row="0"
-                        Orientation="Vertical"
-                        Spacing="10">
+          ColumnDefinitions="2*,*">
+        <Grid RowDefinitions="Auto,Auto,*" Margin="0,0,20,0" IsEnabled="{Binding WiFiService.IsEnabled}">
+            <TextBlock
+                Text="{Binding NetworkSettings_Header_WirelessNetworks, Source={x:Static loc:StringResources.SystemMsg}}"
+                FontSize="20"
+                FontWeight="Bold"
+                Margin="0,0,0,10" />
 
-                <TextBlock Text="Wireless Networks"
-                           FontSize="20"
-                           FontWeight="Bold"
-                           Margin="0,0,0,15"
-                           TextAlignment="Center"/>
-
-                <StackPanel Orientation="Horizontal"
-                            Spacing="10"
-                            Margin="0,0,0,10">
-                    <Button Content="Refresh Network List"
-                            Command="{Binding ScanForNetworksCommand}">
-                        <Button.IsEnabled>
-                            <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                <Binding Path="IsWifiEnabled"/>
-                                <Binding Path="IsConnecting"
-                                         Converter="{x:Static BoolConverters.Not}"/>
-                            </MultiBinding>
-                        </Button.IsEnabled>
-                    </Button>
-                    <Button Content="Cancel"
-                            Command="{Binding CancelConnectCommand}"
-                            IsVisible="{Binding IsConnecting}"/>
-                </StackPanel>
+            <StackPanel Spacing="10" Grid.Row="1">
+                <Button
+                    Content="{Binding NetworkSettings_Action_RefreshNetworks_Name, Source={x:Static loc:StringResources.SystemMsg}}"
+                    Command="{Binding LocateNetworksCommand}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1"
-                        Orientation="Vertical"
+            <StackPanel Grid.Row="2"
+                        Spacing="15"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        IsVisible="{Binding IsScanning}">
-                <li:LoadingIndicator Mode="ArcsRing"
+                        IsVisible="{Binding IsLoading}">
+                <li:LoadingIndicator Mode="Ring"
+                                     IsHitTestVisible="False"
+                                     Margin="0,-30,0,0"
                                      SpeedRatio="0.9"
-                                     Foreground="{DynamicResource SystemAccentColor}"
-                                     Width="200"/>
-                <TextBlock Text="Scanning networks..."
-                           FontSize="30"
-                           Margin="0,0,0,20"/>
+                                     Height="200"
+                                     Foreground="{DynamicResource SystemAccentColor}" />
+                <TextBlock Text="{Binding NetworkSettings_Modal_ScanningMessage, Source={x:Static loc:StringResources.SystemMsg}}"
+                           Margin="0,-30,0,0"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontSize="16" />
             </StackPanel>
 
-            <ListBox Grid.Row="1"
-                     ItemsSource="{Binding AvailableNetworks}"
-                     SelectedItem="{Binding SelectedNetwork}">
-                <ListBox.IsEnabled>
-                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding Path="IsBusy"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                        <Binding Path="IsConnecting"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                    </MultiBinding>
-                </ListBox.IsEnabled>
-                <ListBox.IsVisible>
-                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding Path="IsWifiEnabled"/>
-                        <Binding Path="IsScanning"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                    </MultiBinding>
-                </ListBox.IsVisible>
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:CompileBindings="False">
-                        <Grid ColumnDefinitions="Auto,*"
-                              Margin="0,10,0,15">
-                            <StackPanel Orientation="Vertical"
-                                        Spacing="10">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="10"
-                                            Margin="0,10,0,0">
-                                    <TextBlock Text="{Binding Ssid}"
-                                               Margin="0,0,0,5"/>
-                                    <TextBlock Text="Connected"
-                                               Foreground="Green"
-                                               Margin="5,0,0,0">
-                                        <TextBlock.IsVisible>
-                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                                <Binding Path="Connected"/>
-                                                <Binding Path="DataContext.IsConnecting"
-                                                        RelativeSource="{RelativeSource AncestorType=UserControl}"
-                                                        Converter="{x:Static BoolConverters.Not}"/>
-                                            </MultiBinding>
-                                        </TextBlock.IsVisible>
-                                    </TextBlock>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="10"
-                                            Margin="0,0,0,5"
-                                            IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
-                                    <TextBox Text="{Binding $parent[UserControl].DataContext.NetworkPassword, Mode=TwoWay}" 
-                                            Watermark="Enter Password"
-                                            PasswordChar="*"
-                                            Width="200"
-                                            KeyDown="TextBox_KeyDown">
-                                        <TextBox.IsVisible>
-                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                                <Binding Path="SavedPassword"
-                                                         Converter="{x:Static BoolConverters.Not}"/>
-                                                <Binding Path="Connected"
-                                                         Converter="{x:Static BoolConverters.Not}"/>
-                                            </MultiBinding>
-                                        </TextBox.IsVisible>
-                                    </TextBox>
-                                    <Button Content="Connect"
-                                            Command="{Binding $parent[UserControl].DataContext.ConnectToNetworkCommand}"
-                                            IsVisible="{Binding !Connected}"
-                                            IsEnabled="{Binding $parent[UserControl].DataContext.IsBusy, Converter={x:Static BoolConverters.Not}}"/>
-                                    <Button Content="Disconnect"
-                                            Command="{Binding $parent[UserControl].DataContext.DisconnectSsidCommand}"
-                                            IsVisible="{Binding Connected}"
-                                            IsEnabled="{Binding $parent[UserControl].DataContext.IsBusy, Converter={x:Static BoolConverters.Not}}"/>
-                                    <Button Content="Remove saved settings"
-                                            Command="{Binding $parent[UserControl].DataContext.ForgetSsidCommand}">
-                                        <Button.IsVisible>
-                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                                <Binding Path="SavedPassword"/>
-                                                <Binding Path="Connected"
-                                                         Converter="{x:Static BoolConverters.Not}"/>
-                                                <Binding Path="DataContext.IsConnecting"
-                                                         RelativeSource="{RelativeSource AncestorType=UserControl}"
-                                                         Converter="{x:Static BoolConverters.Not}"/>
-                                            </MultiBinding>
-                                        </Button.IsVisible>
+            <ScrollViewer Grid.Row="2" Margin="0,10,0,0">
+                <ItemsControl ItemsSource="{Binding Networks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type nx:NxNetwork}">
+                            <Expander Margin="0,0,15,10">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="{Binding Ssid}" />
+                                        <TextBlock Text="[Connected]"
+                                                   IsVisible="{Binding IsConnected}"
+                                                   Foreground="{DynamicResource HighlightColor}" />
+                                    </StackPanel>
+                                </Expander.Header>
+
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                    <Button Content="{Binding NetworkSettings_Action_ConnectNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                            IsVisible="{Binding !IsConnected}"
+                                            Command="{Binding ConnectCommand}" />
+                                    <TextBox Grid.Column="2"
+                                             Margin="5,0,0,0"
+                                             IsVisible="{Binding !IsConnected}"
+                                             Text="{Binding Passphrase}"
+                                             IsReadOnly="{Binding ConnectCommand.IsRunning}"
+                                             KeyDown="PasswordBox_KeyDown"
+                                             Watermark="{Binding NetworkSettings_Input_Password_Watermark, Source={x:Static loc:StringResources.SystemMsg}}"
+                                             PasswordChar="*" />
+                                    <Button Command="{Binding ConnectCommand.Cancel}"
+                                            VerticalAlignment="Center"
+                                            Margin="5,0,0,0"
+                                            Grid.Column="3"
+                                            IsVisible="{Binding !IsConnected}"
+                                            IsEnabled="{Binding ConnectCommand.IsRunning}"
+                                            Padding="3">
+                                        <fa:Icon Value="fa-regular fa-ban"/>
                                     </Button>
-                                </StackPanel>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Margin="15,0,0,0"
-                                        IsVisible="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
-                                <li:LoadingIndicator Mode="Arcs"
-                                                     SpeedRatio="0.9"
-                                                     Foreground="{DynamicResource SystemAccentColor}"
-                                                     Width="70"
-                                                     IsActive="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
-                                <TextBlock Text="Connecting..."
-                                           VerticalAlignment="Center"
-                                           FontSize="16"
-                                           Margin="5,0,0,0"
-                                           IsVisible="{Binding $parent[UserControl].DataContext.IsConnecting}"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
+                                    <Button Content="{Binding NetworkSettings_Action_DisconnectNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                            IsVisible="{Binding IsConnected}"
+                                            Command="{Binding DisconnectCommand}" />
+                                    <Button Content="{Binding NetworkSettings_Action_ForgetNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                            IsVisible="{Binding IsConnected}"
+                                            Margin="5,0,0,0"
+                                            Grid.Column="1"
+                                            Command="{Binding ForgetCommand}" />
+                                </Grid>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
 
-        <StackPanel Grid.Column="1"
-                    Grid.Row="1"
-                    Margin="10,10,0,0"
-                    Spacing="20">
-
-            <TextBlock Text="Network Services"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"
-                       TextAlignment="Center"/>
-
-            <StackPanel Orientation="Horizontal"
-                        Spacing="10"
-                        HorizontalAlignment="Center">
-                <ToggleSwitch IsChecked="{Binding IsWifiEnabled, Mode=TwoWay}"
-                              OffContent="WiFi Service"
-                              OnContent="WiFi Service"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Spacing="10"
-                        HorizontalAlignment="Center">
-                <ToggleSwitch IsChecked="{Binding IsSshEnabled, Mode=TwoWay}" 
-                              OffContent="SSH Service"
-                              OnContent="SSH Service" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        Spacing="10"
-                        HorizontalAlignment="Center">
-                <ToggleSwitch IsChecked="{Binding IsSmbEnabled, Mode=TwoWay}" 
-                              OffContent="SMB Service"
-                              OnContent="SMB Service" />
-            </StackPanel>
-
-            <TextBlock Text="Network Information"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="0,10,0,10"
-                       TextAlignment="Center"/>
-
-            <Grid HorizontalAlignment="Center"
-                  RowDefinitions="Auto,Auto,Auto,Auto"
-                  ColumnDefinitions="Auto,*">
-                <Border Grid.Row="0"
-                        Grid.Column="0">
-                    <TextBlock Text="IP Address:"
-                               Margin="15,5,15,5"/>
-                </Border>
-                <Border Grid.Row="0"
-                        Grid.Column="1">
-                    <Grid>
-                        <TextBlock Text="{Binding IpAddress}"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding !IsConnecting}"/>
-                        <TextBlock Text="N/A"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding IsConnecting}"/>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="1"
-                        Grid.Column="0">
-                    <TextBlock Text="Subnet Mask:"
-                               Margin="15,5,15,5"/>
-                </Border>
-                <Border Grid.Row="1"
-                        Grid.Column="1">
-                    <Grid>
-                        <TextBlock Text="{Binding Netmask}"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding !IsConnecting}"/>
-                        <TextBlock Text="N/A"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding IsConnecting}"/>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="2"
-                        Grid.Column="0">
-                    <TextBlock Text="Gateway:"
-                               Margin="15,5,15,5"/>
-                </Border>
-                <Border Grid.Row="2"
-                        Grid.Column="1">
-                    <Grid>
-                        <TextBlock Text="{Binding Gateway}"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding !IsConnecting}"/>
-                        <TextBlock Text="N/A"
-                                   Margin="15,5,15,5"
-                                   IsVisible="{Binding IsConnecting}"/>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="3"
-                        Grid.Column="0">
-                    <TextBlock Text="MAC Address:"
-                               Margin="15,5,15,5"/>
-                </Border>
-                <Border Grid.Row="3"
-                        Grid.Column="1">
-                    <TextBlock Text="{Binding MacAddress}"
-                               Margin="15,5,15,5"/>
-                </Border>
+        <Grid RowDefinitions="*,*" Grid.Column="1">
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock Text="{Binding NetworkSettings_Header_Services, Source={x:Static loc:StringResources.SystemMsg}}"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10" />
+                
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding NetworkServices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type nx:NxNetworkService}">
+                            <ToggleSwitch IsChecked="{Binding IsEnabled}"
+                                          OnContent="{Binding Name, StringFormat='{}{0} Enabled'}"
+                                          OffContent="{Binding Name, StringFormat='{}{0} Disabled'}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>    
+                </ItemsControl>
             </Grid>
-        </StackPanel>
+            <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,*" Grid.Row="1">
+                <Grid.Styles>
+                    <Style Selector="TextBlock.Property">
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontFamily" Value="{StaticResource UbuntuMono}" />
+                    </Style>
+                    <Style Selector="TextBlock.Value">
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Style>
+                </Grid.Styles>
+                
+                <TextBlock Text="{Binding NetworkSettings_Header_Properties, Source={x:Static loc:StringResources.SystemMsg}}"
+                           Grid.ColumnSpan="2"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10" />
+
+                <StackPanel Spacing="5" Grid.Row="1">
+                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_LocalMacAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" Margin="0,0,0,10" />
+                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_IpAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
+                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_SubnetMaskProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
+                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_GatewayProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
+                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_MacAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
+                </StackPanel>
+
+                <StackPanel Spacing="5" Grid.Column="1" Grid.Row="1">
+                    <TextBlock Classes="Property Value" Text="{Binding MacAddress}" Margin="0,0,0,10" />
+                    <TextBlock Classes="Property Value" Text="{Binding Connected.IpAddress}" />
+                    <TextBlock Classes="Property Value" Text="{Binding Connected.SubnetMask}" />
+                    <TextBlock Classes="Property Value" Text="{Binding Connected.Gateway}" />
+                    <TextBlock Classes="Property Value" Text="{Binding Connected.MacAddress}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
