@@ -22,6 +22,11 @@ public class StringResources_Pages
     public string Logs { get; } = GetStringResource(GROUP, nameof(Logs));
     public string LogsDescription { get; } = GetStringResource(GROUP, nameof(LogsDescription));
 
+#if SWITCH
+    public string NetworkSettings { get; } = GetStringResource(GROUP, nameof(NetworkSettings));
+    public string NetworkSettingsDescription { get; } = GetStringResource(GROUP, nameof(NetworkSettingsDescription));
+#endif
+
     public string Settings { get; } = GetStringResource(GROUP, nameof(Settings));
     public string SettingsDescription { get; } = GetStringResource(GROUP, nameof(SettingsDescription));
 }

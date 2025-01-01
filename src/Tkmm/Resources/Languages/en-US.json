@@ -22,7 +22,24 @@
         "WizDumpPage_GameDumpFolderField_Description": "Game Dump Folder Path (romfs)",
         "WizDumpPage_Action_Browse": "...",
         "WizPageFinal_Title": "Please select your preferred language",
-        "WizPageFinal_Action_Finish": "Finish"
+        "WizPageFinal_Action_Finish": "Finish",
+        "NetworkSettings_WiFiService_Name": "WiFi",
+        "NetworkSettings_SshService_Name": "SSH",
+        "NetworkSettings_SmbService_Name": "SMB",
+        "NetworkSettings_Action_RefreshNetworks_Name": "Refresh",
+        "NetworkSettings_Modal_ScanningMessage": "Scanning networks...",
+        "NetworkSettings_Header_WirelessNetworks": "Wireless Networks",
+        "NetworkSettings_Action_ConnectNetwork": "Connect",
+        "NetworkSettings_Action_DisconnectNetwork": "Disconnect",
+        "NetworkSettings_Action_ForgetNetwork": "Forget",
+        "NetworkSettings_Input_Password_Watermark": "Password",
+        "NetworkSettings_Header_Services": "Services",
+        "NetworkSettings_Header_Properties": "Properties",
+        "NetworkSettings_Header_LocalMacAddressProperty": "Local MAC Address",
+        "NetworkSettings_Header_IpAddressProperty": "IP Address",
+        "NetworkSettings_Header_SubnetMaskProperty": "Subnet Mask",
+        "NetworkSettings_Header_GatewayProperty": "Gateway",
+        "NetworkSettings_Header_MacAddressProperty": "MAC Address"
     },
     "Menu": {
         "File": "File",
@@ -45,7 +62,10 @@
         "DebugOpenModFolder": "Open mod folder",
         "Help": "Help",
         "HelpCheckForUpdates": "Check for updates",
-        "HelpAbout": "About"
+        "HelpAbout": "About",
+        "Nx": "TKMM NX",
+        "NxReboot": "Reboot",
+        "NxShutdown": "Shutdown"
     },
     "Pages": {
         "Home": "Home",
@@ -60,6 +80,8 @@
         "GbModsDescription": "GameBanana browser client for TotK mods",
         "Logs": "Logs",
         "LogsDescription": "System logs",
+        "NetworkSettings": "Network Settings",
+        "NetworkSettingsDescription": "Settings for WiFi and other network services",
         "Settings": "Settings",
         "SettingsDescription": "Application settings"
     },

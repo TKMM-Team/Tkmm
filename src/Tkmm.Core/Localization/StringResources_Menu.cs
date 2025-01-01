@@ -30,7 +30,9 @@ public class StringResources_Menu
     public const string HELP_CHECK_FOR_UPDATES = "HelpCheckForUpdates";
     public const string HELP_ABOUT = "HelpAbout";
 
+#if SWITCH
     public const string NX_MENU = "Nx";
     public const string NX_REBOOT = "NxReboot";
     public const string NX_SHUTDOWN = "NxShutdown";
+#endif
 }
