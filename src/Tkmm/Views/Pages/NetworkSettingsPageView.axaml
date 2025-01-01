@@ -86,7 +86,7 @@
                                             IsVisible="{Binding IsConnected}"
                                             Command="{Binding DisconnectCommand}" />
                                     <Button Content="{Binding NetworkSettings_Action_ForgetNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
-                                            IsVisible="{Binding IsConnected}"
+                                            IsVisible="{Binding IsKnown}"
                                             Margin="5,0,0,0"
                                             Grid.Column="1"
                                             Command="{Binding ForgetCommand}" />
