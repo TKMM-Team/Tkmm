@@ -14,16 +14,10 @@ public partial class ShellViewModel : ObservableObject
     private string _batteryIcon = string.Empty;
 
     [ObservableProperty]
-    private string _batteryStatus = string.Empty;
+    private int _batteryCharge = -1;
     
     public ShellViewModel()
     {
         IsFirstTimeSetup = !Config.Shared.ConfigExists();
-    }
-
-    public void UpdateBatteryStatus(string status, string icon)
-    {
-        BatteryStatus = status;
-        BatteryIcon = icon;
     }
 }
