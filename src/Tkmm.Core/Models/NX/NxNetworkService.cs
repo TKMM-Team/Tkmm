@@ -1,5 +1,3 @@
-#if SWITCH
-
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Core.Models.NX;
@@ -19,4 +17,3 @@ public sealed partial class NxNetworkService(string name, Action<bool> onEnabled
         OnEnabledChanged(value);
     }
 }
-#endif

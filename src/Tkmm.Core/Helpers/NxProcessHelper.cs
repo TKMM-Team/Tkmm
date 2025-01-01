@@ -1,5 +1,3 @@
-#if SWITCH
-
 using System.Diagnostics;
 
 namespace Tkmm.Core.Helpers;
@@ -55,4 +53,3 @@ public static class NxProcessHelper
         process.WaitForExit();
     }
 }
-#endif

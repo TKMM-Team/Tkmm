@@ -1,5 +1,3 @@
-#if SWITCH
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -69,4 +67,3 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
         Gateway = null;
     }
 }
-#endif

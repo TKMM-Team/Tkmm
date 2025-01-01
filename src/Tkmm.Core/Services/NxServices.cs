@@ -1,5 +1,3 @@
-#if SWITCH
-
 using Tkmm.Core.Helpers;
 
 namespace Tkmm.Core.Services;
@@ -76,4 +74,3 @@ public static class NxServices
         NxProcessHelper.Exec(RESTART_SMB_COMMAND);
     }
 }
-#endif

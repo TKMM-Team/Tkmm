@@ -28,7 +28,6 @@ public class StringResources_System
     public string WizDumpPage_Action_Browse { get; } = GetStringResource(GROUP, nameof(WizDumpPage_Action_Browse));
     public string WizPageFinal_Title { get; } = GetStringResource(GROUP, nameof(WizPageFinal_Title));
     public string WizPageFinal_Action_Finish { get; } = GetStringResource(GROUP, nameof(WizPageFinal_Action_Finish));
-#if SWITCH
     public string NetworkSettings_WiFiService_Name { get; } = GetStringResource(GROUP, nameof(NetworkSettings_WiFiService_Name));
     public string NetworkSettings_SshService_Name { get; } = GetStringResource(GROUP, nameof(NetworkSettings_SshService_Name));
     public string NetworkSettings_SmbService_Name { get; } = GetStringResource(GROUP, nameof(NetworkSettings_SmbService_Name));
@@ -46,5 +45,4 @@ public class StringResources_System
     public string NetworkSettings_Header_SubnetMaskProperty { get; } = GetStringResource(GROUP, nameof(NetworkSettings_Header_SubnetMaskProperty));
     public string NetworkSettings_Header_GatewayProperty { get; } = GetStringResource(GROUP, nameof(NetworkSettings_Header_GatewayProperty));
     public string NetworkSettings_Header_MacAddressProperty { get; } = GetStringResource(GROUP, nameof(NetworkSettings_Header_MacAddressProperty));
-#endif
 }

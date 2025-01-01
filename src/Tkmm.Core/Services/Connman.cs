@@ -1,5 +1,3 @@
-#if SWITCH
-
 using System.Buffers;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
@@ -223,4 +221,3 @@ public static class Connman
         await NxProcessHelper.ExecAsync(RESTART_COMMAND, ct);
     }
 }
-#endif
