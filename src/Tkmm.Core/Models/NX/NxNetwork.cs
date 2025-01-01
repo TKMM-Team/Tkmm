@@ -67,4 +67,19 @@ public sealed partial class NxNetwork(string id, string ssid) : ObservableObject
         SubnetMask = null;
         Gateway = null;
     }
+
+    public void UpdateProperties(NxNetwork network)
+    {
+        if (network.IpAddress != IpAddress) {
+            IpAddress = network.IpAddress;
+        }
+        
+        if (network.SubnetMask != SubnetMask) {
+            SubnetMask = network.SubnetMask;
+        }
+        
+        if (network.Gateway != Gateway) {
+            Gateway = network.Gateway;
+        }
+    }
 }
