@@ -12,7 +12,7 @@ public static class BatteryStatusWatcher
         _ = Task.Run(() => CheckTarget(CHARGE_FILE_PATH, CheckCharge));
     });
     
-    private const string CHARGING = "fa-solid fa-battery-charging";
+    private const string CHARGING = "fa-solid fa-battery-bolt";
     private const string CHARGE_EMPTY = "fa-solid fa-battery-empty";
     private const string CHARGE_LOW = "fa-solid fa-battery-low";
     private const string CHARGE_QUARTER = "fa-solid fa-battery-quarter";
