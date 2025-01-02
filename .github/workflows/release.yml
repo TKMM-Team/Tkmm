@@ -126,6 +126,7 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     permissions: write-all
+    name: AppImage for ${{ matrix.target.name }} on ${{ matrix.config.name }}
     strategy:
       fail-fast: true
       matrix:
