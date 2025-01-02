@@ -38,7 +38,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
-        Filter = "XCI/NSP:*.nsp,*.xci",
+        Filter = "XCI/NSP:*.nsp;*.xci",
         InstanceBrowserKey = "base-game-file-path",
         Title = "Select base game XCI/NSP")]
     private string? _baseGameFilePath;
