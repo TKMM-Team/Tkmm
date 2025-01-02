@@ -113,7 +113,32 @@ jobs:
           # Setup appimagetool
           wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x tools/appimagetool
+          # i'm to lazy to make this a sh script so you get this mess - Piplup
 
+          mkdir -p AppDir/usr/bin
+
+          cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
+          cp distribution/appimage/AppRun AppDir/AppRun
+          cp distribution/appimage/Tkmm.desktop AppDir/tkmm.desktop
+          cp ${{ matrix.target.name }}-${{ matrix.config.runtime }} AppDir/usr/bin/tkmm
+
+          # Explicitly set $ARCH for appimagetool ($ARCH_NAME is for the file name)
+          if [ "$PLATFORM_NAME" = "linux-x64" ]; then
+            ARCH_NAME=x64
+            export ARCH=x86_64
+          elif [ "$PLATFORM_NAME" = "linux-arm64" ]; then
+            ARCH_NAME=arm64
+            export ARCH=aarch64
+          else
+            echo "Unexpected PLATFORM_NAME "$PLATFORM_NAME""
+            exit 1
+          fi
+
+          export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
+
+          appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
+          mv ./*.AppImage.zsync
+          
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
         with:
