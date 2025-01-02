@@ -106,6 +106,14 @@ jobs:
           ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.project }}${{ matrix.config.extension }} \
           ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.exe }}${{ matrix.config.extension }}     \
 
+      - name: Build Appimage
+        if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.target.project == 'Tkmm.Desktop' }}
+        shell: bash
+        run: |
+          # Setup appimagetool
+          wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x tools/appimagetool
+
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
         with:

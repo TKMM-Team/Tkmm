@@ -1,0 +1,14 @@
+[Desktop Entry]
+Categories=Game
+Comment=
+Exec=tkmm
+GenericName=
+Icon=tkmm
+MimeType=
+Name=TKMM
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.0
