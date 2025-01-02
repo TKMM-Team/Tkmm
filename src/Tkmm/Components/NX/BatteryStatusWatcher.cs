@@ -12,6 +12,7 @@ public static class BatteryStatusWatcher
         _ = Task.Run(() => CheckTarget(CHARGE_FILE_PATH, CheckCharge));
     });
     
+    private const string CHARGE_EMPTY = "fa-solid fa-battery-empty";
     private const string CHARGE_LOW = "fa-solid fa-battery-low";
     private const string CHARGE_QUARTER = "fa-solid fa-battery-quarter";
     private const string CHARGE_HALF = "fa-solid fa-battery-half";
@@ -81,10 +82,11 @@ public static class BatteryStatusWatcher
 
         return charge switch {
             -1 => CHARGE_ERROR,
-            < 1 => CHARGE_LOW,
-            < 26 => CHARGE_QUARTER,
-            < 51 => CHARGE_HALF,
-            < 76 => CHARGE_THREE_QUARTERS,
+            < 8 => CHARGE_EMPTY,
+            < 21 => CHARGE_LOW,
+            < 41 => CHARGE_QUARTER,
+            < 66 => CHARGE_HALF,
+            < 88 => CHARGE_THREE_QUARTERS,
             < 101 => CHARGE_FULL,
             _ => CHARGE_ERROR,
         };
