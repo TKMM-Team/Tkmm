@@ -30,7 +30,6 @@ jobs:
           body: |
             > [!IMPORTANT]
             > The latest [.NET runtime](https://dotnet.microsoft.com/en-us/download/dotnet/latest) from [Microsoft](https://dotnet.microsoft.com/en-us/) is required on all operating systems, make sure you download and install that before proceeding.
-          # prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
 
   build:
     needs: release
@@ -122,3 +121,104 @@ jobs:
           asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
           asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
           asset_content_type: application/zip
+
+  appimage:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    strategy:
+      fail-fast: true
+      matrix:
+        target:
+          - project: Tkmm.Desktop
+            name: TKMM
+            exe: tkmm
+        config:
+          - name: Linux (x64)
+            os: ubuntu-latest
+            runtime: linux-x64
+            extension: ~
+          - name: Linux (arm64)
+            os: ubuntu-latest
+            runtime: linux-arm64
+            extension: ~
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build
+        shell: bash
+        run: |
+          dotnet publish src/${{ matrix.target.project }} \
+          -c Release \
+          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
+          -r ${{ matrix.config.runtime }} \
+          --sc false \
+          --version-suffix ${{ needs.release.outputs.version }} \
+          -p:DebugType=embedded \
+          -p:IncludeNativeLibrariesForSelfExtract=true \
+          -p:PublishSingleFile=true \
+          -p:Version=${{ needs.release.outputs.version }} \
+          --self-contained
+
+      - name: Rename Executable
+        shell: bash
+        run: |-
+          mv                                                                                                          \
+          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.project }}${{ matrix.config.extension }} \
+          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.exe }}${{ matrix.config.extension }}     \
+
+      - name: Build Appimage
+        if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.target.project == 'Tkmm.Desktop' }}
+        shell: bash
+        run: |
+          # Setup appimagetool
+          mkdir -p tools
+          wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x tools/appimagetool
+
+          rm -rf AppDir
+          mkdir -p AppDir/usr/bin
+
+          cp distribution/appimage/Tkmm.desktop AppDir/tkmm.desktop
+          cp distribution/appimage/AppRun AppDir/AppRun
+          cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
+
+          cp -R ${{ matrix.target.name }}-${{ matrix.config.runtime }}/* AppDir/usr/bin/
+
+          chmod +x AppDir/AppRun AppDir/usr/bin/tkmm*
+
+          # Set $ARCH for appimagetool based on the runtime
+          if [ "${{ matrix.config.runtime }}" = "linux-x64" ]; then
+            ARCH_NAME=x64
+            export ARCH=x86_64
+          elif [ "${{ matrix.config.runtime }}" = "linux-arm64" ]; then
+            ARCH_NAME=arm64
+            export ARCH=aarch64
+          else
+            echo "Unexpected runtime ${{ matrix.config.runtime }}"
+            exit 1
+          fi
+
+          export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
+
+          ./tools/appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
+          mv ./*.AppImage ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          upload_url: ${{ needs.release.outputs.release }}
+          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
+          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
+          asset_content_type: application/octet-stream
