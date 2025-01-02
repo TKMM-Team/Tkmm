@@ -114,7 +114,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
             }
 
             if (network.IsConnected) {
-                SetConnected(network);
+                await SetConnected(network);
             }
             
             Networks.Add(network);
@@ -133,9 +133,9 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         }
     }
 
-    private void SetConnected(NxNetwork network)
+    private async Task SetConnected(NxNetwork network)
     {
-        _ = Task.Run(async () => await Connman.LoadNetworkProperties(network));
+        await Task.Run(async () => await Connman.LoadNetworkProperties(network));
 
         if (Connected is not null && network.Id == Connected.Id) {
             Connected.UpdateProperties(network);
