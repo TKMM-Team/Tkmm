@@ -13,4 +13,10 @@ public sealed class DebugMenuModel
     {
         return ModActions.Instance.OpenModFolder();
     }
+    
+    [Menu(DEBUG_OPEN_MERGED_OUTPUT, DEBUG_MENU, InputGesture = "Alt + Shift + O", Icon = TkIcons.FOLDER_TREE)]
+    public static Task OpenMergedOutput()
+    {
+        return MergeActions.Instance.OpenMergedOutput();
+    }
 }

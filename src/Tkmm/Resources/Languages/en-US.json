@@ -60,6 +60,7 @@
         "ToolsCheckDumpIntegrity": "Check dump integrity",
         "Debug": "Debug",
         "DebugOpenModFolder": "Open mod folder",
+        "DebugOpenMergedOutput": "Open merged output",
         "Help": "Help",
         "HelpCheckForUpdates": "Check for updates",
         "HelpAbout": "About",

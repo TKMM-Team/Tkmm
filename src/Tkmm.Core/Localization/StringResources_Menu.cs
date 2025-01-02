@@ -25,6 +25,7 @@ public class StringResources_Menu
     
     public const string DEBUG_MENU = "Debug";
     public const string DEBUG_OPEN_MOD_FOLDER = "DebugOpenModFolder";
+    public const string DEBUG_OPEN_MERGED_OUTPUT = "DebugOpenMergedOutput";
     
     public const string HELP_MENU = "Help";
     public const string HELP_CHECK_FOR_UPDATES = "HelpCheckForUpdates";

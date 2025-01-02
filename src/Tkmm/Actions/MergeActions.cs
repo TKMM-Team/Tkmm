@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Primitives;
@@ -149,6 +150,25 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured when exporting the profile '{Profile}' to the external drive " +
                                      "'{TargetDrive}'.", profile.Name, drive.Name);
+            await ErrorDialog.ShowAsync(ex);
+        }
+    }
+    
+    [RelayCommand]
+    public async Task OpenMergedOutput()
+    {
+        await CanActionRun(showError: false);
+
+        try {
+            ProcessStartInfo info = new() {
+                FileName = TKMM.MergedOutputFolder,
+                UseShellExecute = true
+            };
+
+            Process.Start(info);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "An error occured while opening the merged output folder.");
             await ErrorDialog.ShowAsync(ex);
         }
     }
