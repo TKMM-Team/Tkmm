@@ -96,7 +96,8 @@ jobs:
           -p:DebugType=embedded \
           -p:IncludeNativeLibrariesForSelfExtract=true \
           -p:PublishSingleFile=true \
-          -p:Version=${{ needs.release.outputs.version }}
+          -p:Version=${{ needs.release.outputs.version }} \
+          --self-contained
 
       - name: Rename Executable
         shell: bash
