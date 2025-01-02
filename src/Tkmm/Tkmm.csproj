@@ -68,5 +68,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
+    <ProjectReference Include="..\Tkmm.VirtualKeyboard\Tkmm.VirtualKeyboard.csproj" />
   </ItemGroup>
 </Project>

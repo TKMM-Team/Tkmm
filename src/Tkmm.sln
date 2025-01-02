@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TkSharp.Extensions.GameBana
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TkSharp.Extensions.LibHac", "..\lib\TkSharp\Extensions\TkSharp.Extensions.LibHac\TkSharp.Extensions.LibHac.csproj", "{BEE26115-4E5D-4F9D-9772-F24EF61E9D9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.VirtualKeyboard", "Tkmm.VirtualKeyboard\Tkmm.VirtualKeyboard.csproj", "{0BB004B5-A9CD-4089-B643-E3D1D2E049B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{BEE26115-4E5D-4F9D-9772-F24EF61E9D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEE26115-4E5D-4F9D-9772-F24EF61E9D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEE26115-4E5D-4F9D-9772-F24EF61E9D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BB004B5-A9CD-4089-B643-E3D1D2E049B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BB004B5-A9CD-4089-B643-E3D1D2E049B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BB004B5-A9CD-4089-B643-E3D1D2E049B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BB004B5-A9CD-4089-B643-E3D1D2E049B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

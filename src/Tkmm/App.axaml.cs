@@ -34,6 +34,7 @@ using TkSharp.Core.Models;
 #if SWITCH
 using Tkmm.Components.NX;
 using Tkmm.Models.MenuModels;
+using Tkmm.VirtualKeyboard.Extensions;
 #endif
 
 namespace Tkmm;
@@ -121,6 +122,7 @@ public class App : Application
         shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
 #if SWITCH
+        shellView.AddVirtualKeyboard();
         shellView.PowerOptionsMenu.IsVisible = true;
         shellView.NxBatteryStatusPanel.IsVisible = true;
         
