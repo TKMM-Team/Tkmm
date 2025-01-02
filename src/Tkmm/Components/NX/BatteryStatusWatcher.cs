@@ -12,6 +12,7 @@ public static class BatteryStatusWatcher
         _ = Task.Run(() => CheckTarget(CHARGE_FILE_PATH, CheckCharge));
     });
     
+    private const string CHARGING = "fa-solid fa-battery-charging";
     private const string CHARGE_EMPTY = "fa-solid fa-battery-empty";
     private const string CHARGE_LOW = "fa-solid fa-battery-low";
     private const string CHARGE_QUARTER = "fa-solid fa-battery-quarter";
@@ -51,7 +52,7 @@ public static class BatteryStatusWatcher
         
         string batteryIcon = status[..read] switch {
             // Unicode representation of "Charging" in UTF8
-            "桃牡楧杮" => "fa-solid fa-battery-bolt",
+            "桃牡楧杮" => CHARGING,
             _ => chargeIcon
         };
         
@@ -61,6 +62,10 @@ public static class BatteryStatusWatcher
 
     private static void CheckCharge(Stream input)
     {
+        if (ShellViewModel.Shared.BatteryIcon == CHARGING) {
+            return;
+        }
+        
         ShellViewModel.Shared.BatteryIcon = GetChargeIcon(input, out int charge);
         ShellViewModel.Shared.BatteryCharge = charge;
     }
