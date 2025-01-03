@@ -162,7 +162,6 @@ jobs:
           -c Release \
           -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
-          --sc false \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:DebugType=embedded \
           -p:IncludeNativeLibrariesForSelfExtract=true \
