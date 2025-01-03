@@ -17,7 +17,7 @@ public sealed class HelpMenuModel
     [Menu(HELP_CHECK_FOR_UPDATES, HELP_MENU, InputGesture = "Ctrl + U", Icon = TkIcons.CLOUD_ARROW_UP)]
     public static Task CheckForUpdates()
     {
-        return SystemActions.Instance.CheckForUpdates();
+        return SystemActions.Instance.CheckForUpdates(false);
     }
 
     [Menu(HELP_ABOUT, HELP_MENU, InputGesture = "F12", Icon = TkIcons.CIRCLE_INFO, IsSeparator = true)]
