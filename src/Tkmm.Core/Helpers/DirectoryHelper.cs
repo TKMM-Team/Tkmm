@@ -24,6 +24,8 @@ public static class DirectoryHelper
 
     public static void Copy(string source, string output, bool overwrite = false)
     {
+        Directory.CreateDirectory(output);
+        
         foreach (string sourceFile in Directory.EnumerateFiles(source)) {
             string outputFile = Path.Combine(output, Path.GetFileName(sourceFile));
             File.Copy(sourceFile, outputFile, overwrite);
