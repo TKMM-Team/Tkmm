@@ -52,6 +52,7 @@ public partial class VirtualKeyboard : TemplatedControl
     }
 
     private bool? _result;
+    private TaskCompletionSource<bool> _exitTcs = new();
 
     public static readonly StyledProperty<VirtualKeyboardLayout> KeyboardLayoutProperty = AvaloniaProperty.Register<VirtualKeyboard, VirtualKeyboardLayout>(nameof(KeyboardLayout));
     public VirtualKeyboardLayout KeyboardLayout {
@@ -83,15 +84,11 @@ public partial class VirtualKeyboard : TemplatedControl
     public void Exit(bool result)
     {
         _result = result;
+        _exitTcs.TrySetResult(result);
     }
 
     public async ValueTask<bool> WaitForExit()
     {
-        return await Task.Run(() => {
-            while (_result is null) {
-            }
-
-            return _result.Value;
-        });
+        return await _exitTcs.Task;
     }
 }
