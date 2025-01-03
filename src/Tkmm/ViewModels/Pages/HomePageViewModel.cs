@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -67,7 +68,7 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
 #if RELEASE
-        _ = Task.Run(async () => await SystemActions.Instance.CheckForUpdates());
+        _ = Dispatcher.UIThread.InvokeAsync(async () => await SystemActions.Instance.CheckForUpdates());
 #endif
     }
 }
