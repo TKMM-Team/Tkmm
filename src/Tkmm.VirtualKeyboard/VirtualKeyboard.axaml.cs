@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Tkmm.VirtualKeyboard.Layouts;
@@ -80,9 +81,26 @@ public partial class VirtualKeyboard : TemplatedControl
         virtualTextBox.Focus();
     }
 
+    private void SimulateEnterKeyPress(Control target)
+    {
+        var keyEventArgs = new KeyEventArgs
+        {
+            RoutedEvent = KeyDownEvent,
+            Key = Key.Enter,
+            Source = target,
+            KeyModifiers = KeyModifiers.None
+        };
+        target.RaiseEvent(keyEventArgs);
+    }
+
     [RelayCommand]
     public void Exit(bool result)
     {
+        if (result && _last != null && !KeyboardLayout.AcceptsReturn)
+        {
+            SimulateEnterKeyPress(_last);
+        }
+        
         _result = result;
         _exitTcs.TrySetResult(result);
     }
