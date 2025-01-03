@@ -12,7 +12,7 @@ namespace Tkmm.VirtualKeyboard;
 public partial class VirtualKeyboard : TemplatedControl
 {
     private const string INPUT_TEXT_BOX_NAME = "PART_VirtualKeyboardInput";
-    
+
     private static readonly DialogHost _host = new();
     private static TextBox? _last;
 
@@ -52,22 +52,24 @@ public partial class VirtualKeyboard : TemplatedControl
         _last = null;
     }
 
-    private bool? _result;
-    private TaskCompletionSource<bool> _exitTcs = new();
+    private readonly TaskCompletionSource<bool> _exitCompletionSource = new();
 
     public static readonly StyledProperty<VirtualKeyboardLayout> KeyboardLayoutProperty = AvaloniaProperty.Register<VirtualKeyboard, VirtualKeyboardLayout>(nameof(KeyboardLayout));
+
     public VirtualKeyboardLayout KeyboardLayout {
         get => GetValue(KeyboardLayoutProperty);
         set => SetValue(KeyboardLayoutProperty, value);
     }
 
     public static readonly StyledProperty<string?> VirtualTextProperty = AvaloniaProperty.Register<VirtualKeyboard, string?>(nameof(VirtualText));
+
     public string? VirtualText {
         get => GetValue(VirtualTextProperty);
         set => SetValue(VirtualTextProperty, value);
     }
 
     public static readonly StyledProperty<int> TextPositionProperty = AvaloniaProperty.Register<VirtualKeyboard, int>(nameof(TextPosition));
+
     public int TextPosition {
         get => GetValue(TextPositionProperty);
         set => SetValue(TextPositionProperty, value);
@@ -81,32 +83,30 @@ public partial class VirtualKeyboard : TemplatedControl
         virtualTextBox.Focus();
     }
 
-    private void SimulateEnterKeyPress(Control target)
-    {
-        var keyEventArgs = new KeyEventArgs
-        {
-            RoutedEvent = KeyDownEvent,
-            Key = Key.Enter,
-            Source = target,
-            KeyModifiers = KeyModifiers.None
-        };
-        target.RaiseEvent(keyEventArgs);
-    }
-
     [RelayCommand]
     public void Exit(bool result)
     {
-        if (result && _last != null && !KeyboardLayout.AcceptsReturn)
-        {
-            SimulateEnterKeyPress(_last);
+        if (result && _last != null && !KeyboardLayout.AcceptsReturn) {
+            SimulateKeyPress(_last, Key.Enter);
         }
-        
-        _result = result;
-        _exitTcs.TrySetResult(result);
+
+        _exitCompletionSource.TrySetResult(result);
     }
 
     public async ValueTask<bool> WaitForExit()
     {
-        return await _exitTcs.Task;
+        return await _exitCompletionSource.Task;
+    }
+    
+    private static void SimulateKeyPress(Control target, Key key)
+    {
+        var keyEventArgs = new KeyEventArgs {
+            RoutedEvent = KeyDownEvent,
+            Key = key,
+            Source = target,
+            KeyModifiers = KeyModifiers.None
+        };
+
+        target.RaiseEvent(keyEventArgs);
     }
 }
