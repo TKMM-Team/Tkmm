@@ -11,7 +11,6 @@
     <Version Condition="'$(Configuration)' == 'Debug'">0.0.999-dev</Version>
     <NoWarn>0657</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>SWITCH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -67,7 +66,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\lib\TkSharp\TkSharp.Packaging\TkSharp.Packaging.csproj" />
     <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
     <ProjectReference Include="..\Tkmm.VirtualKeyboard\Tkmm.VirtualKeyboard.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Controls\Keyboard\Layout\VirtualKeyboardLayoutNumpad.axaml" />
+    <UpToDateCheckInput Remove="Controls\Keyboard\Layout\VirtualKeyboardLayoutUS.axaml" />
+    <UpToDateCheckInput Remove="Controls\Keyboard\VirtualKey.axaml" />
+    <UpToDateCheckInput Remove="Controls\Keyboard\VirtualKeyboard.axaml" />
   </ItemGroup>
 </Project>
