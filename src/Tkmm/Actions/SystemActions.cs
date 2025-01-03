@@ -24,7 +24,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public async Task ShowAboutDialog()
     {
         await CanActionRun(showError: false);
-        
+
         await using Stream aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
         string contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
 
@@ -66,19 +66,29 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             await ErrorDialog.ShowAsync(ex);
         }
     }
-    
+
     [RelayCommand]
-    public async Task CheckForUpdates(CancellationToken ct = default)
+    public Task CheckForUpdates(CancellationToken ct = default)
+    {
+        return CheckForUpdates(isAutoCheck: true, ct);
+    }
+
+    public async Task CheckForUpdates(bool isAutoCheck = false, CancellationToken ct = default)
     {
         await CanActionRun(showError: false);
 
         if (!OperatingSystem.IsWindows()) {
+            if (isAutoCheck) return;
+
             await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
-            return;
         }
 
         try {
             if (await ApplicationUpdatesHelper.HasAvailableUpdates() is Release release) {
+                if (isAutoCheck) {
+                    // TODO: Tell user there is an update before requesting a restart (they did not invoke the action)
+                }
+                
                 await RequestUpdate(release, ct);
                 return;
             }
@@ -88,7 +98,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
                 "An error occured while checking for application updates.");
             await ErrorDialog.ShowAsync(ex);
         }
-        
+
         await new ContentDialog {
             Title = "Check for updates result",
             Content = "Software up to date.",
@@ -101,16 +111,16 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         return Dispatcher.UIThread.InvokeAsync(
             () => RequestUpdateInternal(release, ct));
     }
-    
+
     private async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
     {
         await CanActionRun(showError: false);
-        
+
         if (!OperatingSystem.IsWindows()) {
             await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
             return;
         }
-        
+
         ContentDialog dialog = new() {
             Title = "Update available. Proceed with update?",
             Content = "Your current session will be saved and closed, are you sure you wish to proceed?",
@@ -136,17 +146,17 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public async Task CleanupTempFolder()
     {
         await CanActionRun(showError: false);
-        
+
         try {
             string tempFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".temp");
-            
+
             if (!Directory.Exists(tempFolder)) {
                 return;
             }
 
             Directory.Delete(tempFolder, recursive: true);
             Directory.CreateDirectory(tempFolder);
-            
+
             App.Toast("The temporary folder was succesfully deleted.",
                 "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3));
         }
@@ -160,7 +170,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public async Task SoftClose()
     {
         await CanActionRun(showError: false);
-        
+
         try {
             Config.Shared.Save();
             TKMM.ModManager.Save();
