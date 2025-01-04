@@ -16,7 +16,9 @@
                                   Margin="0,0,0,54">
                                 <TextBox Text="{TemplateBinding VirtualText, Mode=TwoWay}"
                                          CaretIndex="{Binding TextPosition, RelativeSource={RelativeSource TemplatedParent}}"
-                                         Height="64"
+                                         MinHeight="64"
+                                         Width="1280"
+                                         MaxHeight="260"
                                          HorizontalAlignment="Stretch"
                                          Name="PART_VirtualKeyboardInput"
                                          VerticalContentAlignment="Center"
