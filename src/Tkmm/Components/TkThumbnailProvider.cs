@@ -2,6 +2,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Providers;
+using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 
@@ -21,11 +22,28 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
     }
     
     private readonly Bitmap _defaultThumbnail = defaultThumbnail;
-    
+
     public async Task ResolveThumbnail(TkMod mod, CancellationToken ct = default)
     {
-        TkThumbnail? thumbnail = mod.Thumbnail;
         ITkSystemSource? src = mod.Changelog.Source;
+        await ResolveThumbnail(mod, src, useDefault: true, ct);
+
+        if (src is null) {
+            return;
+        }
+
+        foreach (TkModOptionGroup group in mod.OptionGroups) {
+            await ResolveThumbnail(group, src, useDefault: false, ct);
+
+            foreach (TkModOption option in group.Options) {
+                await ResolveThumbnail(option, src, useDefault: false, ct);
+            }
+        }
+    }
+    
+    public async Task ResolveThumbnail(TkItem item, ITkSystemSource? src, bool useDefault = false, CancellationToken ct = default)
+    {
+        TkThumbnail? thumbnail = item.Thumbnail;
         
         if (thumbnail is null || src is null) {
             goto UseDefault;
@@ -62,7 +80,11 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         }
         
     UseDefault:
-        mod.Thumbnail = new TkThumbnail {
+        if (!useDefault) {
+            return;
+        }
+        
+        item.Thumbnail = new TkThumbnail {
             Bitmap = _defaultThumbnail,
             IsDefault = true
         };
