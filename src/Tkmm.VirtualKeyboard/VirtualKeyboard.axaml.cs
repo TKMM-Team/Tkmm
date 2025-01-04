@@ -26,6 +26,7 @@ public partial class VirtualKeyboard : TemplatedControl
         string? original = src.Text;
 
         VirtualKeyboard keyboard = new() {
+            Source = src,
             KeyboardLayout = new KeyboardLayoutUS {
                 AcceptsReturn = src.AcceptsReturn
             }
@@ -75,6 +76,8 @@ public partial class VirtualKeyboard : TemplatedControl
         set => SetValue(TextPositionProperty, value);
     }
 
+    public required TextBox Source { get; init; }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -86,8 +89,8 @@ public partial class VirtualKeyboard : TemplatedControl
     [RelayCommand]
     public void Exit(bool result)
     {
-        if (result && _last != null && !KeyboardLayout.AcceptsReturn) {
-            SimulateKeyPress(_last, Key.Enter);
+        if (result && !KeyboardLayout.AcceptsReturn) {
+            SimulateKeyPress(Key.Enter);
         }
 
         _exitCompletionSource.TrySetResult(result);
@@ -98,15 +101,15 @@ public partial class VirtualKeyboard : TemplatedControl
         return await _exitCompletionSource.Task;
     }
     
-    private static void SimulateKeyPress(Control target, Key key)
+    internal void SimulateKeyPress(Key key)
     {
         var keyEventArgs = new KeyEventArgs {
             RoutedEvent = KeyDownEvent,
             Key = key,
-            Source = target,
+            Source = Source,
             KeyModifiers = KeyModifiers.None
         };
 
-        target.RaiseEvent(keyEventArgs);
+        Source.RaiseEvent(keyEventArgs);
     }
 }

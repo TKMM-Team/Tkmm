@@ -21,13 +21,13 @@
                             <vk:VirtualKey Key="0" ShiftKey=")" />
                             <vk:VirtualKey Key="-" ShiftKey="_" />
                             <vk:VirtualKey
-                                Command="{Binding BackspaceCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                SimulatedKey="Back"
                                 Width="152">
                                 <fa:Icon Value="fa-regular fa-delete-left" />
                             </vk:VirtualKey>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
-                            <vk:VirtualKey Content="TAB" Key="&#x09;" ShiftKey="&#x09;" Width="118" />
+                            <vk:VirtualKey Content="TAB" SimulatedKey="Tab" Width="118" />
                             <vk:VirtualKey Key="q" ShiftKey="Q" />
                             <vk:VirtualKey Key="w" ShiftKey="W" />
                             <vk:VirtualKey Key="e" ShiftKey="E" />
@@ -52,7 +52,7 @@
                             <vk:VirtualKey Key="l" ShiftKey="L" />
                             <vk:VirtualKey Key=":" ShiftKey=';' />
                             <vk:VirtualKey Key="'" ShiftKey='"' />
-                            <vk:VirtualKey Content="ENTER" Key="&#xA;" Width="152"
+                            <vk:VirtualKey Content="ENTER" SimulatedKey="Enter" Width="152"
                                            IsEnabled="{TemplateBinding AcceptsReturn}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
@@ -89,21 +89,17 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <vk:VirtualKey Key="=" ShiftKey="+" />
-                            <vk:VirtualKey
-                                Command="{Binding MoveHomeCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                            <vk:VirtualKey SimulatedKey="Home">
                                 <fa:Icon Value="fa-regular fa-arrow-left-long-to-line" />
                             </vk:VirtualKey>
-                            <vk:VirtualKey
-                                Command="{Binding MoveEndCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                            <vk:VirtualKey SimulatedKey="End">
                                 <fa:Icon Value="fa-regular fa-arrow-right-long-to-line" />
                             </vk:VirtualKey>
                             <vk:VirtualKey Content="SPACE" Key="&#xA0;" Width="692" />
-                            <vk:VirtualKey
-                                Command="{Binding MoveLeftCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                            <vk:VirtualKey SimulatedKey="Left">
                                 <fa:Icon Value="fa-regular fa-arrow-left" />
                             </vk:VirtualKey>
-                            <vk:VirtualKey
-                                Command="{Binding MoveRightCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                            <vk:VirtualKey SimulatedKey="Right">
                                 <fa:Icon Value="fa-regular fa-arrow-right" />
                             </vk:VirtualKey>
                         </StackPanel>

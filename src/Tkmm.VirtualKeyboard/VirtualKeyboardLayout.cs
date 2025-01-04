@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.Input;
 
@@ -36,99 +37,6 @@ public partial class VirtualKeyboardLayout : TemplatedControl
     public void RegisterKey(VirtualKey key)
     {
         _registered.Add(key);
-    }
-    
-    [RelayCommand]
-    private void Backspace()
-    {
-        if (this.FindAncestorOfType<VirtualKeyboard>() is not VirtualKeyboard keyboard) {
-            return;
-        }
-
-        if (keyboard.VirtualText is null || keyboard.TextPosition < 1) {
-            return;
-        }
-
-        int pos = keyboard.TextPosition -= 1;
-        
-        keyboard.VirtualText = string.Create(keyboard.VirtualText.Length - 1, keyboard.VirtualText.AsSpan(), (dst, src) => {
-            int offset = -1;
-            for (int i = 0; i < src.Length; i++) {
-                if (i == pos) {
-                    continue;
-                }
-                
-                dst[++offset] = src[i];
-            }
-        });
-    }
-
-    [RelayCommand]
-    private void MoveHome()
-    {
-        if (this.FindAncestorOfType<VirtualKeyboard>() is not VirtualKeyboard keyboard) {
-            return;
-        }
-        
-        if (keyboard.TextPosition < 1) {
-            return;
-        }
-
-        if (!AcceptsReturn) {
-            keyboard.TextPosition = 0;
-            return;
-        }
-        
-        ReadOnlySpan<char> span = keyboard.VirtualText.AsSpan(); 
-        int lineFeedIndex = span[..keyboard.TextPosition].LastIndexOf('\n');
-        keyboard.TextPosition = lineFeedIndex + 1;
-    }
-
-    [RelayCommand]
-    private void MoveEnd()
-    {
-        if (this.FindAncestorOfType<VirtualKeyboard>() is not VirtualKeyboard keyboard) {
-            return;
-        }
-
-        if (keyboard.VirtualText?.Length <= keyboard.TextPosition || keyboard.VirtualText is null) {
-            return;
-        }
-        
-        if (!AcceptsReturn) {
-            keyboard.TextPosition = keyboard.VirtualText.Length;
-            return;
-        }
-        
-        keyboard.TextPosition++;
-    }
-
-    [RelayCommand]
-    private void MoveLeft()
-    {
-        if (this.FindAncestorOfType<VirtualKeyboard>() is not VirtualKeyboard keyboard) {
-            return;
-        }
-        
-        if (keyboard.TextPosition < 1) {
-            return;
-        }
-        
-        keyboard.TextPosition--;
-    }
-
-    [RelayCommand]
-    private void MoveRight()
-    {
-        if (this.FindAncestorOfType<VirtualKeyboard>() is not VirtualKeyboard keyboard) {
-            return;
-        }
-
-        if (keyboard.VirtualText?.Length <= keyboard.TextPosition) {
-            return;
-        }
-        
-        keyboard.TextPosition++;
     }
 
     private void UpdateKeyContents(bool isEnabled)
