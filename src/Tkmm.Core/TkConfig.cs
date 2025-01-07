@@ -43,6 +43,17 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select base game XCI/NSP")]
     private string? _baseGameFilePath;
 
+    [ObservableProperty]
+    [property: Config(
+        Header = "Split Base Game Folder Path",
+        Description = "The path to a folder containing your game split into multiple files (only useful for FAT32 file systems).",
+        Group = "Game Dump")]
+    [property: BrowserConfig(
+        BrowserMode = BrowserMode.OpenFolder,
+        InstanceBrowserKey = "split-files-path",
+        Title = "Select split files folder")]
+    private string? _splitFilesPath;
+
     // TODO: Support version dropdown
     [ObservableProperty]
     [property: Config(
@@ -55,6 +66,17 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         InstanceBrowserKey = "game-update-file-path",
         Title = "Select game update NSP")]
     private string? _gameUpdateFilePath;
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "SD Card Root Path",
+        Description = "The path to the root of your SD card or emuMMC (must contain a Nintendo/Contents folder with the base game or update installed).",
+        Group = "Game Dump")]
+    [property: BrowserConfig(
+        BrowserMode = BrowserMode.OpenFolder,
+        InstanceBrowserKey = "sd-card-root-path",
+        Title = "Select SD card root folder")]
+    private string? _sdCardRootPath;
 
     // TODO: Support multiple game paths
     [ObservableProperty]

@@ -24,17 +24,58 @@ public class TkRomProvider : ITkRomProvider
             throw new InvalidOperationException("Invalid keys folder.");
         }
 
-        if (TkConfig.Shared.BaseGameFilePath is not string baseGameFilePath ||
-            !TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0") {
+        var (baseSource, basePath) = GetRomSource();
+        if (baseSource is null || basePath is null) {
+            throw new InvalidOperationException("Invalid configuration: Base game path is not set.");
+        }
+
+        if (baseSource == LibHacRomSourceType.File && 
+            (TkConfig.Shared.BaseGameFilePath is not string baseGameFilePath ||
+            !TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0")) {
             throw new InvalidOperationException("Invalid base game file.");
         }
-        
-        if (TkConfig.Shared.GameUpdateFilePath is not string gameUpdateFilePath ||
-            !TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0") {
+
+        var (updateSource, updatePath) = GetUpdateSource();
+        if (updateSource is null || updatePath is null) {
+            throw new InvalidOperationException("Invalid configuration: Update path is not set.");
+        }
+
+        if (updateSource == LibHacRomSourceType.File && 
+            (TkConfig.Shared.GameUpdateFilePath is not string gameUpdateFilePath ||
+            !TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0")) {
             throw new InvalidOperationException("Invalid update file.");
         }
-        
-        return new PackedTkRom(checksums, keys, baseGameFilePath, gameUpdateFilePath);
+
+        var romProvider = new LibHacRomProvider();
+        return romProvider.CreateRom(
+            checksums,
+            keys,
+            baseSource.Value, basePath,
+            updateSource.Value, updatePath);
+    }
+
+    private static (LibHacRomSourceType? Source, string? Path) GetRomSource()
+    {
+        TkConfig tk = TkConfig.Shared;
+
+        if (tk.BaseGameFilePath is string path && File.Exists(path))
+            return (LibHacRomSourceType.File, path);
+        if (tk.SplitFilesPath is string splitPath && Directory.Exists(splitPath))
+            return (LibHacRomSourceType.SplitFiles, splitPath);
+        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath))
+            return (LibHacRomSourceType.SdCard, sdPath);
+        return (null, null);
+    }
+
+    private static (LibHacRomSourceType? Source, string? Path) GetUpdateSource()
+    {
+        TkConfig tk = TkConfig.Shared;
+
+        if (tk.GameUpdateFilePath is string path && File.Exists(path))
+            return (LibHacRomSourceType.File, path);
+        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath))
+            return (LibHacRomSourceType.SdCard, sdPath);
+        return (null, null);
     }
 
     /// <summary>
@@ -48,7 +89,6 @@ public class TkRomProvider : ITkRomProvider
     public static bool CanProvideRom(Action<string> log)
     {
         if (string.IsNullOrWhiteSpace(TkConfig.Shared.GameDumpFolderPath)) {
-            log("[RomFS Dump] The game dump folder path is empty.");
             goto UseNspXci;
         }
 
@@ -69,15 +109,26 @@ public class TkRomProvider : ITkRomProvider
             return false;
         }
 
-        if (TkConfig.Shared.BaseGameFilePath is not string baseGameFilePath ||
-            !TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0") {
+        if (TkConfig.Shared.BaseGameFilePath is string baseGameFilePath &&
+            (!TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0")) {
             log("[XCI/NSP] The base game file is invalid.");
             return false;
         }
 
-        if (TkConfig.Shared.GameUpdateFilePath is not string gameUpdateFilePath ||
-            !TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0") {
+        if (TkConfig.Shared.GameUpdateFilePath is string gameUpdateFilePath &&
+            (!TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0")) {
             log("[XCI/NSP] The game update file is invalid.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
+            log("[SD Card] The SD card path is not set.");
+            return false;
+        }
+
+        string nintendoContentsPath = Path.Combine(TkConfig.Shared.SdCardRootPath, "Nintendo", "Contents");
+        if (!Directory.Exists(nintendoContentsPath)) {
+            log("[SD Card] The Nintendo/Contents folder is not present in the SD card path.");
             return false;
         }
 
