@@ -132,12 +132,15 @@
                                        Text="{Binding Name}"
                                        TextTrimming="CharacterEllipsis"
                                        ToolTip.Tip="{Binding Name}" />
+                            
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <Button Grid.Column="1"
                                     Width="25"
                                     Height="25"
                                     Padding="0"
                                     VerticalAlignment="Stretch"
-                                    Command="{Binding $parent[pages:ProfilesPageViewModel].AddToProfileCommand}"
+                                    x:CompileBindings="False"
+                                    Command="{Binding $parent[UserControl].DataContext.AddToProfileCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="Add to current profile">
                                 <pi:Icon Value="fa-solid fa-plus" />

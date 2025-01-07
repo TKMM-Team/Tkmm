@@ -1,7 +1,7 @@
 {
     "System": {
         "Notice": "Notice",
-        "DefaultProfileName": "Default",
+        "DefaultProfileName": "Profile {0}",
         "UndefinedVersion": "Undefined version",
         "WizPage0_Title": "Welcome to the Tears of the Kingdom Mod Manager!",
         "WizPage0_Description": "This setup wizard will guide you through setting up TKMM to work with your computer. If you are having issues, consider joining our Discord server.",

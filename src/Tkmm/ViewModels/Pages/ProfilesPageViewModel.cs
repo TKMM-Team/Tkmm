@@ -19,19 +19,35 @@ public partial class ProfilesPageViewModel : ObservableObject
 
     public static TkModManager ModManager => TKMM.ModManager;
 
+    public ProfilesPageViewModel()
+    {
+        ModManager.Mods.CollectionChanged += (_, _) => {
+            FilteredMods = GetOrderedMods();
+        };
+    }
+
     [RelayCommand]
     private static void Create()
     {
-        TKMM.ModManager.Profiles.Add(
-            new TkProfile()
-        );
+        TkProfile newProfile = new() {
+            Name = string.Format(SystemMsg.DefaultProfileName, TKMM.ModManager.Profiles.Count + 1)
+        };
+        
+        TKMM.ModManager.Profiles.Add(newProfile);
+        TKMM.ModManager.CurrentProfile = newProfile;
     }
 
     [RelayCommand]
     private static void AddToProfile(TkMod mod)
     {
         TkProfileMod target = mod.GetProfileMod();
-        TKMM.ModManager.GetCurrentProfile().Mods.Add(target);
+        ObservableCollection<TkProfileMod> mods = TKMM.ModManager.GetCurrentProfile().Mods;
+
+        if (mods.Contains(target)) {
+            return;
+        }
+
+        mods.Add(target);
         TKMM.ModManager.GetCurrentProfile().Selected = target;
     }
 
