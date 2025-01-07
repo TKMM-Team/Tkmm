@@ -13,9 +13,9 @@ public class OptionTypeToSelectionMode : IValueConverter
     {
         return value switch {
             OptionGroupType.Multi => SelectionMode.Multiple | SelectionMode.Toggle,
-            OptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+            OptionGroupType.MultiRequired => SelectionMode.Multiple | SelectionMode.Toggle,
             OptionGroupType.Single => SelectionMode.Single | SelectionMode.Toggle,
-            OptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle | SelectionMode.AlwaysSelected,
+            OptionGroupType.SingleRequired => SelectionMode.Single | SelectionMode.Toggle,
             _ => null
         };
     }
