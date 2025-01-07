@@ -38,7 +38,7 @@ public static class TkRomHelper
         using LocalStorage storage = new(target, FileAccess.Read);
         using SwitchFs fs = storage.GetSwitchFs(target, keys);
 
-        return fs.Applications.TryGetValue(PackedTkRom.EX_KING_APP_ID, out app);
+        return fs.Applications.TryGetValue(LibHacRomProvider.EX_KING_APP_ID, out app);
     }
 
     public static KeySet? GetKeys(string keysFolder)
