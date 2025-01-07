@@ -24,7 +24,7 @@ public class TkRomProvider : ITkRomProvider
             throw new InvalidOperationException("Invalid keys folder.");
         }
 
-        var (baseSource, basePath) = GetRomSource();
+        (LibHacRomSourceType? baseSource, string? basePath) = GetRomSource();
         if (baseSource is null || basePath is null) {
             throw new InvalidOperationException("Invalid configuration: Base game path is not set.");
         }
@@ -35,7 +35,7 @@ public class TkRomProvider : ITkRomProvider
             throw new InvalidOperationException("Invalid base game file.");
         }
 
-        var (updateSource, updatePath) = GetUpdateSource();
+        (LibHacRomSourceType? updateSource, string? updatePath) = GetUpdateSource();
         if (updateSource is null || updatePath is null) {
             throw new InvalidOperationException("Invalid configuration: Update path is not set.");
         }
@@ -58,12 +58,18 @@ public class TkRomProvider : ITkRomProvider
     {
         TkConfig tk = TkConfig.Shared;
 
-        if (tk.BaseGameFilePath is string path && File.Exists(path))
+        if (tk.BaseGameFilePath is string path && File.Exists(path)) {
             return (LibHacRomSourceType.File, path);
-        if (tk.SplitFilesPath is string splitPath && Directory.Exists(splitPath))
+        }
+        
+        if (tk.SplitFilesPath is string splitPath && Directory.Exists(splitPath)) {
             return (LibHacRomSourceType.SplitFiles, splitPath);
-        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath))
+        }
+        
+        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath)) {
             return (LibHacRomSourceType.SdCard, sdPath);
+        }
+        
         return (null, null);
     }
 
@@ -71,10 +77,14 @@ public class TkRomProvider : ITkRomProvider
     {
         TkConfig tk = TkConfig.Shared;
 
-        if (tk.GameUpdateFilePath is string path && File.Exists(path))
+        if (tk.GameUpdateFilePath is string path && File.Exists(path)) {
             return (LibHacRomSourceType.File, path);
-        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath))
+        }
+
+        if (tk.SdCardRootPath is string sdPath && Directory.Exists(sdPath)) {
             return (LibHacRomSourceType.SdCard, sdPath);
+        }
+        
         return (null, null);
     }
 
