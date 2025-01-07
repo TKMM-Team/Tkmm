@@ -219,7 +219,7 @@
                                                     Background="{DynamicResource ControlStrokeColorDefault}"
                                                     IsVisible="{Binding Description.Length}" />
                                             <ListBox ItemsSource="{Binding Options}"
-                                                     SelectedItems="{Binding #OptionGroupRoot.DataContext, Converter={x:Static converters:SelectedOptionsToGroupConverter.Instance}}"
+                                                     SelectedItems="{Binding Converter={x:Static converters:SelectedOptionsToGroupConverter.Instance}}"
                                                      SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate x:DataType="{x:Type tk:TkModOption}">
