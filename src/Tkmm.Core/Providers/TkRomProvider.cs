@@ -119,13 +119,13 @@ public class TkRomProvider : ITkRomProvider
             return false;
         }
 
-        if (TkConfig.Shared.BaseGameFilePath is string baseGameFilePath &&
+        if (TkConfig.Shared.BaseGameFilePath is string baseGameFilePath && !string.IsNullOrWhiteSpace(baseGameFilePath) &&
             (!TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0")) {
             log("[XCI/NSP] The base game file is invalid.");
             return false;
         }
 
-        if (TkConfig.Shared.GameUpdateFilePath is string gameUpdateFilePath &&
+        if (TkConfig.Shared.GameUpdateFilePath is string gameUpdateFilePath && !string.IsNullOrWhiteSpace(gameUpdateFilePath) &&
             (!TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0")) {
             log("[XCI/NSP] The game update file is invalid.");
             return false;
