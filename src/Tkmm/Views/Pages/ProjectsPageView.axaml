@@ -61,8 +61,18 @@
         <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding Project, Converter={x:Static ObjectConverters.IsNull}}">
             <StackPanel Orientation="Horizontal"
                         Spacing="10">
-                <Button Content="New Project" Command="{Binding NewProjectCommand}" />
-                <Button Content="Open Project" Command="{Binding OpenProjectCommand}" />
+                <Button Command="{Binding NewProjectCommand}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <fa:Icon Value="fa-regular fa-folder-plus" />
+                        <TextBlock Text="New Project" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenProjectCommand}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <fa:Icon Value="fa-regular fa-folder-open" />
+                        <TextBlock Text="Open Project" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
 
             <TextBlock Grid.Row="1" Text="Recent projects" Margin="0,25,0,0"
@@ -92,9 +102,24 @@
                         VerticalContentAlignment="Center">
                     <fa:Icon Value="fa-regular fa-chevron-left" />
                 </Button>
-                <Button Content="Save" Command="{Binding SaveCommand}" />
-                <Button Content="Package" Command="{Binding PackageCommand}" />
-                <Button Content="Install" Command="{Binding InstallCommand}" />
+                <Button Command="{Binding SaveCommand}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <fa:Icon Value="fa-regular fa-floppy-disk" />
+                        <TextBlock Text="Save" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding PackageCommand}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <fa:Icon Value="fa-regular fa-boxes-packing" />
+                        <TextBlock Text="Package" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding InstallCommand}">
+                    <StackPanel Spacing="5" Orientation="Horizontal">
+                        <fa:Icon Value="fa-regular fa-download" />
+                        <TextBlock Text="Install" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
 
             <ScrollViewer Margin="0,15,0,0" Grid.Row="1">
