@@ -20,12 +20,7 @@ public partial class ProjectsPageView : UserControl
         }
         
         if (e.Source is ContentPresenter { Content: TkProject project }) {
-            if (TkProjectManager.RecentProjects.Remove(project)) {
-                TkProjectManager.RecentProjects.Insert(0, project);
-                TkProjectManager.Save();
-            }
-            
-            vm.Project = project;
+            vm.Project = TkProjectManager.OpenProject(project.FolderPath);
         }
     }
 }
