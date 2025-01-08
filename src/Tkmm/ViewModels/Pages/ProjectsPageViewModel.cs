@@ -90,9 +90,13 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
         
+        TkStatus.Set($"Saving '{Project.Mod.Name}'", "fa-regular fa-floppy-disk-circle-arrow-right", StatusType.Working);
+        
         ApplyDeletions();
         Project.Save();
         TkProjectManager.Save();
+        
+        TkStatus.SetTemporary($"Saved '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }
     
     [RelayCommand]
@@ -120,8 +124,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
+        TkStatus.Set($"Packaging '{Project.Mod.Name}'", "fa-regular fa-boxes-packing", StatusType.Working);
+        
         await using Stream output = await file.OpenWriteAsync();
         await Project.Package(output, TKMM.Rom);
+        
+        TkStatus.SetTemporary($"Packaged '{Project.Mod.Name}'", "fa-regular fa-box-circle-check");
     }
     
     [RelayCommand]
@@ -130,9 +138,13 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         if (Project is null) {
             return;
         }
+        
+        TkStatus.Set($"Installing '{Project.Mod.Name}'", "fa-regular fa-download", StatusType.Working);
 
         ITkModWriter writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
         await Project.Build(writer, TKMM.Rom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
+        
+        TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }
 
     [RelayCommand]
