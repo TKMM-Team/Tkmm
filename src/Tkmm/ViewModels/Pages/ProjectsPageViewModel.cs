@@ -17,6 +17,8 @@ namespace Tkmm.ViewModels.Pages;
 
 public sealed partial class ProjectsPageViewModel : ObservableObject
 {
+    private readonly List<string> _deletions = [];
+    
     public ProjectsPageViewModel()
     {
         TkProjectManager.Load();
@@ -84,7 +86,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     [RelayCommand]
     private void Save()
     {
-        Project?.Save();
+        if (Project is null) {
+            return;
+        }
+        
+        ApplyDeletions();
+        Project.Save();
         TkProjectManager.Save();
     }
     
@@ -188,18 +195,14 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RemoveOptionGroup(TkModOptionGroup group)
+    private void RemoveOptionGroup(TkModOptionGroup group)
     {
         if (Project is null || !Project.TryGetPath(group, out string? groupFolderPath)) {
             return;
         }
 
-        if (await WarnRemove(group, groupFolderPath) is false) {
-            return;
-        }
-
         if (Project.Mod.OptionGroups.Remove(group) && Directory.Exists(groupFolderPath)) {
-            Directory.Delete(groupFolderPath, true);
+            _deletions.Add(groupFolderPath);
         }
     }
     
@@ -250,19 +253,15 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task RemoveOption(TkModOption option)
+    private void RemoveOption(TkModOption option)
     {
         if (Project?.Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(option)) is not TkModOptionGroup group
                 || !Project.TryGetPath(option, out string? optionFolderPath)) {
             return;
         }
-        
-        if (await WarnRemove(option, optionFolderPath) is false) {
-            return;
-        }
 
         if (group.Options.Remove(option) && Directory.Exists(optionFolderPath)) {
-            Directory.Delete(optionFolderPath, true);
+            _deletions.Add(optionFolderPath);
         }
     }
 
@@ -311,20 +310,13 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
         TkProjectManager.LoadOptionFolder(Project, group, output);
     }
-    
-    private static async Task<bool> WarnRemove(TkItem target, string targetFolderPath)
+
+    private void ApplyDeletions()
     {
-        ContentDialog dialog = new() {
-            Title = "Warning",
-            Content = $"""
-                This action will delete the folder '{targetFolderPath}' and cannot be undone.
-
-                Are you sure you would like to delete '{target.Name}'?
-                """,
-            PrimaryButtonText = "Delete Permanently",
-            SecondaryButtonText = "Cancel"
-        };
-
-        return await dialog.ShowAsync() == ContentDialogResult.Primary;
+        foreach (string path in _deletions.Where(Directory.Exists)) {
+            Directory.Delete(path, true);
+        }
+        
+        _deletions.Clear();
     }
 }
