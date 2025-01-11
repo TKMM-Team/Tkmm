@@ -151,17 +151,27 @@
             </Button>
         </Grid>
 
-        <ProgressBar Grid.Row="3"
-                     Margin="0,5,0,0"
-                     IsEffectivelyEnabled="{Binding IsLoading}"
-                     Maximum="1"
-                     Value="{Binding LoadProgress}">
-            <ProgressBar.IsIndeterminate>
-                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                    <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="LoadProgress" />
-                    <Binding Path="IsLoading" />
-                </MultiBinding>
-            </ProgressBar.IsIndeterminate>
-        </ProgressBar>
+        <Grid Grid.Row="3" 
+              Margin="0,15,0,5"
+              ColumnDefinitions="*,Auto">
+            
+            <ProgressBar Grid.Column="0"
+                         IsEffectivelyEnabled="{Binding IsLoading}"
+                         Maximum="1"
+                         Value="{Binding LoadProgress}">
+                <ProgressBar.IsIndeterminate>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Converter="{x:Static ObjectConverters.IsNull}" Path="LoadProgress" />
+                        <Binding Path="IsLoading" />
+                    </MultiBinding>
+                </ProgressBar.IsIndeterminate>
+            </ProgressBar>
+
+            <TextBlock Grid.Column="1"
+                       Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       IsVisible="{Binding DownloadSpeed, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Text="{Binding DownloadSpeed, StringFormat='{}{0:F1} MB/s'}" />
+        </Grid>
     </Grid>
 </UserControl>

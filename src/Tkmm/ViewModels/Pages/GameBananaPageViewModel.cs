@@ -38,6 +38,9 @@ public partial class GameBananaPageViewModel : ObservableObject
     [ObservableProperty]
     private IGameBananaSource _source = new GameBananaSource(GAME_ID);
 
+    [ObservableProperty]
+    private double? _downloadSpeed;
+
     public GameBananaPageViewModel()
     {
         DownloadHelper.OnDownloadStarted += () => {
@@ -51,6 +54,11 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsLoading = false;
             IsLoadSuccess = true;
             LoadProgress = 0;
+            DownloadSpeed = null;
+        };
+
+        DownloadHelper.OnSpeedUpdate += speed => {
+            DownloadSpeed = speed;
         };
 
         _ = Refresh();

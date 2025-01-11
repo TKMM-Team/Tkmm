@@ -3,6 +3,7 @@ using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.GameBanana;
+using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core;
 
@@ -22,6 +23,8 @@ public sealed partial class Config : ConfigModule<Config>
         if (configFileInfo is { Exists: true, Length: 0 }) {
             File.Delete(LocalPath);
         }
+
+        DownloadHelper.ThreadedDownloadsEnabled = () => UseThreadedDownloads;
     }
     
     [ObservableProperty]
@@ -51,6 +54,13 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Automatically save the settings when a change is made and there are no errors.",
         Group = "Application")]
     private bool _autoSaveSettings = true;
+    
+    [ObservableProperty]
+    [property: Config(
+        Header = "Use Threaded Downloads",
+        Description = "Use multi-threaded downloads for potentially faster downloads. Disable this if you experience network issues.",
+        Group = "Application")]
+    private bool _useThreadedDownloads = false;
     
     [ObservableProperty]
     [property: Config(
