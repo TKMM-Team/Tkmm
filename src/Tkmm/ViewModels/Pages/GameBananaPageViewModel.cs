@@ -51,8 +51,9 @@ public partial class GameBananaPageViewModel : ObservableObject
                 }
             ),
             SpeedReporter = new Progress<double>(
-                speed => DownloadSpeed = speed
-            )
+                speed => {
+                    if (IsLoading) DownloadSpeed = speed;
+                })
         };
         
         DownloadHelper.OnDownloadStarted += () => {
