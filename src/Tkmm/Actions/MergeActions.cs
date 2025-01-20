@@ -69,7 +69,6 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         }
 
         try {
-            // TODO: Start the dumb trivia thing (if enabled)
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             await TKMM.Merge(profile, ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
@@ -139,13 +138,16 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         try {
             string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100f2c0115b6000");
+
+            ContentDialogResult canDeleteResult = await MessageDialog.Show(
+                "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
             
-            // TODO: Ask before deleting
-            // TODO: Abstract romfs, exefs folder names to constants
+            if (canDeleteResult is not ContentDialogResult.Primary) {
+                return;
+            }
+            
             DirectoryHelper.DeleteTargetsFromDirectory(output, ["romfs", "exefs"], recursive: true);
-            
-            // TODO: Who decides the merge output location? (Should be an interface because it changes on TKMM-OS)
-            DirectoryHelper.Copy(".merge", output, overwrite: true);
+            DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured when exporting the profile '{Profile}' to the external drive " +

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Providers;
 using TkSharp;
@@ -57,6 +58,8 @@ public static class TKMM
 
     public static async ValueTask Merge(TkProfile profile, CancellationToken ct = default)
     {
+        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs"], recursive: true);
+        
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
         TkMerger merger = new(writer, Rom);

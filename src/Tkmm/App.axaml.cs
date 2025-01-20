@@ -65,13 +65,15 @@ public class App : Application
         TkLog.Instance.LogInformation(
             "Version: {Version}", Version);
 
-        TaskScheduler.UnobservedTaskException += async (_, eventArgs) => {
+        TaskScheduler.UnobservedTaskException += (_, eventArgs) => {
             TkLog.Instance.LogError(
                 eventArgs.Exception, "Unobserved task exception");
-
-            await ErrorDialog.ShowAsync(eventArgs.Exception, TaskDialogStandardResult.OK);
+            
             eventArgs.SetObserved();
-            TkStatus.Reset();
+            TkStatus.SetTemporaryShort(
+                $"{eventArgs.Exception.GetType().ToString().Humanize(LetterCasing.Title)} occured",
+                TkIcons.ERROR
+            );
         };
     }
 
@@ -109,7 +111,7 @@ public class App : Application
         shellView.Loaded += (_, _) => {
             _notificationManager = new WindowNotificationManager(XamlRoot) {
                 Position = NotificationPosition.BottomRight,
-                MaxItems = 5,
+                MaxItems = 1,
                 Margin = new Thickness(0, 0, 4, 30)
             };
         };
