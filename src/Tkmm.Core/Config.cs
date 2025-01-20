@@ -52,45 +52,6 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Automatically save the settings when a change is made and there are no errors.",
         Group = "Application")]
     private bool _autoSaveSettings = true;
-
-    [Config(
-        Header = "Use Threaded Downloads",
-        Description = "Use multi-threaded downloads for potentially faster downloads. Disable this if you experience network issues.",
-        Group = "Application")]
-    public bool UseThreadedDownloads {
-        get => DownloadHelper.Config.UseThreadedDownloads;
-        set {
-            OnPropertyChanging();
-            DownloadHelper.Config.UseThreadedDownloads = value;
-            OnPropertyChanged();
-        }
-    }
-
-    [Config(
-        Header = "Game Banana Download Timeout Seconds",
-        Description = "The maximum amount of seconds to wait for a response before failing.",
-        Group = "Application")]
-    public int GameBananaTimeoutSeconds {
-        get => DownloadHelper.Config.TimeoutSeconds;
-        set {
-            OnPropertyChanging();
-            DownloadHelper.Config.TimeoutSeconds = value;
-            OnPropertyChanged();
-        }
-    }
-
-    [Config(
-        Header = "Game Banana Download Max Retries",
-        Description = "The maximum amount of times to retry a download before failing.",
-        Group = "Application")]
-    public int GameBananaMaxRetries {
-        get => DownloadHelper.Config.MaxRetries;
-        set {
-            OnPropertyChanging();
-            DownloadHelper.Config.MaxRetries = value;
-            OnPropertyChanged();
-        }
-    }
     
     [ObservableProperty]
     [property: Config(
@@ -141,6 +102,45 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Define custom locations to export the merged mod to.",
         Group = "Merging")]
     private ExportLocations _exportLocations = [];
+    
+    [Config(
+        Header = "Use Threaded Downloads",
+        Description = "Use multi-threaded downloads for potentially faster downloads. Disable this if you experience network issues.",
+        Group = "Game Banana Client")]
+    public bool UseThreadedDownloads {
+        get => DownloadHelper.Config.UseThreadedDownloads;
+        set {
+            OnPropertyChanging();
+            DownloadHelper.Config.UseThreadedDownloads = value;
+            OnPropertyChanged();
+        }
+    }
+
+    [Config(
+        Header = "Download Timeout Seconds",
+        Description = "The maximum amount of seconds to wait for a response before failing.",
+        Group = "Game Banana Client")]
+    public int GameBananaTimeoutSeconds {
+        get => DownloadHelper.Config.TimeoutSeconds;
+        set {
+            OnPropertyChanging();
+            DownloadHelper.Config.TimeoutSeconds = value;
+            OnPropertyChanged();
+        }
+    }
+
+    [Config(
+        Header = "Game Banana Download Max Retries",
+        Description = "The maximum amount of times to retry a download before failing.",
+        Group = "Game Banana Client")]
+    public int GameBananaMaxRetries {
+        get => DownloadHelper.Config.MaxRetries;
+        set {
+            OnPropertyChanging();
+            DownloadHelper.Config.MaxRetries = value;
+            OnPropertyChanged();
+        }
+    }
     
     [ObservableProperty]
     private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;

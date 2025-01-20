@@ -46,7 +46,9 @@ public partial class GameBananaPageViewModel : ObservableObject
     {
         DownloadHelper.Reporter = new DownloadReporter {
             ProgressReporter = new Progress<double>(
-                progress => LoadProgress = progress
+                progress => {
+                    if (IsLoading) LoadProgress = progress;
+                }
             ),
             SpeedReporter = new Progress<double>(
                 speed => DownloadSpeed = speed
