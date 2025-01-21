@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Components;
+using Tkmm.Core;
+using Tkmm.Core.Logging;
 using TkSharp.Core;
 
 namespace Tkmm;
@@ -13,6 +15,10 @@ internal abstract class Program
     public static void Main(string[] args)
     {
         try {
+            const string logCategoryName = nameof(TKMM);
+            TkLog.Instance.Register(new DesktopLogger(logCategoryName));
+            TkLog.Instance.Register(new EventLogger(logCategoryName));
+            
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }

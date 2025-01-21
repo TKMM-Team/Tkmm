@@ -79,9 +79,5 @@ public static class TKMM
 
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
-
-        const string logCategoryName = nameof(TKMM);
-        TkLog.Instance.Register(new DesktopLogger(logCategoryName));
-        TkLog.Instance.Register(new EventLogger(logCategoryName));
     }
 }
