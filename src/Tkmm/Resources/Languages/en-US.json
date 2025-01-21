@@ -87,7 +87,8 @@
         "SettingsDescription": "Application settings"
     },
     "Status": {
-        "Ready": "Ready"
+        "Ready": "Ready",
+        "Merging": "Merging"
     },
     "Exception": {
         "ParserNotFound": "The provided argument '{0}' could not be parsed. No valid parser could be found.",

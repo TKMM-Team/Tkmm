@@ -13,6 +13,7 @@ using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
 using Tkmm.Models;
+using Tkmm.Views.Common;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 
@@ -68,8 +69,11 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             }
         }
 
+        CancellationTokenSource modalCancelTokenSource = new();
+
         try {
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
+            MergingModal.ShowModal(modalCancelTokenSource.Token);
             await TKMM.Merge(profile, ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
                 "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
@@ -79,6 +83,9 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             TkLog.Instance.LogError(ex, "An error occured when merging the selected profile '{Profile}'.",
                 profile.Name);
             await ErrorDialog.ShowAsync(ex);
+        }
+        finally {
+            await modalCancelTokenSource.CancelAsync();
         }
     }
 
