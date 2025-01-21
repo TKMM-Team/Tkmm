@@ -80,6 +80,8 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");
         }
         catch (Exception ex) {
+            await modalCancelTokenSource.CancelAsync();
+            
             TkLog.Instance.LogError(ex, "An error occured when merging the selected profile '{Profile}'.",
                 profile.Name);
             await ErrorDialog.ShowAsync(ex);
