@@ -58,7 +58,7 @@
                 </Grid>
             </ContentControl>
         </Viewbox>
-        
+
         <Grid Name="ModDisplayPage"
               Margin="25"
               ColumnDefinitions="*,Auto,0.5*"
@@ -151,7 +151,8 @@
                     </Grid>
 
                     <Grid Grid.Row="2">
-                        <md:MarkdownScrollViewer Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}">
+                        <md:MarkdownScrollViewer
+                            Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}">
                             <md:MarkdownScrollViewer.Styles>
                                 <StyleInclude Source="/Styles/Markdown.axaml" />
                             </md:MarkdownScrollViewer.Styles>
@@ -180,11 +181,12 @@
                         <ItemsControl ItemsSource="{Binding ModManager.CurrentProfile.Selected.Mod.OptionGroups}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type tk:TkModOptionGroup}">
-                                    <Expander Padding="5" Name="OptionGroupRoot">
+                                    <Expander Padding="5" Name="OptionGroupRoot" IsExpanded="{Binding IsEditing}">
                                         <Expander.Header>
                                             <StackPanel Background="Transparent" Orientation="Horizontal">
-                                                <pi:Icon Value="{Binding IconName}" />
-                                                <TextBlock Margin="5,0,0,0">
+                                                <pi:Icon Margin="0,0,5,0" Value="{Binding IconName}"
+                                                         IsVisible="{Binding IconName, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                <TextBlock>
                                                     <Run Text="{Binding Name}" />
                                                     <Run Text="{Binding Type, Mode=OneWay, StringFormat='({0})'}" />
                                                 </TextBlock>
@@ -218,14 +220,31 @@
                                                     VerticalAlignment="Stretch"
                                                     Background="{DynamicResource ControlStrokeColorDefault}"
                                                     IsVisible="{Binding Description.Length}" />
-                                            <ListBox ItemsSource="{Binding Options}"
-                                                     SelectedItems="{Binding Converter={x:Static converters:SelectedOptionsToGroupConverter.Instance}}"
-                                                     SelectionMode="{Binding Type, Mode=OneTime, Converter={x:Static converters:OptionTypeToSelectionMode.Shared}}">
-                                                <ListBox.ItemTemplate>
+                                            <ItemsControl ItemsSource="{Binding Options}">
+                                                <ItemsControl.ItemTemplate>
                                                     <DataTemplate x:DataType="{x:Type tk:TkModOption}">
-                                                        <TextBlock HorizontalAlignment="Stretch"
-                                                                   Background="Transparent"
-                                                                   Text="{Binding Name}">
+                                                        <ToggleButton Name="OptionToggle"
+                                                                      IsChecked="{Binding IsEnabled}" Padding="3" Margin="5,2.5"
+                                                                      HorizontalAlignment="Stretch"
+                                                                      IsHitTestVisible="{Binding CanChangeState}"
+                                                                      HorizontalContentAlignment="Stretch">
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <TextBlock HorizontalAlignment="Stretch"
+                                                                           Margin="3,0,0,0"
+                                                                           Background="Transparent"
+                                                                           Text="{Binding Name}">
+                                                                </TextBlock>
+                                                                <Button IsHitTestVisible="False" Grid.Column="1" Margin="5,0,0,0" Padding="1"
+                                                                        IsVisible="{Binding !IsEnabled}"
+                                                                        IsEnabled="True">
+                                                                    <pi:Icon Value="fa-regular fa-ban" />
+                                                                </Button>
+                                                                <Button IsHitTestVisible="False" Grid.Column="1" Margin="5,0,0,0" Padding="1"
+                                                                        IsVisible="{Binding IsEnabled}"
+                                                                        IsEnabled="True">
+                                                                    <pi:Icon Value="fa-regular fa-circle-check" />
+                                                                </Button>
+                                                            </Grid>
                                                             <ToolTip.Tip>
                                                                 <StackPanel>
                                                                     <TextBlock Margin="0,0,0,5"
@@ -242,16 +261,16 @@
                                                                     </Border>
                                                                 </StackPanel>
                                                             </ToolTip.Tip>
-                                                        </TextBlock>
+                                                        </ToggleButton>
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                                <ListBox.Styles>
-                                                    <Style Selector="ListBoxItem">
-                                                        <Setter Property="Padding" Value="10,3,5,4" />
-                                                        <Setter Property="MinHeight" Value="0" />
-                                                    </Style>
-                                                </ListBox.Styles>
-                                            </ListBox>
+                                                </ItemsControl.ItemTemplate>
+                                                <!-- <ListBox.Styles> -->
+                                                <!--     <Style Selector="ListBoxItem"> -->
+                                                <!--         <Setter Property="Padding" Value="10,3,5,4" /> -->
+                                                <!--         <Setter Property="MinHeight" Value="0" /> -->
+                                                <!--     </Style> -->
+                                                <!-- </ListBox.Styles> -->
+                                            </ItemsControl>
                                         </StackPanel>
                                     </Expander>
                                 </DataTemplate>
