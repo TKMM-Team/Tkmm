@@ -98,47 +98,71 @@ public class TkRomProvider : ITkRomProvider
 
     public static bool CanProvideRom(Action<string> log)
     {
-        if (string.IsNullOrWhiteSpace(TkConfig.Shared.GameDumpFolderPath)) {
-            goto UseNspXci;
+        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.GameDumpFolderPath)) {
+            if (TkRomHelper.GetVersionFromRomfs(TkConfig.Shared.GameDumpFolderPath) is not int version) {
+                log("[RomFS Dump] Invalid game dump folder path.");
+                goto CheckLibHac;
+            }
+            
+            if (version == 100) {
+                log("[RomFS Dump] Invalid game dump version (1.0.0), TKMM requires version 1.1.0 or later.");
+            }
+            return true;
         }
-
-        if (TkRomHelper.GetVersionFromRomfs(TkConfig.Shared.GameDumpFolderPath) is not int version) {
-            log("[RomFS Dump] Invalid game dump folder path.");
-            goto UseNspXci;
-        }
-
-        if (version == 100) {
-            log("[RomFS Dump] Invalid game dump version (1.0.0), TKMM requires version 1.1.0 or later.");
-        }
-
-        return true;
-
-    UseNspXci:
+        
+        CheckLibHac:
         if (TkConfig.Shared.KeysFolderPath is not string keysFolderPath || TkRomHelper.GetKeys(keysFolderPath) is not KeySet keys) {
-            log("[XCI/NSP] The keys folder is invalid.");
+            log("[Keys] The keys folder is not set or is invalid.");
             return false;
         }
 
-        if (TkConfig.Shared.BaseGameFilePath is string baseGameFilePath && !string.IsNullOrWhiteSpace(baseGameFilePath) &&
-            (!TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0")) {
-            log("[XCI/NSP] The base game file is invalid.");
+        bool hasValidBaseGameFile = false;
+        bool hasValidUpdateFile = false;
+        bool hasValidSplitFiles = false;
+        bool hasValidSdCard = false;
+
+        if (TkConfig.Shared.BaseGameFilePath is string baseGameFilePath && !string.IsNullOrWhiteSpace(baseGameFilePath)) {
+            if (!TkRomHelper.IsTotkRomFile(baseGameFilePath, keys, out Application? app) || app.DisplayVersion != "1.0.0") {
+                log("[Base Game] The base game file is invalid.");
+            }
+            else {
+                hasValidBaseGameFile = true;
+            }
+        }
+
+        if (TkConfig.Shared.GameUpdateFilePath is string gameUpdateFilePath && !string.IsNullOrWhiteSpace(gameUpdateFilePath)) {
+            if (!TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0") {
+                log("[Update] The game update file is invalid.");
+            }
+            else {
+                hasValidUpdateFile = true;
+            }
+        }
+
+        if (TkConfig.Shared.SplitFilesPath is string splitPath && Directory.Exists(splitPath)) {
+            hasValidSplitFiles = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
+            string nintendoContentsPath = Path.Combine(TkConfig.Shared.SdCardRootPath, "Nintendo", "Contents");
+            if (!Directory.Exists(nintendoContentsPath)) {
+                log("[SD Card] The Nintendo/Contents folder is not present in the SD card path.");
+            }
+            else {
+                hasValidSdCard = true;
+            }
+        }
+
+        bool hasValidBaseSource = hasValidBaseGameFile || hasValidSplitFiles || hasValidSdCard;
+        bool hasValidUpdateSource = hasValidUpdateFile || hasValidSdCard;
+
+        if (!hasValidBaseSource) {
+            log("[Base Game] No valid base game source found (file, split files, or SD card).");
             return false;
         }
 
-        if (TkConfig.Shared.GameUpdateFilePath is string gameUpdateFilePath && !string.IsNullOrWhiteSpace(gameUpdateFilePath) &&
-            (!TkRomHelper.IsTotkRomFile(gameUpdateFilePath, keys, out Application? update) || update.DisplayVersion == "1.0.0")) {
-            log("[XCI/NSP] The game update file is invalid.");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
-            log("[SD Card] The SD card path is not set.");
-            return false;
-        }
-
-        string nintendoContentsPath = Path.Combine(TkConfig.Shared.SdCardRootPath, "Nintendo", "Contents");
-        if (!Directory.Exists(nintendoContentsPath)) {
-            log("[SD Card] The Nintendo/Contents folder is not present in the SD card path.");
+        if (!hasValidUpdateSource) {
+            log("[Update] No valid update source found (file or SD card).");
             return false;
         }
 
