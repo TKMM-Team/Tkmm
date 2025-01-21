@@ -3,6 +3,7 @@ using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.GameBanana;
+using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core;
 

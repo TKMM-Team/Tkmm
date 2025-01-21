@@ -11,6 +11,7 @@ using Tkmm.Views.Common;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 using TkSharp.Extensions.GameBanana.Helpers;
+using TkSharp.Extensions.GameBanana.Models;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -38,19 +39,36 @@ public partial class GameBananaPageViewModel : ObservableObject
     [ObservableProperty]
     private IGameBananaSource _source = new GameBananaSource(GAME_ID);
 
+    [ObservableProperty]
+    private double? _downloadSpeed;
+
     public GameBananaPageViewModel()
     {
+        DownloadHelper.Reporter = new DownloadReporter {
+            ProgressReporter = new Progress<double>(
+                progress => {
+                    if (IsLoading) LoadProgress = progress;
+                }
+            ),
+            SpeedReporter = new Progress<double>(
+                speed => {
+                    if (IsLoading) DownloadSpeed = speed;
+                })
+        };
+        
         DownloadHelper.OnDownloadStarted += () => {
             IsLoading = true;
-            return new Progress<double>(
-                progress => { LoadProgress = progress; }
-            );
+            
+            return Task.CompletedTask;
         };
 
         DownloadHelper.OnDownloadCompleted += () => {
             IsLoading = false;
             IsLoadSuccess = true;
             LoadProgress = 0;
+            DownloadSpeed = null;
+            
+            return Task.CompletedTask;
         };
 
         _ = Refresh();

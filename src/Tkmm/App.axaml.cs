@@ -151,6 +151,7 @@ public class App : Application
             settingsModel.SecondaryButtonIsEnabled = false;
 
             settingsModel.AppendAndValidate<Config>(ref isValid);
+            settingsModel.AppendAndValidate<GbConfig>(ref isValid);
             settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
 
