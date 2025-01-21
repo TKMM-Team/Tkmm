@@ -1,4 +1,7 @@
-﻿using Avalonia.Controls;
+﻿#if RELEASE
+using Avalonia.Threading;
+#endif
+using Avalonia.Controls;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
