@@ -1,4 +1,3 @@
-global using static Tkmm.Core.Localization.StringResources;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm;
@@ -24,7 +23,7 @@ public sealed partial class TkStatus : ObservableObject
     private readonly Timer _timer;
 
     [ObservableProperty]
-    private string _status = StatusMsg.Ready;
+    private string _status = Locale[TkLocale.Status_Ready];
 
     [ObservableProperty]
     private string _suffix = string.Empty;
@@ -38,8 +37,7 @@ public sealed partial class TkStatus : ObservableObject
     /// <summary>
     /// Reset the status.
     /// </summary>
-    public static void Reset()
-        => Shared.SetInternal(StatusMsg.Ready);
+    public static void Reset() => Shared.SetInternal(Locale[TkLocale.Status_Ready]);
 
     /// <summary>
     /// Set a temporary status for 1.5 seconds.

@@ -21,7 +21,10 @@ public enum Page
 
 public partial class PageManager : ObservableObject
 {
-    private static readonly Lazy<PageManager> _shared = new(() => new());
+    private static readonly Lazy<PageManager> _shared = new(
+        () => new PageManager()
+    );
+    
     public static PageManager Shared => _shared.Value;
 
     [ObservableProperty]
@@ -41,15 +44,15 @@ public partial class PageManager : ObservableObject
         }
     }
 
-    public void Register(Page page, string title, object? content, Symbol icon, string? description = null, bool isDefault = false, bool isFooter = false)
+    public void Register(Page page, TkLocale title, object? content, Symbol icon, TkLocale description, bool isDefault = false, bool isFooter = false)
     {
         ObservableCollection<PageModel> source = isFooter ? FooterPages : Pages;
         _lookup[page] = (source.Count, isFooter);
 
         source.Add(new PageModel {
-            Title = title,
+            Title = Locale[title],
             Content = content,
-            Description = description,
+            Description = Locale[description],
             Icon = icon
         });
 

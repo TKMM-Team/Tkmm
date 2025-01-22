@@ -21,9 +21,7 @@ using Tkmm.Actions;
 using Tkmm.Builders;
 using Tkmm.Components;
 using Tkmm.Core;
-using Tkmm.Core.Localization;
 using Tkmm.Core.Logging;
-using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.ViewModels;
 using Tkmm.Views;
@@ -45,7 +43,7 @@ public class App : Application
 
     public static readonly string Version = typeof(App).Assembly
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-        .InformationalVersion.Split('+')[0] ?? SystemMsg.UndefinedVersion;
+        .InformationalVersion.Split('+')[0] ?? Locale[TkLocale.UndefinedVersion];
 
     public static string Title => "TotK Mod Manager";
 
@@ -89,7 +87,9 @@ public class App : Application
         }
 
         BindingPlugins.DataValidators.RemoveAt(0);
+        
         TkThumbnail.CreateBitmap = stream => new Bitmap(stream);
+        Config.Shared.GetLanguages = () => Locale.Languages;
 
         EventLogger.OnLog += (level, eventId, exception, message) => {
             if (level is not LogLevel.Error) {
@@ -117,7 +117,7 @@ public class App : Application
         };
 
         MenuFactory = new AvaloniaMenuFactory(XamlRoot,
-            localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
+            localeKeyName => Locale[localeKeyName]
         );
 
         MenuFactory.ConfigureMenu();
@@ -129,7 +129,7 @@ public class App : Application
         shellView.NxBatteryStatusPanel.IsVisible = true;
         
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
-            localeKeyName => GetStringResource(StringResources_Menu.GROUP, localeKeyName)
+            localeKeyName => Locale[localeKeyName]
         );
         nxSystemMenu.AddMenuGroup<NxMenuModel>();
         shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
@@ -155,16 +155,16 @@ public class App : Application
             settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
 
-        PageManager.Shared.Register(Page.Home, PageMsg.Home, new HomePageView(), Symbol.Home, PageMsg.HomeDescription, isDefault: true);
-        PageManager.Shared.Register(Page.Profiles, PageMsg.Profiles, new ProfilesPageView(), Symbol.OtherUser, PageMsg.ProfilesDescription);
-        PageManager.Shared.Register(Page.Tools, PageMsg.Tools, new ProjectsPageView(), Symbol.CodeHTML, PageMsg.ToolsDescription);
-        PageManager.Shared.Register(Page.GbMods, PageMsg.GbMods, new GameBananaPageView(), Symbol.Globe, PageMsg.GbModsDescription);
+        PageManager.Shared.Register(Page.Home, TkLocale.HomePageTitle, new HomePageView(), Symbol.Home, TkLocale.HomePageDesc, isDefault: true);
+        PageManager.Shared.Register(Page.Profiles, TkLocale.ProfilesPageTitle, new ProfilesPageView(), Symbol.OtherUser, TkLocale.ProfilesPageDesc);
+        PageManager.Shared.Register(Page.Tools, TkLocale.ProjectsPageTitle, new ProjectsPageView(), Symbol.CodeHTML, TkLocale.ProjectsPageDesc);
+        PageManager.Shared.Register(Page.GbMods, TkLocale.GameBananaPageTitle, new GameBananaPageView(), Symbol.Globe, TkLocale.GameBananaPageDesc);
 
-        PageManager.Shared.Register(Page.Logs, PageMsg.Logs, new LogsPageView(), Symbol.AllApps, PageMsg.LogsDescription, isFooter: true);
+        PageManager.Shared.Register(Page.Logs, TkLocale.LogsPageTitle, new LogsPageView(), Symbol.AllApps, TkLocale.LogsPageDesc, isFooter: true);
 #if SWITCH
-        PageManager.Shared.Register(Page.NetworkSettings, PageMsg.NetworkSettings, new NetworkSettingsPageView(), Symbol.Wifi4, PageMsg.NetworkSettingsDescription, isFooter: true, isDefault: true);
+        PageManager.Shared.Register(Page.NetworkSettings, TkLocale.NetworkSettingsPageTitle, new NetworkSettingsPageView(), Symbol.Wifi4, TkLocale.NetworkSettingsPageDesc, isFooter: true);
 #endif
-        PageManager.Shared.Register(Page.Settings, PageMsg.Settings, settingsPage, Symbol.Settings, PageMsg.SettingsDescription, isFooter: true, isDefault: isValid == false);
+        PageManager.Shared.Register(Page.Settings, TkLocale.SettingsPageTitle, settingsPage, Symbol.Settings, TkLocale.SettingsPageDesc, isFooter: true, isDefault: isValid == false);
 
         OnThemeChanged(Config.Shared.Theme);
 
@@ -194,7 +194,7 @@ public class App : Application
     {
         Dispatcher.UIThread.Invoke(() => {
             _notificationManager?.Show(
-                new Notification(title ??= SystemMsg.Notice, message, type, expiration, action));
+                new Notification(title ??= Locale[TkLocale.NoticePopupMessage], message, type, expiration, action));
         });
     }
 

@@ -10,7 +10,7 @@ public class WizLayout
 {
     public static WizPageViewModel FirstPage {
         get {
-            WizPageViewModel result = new(-1, null, string.Empty, string.Empty, []);
+            WizPageViewModel result = new(-1, null, null, string.Empty, []);
             UpdatePage(result, _page0);
             return result;
         }
@@ -18,32 +18,32 @@ public class WizLayout
         
     private static readonly WizPageViewModel _page0 = new(
         id: 0, lastPage: null,
-        SystemMsg.WizPage0_Title, SystemMsg.WizPage0_Description, [
-            new WizAction(SystemMsg.WizPage0_Action, 0)
+        TkLocale.WizPage0_Title, TkLocale.WizPage0_Description, [
+            new WizAction(TkLocale.WizPage0_Action, 0)
         ]);
     
     private static readonly WizPageViewModel _page1 = new(
         id: 1, lastPage: FirstPage,
-        SystemMsg.WizPage1_Title, WizEmulatorSelectionPage.Instance, [
-            new WizAction(SystemMsg.WizPage1_Action_Next, 1, WizEmulatorSelectionPage.Instance.CheckSelection)
+        TkLocale.WizPage1_Title, WizEmulatorSelectionPage.Instance, [
+            new WizAction(TkLocale.WizPage1_Action_Next, 1, WizEmulatorSelectionPage.Instance.CheckSelection)
         ]);
     
     private static readonly WizPageViewModel _pageRyujinxSetup = new(
         id: 3, lastPage: _page1,
-        SystemMsg.WizPageRyujinxSetup_Title, SystemMsg.WizPageRyujinxSetup_Description, [
-            new WizAction(SystemMsg.WizPageRyujinxSetup_Action_Start, 0, WizActions.StartRyujinxSetup)
+        TkLocale.WizPageRyujinxSetup_Title, TkLocale.WizPageRyujinxSetup_Description, [
+            new WizAction(TkLocale.WizPageRyujinxSetup_Action_Start, 0, WizActions.StartRyujinxSetup)
         ]);
     
     private static readonly WizPageViewModel _page2 = new(
         id: 2, lastPage: _page1,
-        SystemMsg.WizPage2_Title, new WizDumpConfigPage(), [
-            new WizAction(SystemMsg.WizPage2_Action_Verify, 0, WizActions.VerifyConfig)
+        TkLocale.WizPage2_Title, new WizDumpConfigPage(), [
+            new WizAction(TkLocale.WizPage2_Action_Verify, 0, WizActions.VerifyConfig)
         ]);
     
     private static readonly WizPageViewModel _pageFinal = new(
         id: -1, lastPage: _page1,
-        SystemMsg.WizPageFinal_Title, new WizLangConfigPage(), [
-            new WizAction(SystemMsg.WizPageFinal_Action_Finish, 0, WizActions.CompleteSetup)
+        TkLocale.WizPageFinal_Title, new WizLangConfigPage(), [
+            new WizAction(TkLocale.WizPageFinal_Action_Finish, 0, WizActions.CompleteSetup)
         ]);
 
     public static void NextPage(WizPageViewModel current, int selection)

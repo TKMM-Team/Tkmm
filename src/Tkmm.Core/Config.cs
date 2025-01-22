@@ -1,9 +1,9 @@
+using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.GameBanana;
-using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core;
 
@@ -12,6 +12,9 @@ public sealed partial class Config : ConfigModule<Config>
     public override string Name => "tkmm";
     
     public event Action<string> ThemeChanged = delegate { };
+    
+    [JsonIgnore]
+    public Func<List<string>>? GetLanguages { get; set; }
 
     public string[] GameLanguages { get; set; } = [
         "USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh"
@@ -43,8 +46,8 @@ public sealed partial class Config : ConfigModule<Config>
         Header = "System Language",
         Description = "The language to use in the user interface (restart required)",
         Group = "Application")]
-    [property: DropdownConfig("en-US")]
-    private string _cultureName = "en-US";
+    [property: DropdownConfig(RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
+    private string _cultureName = "en_US";
 
     [ObservableProperty]
     [property: Config(
@@ -109,5 +112,7 @@ public sealed partial class Config : ConfigModule<Config>
     public bool ConfigExists()
     {
         return File.Exists(LocalPath);
-    } 
+    }
+
+    public List<string> GetLanguagesInternal() => GetLanguages?.Invoke() ?? ["en_US"];
 }

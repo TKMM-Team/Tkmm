@@ -16,7 +16,8 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="icon.ico" Link="Assets\icon.ico" />
-    <Content Include="Resources\**" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Resources\**" />
+    <AdditionalFiles Include="Resources\locales.json" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,6 +46,10 @@
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
+
+    <ProjectReference Include="..\Tkmm.LocaleGenerator\Tkmm.LocaleGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

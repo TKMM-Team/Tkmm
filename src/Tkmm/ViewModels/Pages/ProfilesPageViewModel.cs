@@ -30,7 +30,7 @@ public partial class ProfilesPageViewModel : ObservableObject
     private static void Create()
     {
         TkProfile newProfile = new() {
-            Name = string.Format(SystemMsg.DefaultProfileName, TKMM.ModManager.Profiles.Count + 1)
+            Name = Locale[TkLocale.DefaultProfileName, TKMM.ModManager.Profiles.Count + 1]
         };
         
         TKMM.ModManager.Profiles.Add(newProfile);

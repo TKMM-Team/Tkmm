@@ -1,20 +1,19 @@
 #if SWITCH
 
 using System.Diagnostics;
-using MenuFactory.Abstractions.Attributes;
-using static Tkmm.Core.Localization.StringResources_Menu;
+using Tkmm.Attributes;
 
 namespace Tkmm.Models.MenuModels;
 
 public class NxMenuModel
 {
-    [Menu(NX_REBOOT, NX_MENU, Icon = "fa-solid fa-rotate")]
+    [TkMenu(TkLocale.Menu_NxReboot, TkLocale.Menu_Nx, Icon = "fa-solid fa-rotate")]
     public static void Reboot()
     {
         ExecuteCommand("/usr/bin/tkmm-reboot.sh");
     }
 
-    [Menu(NX_SHUTDOWN, NX_MENU, Icon = "fa-solid fa-power-off")]
+    [TkMenu(TkLocale.Menu_NxShutdown, TkLocale.Menu_Nx, Icon = "fa-solid fa-power-off")]
     public static void Shutdown()
     {
         ExecuteCommand("/usr/bin/tkmm-shutdown.sh");

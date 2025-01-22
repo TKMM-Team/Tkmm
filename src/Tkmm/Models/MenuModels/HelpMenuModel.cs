@@ -1,6 +1,5 @@
-using MenuFactory.Abstractions.Attributes;
 using Tkmm.Actions;
-using static Tkmm.Core.Localization.StringResources_Menu;
+using Tkmm.Attributes;
 
 // ReSharper disable UnusedMember.Global
 
@@ -8,19 +7,19 @@ namespace Tkmm.Models.MenuModels;
 
 public sealed class HelpMenuModel
 {
-    [Menu(HELP_MENU, HELP_MENU, InputGesture = "F1", Icon = TkIcons.CIRCLE_QUESTION)]
+    [TkMenu(TkLocale.Menu_Help, TkLocale.Menu_Help, InputGesture = "F1", Icon = TkIcons.CIRCLE_QUESTION)]
     public static Task Help()
     {
         return SystemActions.Instance.OpenDocumentationWebsite();
     }
 
-    [Menu(HELP_CHECK_FOR_UPDATES, HELP_MENU, InputGesture = "Ctrl + U", Icon = TkIcons.CLOUD_ARROW_UP)]
+    [TkMenu(TkLocale.Menu_HelpCheckForUpdates, TkLocale.Menu_Help, InputGesture = "Ctrl + U", Icon = TkIcons.CLOUD_ARROW_UP)]
     public static Task CheckForUpdates()
     {
         return SystemActions.Instance.CheckForUpdates(isAutoCheck: false);
     }
 
-    [Menu(HELP_ABOUT, HELP_MENU, InputGesture = "F12", Icon = TkIcons.CIRCLE_INFO, IsSeparator = true)]
+    [TkMenu(TkLocale.Menu_HelpAbout, TkLocale.Menu_Help, InputGesture = "F12", Icon = TkIcons.CIRCLE_INFO, IsSeparator = true)]
     public static Task About()
     {
         return SystemActions.Instance.ShowAboutDialog();

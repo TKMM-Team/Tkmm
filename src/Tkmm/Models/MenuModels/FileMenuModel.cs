@@ -1,6 +1,5 @@
-using MenuFactory.Abstractions.Attributes;
 using Tkmm.Actions;
-using static Tkmm.Core.Localization.StringResources_Menu;
+using Tkmm.Attributes;
 
 // ReSharper disable UnusedMember.Global
 
@@ -8,31 +7,31 @@ namespace Tkmm.Models.MenuModels;
 
 public sealed class FileMenuModel
 {
-    [Menu(FILE_INSTALL_FILE, FILE_MENU, InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
+    [TkMenu(TkLocale.Menu_FileInstallFile, TkLocale.Menu_File, InputGesture = "Ctrl + I", Icon = "fa-solid fa-file-import")]
     public static Task InstallFile()
     {
         return ImportActions.Instance.ImportFromFile();
     }
 
-    [Menu(FILE_INSTALL_FOLDER, FILE_MENU, InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
+    [TkMenu(TkLocale.Menu_FileInstallFolder, TkLocale.Menu_File, InputGesture = "Ctrl + Shift + I", Icon = "fa-regular fa-folder-open")]
     public static Task InstallFolder()
     {
         return ImportActions.Instance.ImportFromFolder();
     }
 
-    [Menu(FILE_INSTALL_ARGUMENT, FILE_MENU, InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
+    [TkMenu(TkLocale.Menu_FileInstallArg, TkLocale.Menu_File, InputGesture = "Ctrl + Alt + I", Icon = "fa-regular fa-keyboard")]
     public static Task ImportArgument()
     {
         return ImportActions.Instance.ImportFromArgument();
     }
 
-    [Menu(FILE_CLEAR_TEMP_FILES, FILE_MENU, InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
+    [TkMenu(TkLocale.Menu_FileClearTempFiles, TkLocale.Menu_File, InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
     public static Task ClearTempFolder()
     {
         return SystemActions.Instance.CleanupTempFolder();
     }
 
-    [Menu(FILE_EXIT, FILE_MENU, InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
+    [TkMenu(TkLocale.Menu_FileExit, TkLocale.Menu_File, InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
     public static Task Exit()
     {
         return SystemActions.Instance.SoftClose();

@@ -1,15 +1,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LanguageExt;
 using Tkmm.Wizard.ViewModels;
 
 namespace Tkmm.Wizard;
 
-public partial class WizAction(object? content, int defaultSelection, Func<ValueTask<(bool, int?)>>? onMoveNext = null) : ObservableObject
+public partial class WizAction(Either<TkLocale, object?> content, int defaultSelection, Func<ValueTask<(bool, int?)>>? onMoveNext = null) : ObservableObject
 {
     private readonly int _defaultSelection = defaultSelection;
     
     [ObservableProperty]
-    private object? _content = content;
+    private object? _content = content.Match(
+        obj => obj,
+        key => Locale[key]
+    );
 
     public Func<ValueTask<(bool, int?)>>? OnMoveNext { get; } = onMoveNext;
 

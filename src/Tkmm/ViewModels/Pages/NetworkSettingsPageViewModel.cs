@@ -8,6 +8,7 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class NetworkSettingsPageViewModel : ObservableObject
 {
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _autoRefreshTimer; 
     
     public List<NxNetworkService> NetworkServices { get; }
@@ -28,16 +29,16 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
 
     public NetworkSettingsPageViewModel()
     {
-        WiFiService = new NxNetworkService(SystemMsg.NetworkSettings_WiFiService_Name, OnWiFiEnabledChanged) {
+        WiFiService = new NxNetworkService(Locale[TkLocale.NetworkSettings_WiFiService_Name], OnWiFiEnabledChanged) {
             IsEnabled = Connman.IsTechnologyEnabled("wifi")
         };
 
         NetworkServices = [
             WiFiService,
-            new NxNetworkService(SystemMsg.NetworkSettings_SshService_Name, OnSshEnabledChanged) {
+            new NxNetworkService(Locale[TkLocale.NetworkSettings_SshService_Name], OnSshEnabledChanged) {
                 IsEnabled = NxServices.IsSshEnabled()
             },
-            new NxNetworkService(SystemMsg.NetworkSettings_SmbService_Name, OnSmbEnabledChanged) {
+            new NxNetworkService(Locale[TkLocale.NetworkSettings_SmbService_Name], OnSmbEnabledChanged) {
                 IsEnabled = NxServices.IsSmbEnabled()
             }
         ];

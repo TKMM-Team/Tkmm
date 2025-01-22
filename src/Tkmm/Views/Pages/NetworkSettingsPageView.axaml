@@ -4,21 +4,21 @@
              xmlns:li="using:LoadingIndicators.Avalonia"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
              xmlns:nx="using:Tkmm.Core.Models.NX"
-             xmlns:loc="using:Tkmm.Core.Localization"
+             xmlns:ext="using:Tkmm.Markup"
              xmlns:fa="https://github.com/projektanker/icons.avalonia"
              x:DataType="pages:NetworkSettingsPageViewModel">
     <Grid Margin="20"
           ColumnDefinitions="2*,*">
         <Grid RowDefinitions="Auto,Auto,*" Margin="0,0,20,0" IsEnabled="{Binding WiFiService.IsEnabled}">
             <TextBlock
-                Text="{Binding NetworkSettings_Header_WirelessNetworks, Source={x:Static loc:StringResources.SystemMsg}}"
+                Text="{ext:Locale NetworkSettings_Header_WirelessNetworks}"
                 FontSize="20"
                 FontWeight="Bold"
                 Margin="0,0,0,10" />
 
             <StackPanel Spacing="10" Grid.Row="1">
                 <Button
-                    Content="{Binding NetworkSettings_Action_RefreshNetworks_Name, Source={x:Static loc:StringResources.SystemMsg}}"
+                    Content="{ext:Locale NetworkSettings_Action_RefreshNetworks_Name}"
                     Command="{Binding LocateNetworksCommand}" />
             </StackPanel>
 
@@ -33,7 +33,7 @@
                                      SpeedRatio="0.9"
                                      Height="200"
                                      Foreground="{DynamicResource SystemAccentColor}" />
-                <TextBlock Text="{Binding NetworkSettings_Modal_ScanningMessage, Source={x:Static loc:StringResources.SystemMsg}}"
+                <TextBlock Text="{ext:Locale NetworkSettings_Modal_ScanningMessage}"
                            Margin="0,-30,0,0"
                            TextAlignment="Center"
                            HorizontalAlignment="Center"
@@ -55,7 +55,7 @@
                                 </Expander.Header>
 
                                 <Grid ColumnDefinitions="Auto,Auto,*,Auto">
-                                    <Button Content="{Binding NetworkSettings_Action_ConnectNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                    <Button Content="{ext:Locale NetworkSettings_Action_ConnectNetwork}"
                                             IsVisible="{Binding !IsConnected}"
                                             Command="{Binding ConnectCommand}" />
                                     <TextBox Grid.Column="2"
@@ -63,7 +63,7 @@
                                              Text="{Binding Passphrase}"
                                              IsReadOnly="{Binding ConnectCommand.IsRunning}"
                                              KeyDown="PasswordBox_KeyDown"
-                                             Watermark="{Binding NetworkSettings_Input_Password_Watermark, Source={x:Static loc:StringResources.SystemMsg}}"
+                                             Watermark="{ext:Locale NetworkSettings_Input_Password_Watermark}"
                                              PasswordChar="*">
                                         <TextBox.IsVisible>
                                             <MultiBinding Converter="{x:Static BoolConverters.And}">
@@ -82,10 +82,10 @@
                                         <fa:Icon Value="fa-regular fa-ban"/>
                                     </Button>
 
-                                    <Button Content="{Binding NetworkSettings_Action_DisconnectNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                    <Button Content="{ext:Locale NetworkSettings_Action_DisconnectNetwork}"
                                             IsVisible="{Binding IsConnected}"
                                             Command="{Binding DisconnectCommand}" />
-                                    <Button Content="{Binding NetworkSettings_Action_ForgetNetwork, Source={x:Static loc:StringResources.SystemMsg}}"
+                                    <Button Content="{ext:Locale NetworkSettings_Action_ForgetNetwork}"
                                             IsVisible="{Binding IsKnown}"
                                             Margin="5,0,0,0"
                                             Grid.Column="1"
@@ -100,7 +100,7 @@
 
         <Grid RowDefinitions="*,*" Grid.Column="1">
             <Grid RowDefinitions="Auto,*">
-                <TextBlock Text="{Binding NetworkSettings_Header_Services, Source={x:Static loc:StringResources.SystemMsg}}"
+                <TextBlock Text="{ext:Locale NetworkSettings_Header_Services}"
                            FontSize="20"
                            FontWeight="Bold"
                            Margin="0,0,0,10" />
@@ -125,17 +125,17 @@
                     </Style>
                 </Grid.Styles>
                 
-                <TextBlock Text="{Binding NetworkSettings_Header_Properties, Source={x:Static loc:StringResources.SystemMsg}}"
+                <TextBlock Text="{ext:Locale NetworkSettings_Header_Properties}"
                            Grid.ColumnSpan="2"
                            FontSize="20"
                            FontWeight="Bold"
                            Margin="0,0,0,10" />
 
                 <StackPanel Spacing="5" Grid.Row="1">
-                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_LocalMacAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" Margin="0,0,0,10" />
-                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_IpAddressProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
-                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_SubnetMaskProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
-                    <TextBlock Classes="Property" Text="{Binding NetworkSettings_Header_GatewayProperty, Source={x:Static loc:StringResources.SystemMsg}}" />
+                    <TextBlock Classes="Property" Text="{ext:Locale NetworkSettings_Header_LocalMacAddressProperty}" Margin="0,0,0,10" />
+                    <TextBlock Classes="Property" Text="{ext:Locale NetworkSettings_Header_IpAddressProperty}" />
+                    <TextBlock Classes="Property" Text="{ext:Locale NetworkSettings_Header_SubnetMaskProperty}" />
+                    <TextBlock Classes="Property" Text="{ext:Locale NetworkSettings_Header_GatewayProperty}" />
                 </StackPanel>
 
                 <StackPanel Spacing="5" Grid.Column="1" Grid.Row="1">

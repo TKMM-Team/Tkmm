@@ -2,19 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:loc="using:Tkmm.Core.Localization"
+             xmlns:ext="using:Tkmm.Markup"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Tkmm.Wizard.Views.WizEmulatorSelectionPage">
     <StackPanel>
         <RadioButton GroupName="selection"
                      Name="RyujinxOption"
                      IsChecked="True"
-                     Content="{Binding WizPage1_Option_Ryujinx, Source={x:Static loc:StringResources.SystemMsg}}"/>
+                     Content="{ext:Locale WizPage1_Option_Ryujinx}" />
         <RadioButton GroupName="selection"
                      Name="SwitchOption"
-                     Content="{Binding WizPage1_Option_Switch, Source={x:Static loc:StringResources.SystemMsg}}"/>
+                     Content="{ext:Locale WizPage1_Option_Switch}" />
         <RadioButton GroupName="selection"
                      Name="OtherOption"
-                     Content="{Binding WizPage1_Option_Other, Source={x:Static loc:StringResources.SystemMsg}}"/>
+                     Content="{ext:Locale WizPage1_Option_Other}" />
     </StackPanel>
 </UserControl>

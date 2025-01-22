@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:lc="using:Tkmm.Core.Localization"
+             xmlns:ext="using:Tkmm.Markup"
              xmlns:cp="using:Tkmm.Components"
              x:Class="Tkmm.Views.Common.MergingModal">
     <Grid Background="#CD111111">
@@ -18,7 +18,7 @@
             <Grid RowDefinitions="Auto,*,Auto">
                 <TextBlock FontSize="30"
                            FontFamily="{StaticResource HyliaGlyph}"
-                           Text="{Binding Merging, Source={x:Static lc:StringResources.StatusMsg}}" />
+                           Text="{ext:Locale Status_Merging}" />
                 <TextBlock Grid.Row="1"
                            FontSize="16"
                            TextWrapping="WrapWithOverflow"
