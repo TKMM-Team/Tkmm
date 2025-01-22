@@ -3,9 +3,7 @@ global using static Tkmm.Localization.LocaleManager;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Extensions.Logging;
 using Tkmm.Core;
-using TkSharp.Core;
 
 namespace Tkmm.Localization;
 

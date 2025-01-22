@@ -23,11 +23,11 @@ public sealed class ProfileActions : GuardedActionGroup<ProfileActions>
         }
         
         ContentDialog dialog = new() {
-            Title = "Permenently delete profile",
+            Title = "Permanently delete profile",
             Content = $"""
                 WARNING: THIS CANNOT BE UNDONE
                 
-                Are you sure you would like to permenently delete the profile '{profile.Name}'?
+                Are you sure you would like to permanently delete the profile '{profile.Name}'?
                 """,
             PrimaryButtonText = "Delete",
             SecondaryButtonText = "Cancel",

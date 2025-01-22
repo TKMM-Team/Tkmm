@@ -2,7 +2,6 @@ using ConfigFactory;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
-using Tkmm.Localization;
 
 namespace Tkmm.Extensions;
 
@@ -18,7 +17,7 @@ public static class ConfigFactoryExtensions
                 .SelectMany(x => x.Groups)
                 .FirstOrDefault(x => x.Header == target.Attribute.Group);
 
-            TkStatus.Set(TkExceptions.InvalidSettings(target.Property.Name), TkIcons.WARNING);
+            TkStatus.Set(Locale[TkLocale.Error_InvalidSetting, target.Property.Name], TkIcons.WARNING);
         }
 
         settingsModel.Append<T>();

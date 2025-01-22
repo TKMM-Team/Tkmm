@@ -30,8 +30,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
                 return null;
             }
 
-            // TODO: Fetch message template from locale
-            TkStatus.SetTemporaryShort($"{mod.Name} was installed successfully!", TkIcons.CIRCLE_CHECK);
+            TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyInstalled, mod.Name], TkIcons.CIRCLE_CHECK);
             return mod;
         }
         catch (Exception ex) {
@@ -71,8 +70,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 
         try {
             // TODO: Export packaged mod
-            // TODO: Fetch message template from locale
-            TkStatus.SetTemporaryShort($"'{target.Mod.Name}' was exported successfully!", TkIcons.CIRCLE_CHECK);
+            TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyExported, target.Mod.Name], TkIcons.CIRCLE_CHECK);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while exporting the mod '{ModName}' to '{TargetFile}'.",
@@ -154,6 +152,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
+        // TODO: Fetch message template from locale
         ContentDialog dialog = new() {
             Title = "Permanently uninstall?",
             Content = $"""
