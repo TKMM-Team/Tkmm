@@ -21,20 +21,13 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.2.3">
-      <TreatAsUsed>true</TreatAsUsed>
-    </PackageReference>
+    <PackageReference Include="Avalonia" Version="11.2.3" TreatAsUsed="True" />
     <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.2.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3">
-      <TreatAsUsed>true</TreatAsUsed>
-    </PackageReference>
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3" TreatAsUsed="True" />
     <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.3" />
     <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
-
-    <!--Versions greater than 11.0.10.2 cause https://github.com/TKMM-Team/Tkmm/issues/5 -->
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.10.2" />
-
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <!--Versions greater than 11.0.10.2 causes https://github.com/TKMM-Team/Tkmm/issues/5 -->
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="[11.0.10.2]" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.2" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.2.0" />
@@ -43,13 +36,7 @@
     <PackageReference Include="Markdown.Avalonia" Version="11.0.3-a1" />
     <PackageReference Include="MenuFactory" Version="1.1.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.0" />
-    <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.0">
-      <TreatAsUsed>true</TreatAsUsed>
-    </PackageReference>
-
-    <ProjectReference Include="..\Tkmm.LocaleGenerator\Tkmm.LocaleGenerator.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+    <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.0" TreatAsUsed="True" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +62,9 @@
     <ProjectReference Include="..\..\lib\TkSharp\TkSharp.Packaging\TkSharp.Packaging.csproj" />
     <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
     <ProjectReference Include="..\Tkmm.VirtualKeyboard\Tkmm.VirtualKeyboard.csproj" />
+    <ProjectReference Include="..\Tkmm.LocaleGenerator\Tkmm.LocaleGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
