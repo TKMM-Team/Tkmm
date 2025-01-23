@@ -4,7 +4,6 @@ namespace Tkmm.Components;
 
 public sealed partial class TriviaProvider : ObservableObject
 {
-    private static readonly string _sourceFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Trivia", "trivia.txt");
     private static readonly string[] _source = GetSource();
     
     public static readonly TriviaProvider Instance = new();
