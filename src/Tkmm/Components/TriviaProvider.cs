@@ -33,6 +33,17 @@ public sealed partial class TriviaProvider : ObservableObject
 
     private static string[] GetSource()
     {
-        return File.ReadAllLines(_sourceFilePath);
+        using Stream? stream = typeof(TriviaProvider).Assembly.GetManifestResourceStream("Tkmm.Resources.Trivia.trivia.txt");
+        if (stream is null) {
+            return [];
+        }
+
+        List<string> lines = [];
+        using StreamReader reader = new(stream);
+        while (reader.ReadLine() is string line) {
+            lines.Add(line);
+        }
+        
+        return lines.ToArray();
     }
 }
