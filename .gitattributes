@@ -4,7 +4,7 @@
 * text=auto
 
 # Ensure locales.json uses CRLF line endings
-locales.json text eol=crlf
+locales.json text eol=lf
 
 ###############################################################################
 # Set default behavior for command prompt diff.
