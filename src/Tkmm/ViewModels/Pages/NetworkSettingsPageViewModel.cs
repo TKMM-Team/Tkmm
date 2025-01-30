@@ -106,7 +106,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         await foreach (NxNetwork network in Connman.GetNetworks(ct)) {
             if (Networks.FirstOrDefault(net => net.Id == network.Id) is NxNetwork existing) {
                 if (existing.IsConnected) {
-                    SetConnected(network);
+                    await SetConnected(network);
                 }
                 
                 existing.IsConnected = network.IsConnected;

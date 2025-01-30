@@ -48,7 +48,7 @@ public class LocaleGenerator : IIncrementalGenerator
             return false;
         }
 
-        return line.Slice(0, 5) is "    \"" && line[line.Length - 2] is '{';
+        return line.Slice(0, 5) is "    \"" && line[line.Length - 1] is '{';
     }
 
     private static string GetKey(string line)
