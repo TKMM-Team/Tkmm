@@ -10,13 +10,13 @@ public class NxMenuModel
     [TkMenu(TkLocale.Menu_NxReboot, TkLocale.Menu_Nx, Icon = "fa-solid fa-rotate")]
     public static void Reboot()
     {
-        ExecuteCommand("/usr/bin/tkmm-reboot.sh");
+        ExecuteCommand("/usr/bin/tkmm-reboot");
     }
 
     [TkMenu(TkLocale.Menu_NxShutdown, TkLocale.Menu_Nx, Icon = "fa-solid fa-power-off")]
     public static void Shutdown()
     {
-        ExecuteCommand("/usr/bin/tkmm-shutdown.sh");
+        ExecuteCommand("/usr/bin/tkmm-shutdown");
     }
 
     private static void ExecuteCommand(string command)
