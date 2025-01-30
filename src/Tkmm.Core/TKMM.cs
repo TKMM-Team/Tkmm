@@ -19,7 +19,7 @@ public static class TKMM
     private static ITkThumbnailProvider? _thumbnailProvider;
 
 #if SWITCH
-    public static readonly string MergedOutputFolder = Path.Combine("flash", "atmosphere", "contents", "0100f2c0115b6000");
+    public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
 #endif
