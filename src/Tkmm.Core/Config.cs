@@ -56,7 +56,7 @@ public sealed partial class Config : ConfigModule<Config>
         Group = "Application")]
     private bool _autoSaveSettings = true;
     
-#if TARGET_NX
+#if SWITCH
     [ObservableProperty]
     private string _sevenZipPath = "/usr/bin/7zz";
 #else
@@ -73,7 +73,7 @@ public sealed partial class Config : ConfigModule<Config>
     private string? _sevenZipPath;
 #endif
     
-#if !TARGET_NX
+#if !SWITCH
     [ObservableProperty]
     [property: Config(
         Header = "Emulator Executable Path",
@@ -106,7 +106,7 @@ public sealed partial class Config : ConfigModule<Config>
     [property: DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh")]
     private string _gameLanguage = "USen";
     
-#if !TARGET_NX
+#if !SWITCH
     [ObservableProperty]
     [property: Config(
         Header = "Export Locations",
