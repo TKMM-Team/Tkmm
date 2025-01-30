@@ -29,7 +29,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath: null, ct);
     }
 
-    public Task Merge(string? ipsOutputPath = null, CancellationToken ct = default)
+    public Task Merge(string ipsOutputPath, CancellationToken ct = default)
     {
         return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath, ct);
     }
@@ -156,7 +156,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         await Merge(profile, ipsOutputPath, ct);
 
         try {
-            string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100f2c0115b6000");
+            string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
 
             ContentDialogResult canDeleteResult = await MessageDialog.Show(
                 "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
