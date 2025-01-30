@@ -56,6 +56,10 @@ public sealed partial class Config : ConfigModule<Config>
         Group = "Application")]
     private bool _autoSaveSettings = true;
     
+#if TARGET_NX
+    [ObservableProperty]
+    private string _sevenZipPath = "/usr/bin/7zz";
+#else
     [ObservableProperty]
     [property: Config(
         Header = "7z Path",
@@ -67,7 +71,9 @@ public sealed partial class Config : ConfigModule<Config>
         Filter = "7z:*7z*",
         Title = "7z Location")]
     private string? _sevenZipPath;
+#endif
     
+#if !TARGET_NX
     [ObservableProperty]
     [property: Config(
         Header = "Emulator Executable Path",
@@ -83,6 +89,7 @@ public sealed partial class Config : ConfigModule<Config>
 #endif
         Title = "Select emulator executable")]
     private string? _emulatorPath;
+#endif
     
     [ObservableProperty]
     [property: Config(
@@ -99,12 +106,14 @@ public sealed partial class Config : ConfigModule<Config>
     [property: DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh")]
     private string _gameLanguage = "USen";
     
+#if !TARGET_NX
     [ObservableProperty]
     [property: Config(
         Header = "Export Locations",
         Description = "Define custom locations to export the merged mod to.",
         Group = "Merging")]
     private ExportLocations _exportLocations = [];
+#endif
     
     [ObservableProperty]
     private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
