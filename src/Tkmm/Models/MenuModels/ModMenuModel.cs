@@ -33,12 +33,14 @@ public class ModMenuModel
         return ModActions.Instance.UninstallMod();
     }
 
+#if !SWITCH
     [TkMenu(TkLocale.Menu_ModEditExportLocations, TkLocale.Menu_Mod, InputGesture = "Ctrl + L", Icon = "fa-regular fa-pen-to-square", IsSeparator = true)]
     public static async Task EditExportLocations()
     {
         // TODO: Abstract this to somewhere else
         await ExportLocationControlBuilder.Edit(TKMM.Config.ExportLocations);
     }
+#endif
 
     [TkMenu(TkLocale.Menu_ModMerge, TkLocale.Menu_Mod, InputGesture = "Ctrl + M", Icon = "fa-solid fa-list-check")]
     public static Task MergeMods()
