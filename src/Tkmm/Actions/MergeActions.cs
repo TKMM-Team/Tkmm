@@ -107,9 +107,8 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             .Where(static driveInfo => {
                 try {
                     return driveInfo is {
-                        DriveType: DriveType.Removable,
-                        DriveFormat: "FAT32"
-                    };
+                        DriveType: DriveType.Removable
+                    } && Directory.Exists(Path.Combine(driveInfo.RootDirectory.FullName, "atmosphere"));
                 }
                 catch {
                     return false;
@@ -120,7 +119,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         if (disks.Length is 0) {
             await ErrorDialog.ShowAsync(
-                new DriveNotFoundException("No suitable disks found. Please make sure you have an SD card inserted or connected virtually over USB.")
+                new DriveNotFoundException("No suitable disks found. Please make sure you have an SD card inserted or connected virtually over USB and that atmosphere is installed on it.")
             );
 
             return;
