@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
-using Tkmm.Core.Logging;
 using Tkmm.Core.Providers;
 using TkSharp;
 using TkSharp.Core;
@@ -19,7 +18,12 @@ public static class TKMM
     private static readonly TkModReaderProvider _readerProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
+#if SWITCH
+    public static readonly string MergedOutputFolder = Path.Combine("flash", "atmosphere", "contents", "0100f2c0115b6000");
+#else
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
+#endif
+
 
     public static ITkRom Rom => _romProvider.Value.GetRom();
 
@@ -56,13 +60,19 @@ public static class TKMM
         return mod;
     }
 
-    public static async ValueTask Merge(TkProfile profile, CancellationToken ct = default)
+    public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs"], recursive: true);
         
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
+        
+#if SWITCH
+        // Since the FolderModWriter is writing to the merged output,
+        // this path jumps back to write behind that folder.
+        ipsOutputPath ??= Path.Combine("..", "..", "exefs_patches", "TKMM");
+#endif
 
-        TkMerger merger = new(writer, Rom);
+        TkMerger merger = new(writer, Rom, TkConfig.Shared.GameLanguage, ipsOutputPath);
 
         long startTime = Stopwatch.GetTimestamp();
 

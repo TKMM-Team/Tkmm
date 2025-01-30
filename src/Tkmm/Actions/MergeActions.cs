@@ -26,10 +26,20 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
     [RelayCommand]
     public Task Merge(CancellationToken ct = default)
     {
-        return Merge(TKMM.ModManager.GetCurrentProfile(), ct);
+        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath: null, ct);
     }
 
-    public async Task Merge(TkProfile profile, CancellationToken ct = default)
+    public Task Merge(string? ipsOutputPath = null, CancellationToken ct = default)
+    {
+        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath, ct);
+    }
+
+    public Task Merge(TkProfile profile, CancellationToken ct = default)
+    {
+        return Merge(profile, ipsOutputPath: null, ct);
+    }
+
+    public async Task Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -74,7 +84,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         try {
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
-            await TKMM.Merge(profile, ct);
+            await TKMM.Merge(profile, ipsOutputPath, ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
                 "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");
@@ -142,8 +152,9 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                     Drive: DriveInfo drive
                 }
             }) return;
-
-        await Merge(profile, ct);
+        
+        string ipsOutputPath = Path.Combine("..", "..", "exefs_patches", "TKMM");
+        await Merge(profile, ipsOutputPath, ct);
 
         try {
             string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100f2c0115b6000");
