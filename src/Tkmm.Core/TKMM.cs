@@ -64,6 +64,11 @@ public static class TKMM
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs"], recursive: true);
         
+        string metadataFilePath = Path.Combine(MergedOutputFolder, "romfs_metadata.bin");
+        if (File.Exists(metadataFilePath)) {
+            File.Delete(metadataFilePath);
+        }
+
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
         
 #if SWITCH
