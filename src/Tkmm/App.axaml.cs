@@ -117,7 +117,7 @@ public class App : Application
         };
 
         MenuFactory = new AvaloniaMenuFactory(XamlRoot,
-            localeKeyName => Locale[localeKeyName]
+            localeKeyName => Locale[localeKeyName, failSoftly: true]
         );
 
         MenuFactory.ConfigureMenu();
@@ -129,7 +129,7 @@ public class App : Application
         shellView.NxBatteryStatusPanel.IsVisible = true;
         
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
-            localeKeyName => Locale[localeKeyName]
+            localeKeyName => Locale[localeKeyName, failSoftly: true]
         );
         nxSystemMenu.AddMenuGroup<NxMenuModel>();
         shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;

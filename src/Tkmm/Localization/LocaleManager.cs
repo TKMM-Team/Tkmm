@@ -35,9 +35,15 @@ public sealed class LocaleManager : ObservableObject
 
     public string this[TkLocale key, params object[] arguments] => string.Format(this[key], arguments);
 
-    public string this[string key] {
+    public string this[string key] => this[key, failSoftly: false];
+
+    public string this[string key, bool failSoftly] {
         get {
             if (!_entries.TryGetValue(key, out LocalesEntry? entry)) {
+                if (failSoftly) {
+                    return key;
+                }
+                
                 throw new ArgumentException(
                     $"The locale entry '{key}' does not exist.");
             }
