@@ -73,7 +73,10 @@ public sealed partial class Config : ConfigModule<Config>
     private string? _sevenZipPath;
 #endif
     
-#if !SWITCH
+#if SWITCH
+    [ObservableProperty]
+    private string _emulatorPath;
+#else
     [ObservableProperty]
     [property: Config(
         Header = "Emulator Executable Path",
