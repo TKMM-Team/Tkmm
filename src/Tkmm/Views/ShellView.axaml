@@ -34,6 +34,25 @@
         </Transitions>
     </uiw:AppWindow.Transitions>-->
     <Grid>
+        <Grid IsVisible="{Binding IsFirstTimeSetup}" ColumnDefinitions="*,Auto,Auto">
+            <Menu Name="WizPowerOptionsMenu" IsVisible="False"
+                  Grid.Column="1" />
+            <StackPanel Name="WizNxBatteryStatusPanel"
+                        IsVisible="False"
+                        Grid.Column="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="5,0">
+                <TextBlock FontSize="15" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,4,0" 
+                           Text="{Binding BatteryCharge, StringFormat={}{0}%, Mode=OneWay}" />
+                <pi:Icon Value="{Binding BatteryIcon, Mode=OneWay}" 
+                         FontSize="25"
+                         Margin="0,0,2,0" />
+            </StackPanel>
+        </Grid> 
+        
         <ContentControl IsVisible="{Binding IsFirstTimeSetup}" Name="WizContainer">
             <wiz:WizPage Tag="{Binding #WizContainer}" />
         </ContentControl>
