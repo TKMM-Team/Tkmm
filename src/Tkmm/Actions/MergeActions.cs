@@ -46,6 +46,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         }
 
         // TODO: Find a better way to store conditional popups
+        #if !SWITCH
         const string suppressMergeExportLocationsPrompt = "SuppressMergeExportLocationsPrompt";
         if (!Config.Shared.ExportLocations.Any(exportLocation => exportLocation.IsEnabled) && !NamedDialogConfig.Shared[suppressMergeExportLocationsPrompt].IsSuppressed) {
             ContentDialog dialog = new() {
@@ -78,6 +79,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 Config.Shared.Save();
             }
         }
+        #endif
 
         CancellationTokenSource modalCancelTokenSource = new();
 

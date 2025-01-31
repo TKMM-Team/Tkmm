@@ -3,7 +3,7 @@ using Tkmm.Wizard.ViewModels;
 using Tkmm.Wizard.Views;
 using WizDumpConfigPage = Tkmm.Wizard.Views.WizDumpConfigPage;
 using WizEmulatorSelectionPage = Tkmm.Wizard.Views.WizEmulatorSelectionPage;
-
+    
 namespace Tkmm.Wizard;
 
 public class WizLayout
@@ -21,7 +21,7 @@ public class WizLayout
         TkLocale.WizPage0_Title, TkLocale.WizPage0_Description, [
             new WizAction(TkLocale.WizPage0_Action, 0)
         ]);
-    
+
     private static readonly WizPageViewModel _page1 = new(
         id: 1, lastPage: FirstPage,
         TkLocale.WizPage1_Title, WizEmulatorSelectionPage.Instance, [

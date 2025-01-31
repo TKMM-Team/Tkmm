@@ -15,7 +15,7 @@ public static class WizActions
             OperatingSystem.IsWindows() ? "*.exe" : "*"
         ]
     };
-
+    
     public static async ValueTask<(bool, int?)> SetupOtherEmulator()
     {
         string? emulatorFilePath = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
