@@ -6,6 +6,7 @@ using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using TkSharp.Core;
+using TkSharp.Core.Common;
 
 namespace Tkmm;
 
@@ -18,6 +19,9 @@ internal abstract class Program
             const string logCategoryName = nameof(TKMM);
             TkLog.Instance.Register(new DesktopLogger(logCategoryName));
             TkLog.Instance.Register(new EventLogger(logCategoryName));
+
+            // Reroute backend localization interface
+            TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
             
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
