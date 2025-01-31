@@ -2,8 +2,10 @@ using Tkmm.Wizard.Actions;
 using Tkmm.Wizard.ViewModels;
 using Tkmm.Wizard.Views;
 using WizDumpConfigPage = Tkmm.Wizard.Views.WizDumpConfigPage;
+#if !SWITCH
 using WizEmulatorSelectionPage = Tkmm.Wizard.Views.WizEmulatorSelectionPage;
-
+#endif
+    
 namespace Tkmm.Wizard;
 
 public class WizLayout
