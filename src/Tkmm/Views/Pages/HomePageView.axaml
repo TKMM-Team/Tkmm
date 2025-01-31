@@ -151,12 +151,12 @@
                     </Grid>
 
                     <Grid Grid.Row="2">
-                        <md:MarkdownScrollViewer
-                            Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}">
-                            <md:MarkdownScrollViewer.Styles>
-                                <StyleInclude Source="/Styles/Markdown.axaml" />
-                            </md:MarkdownScrollViewer.Styles>
-                        </md:MarkdownScrollViewer>
+                        <!-- <md:MarkdownScrollViewer -->
+                        <!--     Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}"> -->
+                        <!--     <md:MarkdownScrollViewer.Styles> -->
+                        <!--         <StyleInclude Source="/Styles/Markdown.axaml" /> -->
+                        <!--     </md:MarkdownScrollViewer.Styles> -->
+                        <!-- </md:MarkdownScrollViewer> -->
                     </Grid>
                 </Grid>
 
@@ -166,7 +166,7 @@
                     <Grid.Styles>
                         <Style Selector="Grid.animate">
                             <Style.Animations>
-                                <Animation IterationCount="1" Duration="0:0:0.1">
+                                <Animation IterationCount="1" Duration="0:0:0.2">
                                     <KeyFrame Cue="0%">
                                         <Setter Property="Opacity" Value="0.0" />
                                     </KeyFrame>

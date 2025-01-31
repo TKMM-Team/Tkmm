@@ -38,7 +38,7 @@
                     <TextBox Grid.Row="1"
                              Name="BaseGameFilePathField"
                              Tag="xci,nsp"
-                             Text="{Binding BaseGameFilePath, Source={x:Static core:TkConfig.Shared}}"
+                             Text="{Binding GameDumpFolderPath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
@@ -53,7 +53,7 @@
                     <TextBox Grid.Row="1"
                              Name="GameUpdateFilePathField"
                              Tag="nsp"
-                             Text="{Binding GameUpdateFilePath, Source={x:Static core:TkConfig.Shared}}"
+                             Text="{Binding PackagedUpdatePath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"
@@ -106,7 +106,7 @@
                     <TextBox Grid.Row="1"
                              Name="OptionalGameUpdateFilePathField"
                              Tag="nsp"
-                             Text="{Binding GameUpdateFilePath, Source={x:Static core:TkConfig.Shared}}"
+                             Text="{Binding PackagedUpdatePath, Source={x:Static core:TkConfig.Shared}}"
                              TextWrapping="NoWrap"
                              Width="450" />
                     <Button Grid.Column="1" Grid.Row="1"

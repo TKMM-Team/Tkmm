@@ -127,7 +127,9 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         TkStatus.Set($"Packaging '{Project.Mod.Name}'", "fa-regular fa-boxes-packing", StatusType.Working);
         
         await using Stream output = await file.OpenWriteAsync();
-        await Project.Package(output, TKMM.Rom);
+
+        using ITkRom tkRom = TKMM.GetTkRom();
+        await Project.Package(output, tkRom);
         
         TkStatus.SetTemporary($"Packaged '{Project.Mod.Name}'", "fa-regular fa-box-circle-check");
     }
@@ -142,7 +144,8 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         TkStatus.Set($"Installing '{Project.Mod.Name}'", "fa-regular fa-download", StatusType.Working);
 
         ITkModWriter writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
-        await Project.Build(writer, TKMM.Rom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
+        using ITkRom tkRom = TKMM.GetTkRom();
+        await Project.Build(writer, tkRom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
         
         TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }

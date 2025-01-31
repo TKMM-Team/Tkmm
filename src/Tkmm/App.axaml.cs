@@ -56,6 +56,7 @@ public class App : Application
     static App()
     {
         ExportLocationControlBuilder.Shared.Register();
+        FileOrFolderControlBuilder.Shared.Register();
     }
 
     public App()

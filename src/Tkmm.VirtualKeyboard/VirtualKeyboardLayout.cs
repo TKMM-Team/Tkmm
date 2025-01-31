@@ -1,8 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.VisualTree;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Tkmm.VirtualKeyboard;
 
