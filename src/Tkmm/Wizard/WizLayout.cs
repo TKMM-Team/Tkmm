@@ -28,11 +28,13 @@ public class WizLayout
             new WizAction(TkLocale.WizPage1_Action_Next, 1, WizEmulatorSelectionPage.Instance.CheckSelection)
         ]);
     
+#if !SWITCH
     private static readonly WizPageViewModel _pageRyujinxSetup = new(
         id: 3, lastPage: _page1,
         TkLocale.WizPageRyujinxSetup_Title, TkLocale.WizPageRyujinxSetup_Description, [
             new WizAction(TkLocale.WizPageRyujinxSetup_Action_Start, 0, WizActions.StartRyujinxSetup)
         ]);
+#endif
     
     private static readonly WizPageViewModel _page2 = new(
         id: 2, lastPage: _page1,
@@ -65,7 +67,9 @@ public class WizLayout
     {
         return (current.Id, selection) switch {
             (0, _) => _page1,
+#if !SWITCH
             (1, 0) => _pageRyujinxSetup,
+#endif
             (1, 1) => _page2,
             (1, 2) => _pageFinal,
             _ => _pageFinal

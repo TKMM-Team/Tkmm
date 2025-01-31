@@ -17,6 +17,7 @@ public static class WizActions
         ]
     };
 
+#if !SWITCH
     public static async ValueTask<(bool, int?)> SetupOtherEmulator()
     {
         string? emulatorFilePath = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
@@ -138,6 +139,7 @@ public static class WizActions
 
         return (true, null);
     }
+#endif
 
     public static async ValueTask<(bool, int?)> VerifyConfig()
     {
