@@ -1,4 +1,3 @@
-#if !SWITCH
 using Avalonia.Controls;
 using Tkmm.Wizard.Actions;
 
@@ -23,4 +22,3 @@ public partial class WizEmulatorSelectionPage : UserControl
         };
     }
 }
-#endif
