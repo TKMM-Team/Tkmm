@@ -14,6 +14,7 @@
                xmlns:models="clr-namespace:Tkmm.Models"
                Title="{x:Static desktop:App.ShortTitle}"
                xmlns:wiz="using:Tkmm.Wizard.Views"
+               xmlns:tkmm1="clr-namespace:TkSharp.Core;assembly=TkSharp.Core"
                CanResize="{Binding !IsFirstTimeSetup}"
                Width="870"
                Height="550"
@@ -137,12 +138,12 @@
                   ColumnDefinitions="Auto,Auto,*,Auto,Auto"
                   IsHitTestVisible="False">
                 <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
-                <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static tkmm:TkStatus.Shared}}" />
+                <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static tkmm1:TkStatus.Shared}}" />
                 <TextBlock Grid.Column="1"
                            Margin="5,0"
                            VerticalAlignment="Center"
                            FontFamily="{StaticResource UbuntuMono}">
-                    <Run Text="{Binding Status, Source={x:Static tkmm:TkStatus.Shared}}" /><Run Text="{Binding Suffix, Source={x:Static tkmm:TkStatus.Shared}}" />
+                    <Run Text="{Binding Status, Source={x:Static tkmm1:TkStatus.Shared}}" /><Run Text="{Binding Suffix, Source={x:Static tkmm1:TkStatus.Shared}}" />
                 </TextBlock>
                 <TextBlock Grid.Column="3"
                            Margin="5,0"
