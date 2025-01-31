@@ -6,6 +6,7 @@ using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 using TkSharp.Extensions.GameBanana.Readers;
+using TkSharp.Extensions.LibHac;
 using TkSharp.IO.Writers;
 using TkSharp.Merging;
 
@@ -14,7 +15,7 @@ namespace Tkmm.Core;
 // ReSharper disable once InconsistentNaming
 public static class TKMM
 {
-    private static readonly Lazy<ITkRomProvider> _romProvider = new(() => new TkRomProvider());
+    private static readonly Lazy<TkExtensibleRomProvider> _romProvider = new(() => TkConfig.Shared.CreateRomProvider());
     private static readonly TkModReaderProvider _readerProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
@@ -25,7 +26,13 @@ public static class TKMM
 #endif
 
 
-    public static ITkRom Rom => _romProvider.Value.GetRom();
+    public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
+
+    public static ITkRom? TryGetTkRom()
+    {
+        _romProvider.Value.TryGetRom(out ITkRom? rom);
+        return rom;
+    }
 
     public static Config Config => Config.Shared;
 
@@ -77,7 +84,8 @@ public static class TKMM
         ipsOutputPath ??= Path.Combine("..", "..", "exefs_patches", "TKMM");
 #endif
 
-        TkMerger merger = new(writer, Rom, TkConfig.Shared.GameLanguage, ipsOutputPath);
+        using ITkRom tkRom = GetTkRom();
+        TkMerger merger = new(writer, tkRom, TkConfig.Shared.GameLanguage, ipsOutputPath);
 
         long startTime = Stopwatch.GetTimestamp();
 

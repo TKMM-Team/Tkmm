@@ -1,10 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Media;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core;
-using Tkmm.Core.Providers;
 using TkSharp.Core;
 
 namespace Tkmm.Actions;
@@ -25,7 +25,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
         
         LogInfo();
 
-        if (EnsureConfiguration()) {
+        if (EnsureConfiguration(out string? reason)) {
             TkLog.Instance.LogInformation(
                 "Executing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
             
@@ -41,8 +41,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
             "Failed to run {ActionName} from {ActionGroupName}, the configuration was invalid.",
             actionName, ActionGroupName);
         
-        await ShowFailureDialog(actionName,
-            "The application configuration is invalid, the invoked action cannot run.");
+        await ShowFailureDialog(actionName, reason);
         
         return false;
     }
@@ -77,8 +76,17 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     /// <summary>
     /// Ensure the application is configured correctly.
     /// </summary>
-    protected virtual bool EnsureConfiguration()
+    protected virtual bool EnsureConfiguration([MaybeNullWhen(true)] out string reason)
     {
-        return TkRomProvider.CanProvideRom();
+        if (TKMM.TryGetTkRom() is not { } tkRom) {
+            // TODO: Set reason to a translated message
+            reason = "Failed to retrieve TotK rom. Please review your TotK configuration.";
+            TkLog.Instance.LogCritical("[ROM Check] Failed to retrieve TotK rom.");
+            return false;
+        }
+        
+        TkLog.Instance.LogInformation("[ROM Check] Good | {Version}", tkRom.GameVersion);
+        reason = null;
+        return true;
     }
 }

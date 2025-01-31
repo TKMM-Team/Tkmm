@@ -3,7 +3,6 @@ using Avalonia.Platform.Storage;
 using LibHac.Common.Keys;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
-using Tkmm.Core.Providers;
 using Tkmm.Dialogs;
 using Tkmm.ViewModels;
 
@@ -79,8 +78,8 @@ public static class WizActions
         Config.Shared.EmulatorPath = ryujinxExeFilePath;
 
         TkConfig.Shared.KeysFolderPath = ryujinxKeysFolder;
-        TkConfig.Shared.BaseGameFilePath = baseGameFilePath.FilePath;
-        TkConfig.Shared.GameUpdateFilePath = tkFiles
+        TkConfig.Shared.PackagedBaseGamePath = baseGameFilePath.FilePath;
+        TkConfig.Shared.PackagedUpdatePath = tkFiles
             .OrderBy(x => x.Version)
             .Last()
             .FilePath;
@@ -116,16 +115,16 @@ public static class WizActions
 
         if (tkFiles is [(FilePath: string, Version: string) target]) {
             if (target.Version == "1.0.0") {
-                TkConfig.Shared.BaseGameFilePath = tkFiles[0].FilePath;
+                TkConfig.Shared.PackagedBaseGamePath = tkFiles[0].FilePath;
             }
             else {
-                TkConfig.Shared.GameUpdateFilePath = tkFiles[0].FilePath;
+                TkConfig.Shared.PackagedUpdatePath = tkFiles[0].FilePath;
             }
 
             return (true, null);
         }
 
-        TkConfig.Shared.GameUpdateFilePath = tkFiles
+        TkConfig.Shared.PackagedUpdatePath = tkFiles
             .OrderBy(x => x.Version)
             .Last()
             .FilePath;
@@ -134,7 +133,7 @@ public static class WizActions
             return (true, null);
         }
 
-        TkConfig.Shared.BaseGameFilePath = baseGameFilePath.FilePath;
+        TkConfig.Shared.PackagedBaseGamePath = baseGameFilePath.FilePath;
 
         return (true, null);
     }
@@ -142,7 +141,7 @@ public static class WizActions
     public static async ValueTask<(bool, int?)> VerifyConfig()
     {
         StringBuilder reasons = new();
-        bool result = TkRomProvider.CanProvideRom(message => reasons.AppendLine(message));
+        bool result = TKMM.TryGetTkRom() is not null;
 
         if (result) {
             return (true, null);

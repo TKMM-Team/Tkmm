@@ -6,8 +6,8 @@ using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;
 using TkSharp.Core;
 using TkSharp.Core.IO.Parsers;
-using TkSharp.Extensions.LibHac;
 using TkSharp.Extensions.LibHac.Extensions;
+using TkSharp.Extensions.LibHac.Util;
 using Application = LibHac.Tools.Fs.Application;
 
 namespace Tkmm.Core.Helpers;
@@ -38,7 +38,7 @@ public static class TkRomHelper
         using LocalStorage storage = new(target, FileAccess.Read);
         using SwitchFs fs = storage.GetSwitchFs(target, keys);
 
-        return fs.Applications.TryGetValue(LibHacRomProvider.EX_KING_APP_ID, out app);
+        return fs.Applications.TryGetValue(TkGameRomUtils.EX_KING_APP_ID, out app);
     }
 
     public static KeySet? GetKeys(string keysFolder)

@@ -2,11 +2,15 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Tkmm.Core.Models;
+using TkSharp.Data.Embedded;
+using TkSharp.Extensions.LibHac;
 
 namespace Tkmm.Core;
 
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
+    [JsonIgnore]
     public override string Name => "totk";
     
     public TkConfig()
@@ -33,39 +37,28 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Base Game File Path",
-        Description = "The absolute path to your dumped base game file (XCI/NSP).",
+        Header = "Packaged Base Game Path",
+        Description = "The absolute path to your dumped base game file (.xci or .nsp) or split folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
-        Filter = "XCI/NSP:*.nsp;*.xci",
+        Filter = "XCI/NSP:*.nsp;*.xci|All files:*.*",
         InstanceBrowserKey = "base-game-file-path",
         Title = "Select base game XCI/NSP")]
-    private string? _baseGameFilePath;
-
-    [ObservableProperty]
-    [property: Config(
-        Header = "Split Base Game Folder Path",
-        Description = "The path to a folder containing your game split into multiple files (only useful for FAT32 file systems).",
-        Group = "Game Dump")]
-    [property: BrowserConfig(
-        BrowserMode = BrowserMode.OpenFolder,
-        InstanceBrowserKey = "split-files-path",
-        Title = "Select split files folder")]
-    private string? _splitFilesPath;
+    private FileOrFolder _packagedBaseGamePath;
 
     // TODO: Support version dropdown
     [ObservableProperty]
     [property: Config(
         Header = "Game Update File Path",
-        Description = "The absolute path to your dumped game update file (NSP).",
+        Description = "The absolute path to your dumped game update file (.xci or .nsp) or split folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
-        Filter = "NSP:*.nsp",
+        Filter = "NSP:*.nsp|All files:*.*",
         InstanceBrowserKey = "game-update-file-path",
         Title = "Select game update NSP")]
-    private string? _gameUpdateFilePath;
+    private FileOrFolder _packagedUpdatePath;
 
     [ObservableProperty]
     [property: Config(
@@ -90,4 +83,17 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select game dump folder path (with update 1.1.0 or later)")]
     [property: JsonPropertyName("GamePath")]
     private string? _gameDumpFolderPath;
+
+    public TkExtensibleRomProvider CreateRomProvider()
+    {
+        using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
+        
+        return TkExtensibleRomProviderBuilder.Create(checksums)
+            .WithKeysFolder(() => KeysFolderPath)
+            .WithExtractedGameDump(() => GameDumpFolderPath)
+            .WithSdCard(() => SdCardRootPath)
+            .WithPackagedBaseGame(() => PackagedBaseGamePath)
+            .WithPackagedUpdate(() => PackagedUpdatePath)
+            .Build();
+    }
 }
