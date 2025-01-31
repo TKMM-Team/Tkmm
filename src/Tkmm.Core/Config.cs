@@ -73,11 +73,6 @@ public sealed partial class Config : ConfigModule<Config>
     private string? _sevenZipPath;
 #endif
     
-#if SWITCH
-    [ObservableProperty]
-    private string _emulatorPath;
-#else
-    [ObservableProperty]
     [property: Config(
         Header = "Emulator Executable Path",
         Description = "The absolute path to your emulator's executable.",
@@ -86,13 +81,22 @@ public sealed partial class Config : ConfigModule<Config>
         BrowserMode = BrowserMode.OpenFile,
         InstanceBrowserKey = "emulator-path",
 #if TARGET_WINDOWS
-        Filter = "Executable:*.exe",
+        Filter = "Executable:*.exe|All files:*",
 #else
         Filter = "Executable:*",
 #endif
         Title = "Select emulator executable")]
+// #if !SWITCH TODO: Exclude other usages
+    [ObservableProperty]
     private string? _emulatorPath;
-#endif
+// #endif
+    
+    [ObservableProperty]
+    [property: Config(
+        Header = "Show Trivia Popup",
+        Description = "Show the trivia popup when merging.",
+        Group = "Application")]
+    private bool _showTriviaPopup = true;
     
     [ObservableProperty]
     [property: Config(

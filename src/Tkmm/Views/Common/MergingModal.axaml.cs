@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
+using Tkmm.Core;
 
 namespace Tkmm.Views.Common;
 
@@ -15,22 +16,26 @@ public partial class MergingModal : UserControl
     {
         InitializeComponent();
     }
-
+    
     public static void ShowModal(CancellationToken cancellationToken)
     {
-        _ = Dispatcher.UIThread.InvokeAsync(async () => {
-            if (OverlayLayer.GetOverlayLayer(App.XamlRoot) is not { } overlayLayer) {
-                return;
+        if (!Config.Shared.ShowTriviaPopup) {
+            return;
+        }
+        
+        if (OverlayLayer.GetOverlayLayer(App.XamlRoot) is not { } overlayLayer) {
+            return;
+        }
+
+        overlayLayer.Children.Add(_host);
+
+        _ = Task.Run(() => {
+            while (!cancellationToken.IsCancellationRequested) {
             }
 
-            overlayLayer.Children.Add(_host);
-
-            await Task.Run(() => {
-                while (!cancellationToken.IsCancellationRequested) {
-                }
-            }, cancellationToken);
-            
-            overlayLayer.Children.Remove(_host);
-        });
+            Dispatcher.UIThread.Invoke(() => {
+                overlayLayer.Children.Remove(_host);
+            });
+        }, cancellationToken);
     }
 }
