@@ -9,7 +9,7 @@ public class LogLevelToBrushConverter : IValueConverter
 {
     private static readonly IBrush _default = Brushes.Transparent;
     private static readonly IBrush _info = Brush.Parse("#2E5FC9");
-    private static readonly IBrush _debug = Brush.Parse("#E3BA5B");
+    private static readonly IBrush _debug = Brush.Parse("#9477ED");
     private static readonly IBrush _warning = Brush.Parse("#C9962E");
     private static readonly IBrush _error = Brush.Parse("#C9402E");
 
