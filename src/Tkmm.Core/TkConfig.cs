@@ -10,6 +10,8 @@ namespace Tkmm.Core;
 
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
+    public const string DEFAULT_GAME_VERSION = "Any";
+    
     [JsonIgnore]
     public override string Name => "totk";
     
@@ -20,6 +22,14 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             File.Delete(LocalPath);
         }
     }
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Preferred Game Version",
+        Description = "The game version to look for when reading the configured SD card if multiple versions are found.",
+        Group = "Game Dump")]
+    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
+    private string _preferredGameVersion = DEFAULT_GAME_VERSION;
     
     [ObservableProperty]
     [property: Config(
