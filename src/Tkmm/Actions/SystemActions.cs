@@ -1,12 +1,11 @@
 using System.Diagnostics;
 using Avalonia.Controls.Notifications;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using AvaMark;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
-using Markdown.Avalonia.Full;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Tkmm.Core;
@@ -30,18 +29,11 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         contents = contents.Replace("@@version@@", App.Version);
 
-        Uri markdownStylePath = new("avares://Tkmm/Styles/Markdown.axaml");
-
         TaskDialog dialog = new() {
             XamlRoot = App.XamlRoot,
             Title = "About",
-            Content = new MarkdownScrollViewer {
-                Markdown = contents,
-                Styles = {
-                    new StyleInclude(markdownStylePath) {
-                        Source = markdownStylePath
-                    }
-                }
+            Content = new MarkdownViewer {
+                Markdown = contents
             },
             Buttons = [
                 TaskDialogButton.OKButton

@@ -7,7 +7,7 @@
              xmlns:fa="https://github.com/projektanker/icons.avalonia"
              xmlns:converters="clr-namespace:Tkmm.Converters"
              xmlns:tkm="using:TkSharp.Core.Models"
-             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+             xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="pages:ProjectsPageViewModel"
              x:Class="Tkmm.Views.Pages.ProjectsPageView">
@@ -296,11 +296,9 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Preview">
-                    <md:MarkdownScrollViewer Markdown="{Binding Project.Mod.Description}">
-                        <md:MarkdownScrollViewer.Styles>
-                            <StyleInclude Source="/Styles/Markdown.axaml" />
-                        </md:MarkdownScrollViewer.Styles>
-                    </md:MarkdownScrollViewer>
+                    <ScrollViewer>
+                        <avaMark:MarkdownViewer Markdown="{Binding Project.Mod.Description}" />
+                    </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Thumbnail">
                     <Border CornerRadius="6"

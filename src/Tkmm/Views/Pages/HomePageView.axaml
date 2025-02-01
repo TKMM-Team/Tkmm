@@ -4,11 +4,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:tk="using:TkSharp.Core.Models"
-             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:desktop="clr-namespace:Tkmm"
-             xmlns:converters="clr-namespace:Tkmm.Converters"
+             xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
@@ -151,12 +150,9 @@
                     </Grid>
 
                     <Grid Grid.Row="2">
-                        <!-- <md:MarkdownScrollViewer -->
-                        <!--     Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}"> -->
-                        <!--     <md:MarkdownScrollViewer.Styles> -->
-                        <!--         <StyleInclude Source="/Styles/Markdown.axaml" /> -->
-                        <!--     </md:MarkdownScrollViewer.Styles> -->
-                        <!-- </md:MarkdownScrollViewer> -->
+                        <ScrollViewer>
+                            <avaMark:MarkdownViewer Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}" />
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
 
@@ -224,7 +220,8 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate x:DataType="{x:Type tk:TkModOption}">
                                                         <ToggleButton Name="OptionToggle"
-                                                                      IsChecked="{Binding IsEnabled}" Padding="3" Margin="5,2.5"
+                                                                      IsChecked="{Binding IsEnabled}" Padding="3"
+                                                                      Margin="5,2.5"
                                                                       HorizontalAlignment="Stretch"
                                                                       IsHitTestVisible="{Binding CanChangeState}"
                                                                       HorizontalContentAlignment="Stretch">
@@ -232,14 +229,15 @@
                                                                 <TextBlock HorizontalAlignment="Stretch"
                                                                            Margin="3,0,0,0"
                                                                            Background="Transparent"
-                                                                           Text="{Binding Name}">
-                                                                </TextBlock>
-                                                                <Button IsHitTestVisible="False" Grid.Column="1" Margin="5,0,0,0" Padding="1"
+                                                                           Text="{Binding Name}" />
+                                                                <Button IsHitTestVisible="False" Grid.Column="1"
+                                                                        Margin="5,0,0,0" Padding="1"
                                                                         IsVisible="{Binding !IsEnabled}"
                                                                         IsEnabled="True">
                                                                     <pi:Icon Value="fa-regular fa-ban" />
                                                                 </Button>
-                                                                <Button IsHitTestVisible="False" Grid.Column="1" Margin="5,0,0,0" Padding="1"
+                                                                <Button IsHitTestVisible="False" Grid.Column="1"
+                                                                        Margin="5,0,0,0" Padding="1"
                                                                         IsVisible="{Binding IsEnabled}"
                                                                         IsEnabled="True">
                                                                     <pi:Icon Value="fa-regular fa-circle-check" />
