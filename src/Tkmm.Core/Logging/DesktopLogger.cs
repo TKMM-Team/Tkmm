@@ -6,13 +6,20 @@ namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
-    private static readonly string _targetLogFile = Path.Combine(AppContext.BaseDirectory, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
+    private static readonly string _logsFolder = Path.Combine(AppContext.BaseDirectory, "Logs");
+    private static readonly string _targetLogFile = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
 
     private readonly string _group;
     private readonly StreamWriter _writer;
 
     public DesktopLogger(string group)
     {
+        Directory.CreateDirectory(_logsFolder);
+        
+        if (Directory.GetFiles(_logsFolder) is [string first, ..] logs && logs.Length > 10) {
+            File.Delete(first);
+        }
+        
         _group = group;
 
         FileStream fs = File.OpenWrite(_targetLogFile);
