@@ -22,9 +22,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     }
     
     [ObservableProperty]
-    private string _gameLanguage = "USen";
-    
-    [ObservableProperty]
     [property: Config(
         Header = "Keys Folder Path",
         Description = "The absolute path to the folder containing your dumped Switch keys.",

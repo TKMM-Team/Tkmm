@@ -85,7 +85,7 @@ public static class TKMM
 #endif
 
         using ITkRom tkRom = GetTkRom();
-        TkMerger merger = new(writer, tkRom, TkConfig.Shared.GameLanguage, ipsOutputPath);
+        TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
 
         long startTime = Stopwatch.GetTimestamp();
 
