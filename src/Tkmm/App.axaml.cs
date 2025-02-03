@@ -170,6 +170,7 @@ public class App : Application
         PageManager.Shared.Register(Page.NetworkSettings, TkLocale.NetworkSettingsPageTitle, new NetworkSettingsPageView(), Symbol.Wifi4, TkLocale.NetworkSettingsPageDesc, isFooter: true);
 #endif
         PageManager.Shared.Register(Page.Settings, TkLocale.SettingsPageTitle, settingsPage, Symbol.Settings, TkLocale.SettingsPageDesc, isFooter: true, isDefault: isValid == false);
+        PageManager.Shared.Register(Page.TotKOptimizer, TkLocale.TotkOptimizer, new TotKOptimizerPageView(), Symbol.Settings, TkLocale.TotkOptimizerDesc);
 
         OnThemeChanged(Config.Shared.Theme);
 
