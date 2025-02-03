@@ -17,6 +17,7 @@ public enum Page
     Logs,
     NetworkSettings,
     Settings,
+    TotKOptimizer,
 }
 
 public partial class PageManager : ObservableObject

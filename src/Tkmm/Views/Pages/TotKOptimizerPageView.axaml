@@ -1,0 +1,38 @@
+<UserControl x:Class="Tkmm.Views.Pages.TotKOptimizerPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
+             x:DataType="pages:TotKOptimizerPageViewModel"
+             xmlns:localization="clr-namespace:Tkmm.Localization">
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="{Binding Source={x:Static localization:TkLocale.TotkOptimizer}}" FontSize="24" />
+            <ItemsControl Items="{Binding Options}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Key}" />
+                            <ContentControl>
+                                <ContentControl.Resources>
+                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
+                                        <ComboBox Items="{Binding Values}" SelectedItem="{Binding SelectedValue}" />
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
+                                        <Slider Minimum="0" Maximum="100" Value="{Binding SelectedValue}" />
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
+                                        <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding Key}" />
+                                    </DataTemplate>
+                                </ContentControl.Resources>
+                                <ContentControl.Content>
+                                    <Binding Path="Class" />
+                                </ContentControl.Content>
+                            </ContentControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl> 
