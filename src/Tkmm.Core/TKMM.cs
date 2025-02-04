@@ -1,3 +1,5 @@
+global using static TkSharp.Core.Common.TkLocalizationInterface;
+
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
