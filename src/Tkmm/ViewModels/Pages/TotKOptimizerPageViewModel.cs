@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -12,7 +13,7 @@ namespace Tkmm.ViewModels.Pages;
 public partial class TotKOptimizerPageViewModel : ObservableObject
 {
     private const string ConfigFilePath = "romfs/UltraCam/maxlastbreath.ini";
-    private readonly Dictionary<string, OptionModel> _options;
+    private readonly ObservableCollection<OptionModel> _options;
 
     public TotKOptimizerPageViewModel()
     {
@@ -20,7 +21,7 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
     }
 
-    public Dictionary<string, OptionModel> Options => _options;
+    public ObservableCollection<OptionModel> Options => _options;
 
     public IRelayCommand GenerateConfigCommand { get; }
 
@@ -28,7 +29,7 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     {
         string outputPath = Path.Combine(TKMM.MergedOutputFolder, ConfigFilePath);
         
-        var selectedOptions = Options.ToDictionary(option => option.Key, option => option.Value.SelectedValue);
+        var selectedOptions = Options.ToDictionary(option => option.DefaultValue, option => option.SelectedValue);
         var configContent = GenerateConfigContent(selectedOptions);
         
         await File.WriteAllTextAsync(outputPath, configContent);
@@ -95,9 +96,9 @@ Weapons = Off
 ";
     }
 
-    private Dictionary<string, OptionModel> LoadOptions()
+    private ObservableCollection<OptionModel> LoadOptions()
     {
-        var options = new Dictionary<string, OptionModel>();
+        var options = new ObservableCollection<OptionModel>();
         string resourcePath = "Tkmm.Resources.Optimizer.Options.json";
 
         using Stream? stream = typeof(TotKOptimizerPageViewModel).Assembly.GetManifestResourceStream(resourcePath);
@@ -115,7 +116,7 @@ Weapons = Off
             var defaultValue = option.Value.GetProperty("Default").GetString();
             var values = option.Value.GetProperty("Values").EnumerateArray().Select(v => v.GetString()).ToList();
             var classType = option.Value.GetProperty("Class").GetString();
-            options[option.Name] = new OptionModel { DefaultValue = defaultValue, Values = values, SelectedValue = defaultValue, Class = classType };
+            options.Add(new OptionModel { DefaultValue = defaultValue, Values = values, SelectedValue = defaultValue, Class = classType });
         }
 
         return options;
