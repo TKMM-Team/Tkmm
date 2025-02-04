@@ -1804,6 +1804,28 @@
       "zh_CN": "",
       "zh_TW": ""
     },
+    "WizDumpPage_SdCardFolderField_Info": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "* If the base game or update is missing from your SD card, add the missing files in the fields below.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
     "WizDumpPage_OptionalGameUpdateFileField_Description": {
       "ar_SA": "",
       "de_DE": "",
