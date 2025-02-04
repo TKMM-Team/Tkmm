@@ -96,6 +96,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
         
         return TkExtensibleRomProviderBuilder.Create(checksums)
+            .WithPreferredVersion(() => PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPath)
             .WithSdCard(() => SdCardRootPath)
