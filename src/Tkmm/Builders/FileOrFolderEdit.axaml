@@ -1,0 +1,45 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Tkmm.Builders"
+        xmlns:markup="clr-namespace:Tkmm.Markup"
+        xmlns:fa="https://github.com/projektanker/icons.avalonia"
+        xmlns:converters="clr-namespace:Tkmm.Converters">
+    <Design.PreviewWith>
+        <controls:FileOrFolderEdit />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|FileOrFolderEdit">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto,Auto" VerticalAlignment="Top">
+                    <TextBox
+                        TextWrapping="NoWrap"
+                        Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static converters:FileOrFolderToTextConverter.Instance}}"
+                        VerticalAlignment="Top" />
+                    <Button Grid.Column="1"
+                            Width="32"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Padding="0"
+                            Margin="5,0,0,0"
+                            ToolTip.Tip="{markup:Locale Tip_BrowseFile}"
+                            Command="{Binding OpenFileCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                        <fa:Icon Value="fa-regular fa-file" />
+                    </Button>
+                    <Button Grid.Column="2"
+                            Width="32"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Padding="0"
+                            ToolTip.Tip="{markup:Locale Tip_BrowseFolder}"
+                            Command="{Binding OpenFolderCommand, RelativeSource={RelativeSource TemplatedParent}}">
+                        <fa:Icon Value="fa-regular fa-folder-open" />
+                    </Button>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
