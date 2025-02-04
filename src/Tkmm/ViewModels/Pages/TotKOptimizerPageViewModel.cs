@@ -4,34 +4,33 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Tkmm.Core;
-using System.Collections.ObjectModel;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class TotKOptimizerPageViewModel : ObservableObject
 {
     private const string ConfigFilePath = "romfs/UltraCam/maxlastbreath.ini";
-    private readonly Dictionary<string, string> _options;
-    public ObservableCollection<OptionModel> Options { get; set; }
+    private readonly Dictionary<string, OptionModel> _options;
 
     public TotKOptimizerPageViewModel()
     {
         _options = LoadOptions();
-        Options = new ObservableCollection<OptionModel>();
-        LoadOptions();
+        GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
     }
 
-    public Dictionary<string, string> Options => _options;
+    public Dictionary<string, OptionModel> Options => _options;
 
-    public async Task GenerateConfigFile(Dictionary<string, string> selectedOptions)
+    public IRelayCommand GenerateConfigCommand { get; }
+
+    public async Task GenerateConfigFile()
     {
         string outputPath = Path.Combine(TKMM.MergedOutputFolder, ConfigFilePath);
         
-        // Generate the configuration content based on selected options
+        var selectedOptions = Options.ToDictionary(option => option.Key, option => option.Value.SelectedValue);
         var configContent = GenerateConfigContent(selectedOptions);
         
-        // Write to the file
         await File.WriteAllTextAsync(outputPath, configContent);
     }
 
@@ -96,10 +95,10 @@ Weapons = Off
 ";
     }
 
-    private Dictionary<string, string> LoadOptions()
+    private Dictionary<string, OptionModel> LoadOptions()
     {
-        var options = new Dictionary<string, string>();
-        string resourcePath = "Tkmm.Resources.Optimizer.Options.json"; // Path to the Options.json file
+        var options = new Dictionary<string, OptionModel>();
+        string resourcePath = "Tkmm.Resources.Optimizer.Options.json";
 
         using Stream? stream = typeof(TotKOptimizerPageViewModel).Assembly.GetManifestResourceStream(resourcePath);
         if (stream is null)
@@ -113,17 +112,20 @@ Weapons = Off
 
         foreach (var option in optionsData.EnumerateObject())
         {
-            options[option.Name] = option.Value.GetProperty("Default").GetString();
+            var defaultValue = option.Value.GetProperty("Default").GetString();
+            var values = option.Value.GetProperty("Values").EnumerateArray().Select(v => v.GetString()).ToList();
+            var classType = option.Value.GetProperty("Class").GetString();
+            options[option.Name] = new OptionModel { DefaultValue = defaultValue, Values = values, SelectedValue = defaultValue, Class = classType };
         }
 
         return options;
     }
+}
 
-    public class OptionModel
-    {
-        public string Key { get; set; }
-        public string Class { get; set; }
-        public List<string> Values { get; set; }
-        public string SelectedValue { get; set; }
-    }
+public class OptionModel
+{
+    public string DefaultValue { get; set; }
+    public List<string> Values { get; set; }
+    public string SelectedValue { get; set; }
+    public string Class { get; set; }
 }
