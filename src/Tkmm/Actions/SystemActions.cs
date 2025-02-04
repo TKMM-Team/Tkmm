@@ -55,30 +55,26 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }
     }
 
-    [RelayCommand]
-    public static Task CheckForUpdates(CancellationToken ct = default)
-    {
-        return CheckForUpdates(isAutoCheck: true, ct);
-    }
-
-    public static async Task CheckForUpdates(bool isAutoCheck = false, CancellationToken ct = default)
+    public static async Task CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
         if (!OperatingSystem.IsWindows()) {
-            if (isAutoCheck) return;
+            if (!isUserInvoked) return;
 
             await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
         }
 
         try {
             if (await ApplicationUpdatesHelper.HasAvailableUpdates() is Release release) {
-                if (!isAutoCheck && !OperatingSystem.IsWindows()) {
-                    await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
-                    return;
+                if (!isUserInvoked) {
+                    MessageDialogResult result = await MessageDialog.Show(
+                        TkLocale.System_Popup_UpdateAvailable,
+                        TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
+
+                    if (result is not MessageDialogResult.Yes) {
+                        return;
+                    }
                 }
-                else {
-                    // TODO: Tell user there is an update before requesting a restart (they did not invoke the action)
-                }
-                
+
                 await RequestUpdate(release, ct);
                 return;
             }

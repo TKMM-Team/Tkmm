@@ -70,7 +70,7 @@ public partial class HomePageViewModel : ObservableObject
     public HomePageViewModel()
     {
 #if RELEASE
-        _ = Dispatcher.UIThread.InvokeAsync(async () => await SystemActions.CheckForUpdates(isAutoCheck: false));
+        _ = Dispatcher.UIThread.InvokeAsync(async () => await SystemActions.CheckForUpdates(isUserInvoked: false));
 #endif
     }
 }
