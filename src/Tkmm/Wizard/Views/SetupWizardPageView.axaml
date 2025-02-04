@@ -2,11 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:wiz="clr-namespace:Tkmm.Wizard2"
-             xmlns:ext="clr-namespace:Tkmm.Markup"
-             xmlns:wizard="clr-namespace:Tkmm.Wizard"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:wiz="using:Tkmm.Wizard"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="wizard:SetupWizardPage"
+             x:DataType="wiz:SetupWizardPage"
              x:Class="Tkmm.Wizard.Views.SetupWizardPageView">
     <Grid RowDefinitions="*,Auto" Margin="60">
         <StackPanel VerticalAlignment="Center"
@@ -19,7 +18,7 @@
             <ContentPresenter Content="{Binding}"
                               TextWrapping="WrapWithOverflow">
                 <ContentPresenter.DataTemplates>
-                    <DataTemplate DataType="{x:Type wizard:SetupWizardPage}">
+                    <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
                         <ContentControl Content="{Binding Content}" />
                     </DataTemplate>
                 </ContentPresenter.DataTemplates>
