@@ -23,6 +23,13 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     }
 
     public ObservableCollection<OptionModel> Options => _options;
+
+    // Computed properties that filter options based on Section
+    public IEnumerable<OptionModel> MainOptions =>
+        Options.Where(o => o.Section?.ToLowerInvariant() == "main");
+    public IEnumerable<OptionModel> ExtrasOptions =>
+        Options.Where(o => o.Section?.ToLowerInvariant() == "extra");
+
     public IRelayCommand GenerateConfigCommand { get; }
 
     public async Task GenerateConfigFile()
@@ -113,9 +120,10 @@ Weapons = Off
 
         foreach (var option in optionsData.EnumerateObject())
         {
-            // Read the human-readable Name from JSON.
+            // Read the human-readable Name and the section from JSON.
             string name = option.Value.GetProperty("Name").GetString();
             string classType = option.Value.GetProperty("Class").GetString();
+            string section = option.Value.GetProperty("Section").GetString();
 
             // Get the "Default" JSON element.
             JsonElement defaultElem = option.Value.GetProperty("Default");
@@ -123,7 +131,8 @@ Weapons = Off
 
             // Load values list if defined.
             List<string> values;
-            if (option.Value.TryGetProperty("Values", out JsonElement valuesElem) && valuesElem.ValueKind == JsonValueKind.Array)
+            if (option.Value.TryGetProperty("Values", out JsonElement valuesElem) &&
+                valuesElem.ValueKind == JsonValueKind.Array)
             {
                 values = valuesElem.EnumerateArray().Select(v => v.ToString()).ToList();
             }
@@ -136,7 +145,8 @@ Weapons = Off
             string selectedValue = defaultValue;
             if (classType == "dropdown")
             {
-                if (defaultElem.ValueKind == JsonValueKind.Number && int.TryParse(defaultElem.GetRawText(), out int index))
+                if (defaultElem.ValueKind == JsonValueKind.Number &&
+                    int.TryParse(defaultElem.GetRawText(), out int index))
                 {
                     if (index >= 0 && index < values.Count)
                     {
@@ -149,13 +159,23 @@ Weapons = Off
                 selectedValue = defaultValue;
             }
 
+            // Read the Increments property if available; default to 1.0 if not.
+            double increments = 1.0;
+            if (option.Value.TryGetProperty("Increments", out JsonElement incElem) &&
+                incElem.ValueKind == JsonValueKind.Number)
+            {
+                increments = incElem.GetDouble();
+            }
+
             options.Add(new OptionModel
             {
                 Name = name,
                 DefaultValue = defaultValue,
                 Values = values,
                 SelectedValue = selectedValue,
-                Class = classType
+                Class = classType,
+                Section = section,
+                Increments = increments
             });
         }
 
@@ -177,4 +197,6 @@ public class OptionModel : ObservableObject
     }
 
     public string Class { get; set; }
+    public string Section { get; set; }
+    public double Increments { get; set; }
 }
