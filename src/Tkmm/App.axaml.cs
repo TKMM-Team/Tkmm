@@ -106,6 +106,8 @@ public class App : Application
             DataContext = ShellViewModel.Shared
         };
 
+        shellView.InitializeWizard();
+        
         shellView.Closed += async (_, _) => { await SystemActions.Instance.SoftClose(); };
 
         XamlRoot = shellView;
