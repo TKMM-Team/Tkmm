@@ -3,43 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:vm="clr-namespace:Tkmm.ViewModels.Pages"
-             xmlns:localization="clr-namespace:Tkmm.Localization"
              xmlns:conv="clr-namespace:Tkmm.Converters"
              x:DataType="pages:TotKOptimizerPageViewModel">
-    <UserControl.Resources>
-        <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
-    </UserControl.Resources>
-    <ScrollViewer>
-        <StackPanel>
-            <TextBlock Text="{Binding Source={x:Static localization:TkLocale.TotkOptimizer}}" FontSize="24" />
-            <ItemsControl ItemsSource="{Binding Options}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:OptionModel">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding DefaultValue}" />
-                            <ContentControl>
-                                <ContentControl.Resources>
-                                    <ResourceDictionary>
-                                        <DataTemplate x:Key="dropdownTemplate" x:DataType="vm:OptionModel">
-                                            <ComboBox ItemsSource="{Binding Values}" SelectedItem="{Binding SelectedValue}" />
-                                        </DataTemplate>
-                                        <DataTemplate x:Key="scaleTemplate" x:DataType="vm:OptionModel">
-                                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedValue}" />
-                                        </DataTemplate>
-                                        <DataTemplate x:Key="boolTemplate" x:DataType="vm:OptionModel">
-                                            <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding DefaultValue}" />
-                                        </DataTemplate>
-                                    </ResourceDictionary>
-                                </ContentControl.Resources>
-                                <ContentControl.Content>
-                                    <Binding Path="Class" Converter="{StaticResource ClassToTemplateConverter}" />
-                                </ContentControl.Content>
-                            </ContentControl>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" />
+  <UserControl.Resources>
+    <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
+    <conv:DoubleValueConverter x:Key="DoubleConverter"/>
+    <conv:BooleanValueConverter x:Key="BooleanConverter"/>
+    <ResourceDictionary x:Key="LocalTemplates">
+      <DataTemplate x:Key="DropdownTemplate" x:DataType="vm:OptionModel">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <TextBlock Text="{Binding Name}" Width="150"/>
+          <ComboBox ItemsSource="{Binding Values}"
+                    SelectedItem="{Binding SelectedValue, Mode=TwoWay}"
+                    Width="150"/>
         </StackPanel>
-    </ScrollViewer>
-</UserControl> 
+      </DataTemplate>
+      <DataTemplate x:Key="SliderTemplate" x:DataType="vm:OptionModel">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <TextBlock Text="{Binding Name}" Width="150"/>
+          <Slider Minimum="{Binding Values[0], Converter={StaticResource DoubleConverter}}"
+                  Maximum="{Binding Values[1], Converter={StaticResource DoubleConverter}}"
+                  Value="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource DoubleConverter}}"
+                  Width="150"/>
+          <TextBlock Text="{Binding SelectedValue, Converter={StaticResource DoubleConverter}}"
+                     Width="50" VerticalAlignment="Center"/>
+        </StackPanel>
+      </DataTemplate>
+      <DataTemplate x:Key="CheckboxTemplate" x:DataType="vm:OptionModel">
+        <CheckBox Content="{Binding Name}"
+                  IsChecked="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource BooleanConverter}}"/>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <ScrollViewer>
+    <StackPanel>
+      <TextBlock Text="TOTK Optimizer" FontSize="24" Margin="0,0,0,10"/>
+      <ItemsControl ItemsSource="{Binding Options}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:OptionModel">
+            <ContentControl Content="{Binding}"
+                            ContentTemplate="{Binding Class,
+                                                   Converter={StaticResource ClassToTemplateConverter},
+                                                   ConverterParameter={StaticResource LocalTemplates}}"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" Margin="0,10,0,0"/>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

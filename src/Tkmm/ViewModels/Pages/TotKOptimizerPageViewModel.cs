@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -22,15 +23,14 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     }
 
     public ObservableCollection<OptionModel> Options => _options;
-
     public IRelayCommand GenerateConfigCommand { get; }
 
     public async Task GenerateConfigFile()
     {
         string outputPath = Path.Combine(TKMM.MergedOutputFolder, ConfigFilePath);
         
-        var selectedOptions = Options.ToDictionary(option => option.DefaultValue, option => option.SelectedValue);
-        var configContent = GenerateConfigContent(selectedOptions);
+        var selectedOptions = Options.ToDictionary(option => option.Name, option => option.SelectedValue);
+        string configContent = GenerateConfigContent(selectedOptions);
         
         await File.WriteAllTextAsync(outputPath, configContent);
     }
@@ -39,54 +39,54 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     {
         return $@"
 [Console]
-connect = {selectedOptions["totk console"]}
+connect = {selectedOptions["Console IP"]}
 
 [Resolution]
-MaxFramerate = {selectedOptions["fps"]}
-EmuScale = {selectedOptions["emu scale"]}
-ShadowResolution = {selectedOptions["shadow resolution"]}
-RenderDistance = {selectedOptions["render distance"]}
-QualityImprovements = {(selectedOptions["quality improvements"] == "true" ? "On" : "Off")}
-RemoveDepthOfField = {(selectedOptions["depthoffield"] == "true" ? "On" : "Off")}
-RemoveLensflare = {(selectedOptions["lensflare"] == "true" ? "On" : "Off")}
-DisableFXAA = {(selectedOptions["fxaa"] == "true" ? "On" : "Off")}
-Width = {selectedOptions["resolution"].Split('x')[0]}
-Height = {selectedOptions["resolution"].Split('x')[1]}
+MaxFramerate = {selectedOptions["FPS"]}
+EmuScale = {selectedOptions["Emulator Scale"]}
+ShadowResolution = {selectedOptions["Shadow Resolution"]}
+RenderDistance = {selectedOptions["Render Distance"]}
+QualityImprovements = {(selectedOptions["Quality Improvements"] == "true" ? "On" : "Off")}
+RemoveDepthOfField = {(selectedOptions["Remove Depth Of Field"] == "true" ? "On" : "Off")}
+RemoveLensflare = {(selectedOptions["Remove Lens flare"] == "true" ? "On" : "Off")}
+DisableFXAA = {(selectedOptions["Disable Fxaa"] == "true" ? "On" : "Off")}
+Width = {selectedOptions["Resolution"].Split('x')[0]}
+Height = {selectedOptions["Resolution"].Split('x')[1]}
 
 [Features]
-MenuFPSLock = {selectedOptions["menu fps"]}
-MovieFPS = {selectedOptions["movie fps"]}
-Fov = {selectedOptions["fov"]}
-TimeSpeed = {selectedOptions["time speed"]}
-DisableFog = {(selectedOptions["fog"] == "true" ? "On" : "Off")}
-IsTimeSlower = {(selectedOptions["slowtime"] == "true" ? "On" : "Off")}
+MenuFPSLock = {selectedOptions["Menu FPS"]}
+MovieFPS = {selectedOptions["Movie FPS"]}
+Fov = {selectedOptions["FOV"]}
+TimeSpeed = {selectedOptions["Time Speed"]}
+DisableFog = {(selectedOptions["Improve Fog"] == "true" ? "On" : "Off")}
+IsTimeSlower = {(selectedOptions["Slow Time"] == "true" ? "On" : "Off")}
 
 [UltraCam]
 FirstPersonFov = 90
-CameraSpeed = 30
-Speed = 5
-AnimationSmoothing = {selectedOptions["ani smoothing"]}
-TriggerWithController = {(selectedOptions["freecam"] == "true" ? "On" : "Off")}
+CameraSpeed = {selectedOptions["Freecam Sensitivity"]}
+Speed = {selectedOptions["Freecam Speed"]}
+AnimationSmoothing = {selectedOptions["Sequence Smoothing"]}
+TriggerWithController = {(selectedOptions["FreeCam"] == "true" ? "On" : "Off")}
 FirstPerson = Off
-AutoHideUI = {(selectedOptions["hide ui"] == "true" ? "On" : "Off")}
-AnimationFadeout = {(selectedOptions["animationfadeout"] == "true" ? "On" : "Off")}
+AutoHideUI = {(selectedOptions["Auto Hide UI in FreeCam"] == "true" ? "On" : "Off")}
+AnimationFadeout = {(selectedOptions["Last Keyframe Fadeout"] == "true" ? "On" : "Off")}
 
 [Gameplay]
-Stick_Vertical_Speed = {selectedOptions["vertical r stick"]}
-Stick_Horizontal_Speed = {selectedOptions["horizontal r stick"]}
+Stick_Vertical_Speed = {selectedOptions["V Camera Sensitivity"]}
+Stick_Horizontal_Speed = {selectedOptions["H Camera Sensitivity"]}
 StaminaBar = Off
 
 [Heaps]
-RSDB = {selectedOptions["rsdbheap"]}
-GameTextures = {selectedOptions["gametexturesheap"]}
+RSDB = {selectedOptions["RSDB Heap size"]}
+GameTextures = {selectedOptions["Textures Heap size"]}
 
 [Handheld]
-Width = {selectedOptions["handheldwidth"]}
-Height = {selectedOptions["handheldheight"]}
-OverrideHandheld_Resolution = {(selectedOptions["handheldresolution"] == "true" ? "On" : "Off")}
+Width = {selectedOptions["Handheld Width"]}
+Height = {selectedOptions["Handheld Height"]}
+OverrideHandheld_Resolution = {(selectedOptions["Override Handheld Res"] == "true" ? "On" : "Off")}
 
 [Benchmark]
-Benchmark = {selectedOptions["benchmark"]}
+Benchmark = {selectedOptions["Benchmark Selection"]}
 
 [Randomizer]
 IsEnabled = Off
@@ -113,8 +113,15 @@ Weapons = Off
 
         foreach (var option in optionsData.EnumerateObject())
         {
-            var defaultValue = option.Value.GetProperty("Default").ToString();
+            // Read the human-readable Name from JSON.
+            string name = option.Value.GetProperty("Name").GetString();
+            string classType = option.Value.GetProperty("Class").GetString();
 
+            // Get the "Default" JSON element.
+            JsonElement defaultElem = option.Value.GetProperty("Default");
+            string defaultValue = defaultElem.ToString();
+
+            // Load values list if defined.
             List<string> values;
             if (option.Value.TryGetProperty("Values", out JsonElement valuesElem) && valuesElem.ValueKind == JsonValueKind.Array)
             {
@@ -125,13 +132,29 @@ Weapons = Off
                 values = new List<string>();
             }
 
-            var classType = option.Value.GetProperty("Class").GetString();
+            // For dropdown types, treat the default as an index.
+            string selectedValue = defaultValue;
+            if (classType == "dropdown")
+            {
+                if (defaultElem.ValueKind == JsonValueKind.Number && int.TryParse(defaultElem.GetRawText(), out int index))
+                {
+                    if (index >= 0 && index < values.Count)
+                    {
+                        selectedValue = values[index];
+                    }
+                }
+            }
+            else
+            {
+                selectedValue = defaultValue;
+            }
 
             options.Add(new OptionModel
             {
+                Name = name,
                 DefaultValue = defaultValue,
                 Values = values,
-                SelectedValue = defaultValue,
+                SelectedValue = selectedValue,
                 Class = classType
             });
         }
@@ -140,10 +163,18 @@ Weapons = Off
     }
 }
 
-public class OptionModel
+public class OptionModel : ObservableObject
 {
+    public string Name { get; set; }
     public string DefaultValue { get; set; }
     public List<string> Values { get; set; }
-    public string SelectedValue { get; set; }
+
+    private string selectedValue;
+    public string SelectedValue
+    {
+        get => selectedValue;
+        set => SetProperty(ref selectedValue, value);
+    }
+
     public string Class { get; set; }
 }
