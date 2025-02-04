@@ -113,10 +113,27 @@ Weapons = Off
 
         foreach (var option in optionsData.EnumerateObject())
         {
-            var defaultValue = option.Value.GetProperty("Default").GetString();
-            var values = option.Value.GetProperty("Values").EnumerateArray().Select(v => v.GetString()).ToList();
+            var defaultValue = option.Value.GetProperty("Default").ToString();
+
+            List<string> values;
+            if (option.Value.TryGetProperty("Values", out JsonElement valuesElem) && valuesElem.ValueKind == JsonValueKind.Array)
+            {
+                values = valuesElem.EnumerateArray().Select(v => v.ToString()).ToList();
+            }
+            else
+            {
+                values = new List<string>();
+            }
+
             var classType = option.Value.GetProperty("Class").GetString();
-            options.Add(new OptionModel { DefaultValue = defaultValue, Values = values, SelectedValue = defaultValue, Class = classType });
+
+            options.Add(new OptionModel
+            {
+                DefaultValue = defaultValue,
+                Values = values,
+                SelectedValue = defaultValue,
+                Class = classType
+            });
         }
 
         return options;

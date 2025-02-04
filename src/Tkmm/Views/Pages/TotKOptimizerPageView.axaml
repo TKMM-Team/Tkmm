@@ -2,27 +2,34 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
-             x:DataType="pages:TotKOptimizerPageViewModel"
-             xmlns:localization="clr-namespace:Tkmm.Localization">
+             xmlns:vm="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:localization="clr-namespace:Tkmm.Localization"
+             xmlns:conv="clr-namespace:Tkmm.Converters"
+             x:DataType="pages:TotKOptimizerPageViewModel">
+    <UserControl.Resources>
+        <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
+    </UserControl.Resources>
     <ScrollViewer>
         <StackPanel>
             <TextBlock Text="{Binding Source={x:Static localization:TkLocale.TotkOptimizer}}" FontSize="24" />
-            <ItemsControl Items="{Binding Options}">
+            <ItemsControl ItemsSource="{Binding Options}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:OptionModel">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding DefaultValue}" />
                             <ContentControl>
                                 <ContentControl.Resources>
-                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
-                                        <ComboBox Items="{Binding Values}" SelectedItem="{Binding SelectedValue}" />
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
-                                        <Slider Minimum="0" Maximum="100" Value="{Binding SelectedValue}" />
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type pages:OptionModel}">
-                                        <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding DefaultValue}" />
-                                    </DataTemplate>
+                                    <ResourceDictionary>
+                                        <DataTemplate x:Key="dropdownTemplate" x:DataType="vm:OptionModel">
+                                            <ComboBox ItemsSource="{Binding Values}" SelectedItem="{Binding SelectedValue}" />
+                                        </DataTemplate>
+                                        <DataTemplate x:Key="scaleTemplate" x:DataType="vm:OptionModel">
+                                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedValue}" />
+                                        </DataTemplate>
+                                        <DataTemplate x:Key="boolTemplate" x:DataType="vm:OptionModel">
+                                            <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding DefaultValue}" />
+                                        </DataTemplate>
+                                    </ResourceDictionary>
                                 </ContentControl.Resources>
                                 <ContentControl.Content>
                                     <Binding Path="Class" Converter="{StaticResource ClassToTemplateConverter}" />
