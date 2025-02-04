@@ -3,6 +3,8 @@ using Avalonia;
 using System;
 using System.Globalization;
 
+namespace Tkmm.Converters;
+    
 public class ClassToTemplateConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -11,9 +13,9 @@ public class ClassToTemplateConverter : IValueConverter
         {
             return classType switch
             {
-                "dropdown" => Avalonia.Application.Current.Resources["DropdownTemplate"],
-                "scale" => Avalonia.Application.Current.Resources["SliderTemplate"],
-                "bool" => Avalonia.Application.Current.Resources["CheckboxTemplate"],
+                "dropdown" => Application.Current.Resources["DropdownTemplate"],
+                "scale" => Application.Current.Resources["SliderTemplate"],
+                "bool" => Application.Current.Resources["CheckboxTemplate"],
                 _ => null
             };
         }
