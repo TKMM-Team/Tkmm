@@ -54,7 +54,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select base game XCI/NSP")]
     private FileOrFolder _packagedBaseGamePath;
 
-    // TODO: Support version dropdown
     [ObservableProperty]
     [property: Config(
         Header = "Game Update File Path",
@@ -96,7 +95,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
         
         return TkExtensibleRomProviderBuilder.Create(checksums)
-            .WithPreferredVersion(() => PreferredGameVersion)
+            .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPath)
             .WithSdCard(() => SdCardRootPath)
