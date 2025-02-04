@@ -11,7 +11,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Key}" />
+                            <TextBlock Text="{Binding DefaultValue}" />
                             <ContentControl>
                                 <ContentControl.Resources>
                                     <DataTemplate DataType="{x:Type pages:OptionModel}">
@@ -21,11 +21,11 @@
                                         <Slider Minimum="0" Maximum="100" Value="{Binding SelectedValue}" />
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type pages:OptionModel}">
-                                        <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding Key}" />
+                                        <CheckBox IsChecked="{Binding SelectedValue}" Content="{Binding DefaultValue}" />
                                     </DataTemplate>
                                 </ContentControl.Resources>
                                 <ContentControl.Content>
-                                    <Binding Path="Class" />
+                                    <Binding Path="Class" Converter="{StaticResource ClassToTemplateConverter}" />
                                 </ContentControl.Content>
                             </ContentControl>
                         </StackPanel>
