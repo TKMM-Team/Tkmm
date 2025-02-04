@@ -2,15 +2,20 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
-             xmlns:vm="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:conv="clr-namespace:Tkmm.Converters"
+             xmlns:models="clr-namespace:Tkmm.Models"
              x:DataType="pages:TotKOptimizerPageViewModel">
+             
+  <UserControl.DataContext>
+    <pages:TotKOptimizerPageViewModel/>
+  </UserControl.DataContext>
+
   <UserControl.Resources>
     <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
     <conv:DoubleValueConverter x:Key="DoubleConverter"/>
     <conv:BooleanValueConverter x:Key="BooleanConverter"/>
     <ResourceDictionary x:Key="LocalTemplates">
-      <DataTemplate x:Key="DropdownTemplate" x:DataType="vm:OptionModel">
+      <DataTemplate x:Key="DropdownTemplate" x:DataType="models:OptionModel">
         <StackPanel Orientation="Horizontal" Spacing="10">
           <TextBlock Text="{Binding Name}" Width="150"/>
           <ComboBox ItemsSource="{Binding DisplayValues}"
@@ -18,7 +23,7 @@
                     Width="150"/>
         </StackPanel>
       </DataTemplate>
-      <DataTemplate x:Key="SliderTemplate" x:DataType="vm:OptionModel">
+      <DataTemplate x:Key="SliderTemplate" x:DataType="models:OptionModel">
         <StackPanel Orientation="Horizontal" Spacing="10">
           <TextBlock Text="{Binding Name}" Width="150"/>
           <Slider Minimum="{Binding Values[0], Converter={StaticResource DoubleConverter}}"
@@ -31,7 +36,7 @@
                      Width="50" VerticalAlignment="Center"/>
         </StackPanel>
       </DataTemplate>
-      <DataTemplate x:Key="CheckboxTemplate" x:DataType="vm:OptionModel">
+      <DataTemplate x:Key="CheckboxTemplate" x:DataType="models:OptionModel">
         <CheckBox Content="{Binding Name}"
                   IsChecked="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource BooleanConverter}}"/>
       </DataTemplate>
@@ -49,7 +54,7 @@
         <TextBlock Grid.Row="0" Grid.Column="1" Text="Extras" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" Margin="0,0,0,10"/>
         <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MainOptions}">
           <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="vm:OptionModel">
+            <DataTemplate x:DataType="models:OptionModel">
               <ContentControl Content="{Binding}"
                               ContentTemplate="{Binding Class,
                                                      Converter={StaticResource ClassToTemplateConverter},
@@ -59,7 +64,7 @@
         </ItemsControl>
         <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ExtrasOptions}">
           <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="vm:OptionModel">
+            <DataTemplate x:DataType="models:OptionModel">
               <ContentControl Content="{Binding}"
                               ContentTemplate="{Binding Class,
                                                      Converter={StaticResource ClassToTemplateConverter},
