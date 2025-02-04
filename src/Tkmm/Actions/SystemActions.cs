@@ -71,7 +71,11 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         try {
             if (await ApplicationUpdatesHelper.HasAvailableUpdates() is Release release) {
-                if (isAutoCheck) {
+                if (!isAutoCheck && !OperatingSystem.IsWindows()) {
+                    await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
+                    return;
+                }
+                else {
                     // TODO: Tell user there is an update before requesting a restart (they did not invoke the action)
                 }
                 
@@ -101,10 +105,9 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     private static async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
     {
         if (!OperatingSystem.IsWindows()) {
-            await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
             return;
         }
-
+        
         ContentDialog dialog = new() {
             Title = "Update available. Proceed with update?",
             Content = "Your current session will be saved and closed, are you sure you wish to proceed?",
