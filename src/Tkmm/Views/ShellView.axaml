@@ -33,7 +33,11 @@
         </Transitions>
     </uiw:AppWindow.Transitions>-->
     <Grid>
-        <Grid IsVisible="{Binding IsFirstTimeSetup}" ColumnDefinitions="*,Auto,Auto">
+        <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
+        
+        <Grid IsVisible="{Binding IsFirstTimeSetup}"
+              VerticalAlignment="Top"
+              ColumnDefinitions="*,Auto,Auto">
             <Menu Name="WizPowerOptionsMenu" IsVisible="False"
                   Grid.Column="1" />
             <StackPanel Name="WizNxBatteryStatusPanel"
@@ -51,8 +55,6 @@
                          Margin="0,0,2,0" />
             </StackPanel>
         </Grid>
-        
-        <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
         
         <Grid Background="Transparent"
               Classes="InstallModDropTarget"
