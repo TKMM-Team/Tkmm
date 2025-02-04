@@ -1498,7 +1498,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage0_Title": {
+    "SetupWizard_FirstPage_Title": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1520,7 +1520,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage0_Description": {
+    "SetupWizard_FirstPage_Content": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1542,7 +1542,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage0_Action": {
+    "SetupWizard_FirstPage_Action": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1564,7 +1564,51 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage1_Title": {
+    "SetupWizard_Popup_InvalidEmulatorSelection_Title": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Invalid Selection",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_Popup_InvalidEmulatorSelection_Content": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Please choose one of the options before proceeding.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_EmulatorSelection_Title": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1586,7 +1630,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage1_Option_Ryujinx": {
+    "SetupWizard_EmulatorSelection_RyujinxOption": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1608,7 +1652,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage1_Option_Switch": {
+    "SetupWizard_EmulatorSelection_SwitchOption": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1630,7 +1674,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage1_Option_Other": {
+    "SetupWizard_EmulatorSelection_OtherOption": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1652,29 +1696,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage1_Action_Next": {
-      "ar_SA": "",
-      "de_DE": "",
-      "el_GR": "",
-      "en_US": "Next",
-      "es_ES": "",
-      "fr_FR": "",
-      "he_IL": "",
-      "it_IT": "",
-      "ja_JP": "",
-      "ko_KR": "",
-      "no_NO": "",
-      "pl_PL": "",
-      "pt_BR": "",
-      "ru_RU": "",
-      "sv_SE": "",
-      "th_TH": "",
-      "tr_TR": "",
-      "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
-    },
-    "WizPageRyujinxSetup_Title": {
+    "SetupWizard_RyujinxSetup_Title": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1696,7 +1718,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPageRyujinxSetup_Description": {
+    "SetupWizard_RyujinxSetup_Content": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1718,7 +1740,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPageRyujinxSetup_Action_Start": {
+    "SetupWizard_RyujinxSetup_Action": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1740,7 +1762,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage2_Title": {
+    "SetupWizard_GameDumpConfigPage_Title": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1762,7 +1784,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizPage2_Action_Verify": {
+    "SetupWizard_GameDumpConfigPage_Action": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -2075,6 +2097,182 @@
       "de_DE": "",
       "el_GR": "",
       "en_US": "Browse for folder...",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "Action_Back": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Back",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "Action_Next": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Next",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "RyujinxDataFolderNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "The Ryujinx data folder could not be found. Make sure Ryujinx is open and try again.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "RyujinxConfigNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Configuration files from your Ryujinx installation could not be found.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "RyujinxKeysNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Your Ryujinx installation does not have the required keys installed. Ensure title (title.keys) and production (prod.keys) have been installed.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "EmulatorFilePathNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "The specified emulator '{0}' could not be found.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "EmulatorConfigFileNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "The configuration file for '{0}' could not be found.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "EmulatorKeysNotFound": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Your {0} installation does not have the required keys installed. Ensure title (title.keys) and production (prod.keys) have been installed.",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
