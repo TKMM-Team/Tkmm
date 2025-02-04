@@ -202,7 +202,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
         
-        if (await MessageDialog.Show("Unsaved changes will be lost, would you like to proceed?", "Warning!", MessageDialogButtons.YesNoCancel) is not ContentDialogResult.Primary) {
+        if (await MessageDialog.Show("Unsaved changes will be lost, would you like to proceed?", "Warning!", MessageDialogButtons.YesNoCancel) is not MessageDialogResult.Yes) {
             return;
         }
         

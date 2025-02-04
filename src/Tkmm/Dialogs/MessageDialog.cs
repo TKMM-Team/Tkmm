@@ -10,15 +10,24 @@ public enum MessageDialogButtons
     YesNoCancel
 }
 
+public enum MessageDialogResult
+{
+    None,
+    Ok,
+    Yes,
+    No,
+    Cancel
+}
+
 public static class MessageDialog
 {
-    public static Task<ContentDialogResult> Show(TkLocale content, TkLocale title, MessageDialogButtons buttons = MessageDialogButtons.Ok)
+    public static Task<MessageDialogResult> Show(TkLocale content, TkLocale title, MessageDialogButtons buttons = MessageDialogButtons.Ok)
         => Show(Locale[content], Locale[title], buttons);
     
-    public static Task<ContentDialogResult> Show(object? content, TkLocale title, MessageDialogButtons buttons = MessageDialogButtons.Ok)
+    public static Task<MessageDialogResult> Show(object? content, TkLocale title, MessageDialogButtons buttons = MessageDialogButtons.Ok)
         => Show(content, Locale[title], buttons);
     
-    public static async Task<ContentDialogResult> Show(object? content, string? title = null, MessageDialogButtons buttons = MessageDialogButtons.Ok)
+    public static async Task<MessageDialogResult> Show(object? content, string? title = null, MessageDialogButtons buttons = MessageDialogButtons.Ok)
     {
         ContentDialog dialog = new() {
             PrimaryButtonText = buttons switch {
@@ -43,6 +52,13 @@ public static class MessageDialog
             Content = content
         };
         
-        return await dialog.ShowAsync();
+        return (await dialog.ShowAsync(), buttons) switch {
+            (ContentDialogResult.Primary, MessageDialogButtons.Ok or MessageDialogButtons.OkCancel) => MessageDialogResult.Ok,
+            (ContentDialogResult.Primary, MessageDialogButtons.YesNo or MessageDialogButtons.YesNoCancel) => MessageDialogResult.Yes,
+            (ContentDialogResult.Secondary, MessageDialogButtons.YesNoCancel) => MessageDialogResult.No,
+            (ContentDialogResult.None, MessageDialogButtons.YesNo) => MessageDialogResult.No,
+            (ContentDialogResult.None, MessageDialogButtons.YesNoCancel) => MessageDialogResult.Cancel,
+            (_, _) => MessageDialogResult.None
+        };
     }
 }

@@ -160,10 +160,10 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         try {
             string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
 
-            ContentDialogResult canDeleteResult = await MessageDialog.Show(
+            MessageDialogResult canDeleteResult = await MessageDialog.Show(
                 "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
             
-            if (canDeleteResult is not ContentDialogResult.Primary) {
+            if (canDeleteResult is not MessageDialogResult.Yes) {
                 return;
             }
             
