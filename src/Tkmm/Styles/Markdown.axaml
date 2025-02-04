@@ -1,16 +1,19 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:avedit="https://github.com/avaloniaui/avaloniaedit"
-        xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
-        xmlns:amc="clr-namespace:AvaMark.Controls;assembly=AvaMark">
+        xmlns:avm="using:AvaMark"
+        xmlns:amc="using:AvaMark.Controls">
     <Design.PreviewWith>
-        <avaMark:MarkdownViewer Width="1000"
+        <avm:MarkdownViewer Width="1000"
                                 Height="1000"
                                 Markdown="**Test** &#x0A; > Test `Test`"
                                 Margin="15"/>
     </Design.PreviewWith>
     
     <StyleInclude Source="avares://AvaMark/Styles/Fluent.axaml" />
+    
+    <Style Selector="Border.hr">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+    </Style>
     
     <Style Selector="amc|InlineCodeBlock">
         <Setter Property="FontFamily" Value="{StaticResource UbuntuMono}" />
