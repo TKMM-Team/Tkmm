@@ -29,7 +29,7 @@ public static class TkEmulatorHelper
         
         TkConfig.Shared.KeysFolderPath = keysFolderPath;
 
-        if (GetGameFolderPaths(emulatorDataFolderPath) is not { Count: > 0 } gameFolderPaths) {
+        if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
             return false;
         }
 
