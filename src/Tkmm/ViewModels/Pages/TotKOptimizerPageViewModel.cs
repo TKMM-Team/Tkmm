@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -23,8 +24,6 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     }
 
     public ObservableCollection<OptionModel> Options => _options;
-
-    // Computed properties that filter options based on Section
     public IEnumerable<OptionModel> MainOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "main");
     public IEnumerable<OptionModel> ExtrasOptions =>
@@ -36,71 +35,83 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     {
         string outputPath = Path.Combine(TKMM.MergedOutputFolder, ConfigFilePath);
         
-        var selectedOptions = Options.ToDictionary(option => option.Name, option => option.SelectedValue);
-        string configContent = GenerateConfigContent(selectedOptions);
+        string? directory = Path.GetDirectoryName(outputPath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+        
+        string configContent = GenerateConfigContent();
         
         await File.WriteAllTextAsync(outputPath, configContent);
     }
 
-    private string GenerateConfigContent(Dictionary<string, string> selectedOptions)
+    private string GenerateConfigContent()
     {
-        return $@"
-[Console]
-connect = {selectedOptions["Console IP"]}
+        var sectionLines = new Dictionary<string, List<string>>();
 
-[Resolution]
-MaxFramerate = {selectedOptions["FPS"]}
-EmuScale = {selectedOptions["Emulator Scale"]}
-ShadowResolution = {selectedOptions["Shadow Resolution"]}
-RenderDistance = {selectedOptions["Render Distance"]}
-QualityImprovements = {(selectedOptions["Quality Improvements"] == "true" ? "On" : "Off")}
-RemoveDepthOfField = {(selectedOptions["Remove Depth Of Field"] == "true" ? "On" : "Off")}
-RemoveLensflare = {(selectedOptions["Remove Lens flare"] == "true" ? "On" : "Off")}
-DisableFXAA = {(selectedOptions["Disable Fxaa"] == "true" ? "On" : "Off")}
-Width = {selectedOptions["Resolution"].Split('x')[0]}
-Height = {selectedOptions["Resolution"].Split('x')[1]}
+        foreach (var option in Options)
+        {
+            if (option.ConfigClass == null || option.ConfigClass.Count < 2)
+                continue;
 
-[Features]
-MenuFPSLock = {selectedOptions["Menu FPS"]}
-MovieFPS = {selectedOptions["Movie FPS"]}
-Fov = {selectedOptions["FOV"]}
-TimeSpeed = {selectedOptions["Time Speed"]}
-DisableFog = {(selectedOptions["Improve Fog"] == "true" ? "On" : "Off")}
-IsTimeSlower = {(selectedOptions["Slow Time"] == "true" ? "On" : "Off")}
+            string section = option.ConfigClass[0];
+            if (!sectionLines.ContainsKey(section))
+            {
+                sectionLines[section] = new List<string>();
+            }
 
-[UltraCam]
-FirstPersonFov = 90
-CameraSpeed = {selectedOptions["Freecam Sensitivity"]}
-Speed = {selectedOptions["Freecam Speed"]}
-AnimationSmoothing = {selectedOptions["Sequence Smoothing"]}
-TriggerWithController = {(selectedOptions["FreeCam"] == "true" ? "On" : "Off")}
-FirstPerson = Off
-AutoHideUI = {(selectedOptions["Auto Hide UI in FreeCam"] == "true" ? "On" : "Off")}
-AnimationFadeout = {(selectedOptions["Last Keyframe Fadeout"] == "true" ? "On" : "Off")}
+            if (option.ConfigClass.Count == 2)
+            {
+                string key = option.ConfigClass[1];
+                string value = FormatOptionValue(option);
+                sectionLines[section].Add($"{key} = {value}");
+            }
+            else if (option.ConfigClass.Count == 3)
+            {
+                string key1 = option.ConfigClass[1];
+                string key2 = option.ConfigClass[2];
+                if (option.SelectedValue.Contains("x"))
+                {
+                    var parts = option.SelectedValue.Split('x');
+                    if (parts.Length >= 2)
+                    {
+                        sectionLines[section].Add($"{key1} = {parts[0]}");
+                        sectionLines[section].Add($"{key2} = {parts[1]}");
+                    }
+                }
+                else
+                {
+                    sectionLines[section].Add($"{key1} = {option.SelectedValue}");
+                }
+            }
+        }
 
-[Gameplay]
-Stick_Vertical_Speed = {selectedOptions["V Camera Sensitivity"]}
-Stick_Horizontal_Speed = {selectedOptions["H Camera Sensitivity"]}
-StaminaBar = Off
+        var sb = new StringBuilder();
+        foreach (var pair in sectionLines)
+        {
+            sb.AppendLine($"[{pair.Key}]");
+            foreach (var line in pair.Value)
+            {
+                sb.AppendLine(line);
+            }
 
-[Heaps]
-RSDB = {selectedOptions["RSDB Heap size"]}
-GameTextures = {selectedOptions["Textures Heap size"]}
+            sb.AppendLine();
+        }
 
-[Handheld]
-Width = {selectedOptions["Handheld Width"]}
-Height = {selectedOptions["Handheld Height"]}
-OverrideHandheld_Resolution = {(selectedOptions["Override Handheld Res"] == "true" ? "On" : "Off")}
+        return sb.ToString();
+    }
 
-[Benchmark]
-Benchmark = {selectedOptions["Benchmark Selection"]}
-
-[Randomizer]
-IsEnabled = Off
-Enemies = Off
-Items = Off
-Weapons = Off
-";
+    private string FormatOptionValue(OptionModel option)
+    {
+        if (option.Class.ToLowerInvariant() == "bool")
+        {
+            return option.SelectedValue.ToLowerInvariant() == "true" ? "On" : "Off";
+        }
+        else
+        {
+            return option.SelectedValue;
+        }
     }
 
     private ObservableCollection<OptionModel> LoadOptions()
@@ -120,16 +131,21 @@ Weapons = Off
 
         foreach (var option in optionsData.EnumerateObject())
         {
-            // Read the human-readable Name and the section from JSON.
             string name = option.Value.GetProperty("Name").GetString();
             string classType = option.Value.GetProperty("Class").GetString();
             string section = option.Value.GetProperty("Section").GetString();
 
-            // Get the "Default" JSON element.
             JsonElement defaultElem = option.Value.GetProperty("Default");
-            string defaultValue = defaultElem.ToString();
+            string defaultValue;
+            if (defaultElem.ValueKind == JsonValueKind.Number)
+            {
+                defaultValue = defaultElem.GetDouble().ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                defaultValue = defaultElem.ToString();
+            }
 
-            // Load values list if defined.
             List<string> values;
             if (option.Value.TryGetProperty("Values", out JsonElement valuesElem) &&
                 valuesElem.ValueKind == JsonValueKind.Array)
@@ -141,12 +157,10 @@ Weapons = Off
                 values = new List<string>();
             }
 
-            // For dropdown types, treat the default as an index.
             string selectedValue = defaultValue;
             if (classType == "dropdown")
             {
-                if (defaultElem.ValueKind == JsonValueKind.Number &&
-                    int.TryParse(defaultElem.GetRawText(), out int index))
+                if (defaultElem.ValueKind == JsonValueKind.Number && int.TryParse(defaultElem.GetRawText(), out int index))
                 {
                     if (index >= 0 && index < values.Count)
                     {
@@ -159,12 +173,18 @@ Weapons = Off
                 selectedValue = defaultValue;
             }
 
-            // Read the Increments property if available; default to 1.0 if not.
             double increments = 1.0;
             if (option.Value.TryGetProperty("Increments", out JsonElement incElem) &&
                 incElem.ValueKind == JsonValueKind.Number)
             {
                 increments = incElem.GetDouble();
+            }
+
+            List<string> configClass = new List<string>();
+            if (option.Value.TryGetProperty("Config_Class", out JsonElement configClassElem) &&
+                configClassElem.ValueKind == JsonValueKind.Array)
+            {
+                configClass = configClassElem.EnumerateArray().Select(e => e.ToString()).ToList();
             }
 
             options.Add(new OptionModel
@@ -175,7 +195,8 @@ Weapons = Off
                 SelectedValue = selectedValue,
                 Class = classType,
                 Section = section,
-                Increments = increments
+                Increments = increments,
+                ConfigClass = configClass
             });
         }
 
@@ -199,4 +220,5 @@ public class OptionModel : ObservableObject
     public string Class { get; set; }
     public string Section { get; set; }
     public double Increments { get; set; }
+    public List<string> ConfigClass { get; set; }
 }
