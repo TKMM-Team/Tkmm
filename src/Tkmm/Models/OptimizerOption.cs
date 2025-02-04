@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tkmm.Models
 {
-    public class OptionModel : ObservableObject
+    public class OptimizerOption : ObservableObject
     {
         public string Name { get; set; }
         public string DefaultValue { get; set; }
