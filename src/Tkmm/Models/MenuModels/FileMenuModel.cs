@@ -28,12 +28,12 @@ public sealed class FileMenuModel
     [TkMenu(TkLocale.Menu_FileClearTempFiles, TkLocale.Menu_File, InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
     public static Task ClearTempFolder()
     {
-        return SystemActions.Instance.CleanupTempFolder();
+        return SystemActions.CleanupTempFolder();
     }
 
     [TkMenu(TkLocale.Menu_FileExit, TkLocale.Menu_File, InputGesture = "Alt + F4", Icon = "fa-solid fa-right-from-bracket", IsSeparator = true)]
     public static Task Exit()
     {
-        return SystemActions.Instance.SoftClose();
+        return SystemActions.SoftClose();
     }
 }

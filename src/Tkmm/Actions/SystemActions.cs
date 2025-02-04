@@ -20,10 +20,8 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     protected override string ActionGroupName { get; } = nameof(SystemActions).Humanize();
 
     [RelayCommand]
-    public async Task ShowAboutDialog()
+    public static async Task ShowAboutDialog()
     {
-        await CanActionRun(showError: false);
-
         await using Stream aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
         string contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
 
@@ -44,10 +42,8 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     }
 
     [RelayCommand]
-    public async Task OpenDocumentationWebsite()
+    public static async Task OpenDocumentationWebsite()
     {
-        await CanActionRun(showError: false);
-
         try {
             Process.Start(new ProcessStartInfo("https://tkmm.org/docs/using-mods/") {
                 UseShellExecute = true
@@ -60,15 +56,13 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     }
 
     [RelayCommand]
-    public Task CheckForUpdates(CancellationToken ct = default)
+    public static Task CheckForUpdates(CancellationToken ct = default)
     {
         return CheckForUpdates(isAutoCheck: true, ct);
     }
 
-    public async Task CheckForUpdates(bool isAutoCheck = false, CancellationToken ct = default)
+    public static async Task CheckForUpdates(bool isAutoCheck = false, CancellationToken ct = default)
     {
-        await CanActionRun(showError: false);
-
         if (!OperatingSystem.IsWindows()) {
             if (isAutoCheck) return;
 
@@ -98,16 +92,14 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }.ShowAsync();
     }
 
-    public Task RequestUpdate(Release release, CancellationToken ct = default)
+    public static Task RequestUpdate(Release release, CancellationToken ct = default)
     {
         return Dispatcher.UIThread.InvokeAsync(
             () => RequestUpdateInternal(release, ct));
     }
 
-    private async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
+    private static async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
     {
-        await CanActionRun(showError: false);
-
         if (!OperatingSystem.IsWindows()) {
             await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
             return;
@@ -135,10 +127,8 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     }
 
     [RelayCommand]
-    public async Task CleanupTempFolder()
+    public static async Task CleanupTempFolder()
     {
-        await CanActionRun(showError: false);
-
         try {
             string tempFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".temp");
 
@@ -149,7 +139,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             Directory.Delete(tempFolder, recursive: true);
             Directory.CreateDirectory(tempFolder);
 
-            App.Toast("The temporary folder was succesfully deleted.",
+            App.Toast("The temporary folder was successfully deleted.",
                 "Temporary Files Cleared", NotificationType.Success, TimeSpan.FromSeconds(3));
         }
         catch (Exception ex) {
@@ -159,10 +149,8 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     }
 
     [RelayCommand]
-    public async Task SoftClose()
+    public static async Task SoftClose()
     {
-        await CanActionRun(showError: false);
-
         try {
             Config.Shared.Save();
             TKMM.ModManager.Save();
@@ -173,7 +161,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
             object errorReportResult = await ErrorDialog.ShowAsync(ex,
                 TaskDialogStandardResult.Close, TaskDialogStandardResult.Cancel);
-            if (Equals(errorReportResult, TaskDialogButton.CloseButton)) {
+            if (errorReportResult is TaskDialogStandardResult.Close) {
                 Environment.Exit(-1);
             }
         }

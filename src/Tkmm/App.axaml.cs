@@ -108,7 +108,7 @@ public class App : Application
 
         shellView.InitializeWizard();
         
-        shellView.Closed += async (_, _) => { await SystemActions.Instance.SoftClose(); };
+        shellView.Closed += async (_, _) => { await SystemActions.SoftClose(); };
 
         XamlRoot = shellView;
         shellView.Loaded += (_, _) => {
