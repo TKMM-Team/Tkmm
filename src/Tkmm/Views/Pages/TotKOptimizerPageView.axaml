@@ -13,8 +13,8 @@
       <DataTemplate x:Key="DropdownTemplate" x:DataType="vm:OptionModel">
         <StackPanel Orientation="Horizontal" Spacing="10">
           <TextBlock Text="{Binding Name}" Width="150"/>
-          <ComboBox ItemsSource="{Binding Values}"
-                    SelectedItem="{Binding SelectedValue, Mode=TwoWay}"
+          <ComboBox ItemsSource="{Binding DisplayValues}"
+                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                     Width="150"/>
         </StackPanel>
       </DataTemplate>
@@ -38,15 +38,15 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer>
-    <StackPanel Margin="15,15,0,0">
+    <StackPanel Margin="20,15,0,0">
       <TextBlock Text="TOTK Optimizer" FontSize="24" Margin="0,0,0,10"/>
       <Grid ColumnDefinitions="*,*">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Main" FontWeight="Bold" Margin="0,0,0,5"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Extras" FontWeight="Bold" Margin="0,0,0,5"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Main" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Extras" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" Margin="0,0,0,10"/>
         <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MainOptions}">
           <ItemsControl.ItemTemplate>
             <DataTemplate x:DataType="vm:OptionModel">
