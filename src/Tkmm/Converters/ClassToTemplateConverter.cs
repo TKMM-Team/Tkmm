@@ -2,6 +2,7 @@ using Avalonia.Data.Converters;
 using Avalonia;
 using System;
 using System.Globalization;
+using Avalonia.Controls;
 
 namespace Tkmm.Converters;
     
@@ -11,12 +12,13 @@ public class ClassToTemplateConverter : IValueConverter
     {
         if (value is string classType)
         {
+            var resources = parameter as IResourceDictionary ?? Application.Current.Resources;
             return classType switch
             {
-                "dropdown" => Application.Current.Resources["DropdownTemplate"],
-                "scale" => Application.Current.Resources["SliderTemplate"],
-                "bool" => Application.Current.Resources["CheckboxTemplate"],
-                _ => null
+                "dropdown" => resources["DropdownTemplate"],
+                "scale"    => resources["SliderTemplate"],
+                "bool"     => resources["CheckboxTemplate"],
+                _          => null
             };
         }
         return null;
