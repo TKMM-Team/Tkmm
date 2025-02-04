@@ -11,7 +11,7 @@ namespace Tkmm.Converters
             if (value is null)
                 return 0.0;
 
-            if (double.TryParse(value.ToString(), out double result))
+            if (double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
                 return result;
             
             return 0.0;
@@ -19,6 +19,9 @@ namespace Tkmm.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is double d)
+                return d.ToString("0.##", CultureInfo.InvariantCulture);
+            
             return value?.ToString() ?? "0";
         }
     }
