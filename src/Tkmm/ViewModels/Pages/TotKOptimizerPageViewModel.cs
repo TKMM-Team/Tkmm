@@ -25,9 +25,9 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
 
     public ObservableCollection<OptionModel> Options => _options;
     public IEnumerable<OptionModel> MainOptions =>
-        Options.Where(o => o.Section?.ToLowerInvariant() == "main");
+        Options.Where(o => o.Section?.ToLowerInvariant() == "main" && !o.Auto);
     public IEnumerable<OptionModel> ExtrasOptions =>
-        Options.Where(o => o.Section?.ToLowerInvariant() == "extra");
+        Options.Where(o => o.Section?.ToLowerInvariant() == "extra" && !o.Auto);
 
     public IRelayCommand GenerateConfigCommand { get; }
 
@@ -157,15 +157,25 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
                 values = new List<string>();
             }
 
+            List<string> nameValues = new List<string>();
+            if (option.Value.TryGetProperty("Name_Values", out JsonElement nameValuesElem) &&
+                nameValuesElem.ValueKind == JsonValueKind.Array)
+            {
+                nameValues = nameValuesElem.EnumerateArray().Select(e => e.ToString()).ToList();
+            }
+
             string selectedValue = defaultValue;
-            if (classType == "dropdown")
+            int dropdownIndex = 0;
+            if (classType.ToLowerInvariant() == "dropdown")
             {
                 if (defaultElem.ValueKind == JsonValueKind.Number && int.TryParse(defaultElem.GetRawText(), out int index))
                 {
-                    if (index >= 0 && index < values.Count)
-                    {
-                        selectedValue = values[index];
-                    }
+                    dropdownIndex = index;
+                    selectedValue = (index >= 0 && index < values.Count) ? values[index] : defaultValue;
+                }
+                else
+                {
+                    selectedValue = (values.Count > 0) ? values[0] : defaultValue;
                 }
             }
             else
@@ -187,16 +197,29 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
                 configClass = configClassElem.EnumerateArray().Select(e => e.ToString()).ToList();
             }
 
+            bool auto = false;
+            if (option.Value.TryGetProperty("Auto", out JsonElement autoElem) && autoElem.ValueKind == JsonValueKind.True)
+            {
+                auto = true;
+            }
+            else if (option.Value.TryGetProperty("Auto", out autoElem) && autoElem.ValueKind == JsonValueKind.False)
+            {
+                auto = false;
+            }
+
             options.Add(new OptionModel
             {
                 Name = name,
                 DefaultValue = defaultValue,
                 Values = values,
+                NameValues = nameValues,
                 SelectedValue = selectedValue,
+                SelectedIndex = (classType.ToLowerInvariant() == "dropdown") ? dropdownIndex : 0,
                 Class = classType,
                 Section = section,
                 Increments = increments,
-                ConfigClass = configClass
+                ConfigClass = configClass,
+                Auto = auto
             });
         }
 
@@ -209,6 +232,7 @@ public class OptionModel : ObservableObject
     public string Name { get; set; }
     public string DefaultValue { get; set; }
     public List<string> Values { get; set; }
+    public List<string> NameValues { get; set; }
 
     private string selectedValue;
     public string SelectedValue
@@ -217,8 +241,33 @@ public class OptionModel : ObservableObject
         set => SetProperty(ref selectedValue, value);
     }
 
+    private int selectedIndex;
+    public int SelectedIndex
+    {
+        get => selectedIndex;
+        set
+        {
+            if (SetProperty(ref selectedIndex, value))
+            {
+                if (Class != null && Class.ToLowerInvariant() == "dropdown" && value >= 0 && value < Values.Count)
+                {
+                    SelectedValue = Values[value];
+                    OnPropertyChanged(nameof(DisplaySelectedValue));
+                }
+            }
+        }
+    }
+
+    public string DisplaySelectedValue =>
+        (Class?.ToLowerInvariant() == "dropdown" && NameValues != null && NameValues.Count > SelectedIndex)
+            ? NameValues[SelectedIndex]
+            : SelectedValue;
+
     public string Class { get; set; }
     public string Section { get; set; }
     public double Increments { get; set; }
     public List<string> ConfigClass { get; set; }
+    public bool Auto { get; set; }
+
+    public IEnumerable<string> DisplayValues => (NameValues?.Count ?? 0) > 0 ? NameValues : Values;
 }
