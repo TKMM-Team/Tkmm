@@ -24,6 +24,8 @@
           <Slider Minimum="{Binding Values[0], Converter={StaticResource DoubleConverter}}"
                   Maximum="{Binding Values[1], Converter={StaticResource DoubleConverter}}"
                   Value="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource DoubleConverter}}"
+                  TickFrequency="{Binding Increments}"
+                  IsSnapToTickEnabled="True"
                   Width="150"/>
           <TextBlock Text="{Binding SelectedValue, Converter={StaticResource DoubleConverter}}"
                      Width="50" VerticalAlignment="Center"/>
@@ -36,19 +38,37 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <ScrollViewer>
-    <StackPanel>
+    <StackPanel Margin="15,15,0,0">
       <TextBlock Text="TOTK Optimizer" FontSize="24" Margin="0,0,0,10"/>
-      <ItemsControl ItemsSource="{Binding Options}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate x:DataType="vm:OptionModel">
-            <ContentControl Content="{Binding}"
-                            ContentTemplate="{Binding Class,
-                                                   Converter={StaticResource ClassToTemplateConverter},
-                                                   ConverterParameter={StaticResource LocalTemplates}}"/>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-      <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" Margin="0,10,0,0"/>
+      <Grid ColumnDefinitions="*,*">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Main" FontWeight="Bold" Margin="0,0,0,5"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Extras" FontWeight="Bold" Margin="0,0,0,5"/>
+        <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MainOptions}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:OptionModel">
+              <ContentControl Content="{Binding}"
+                              ContentTemplate="{Binding Class,
+                                                     Converter={StaticResource ClassToTemplateConverter},
+                                                     ConverterParameter={StaticResource LocalTemplates}}"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ExtrasOptions}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:OptionModel">
+              <ContentControl Content="{Binding}"
+                              ContentTemplate="{Binding Class,
+                                                     Converter={StaticResource ClassToTemplateConverter},
+                                                     ConverterParameter={StaticResource LocalTemplates}}"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
+      <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" Margin="0,10,0,10"/>
     </StackPanel>
   </ScrollViewer>
 </UserControl>
