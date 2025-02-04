@@ -4,7 +4,6 @@
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                xmlns:core="using:Tkmm.Core"
-               xmlns:tkmm="using:Tkmm"
                xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
                xmlns:ui="using:FluentAvalonia.UI.Controls"
                xmlns:uiw="using:FluentAvalonia.UI.Windowing"
@@ -13,8 +12,7 @@
                xmlns:components1="clr-namespace:Tkmm.Components"
                xmlns:models="clr-namespace:Tkmm.Models"
                Title="{x:Static desktop:App.ShortTitle}"
-               xmlns:wiz="using:Tkmm.Wizard.Views"
-               xmlns:tkmm1="clr-namespace:TkSharp.Core;assembly=TkSharp.Core"
+               xmlns:tk="using:TkSharp.Core"
                CanResize="{Binding !IsFirstTimeSetup}"
                Width="870"
                Height="550"
@@ -52,11 +50,9 @@
                          FontSize="25"
                          Margin="0,0,2,0" />
             </StackPanel>
-        </Grid> 
+        </Grid>
         
-        <ContentControl IsVisible="{Binding IsFirstTimeSetup}" Name="WizContainer">
-            <wiz:WizPage Tag="{Binding #WizContainer}" />
-        </ContentControl>
+        <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
         
         <Grid Background="Transparent"
               Classes="InstallModDropTarget"
@@ -138,12 +134,12 @@
                   ColumnDefinitions="Auto,Auto,*,Auto,Auto"
                   IsHitTestVisible="False">
                 <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
-                <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static tkmm1:TkStatus.Shared}}" />
+                <pi:Icon Margin="5,0" Value="{Binding Icon, Source={x:Static tk:TkStatus.Shared}}" />
                 <TextBlock Grid.Column="1"
                            Margin="5,0"
                            VerticalAlignment="Center"
                            FontFamily="{StaticResource UbuntuMono}">
-                    <Run Text="{Binding Status, Source={x:Static tkmm1:TkStatus.Shared}}" /><Run Text="{Binding Suffix, Source={x:Static tkmm1:TkStatus.Shared}}" />
+                    <Run Text="{Binding Status, Source={x:Static tk:TkStatus.Shared}}" /><Run Text="{Binding Suffix, Source={x:Static tk:TkStatus.Shared}}" />
                 </TextBlock>
                 <TextBlock Grid.Column="3"
                            Margin="5,0"
