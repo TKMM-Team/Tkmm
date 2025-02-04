@@ -1,21 +1,42 @@
-using System.Reflection;
+using Avalonia;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ConfigFactory.Core;
-using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Models;
 
 namespace Tkmm.Builders;
 
-public partial class FileOrFolderControlContext(IConfigModule context, PropertyInfo propertyInfo) : ObservableObject
+public partial class FileOrFolderEdit : TemplatedControl
 {
-    private readonly IConfigModule _context = context;
-    private readonly PropertyInfo _propertyInfo = propertyInfo;
+    public static readonly StyledProperty<FileOrFolder> ValueProperty = AvaloniaProperty.Register<FileOrFolderEdit, FileOrFolder>(nameof(Value), defaultBindingMode: BindingMode.TwoWay);
+    
+    public static readonly StyledProperty<string?> FileBrowserFilterProperty = AvaloniaProperty.Register<FileOrFolderEdit, string?>(nameof(FileBrowserFilter));
+    
+    public static readonly StyledProperty<string?> FileBrowserSuggestedFileNameProperty = AvaloniaProperty.Register<FileOrFolderEdit, string?>(nameof(FileBrowserSuggestedFileName));
+    
+    public static readonly StyledProperty<string?> BrowserTitleProperty = AvaloniaProperty.Register<FileOrFolderEdit, string?>(nameof(BrowserTitle));
 
-    [ObservableProperty]
-    private string? _target = ((FileOrFolder)context.Properties[propertyInfo.Name].Property.GetValue(context)!).Path;
+    public FileOrFolder Value {
+        get => GetValue(ValueProperty);
+        set => SetValue(ValueProperty, value);
+    }
 
+    public string? FileBrowserFilter {
+        get => GetValue(FileBrowserFilterProperty);
+        set => SetValue(FileBrowserFilterProperty, value);
+    }
+
+    public string? FileBrowserSuggestedFileName {
+        get => GetValue(FileBrowserSuggestedFileNameProperty);
+        set => SetValue(FileBrowserSuggestedFileNameProperty, value);
+    }
+
+    public string? BrowserTitle {
+        get => GetValue(BrowserTitleProperty);
+        set => SetValue(BrowserTitleProperty, value);
+    }
+    
     [RelayCommand]
     private async Task OpenFile()
     {
@@ -23,12 +44,10 @@ public partial class FileOrFolderControlContext(IConfigModule context, PropertyI
             Title = Locale[TkLocale.Tip_BrowseFile],
             AllowMultiple = false
         };
-        
-        if (_propertyInfo.GetCustomAttribute<BrowserConfigAttribute>() is BrowserConfigAttribute browserConfig) {
-            options.Title = browserConfig.Title;
-            options.SuggestedFileName = browserConfig.SuggestedFileName;
-            options.FileTypeFilter = ParseFilterString(browserConfig.Filter);
-        }
+
+        options.Title = BrowserTitle;
+        options.SuggestedFileName = FileBrowserSuggestedFileName;
+        options.FileTypeFilter = ParseFilterString(FileBrowserFilter);
         
         IReadOnlyList<IStorageFile> result = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(options);
         
@@ -36,7 +55,7 @@ public partial class FileOrFolderControlContext(IConfigModule context, PropertyI
             return;
         }
 
-        Target = path;
+        Value = path;
     }
 
     [RelayCommand]
@@ -47,10 +66,8 @@ public partial class FileOrFolderControlContext(IConfigModule context, PropertyI
             AllowMultiple = false
         };
         
-        if (_propertyInfo.GetCustomAttribute<BrowserConfigAttribute>() is BrowserConfigAttribute browserConfig) {
-            options.Title = browserConfig.Title;
-            options.SuggestedFileName = browserConfig.SuggestedFileName;
-        }
+        options.Title = BrowserTitle;
+        options.SuggestedFileName = FileBrowserSuggestedFileName;
         
         IReadOnlyList<IStorageFolder> result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(options);
 
@@ -58,14 +75,7 @@ public partial class FileOrFolderControlContext(IConfigModule context, PropertyI
             return;
         }
 
-        Target = path;
-    }
-
-    partial void OnTargetChanged(string? value)
-    {
-        _context.Properties[_propertyInfo.Name]
-            .Property
-            .SetValue(_context, (FileOrFolder)value);
+        Value = path;
     }
     
     private static FilePickerFileType[] ParseFilterString(string? filter = null)

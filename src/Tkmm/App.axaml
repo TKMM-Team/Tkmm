@@ -38,6 +38,9 @@
         <StyleInclude Source="/Styles/ListBoxStyles.axaml" />
         <StyleInclude Source="/Styles/RadioButtonStyles.axaml" />
         <StyleInclude Source="/Styles/ToastStyles.axaml" />
-        <StyleInclude Source="/Styles/Markdown.axaml" />    
+        <StyleInclude Source="/Styles/Markdown.axaml" />
+        
+        <!-- Controls -->
+        <StyleInclude Source="/Builders/FileOrFolderEdit.axaml" />
     </Application.Styles>
 </Application>
