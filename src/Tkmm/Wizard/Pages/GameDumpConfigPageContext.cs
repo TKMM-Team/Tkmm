@@ -3,9 +3,9 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Tkmm.Wizard.ViewModels;
+namespace Tkmm.Wizard.Pages;
 
-public sealed partial class WizDumpConfigPageViewModel : ObservableObject
+public sealed partial class GameDumpConfigPageContext : ObservableObject
 {
     private static readonly FilePickerFileType _nsp = new("NSP") {
         Patterns = [

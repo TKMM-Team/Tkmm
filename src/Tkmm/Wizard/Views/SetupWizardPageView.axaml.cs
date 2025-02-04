@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Tkmm.Wizard.Views;
 
-public partial class WizLangConfigPage : UserControl
+public partial class SetupWizardPageView : UserControl
 {
-    public WizLangConfigPage()
+    public SetupWizardPageView()
     {
         InitializeComponent();
     }

@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:wiz="clr-namespace:Tkmm.Wizard2"
+             xmlns:ext="clr-namespace:Tkmm.Markup"
+             xmlns:wizard="clr-namespace:Tkmm.Wizard"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="wizard:SetupWizardPage"
+             x:Class="Tkmm.Wizard.Views.SetupWizardPageView">
+    <Grid RowDefinitions="*,Auto" Margin="60">
+        <StackPanel VerticalAlignment="Center"
+                    Spacing="20"
+                    HorizontalAlignment="Center">
+            <TextBlock TextWrapping="WrapWithOverflow"
+                       FontFamily="{StaticResource HyliaGlyph}"
+                       FontSize="46"
+                       Text="{Binding Title}" />
+            <ContentPresenter Content="{Binding}"
+                              TextWrapping="WrapWithOverflow">
+                <ContentPresenter.DataTemplates>
+                    <DataTemplate DataType="{x:Type wizard:SetupWizardPage}">
+                        <ContentControl Content="{Binding Content}" />
+                    </DataTemplate>
+                </ContentPresenter.DataTemplates>
+            </ContentPresenter>
+            <HyperlinkButton NavigateUri="https://discord.gg/BbVXenRFVc" Content="Join Discord" />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <Button IsVisible="{Binding !IsFirstPage}"
+                        Content="{ext:Locale Action_Back}"
+                        Command="{Binding MoveBackCommand}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
+                <Button Content="{Binding ActionContent}"
+                        Command="{Binding MoveNextCommand}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
