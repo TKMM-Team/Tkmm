@@ -11,7 +11,7 @@ namespace Tkmm.ViewModels.Pages;
 public partial class TotKOptimizerPageViewModel : ObservableObject
 {
     private const string ConfigFilePath = "romfs/UltraCam/maxlastbreath.ini";
-    private readonly ObservableCollection<OptionModel> _options;
+    private readonly ObservableCollection<OptimizerOption> _options;
 
     public TotKOptimizerPageViewModel()
     {
@@ -19,10 +19,10 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
     }
 
-    public ObservableCollection<OptionModel> Options => _options;
-    public IEnumerable<OptionModel> MainOptions =>
+    public ObservableCollection<OptimizerOption> Options => _options;
+    public IEnumerable<OptimizerOption> MainOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "main" && !o.Auto);
-    public IEnumerable<OptionModel> ExtrasOptions =>
+    public IEnumerable<OptimizerOption> ExtrasOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "extra" && !o.Auto);
 
     public IRelayCommand GenerateConfigCommand { get; }
@@ -98,7 +98,7 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         return sb.ToString();
     }
 
-    private string FormatOptionValue(OptionModel option)
+    private string FormatOptionValue(OptimizerOption option)
     {
         if (option.Class.ToLowerInvariant() == "bool")
         {
@@ -110,9 +110,9 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         }
     }
 
-    private ObservableCollection<OptionModel> LoadOptions()
+    private ObservableCollection<OptimizerOption> LoadOptions()
     {
-        var options = new ObservableCollection<OptionModel>();
+        var options = new ObservableCollection<OptimizerOption>();
         string resourcePath = "Tkmm.Resources.Optimizer.Options.json";
 
         using Stream? stream = typeof(TotKOptimizerPageViewModel).Assembly.GetManifestResourceStream(resourcePath);
@@ -203,7 +203,7 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
                 auto = false;
             }
 
-            options.Add(new OptionModel
+            options.Add(new OptimizerOption
             {
                 Name = name,
                 DefaultValue = defaultValue,
