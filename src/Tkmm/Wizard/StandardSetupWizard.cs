@@ -19,10 +19,9 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     public override async ValueTask Start()
     {
         await FirstPage();
-        Func<ValueTask> next = await EmulatorSelectionPage();
-
+        
     Return:
-        await next();
+        await EmulatorSelectionPage();
         
         bool result = await NextPage()
             .WithTitle(TkLocale.WizPageFinal_Title)
@@ -35,7 +34,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
     }
 
-    private async ValueTask<Func<ValueTask>> EmulatorSelectionPage()
+    private async ValueTask EmulatorSelectionPage()
     {
         EmulatorSelectionPageContext context = new();
         
@@ -50,12 +49,13 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 await FirstPage();
                 goto Retry;
             case true when context.IsValid: {
-                return context.GetSelection() switch {
-                    EmulatorSelection.Ryujinx => SetupRyujinxPage,
-                    EmulatorSelection.Switch => EnsureConfigurationPage,
-                    EmulatorSelection.Other => SetupEmulatorPage,
+                await (context.GetSelection() switch {
+                    EmulatorSelection.Ryujinx => SetupRyujinxPage(),
+                    EmulatorSelection.Switch => EnsureConfigurationPage(),
+                    EmulatorSelection.Other => SetupEmulatorPage(),
                     _ => throw new ArgumentException("Invalid emulator selection")
-                };
+                });
+                return;
             }
         }
 
@@ -114,14 +114,21 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             return;
         }
 
-        if (TkEmulatorHelper.UseEmulator(emulatorFilePath, out _).Case is string error) {
-            object errorResult = await ErrorDialog.ShowAsync(new Exception(error),
-                TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
+        try {
+            if (TkEmulatorHelper.UseEmulator(emulatorFilePath, out _).Case is string error) {
+                object errorResult = await ErrorDialog.ShowAsync(new Exception(error),
+                    TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
 
-            if (errorResult is TaskDialogStandardResult.Retry) {
-                goto Retry;
+                if (errorResult is TaskDialogStandardResult.Retry) {
+                    goto Retry;
+                }
+
+                await EmulatorSelectionPage();
+                return;
             }
-
+        }
+        catch (Exception ex) {
+            await ErrorDialog.ShowAsync(ex);
             await EmulatorSelectionPage();
             return;
         }
