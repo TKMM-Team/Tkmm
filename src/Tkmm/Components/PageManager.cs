@@ -13,11 +13,12 @@ public enum Page
     Tools,
     ShopParam,
     GbMods,
+    TotKOptimizer,
+    Cheats,
     About,
     Logs,
     NetworkSettings,
-    Settings,
-    TotKOptimizer,
+    Settings
 }
 
 public partial class PageManager : ObservableObject

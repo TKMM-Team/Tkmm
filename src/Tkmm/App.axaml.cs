@@ -163,7 +163,8 @@ public class App : Application
         PageManager.Shared.Register(Page.Profiles, TkLocale.ProfilesPageTitle, new ProfilesPageView(), Symbol.OtherUser, TkLocale.ProfilesPageDesc);
         PageManager.Shared.Register(Page.Tools, TkLocale.ProjectsPageTitle, new ProjectsPageView(), Symbol.CodeHTML, TkLocale.ProjectsPageDesc);
         PageManager.Shared.Register(Page.GbMods, TkLocale.GameBananaPageTitle, new GameBananaPageView(), Symbol.Globe, TkLocale.GameBananaPageDesc);
-        PageManager.Shared.Register(Page.TotKOptimizer, TkLocale.TotkOptimizer, new TotKOptimizerPageView(), Symbol.StarEmphasisFilled, TkLocale.TotkOptimizerDesc);
+        PageManager.Shared.Register(Page.TotKOptimizer, TkLocale.TotkOptimizer, new TotKOptimizerPageView(), Symbol.StarEmphasis, TkLocale.TotkOptimizerDesc);
+        PageManager.Shared.Register(Page.Cheats, TkLocale.CheatsPageTitle, new CheatsPageView(), Symbol.Games, TkLocale.CheatsPageDesc);
 
         PageManager.Shared.Register(Page.Logs, TkLocale.LogsPageTitle, new LogsPageView(), Symbol.AllApps, TkLocale.LogsPageDesc, isFooter: true);
 #if SWITCH

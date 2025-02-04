@@ -1,0 +1,41 @@
+<UserControl x:Class="Tkmm.Views.Pages.CheatsPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:DataType="vm:CheatsPageViewModel"
+             mc:Ignorable="d">
+  <ScrollViewer>
+    <StackPanel Margin="20" Spacing="10">
+      <!-- This StackPanel is visible only if cheats are available -->
+      <StackPanel x:Name="CheatsPanel" IsVisible="{Binding CheatsAvailable}" Spacing="10">
+        <TextBlock Text="Cheats:" Margin="0,10,0,5"/>
+        <ItemsControl ItemsSource="{Binding Cheats}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:CheatsPageViewModel+CheatItemViewModel">
+              <CheckBox Content="{Binding Name}" 
+                        IsChecked="{Binding IsSelected}" 
+                        Margin="5"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Button Content="Save" 
+                Command="{Binding SaveCommand}" 
+                HorizontalAlignment="Center"
+                Margin="0,10,0,0"/>
+      </StackPanel>
+      <!-- This message shows when no cheats can be applied -->
+      <TextBlock Text="No cheats are available for your current configuration."
+                 IsVisible="{Binding CheatsAvailable, Converter={x:Static BoolConverters.Not}}"
+                 HorizontalAlignment="Center" 
+                 VerticalAlignment="Center" Margin="20"/>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>
