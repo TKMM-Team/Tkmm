@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ext="using:Tkmm.Markup"
-             xmlns:vm="using:Tkmm.Wizard.ViewModels"
+             xmlns:vm="using:Tkmm.Wizard.Pages"
              xmlns:core="using:Tkmm.Core"
-             x:DataType="vm:WizDumpConfigPageViewModel"
-             x:Class="Tkmm.Wizard.Views.WizDumpConfigPage">
+             x:DataType="vm:GameDumpConfigPageContext"
+             x:Class="Tkmm.Wizard.Pages.GameDumpConfigPage">
     <TabControl Height="270">
         <TabControl.Styles>
             <Style Selector="TabItem">
