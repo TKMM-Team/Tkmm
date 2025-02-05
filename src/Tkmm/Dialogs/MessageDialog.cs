@@ -66,6 +66,7 @@ public static class MessageDialog
                 MessageDialogButtons.OkCancel or MessageDialogButtons.YesNoCancel => "Cancel",
                 _ => string.Empty
             },
+            Content = content,
             Title = title
         };
 
