@@ -8,6 +8,7 @@ namespace Tkmm.Wizard;
 public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObject
 {
     protected bool? _result;
+    protected readonly CancellationTokenSource _cancellationTokenSource = new();
     
     public bool IsFirstPage { get; } = isFirstPage;
 
@@ -24,12 +25,14 @@ public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObjec
     private void MoveBack()
     {
         _result = false;
+        _cancellationTokenSource.Cancel();
     }
 
     [RelayCommand]
     private void MoveNext()
     {
         _result = true;
+        _cancellationTokenSource.Cancel();
     }
     
     public async ValueTask<bool> Show(ContentPresenter presenter)
@@ -38,11 +41,13 @@ public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObjec
             DataContext = this,
         };
 
-        return await Task.Run(() => {
-            while (_result is null) {
-            }
+        try {
+            await Task.Delay(-1, _cancellationTokenSource.Token);
+        }
+        catch (TaskCanceledException) {
+            return _result ?? false;
+        }
 
-            return _result.Value;
-        });
+        return false;
     }
 }
