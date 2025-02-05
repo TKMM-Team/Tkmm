@@ -17,7 +17,7 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
     public override object Build(IConfigModule context, PropertyInfo propertyInfo)
     {
         return new Button {
-            Content = "Edit",
+            Content = Locale[TkLocale.Action_Edit],
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Top,
             Command = EditCommand,
@@ -39,7 +39,7 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
             Buttons = [
                 TaskDialogButton.CloseButton
             ],
-            Title = "Edit Export Locations",
+            Title = Locale[TkLocale.EditExportLocations_Title],
             Content = new ExportLocationCollectionEditor(),
             XamlRoot = App.XamlRoot
         };

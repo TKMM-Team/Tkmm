@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Tkmm.Core.Attributes;
 using Tkmm.Core.Models;
 using TkSharp.Data.Embedded;
 using TkSharp.Extensions.LibHac;
@@ -11,16 +12,24 @@ namespace Tkmm.Core;
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
     public const string DEFAULT_GAME_VERSION = "Any";
-    
+
     [JsonIgnore]
     public override string Name => "totk";
-    
+
     public TkConfig()
     {
         FileInfo configFileInfo = new(LocalPath);
         if (configFileInfo is { Exists: true, Length: 0 }) {
             File.Delete(LocalPath);
         }
+
+        OnSaving += () => {
+            if (GameDumpFolderPaths is [PathCollectionItem item, ..]) {
+                GamePath ??= item.Target;
+            }
+
+            return true;
+        };
     }
 
     [ObservableProperty]
@@ -30,7 +39,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Group = "Game Dump")]
     [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
     private string _preferredGameVersion = DEFAULT_GAME_VERSION;
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "Keys Folder Path",
@@ -44,7 +53,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Packaged Base Game Path",
+        Header = "Packaged Base Game Path(s)",
         Description = "The absolute path to your dumped base game file (.xci or .nsp) or split folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
@@ -52,11 +61,12 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Filter = "XCI/NSP:*.nsp;*.xci|All files:*.*",
         InstanceBrowserKey = "base-game-file-path",
         Title = "Select base game XCI/NSP")]
-    private FileOrFolder _packagedBaseGamePath;
+    [property: PathCollectionOptions(PathType.FileOrFolder)]
+    private PathCollection _packagedBaseGamePaths = [];
 
     [ObservableProperty]
     [property: Config(
-        Header = "Game Update File Path",
+        Header = "Game Update File Path(s)",
         Description = "The absolute path to your dumped game update file (.xci or .nsp) or split folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
@@ -64,7 +74,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Filter = "NSP:*.nsp|All files:*.*",
         InstanceBrowserKey = "game-update-file-path",
         Title = "Select game update NSP")]
-    private FileOrFolder _packagedUpdatePath;
+    [property: PathCollectionOptions(PathType.FileOrFolder)]
+    private PathCollection _packagedUpdatePaths = [];
 
     [ObservableProperty]
     [property: Config(
@@ -77,30 +88,34 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select SD card root folder")]
     private string? _sdCardRootPath;
 
-    // TODO: Support multiple game paths
     [ObservableProperty]
     [property: Config(
-        Header = "Game Dump Folder Path",
+        Header = "Game Dump Folder Path(s)",
         Description = "The absolute path to your dumped RomFS folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "game-dump-folder-path",
         Title = "Select game dump folder path (with update 1.1.0 or later)")]
-    [property: JsonPropertyName("GamePath")]
-    private string? _gameDumpFolderPath;
+    [property: PathCollectionOptions(PathType.Folder)]
+    private PathCollection _gameDumpFolderPaths = [];
+
+    /// <summary>
+    /// The original GamePath property used by NXE and other application
+    /// </summary>
+    public string? GamePath { get; set; }
 
     public TkExtensibleRomProvider CreateRomProvider()
-    {
+    {   
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
-        
+
         return TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
-            .WithExtractedGameDump(() => GameDumpFolderPath)
+            .WithExtractedGameDump(() => GamePath is null ? GameDumpFolderPaths : GameDumpFolderPaths.Append(GamePath))
             .WithSdCard(() => SdCardRootPath)
-            .WithPackagedBaseGame(() => PackagedBaseGamePath)
-            .WithPackagedUpdate(() => PackagedUpdatePath)
+            .WithPackagedBaseGame(() => PackagedBaseGamePaths)
+            .WithPackagedUpdate(() => PackagedUpdatePaths)
             .Build();
     }
 }
