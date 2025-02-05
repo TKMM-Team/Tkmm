@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -23,7 +24,6 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
     public IEnumerable<OptimizerOption> ExtrasOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "extra" && !o.Auto);
 
-    public IRelayCommand GenerateConfigCommand { get; }
     public IRelayCommand InstallUltracamCommand { get; }
 
     private bool _isUltracamInstalled;
@@ -39,12 +39,12 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         if (IsUltracamInstalled)
         {
             _options = LoadOptions();
+            SubscribeToOptionChanges();
         }
         else
         {
             _options = new ObservableCollection<OptimizerOption>();
         }
-        GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
         InstallUltracamCommand = new AsyncRelayCommand(InstallUltracamAsync);
     }
 
@@ -216,7 +216,7 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
                 auto = false;
             }
 
-            options.Add(new OptimizerOption
+            var optimizerOption = new OptimizerOption
             {
                 Name = name,
                 DefaultValue = defaultValue,
@@ -229,10 +229,25 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
                 Increments = increments,
                 ConfigClass = configClass,
                 Auto = auto
-            });
+            };
+
+            options.Add(optimizerOption);
         }
 
         return options;
+    }
+
+    private void SubscribeToOptionChanges()
+    {
+        foreach (var option in Options)
+        {
+            option.PropertyChanged += Option_PropertyChanged;
+        }
+    }
+
+    private void Option_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        _ = GenerateConfigFile();
     }
 
     private async Task InstallUltracamAsync()
@@ -240,7 +255,8 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         var assembly = typeof(TotKOptimizerPageViewModel).Assembly;
         using var stream = assembly.GetManifestResourceStream(UltracamResourceName);
         
-        if (stream == null) {
+        if (stream == null)
+        {
             throw new FileNotFoundException($"Resource {UltracamResourceName} not found.");
         }
         
@@ -248,11 +264,14 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
 
         IsUltracamInstalled = Directory.Exists(UltracamFolder);
         
-        if (IsUltracamInstalled) {
+        if (IsUltracamInstalled)
+        {
             _options = LoadOptions();
+            SubscribeToOptionChanges();
             OnPropertyChanged(nameof(Options));
             OnPropertyChanged(nameof(MainOptions));
             OnPropertyChanged(nameof(ExtrasOptions));
+            _ = GenerateConfigFile();
         }
     }
 }

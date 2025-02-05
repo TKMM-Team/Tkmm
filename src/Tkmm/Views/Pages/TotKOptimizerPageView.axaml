@@ -6,6 +6,7 @@
              xmlns:models="using:Tkmm.Models"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ext="using:Tkmm.Markup"
              x:DataType="pages:TotKOptimizerPageViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=pages:TotKOptimizerPageViewModel, IsDesignTimeCreatable=True}">
@@ -49,7 +50,7 @@
 
     <DataTemplate x:Key="OptimizerOptionsTemplate" x:DataType="pages:TotKOptimizerPageViewModel">
       <StackPanel Margin="20,15,0,0">
-        <TextBlock Text="TOTK Optimizer" FontSize="24" Margin="0,0,0,10"/>
+        <TextBlock Text="{ext:Locale TotkOptimizer}" FontSize="24" Margin="0,0,0,10"/>
         <Grid ColumnDefinitions="*,*">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -78,7 +79,6 @@
             </ItemsControl.ItemTemplate>
           </ItemsControl>
         </Grid>
-        <Button Content="Generate Config" Command="{Binding GenerateConfigCommand}" Margin="0,10,0,10"/>
       </StackPanel>
     </DataTemplate>
   </UserControl.Resources>

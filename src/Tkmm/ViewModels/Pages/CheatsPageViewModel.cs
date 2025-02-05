@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using TkSharp.Core;
@@ -27,8 +22,6 @@ public partial class CheatsPageViewModel : ObservableObject
 
     public ObservableCollection<CheatItemViewModel> Cheats { get; } = new ObservableCollection<CheatItemViewModel>();
 
-    public IRelayCommand SaveCommand { get; }
-
     private readonly Dictionary<string, CheatVersion> _cheatVersions = new Dictionary<string, CheatVersion>();
 
     private readonly string _enabledCheatsFilePath = Path.Combine(AppContext.BaseDirectory, ".data", "enabled_cheats.json");
@@ -44,7 +37,6 @@ public partial class CheatsPageViewModel : ObservableObject
 
     public CheatsPageViewModel()
     {
-        SaveCommand = new AsyncRelayCommand(SaveCheatsAsync);
         LoadCheatsCatalog();
     }
 
@@ -103,6 +95,7 @@ public partial class CheatsPageViewModel : ObservableObject
                 SelectedVersion = AvailableVersions.First();
 
             _persistedEnabledCheats = LoadPersistedEnabledCheats();
+            UpdateCheatsList();
         }
         catch (Exception ex)
         {
@@ -136,12 +129,22 @@ public partial class CheatsPageViewModel : ObservableObject
         foreach (var pair in cheatVersion.Cheats.OrderBy(x => x.Key))
         {
             bool isEnabled = _persistedEnabledCheats.Contains(pair.Key);
-            Cheats.Add(new CheatItemViewModel
+            var cheatItem = new CheatItemViewModel
             {
                 Name = pair.Key,
                 Value = pair.Value,
                 IsSelected = isEnabled
-            });
+            };
+            
+            cheatItem.PropertyChanged += CheatItem_PropertyChanged;
+            Cheats.Add(cheatItem);
+        }
+    }
+
+    private void CheatItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(CheatItemViewModel.IsSelected)) {
+            _ = SaveCheatsAsync();
         }
     }
 
