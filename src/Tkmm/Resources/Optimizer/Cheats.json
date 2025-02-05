@@ -136,8 +136,7 @@
         "Dive Boost": "[Dive Boost]\n040E0000 01D665C8 1E211000\n",
         "Damage 2x": "[Damage Multiplier (2x)]\n040E0000 00838800 1E201008\n040E0000 0083883C 1E201000\n",
         "Damage 4x": "[Damage Multiplier (4x)]\n040E0000 00838800 1E221008\n040E0000 0083883C 1E221000\n",
-        "Infinite Health": "[Inf. Health]\n080E0000 02B17FC8 176E30E5 F9400008\n080E0000 02B17FC0 B9000808 34000048\n040E0000 02B17FBC B9401808\n040E0000 006A435C 1491CF18\n",
-        "Cheat Example": "\n"
+        "Infinite Health": "[Inf. Health]\n080E0000 02B17FC8 176E30E5 F9400008\n080E0000 02B17FC0 B9000808 34000048\n040E0000 02B17FBC B9401808\n040E0000 006A435C 1491CF18\n"
     },
     {
         "Aversion": "1.2.0",
@@ -186,8 +185,7 @@
         "Dive Boost": "[Dive Boost]\n040E0000 01D585F8 1E211000\n",
         "Infinite Health": "[Inf. Health]\n080E0000 02B0AFC8 176D734F F9400008\n080E0000 02B0AFC0 B9000808 34000048\n040E0000 02B0AFBC B9401808\n040E0000 00667D04 14928CAE\n",
         "Damage 2x": "[Damage Multiplier (2x)]\n040E0000 00968D80 1E201008\n040E0000 00968DBC 1E201000\n",
-        "Damage 4x": "[Damage Multiplier (4x)]\n040E0000 00968D80 1E221008\n040E0000 00968DBC 1E221000\n",
-        "Cheat Example": "\n"
+        "Damage 4x": "[Damage Multiplier (4x)]\n040E0000 00968D80 1E221008\n040E0000 00968DBC 1E221000\n"
     },
     {
         "Aversion": "1.2.1",
@@ -204,6 +202,7 @@
         "Quickfire Bow": "[Quickfire Bow]\n040A0000 01D2FE5C 291FA268\n",
         "No Charge Stamina": "[No Stamina Cost For Weapon Charge]\n080A0000 02B19F48 17AAF6A6 1E2703E0\n080A0000 02B19F40 54000040 7100041F\n040A0000 02B19F3C 1E201C20\n040A0000 015D79E0 14550957\n",
         "No Fall Damage": "[Ignore Fall Damage & Reaction]\n040A0000 01D57248 2A1F03F4\n",
+        "Moon Jump (Hold X)": "[Moon Jump (Hold X)]\n580F0000 0471DCB0\n580F1000 000000C8\n580F1000 00000178\n580F1000 00000030\n780F0000 000000FC\n80000004\n640F0000 00000000 41200000\n20000000",
         "Movement speed 3x": "[Movement Speed (3x)]\n040A0000 03877F34 40400000\n",
         "Movement speed 2x": "[Movement Speed (2x)]\n040A0000 03877F34 40000000\n",
         "Movement speed 1x": "[Movement Speed (1x)]\n040A0000 03877F34 3F800000\n",
