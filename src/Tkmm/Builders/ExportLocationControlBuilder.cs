@@ -5,14 +5,12 @@ using Avalonia.Layout;
 using CommunityToolkit.Mvvm.Input;
 using ConfigFactory.Core;
 using ConfigFactory.Generics;
-using FluentAvalonia.UI.Controls;
-using Tkmm.Controls;
-using Tkmm.Core;
 using Tkmm.Core.Models;
+using Tkmm.Helpers;
 
 namespace Tkmm.Builders;
 
-internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocationControlBuilder>
+internal class ExportLocationControlBuilder : ControlBuilder<ExportLocationControlBuilder>
 {
     public override object Build(IConfigModule context, PropertyInfo propertyInfo)
     {
@@ -20,7 +18,14 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
             Content = Locale[TkLocale.Action_Edit],
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Top,
-            Command = EditCommand,
+            Command = new AsyncRelayCommand<ExportLocations>(
+                async exportLocations => {
+                    if (exportLocations is null) {
+                        return;
+                    }
+                    
+                    await ExportLocationsHelper.OpenEditorDialog(exportLocations);
+                }),
             DataContext = context,
             [!Button.CommandParameterProperty] = new Binding(propertyInfo.Name)
         };
@@ -29,22 +34,5 @@ internal partial class ExportLocationControlBuilder : ControlBuilder<ExportLocat
     public override bool IsValid(Type type)
     {
         return type == typeof(ExportLocations);
-    }
-
-    [RelayCommand]
-    public static async Task Edit(ExportLocations source)
-    {
-        TaskDialog dialog = new() {
-            DataContext = source,
-            Buttons = [
-                TaskDialogButton.CloseButton
-            ],
-            Title = Locale[TkLocale.EditExportLocations_Title],
-            Content = new ExportLocationCollectionEditor(),
-            XamlRoot = App.XamlRoot
-        };
-
-        await dialog.ShowAsync();
-        TKMM.Config.Save();
     }
 }

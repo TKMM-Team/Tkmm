@@ -59,7 +59,10 @@
         <StackPanel HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Spacing="5">
-            <Button Command="{Binding NewCommand}">
+            <Button Command="{Binding NewCommand}"
+                    Width="20"
+                    Height="20"
+                    Padding="3">
                 <pi:Icon Value="fa-regular fa-plus" />
             </Button>
         </StackPanel>

@@ -1,4 +1,6 @@
 using Avalonia.Platform.Storage;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Controls;
 using Tkmm.Core;
 using Tkmm.Core.Models;
 using Tkmm.Dialogs;
@@ -8,9 +10,9 @@ namespace Tkmm.Helpers;
 public static class ExportLocationsHelper
 {
     /// <summary>
-    /// 
+    /// Prompts the user to create export locations if none are currently configured.
     /// </summary>
-    /// <returns>false if the calling operation should be cancelled</returns>
+    /// <returns><see langword="false"/> if the calling operation should be cancelled</returns>
     public static async ValueTask<bool> CreateExportLocations()
     {
         if (Config.Shared.ExportLocations.Any(x => x.IsEnabled)) {
@@ -54,6 +56,22 @@ public static class ExportLocationsHelper
             goto RequestAnother;
         }
 
+        await Config.Shared.ExportLocations.Create();
         return true;
+    }
+    
+    public static async ValueTask OpenEditorDialog(ExportLocations source)
+    {
+        TaskDialog dialog = new() {
+            DataContext = source,
+            Buttons = [
+                TaskDialogButton.CloseButton
+            ],
+            Title = Locale[TkLocale.EditExportLocations_Title],
+            Content = new ExportLocationCollectionEditor(),
+            XamlRoot = App.XamlRoot
+        };
+
+        await dialog.ShowAsync();
     }
 }
