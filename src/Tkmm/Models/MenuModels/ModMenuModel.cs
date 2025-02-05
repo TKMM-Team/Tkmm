@@ -2,6 +2,7 @@ using Tkmm.Actions;
 using Tkmm.Attributes;
 using Tkmm.Builders;
 using Tkmm.Core;
+using Tkmm.Helpers;
 
 // ReSharper disable UnusedMember.Global
 
@@ -37,8 +38,7 @@ public class ModMenuModel
     [TkMenu(TkLocale.Menu_ModEditExportLocations, TkLocale.Menu_Mod, InputGesture = "Ctrl + L", Icon = "fa-regular fa-pen-to-square", IsSeparator = true)]
     public static async Task EditExportLocations()
     {
-        // TODO: Abstract this to somewhere else
-        await ExportLocationControlBuilder.Edit(TKMM.Config.ExportLocations);
+        await ExportLocationsHelper.OpenEditorDialog(TKMM.Config.ExportLocations);
     }
 #endif
 
