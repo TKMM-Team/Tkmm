@@ -462,6 +462,30 @@
       "zh_CN": "",
       "zh_TW": ""
     },
+    "CheatsPage_VersionLabel": {
+      "en_US": "Detected Game Version: ",
+      "de_DE": "Erkannte Spielversion: ",
+      "es_ES": "Versión del juego detectada: ",
+      "fr_FR": "Version du jeu détectée: ",
+      "it_IT": "Versione del gioco rilevata: ",
+      "ja_JP": "検出されたゲームバージョン: ",
+      "ko_KR": "감지된 게임 버전: ",
+      "ru_RU": "Обнаруженная версия игры: ",
+      "zh_CN": "检测到的游戏版本: ",
+      "zh_TW": "檢測到的遊戲版本: "
+    },
+    "CheatsPage_NoCheatsAvailable": {
+      "en_US": "No cheats are available for your current configuration.",
+      "de_DE": "Keine Cheats sind für Ihre aktuelle Konfiguration verfügbar.",
+      "es_ES": "No hay cheats disponibles para su configuración actual.",
+      "fr_FR": "Aucun cheat n'est disponible pour votre configuration actuelle.",
+      "it_IT": "Nessun cheat è disponibile per la tua configurazione attuale.",
+      "ja_JP": "現在の構成ではチートは利用できません。",
+      "ko_KR": "현재 구성에는 치트가 없습니다.",
+      "ru_RU": "Для вашей текущей конфигурации чеиты недоступны.",
+      "zh_CN": "当前配置没有可用的作弊功能。",
+      "zh_TW": "目前配置中沒有可用的作弊功能。"
+    },
     "NoticePopupMessage": {
       "ar_SA": "",
       "de_DE": "",
