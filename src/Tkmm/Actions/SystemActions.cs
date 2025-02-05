@@ -104,17 +104,6 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             return;
         }
         
-        ContentDialog dialog = new() {
-            Title = "Update available. Proceed with update?",
-            Content = "Your current session will be saved and closed, are you sure you wish to proceed?",
-            PrimaryButtonText = "Yes",
-            SecondaryButtonText = "Cancel"
-        };
-
-        if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
-            return;
-        }
-
         try {
             await ApplicationUpdatesHelper.PerformUpdates(release, ct);
         }
@@ -122,7 +111,21 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             TkLog.Instance.LogError(ex,
                 "An error occured while updating the application.");
             await ErrorDialog.ShowAsync(ex);
+            return;
         }
+        
+        ContentDialog dialog = new() {
+            Title = Locale[TkLocale.System_Popup_UpdateComplete_Title],
+            Content = Locale[TkLocale.System_Popup_UpdateComplete],
+            PrimaryButtonText = Locale[TkLocale.Action_Yes],
+            SecondaryButtonText = Locale[TkLocale.Action_No]
+        };
+
+        if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
+            return;
+        }
+
+        await ApplicationUpdatesHelper.Restart();
     }
 
     [RelayCommand]
