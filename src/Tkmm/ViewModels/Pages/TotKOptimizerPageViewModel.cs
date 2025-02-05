@@ -10,36 +10,56 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class TotKOptimizerPageViewModel : ObservableObject
 {
-    private const string ConfigFilePath = "romfs/UltraCam/maxlastbreath.ini";
-    private readonly ObservableCollection<OptimizerOption> _options;
+    private static readonly string UltracamFolder = Path.Combine(AppContext.BaseDirectory, ".data", "contents", "00000000000000000000000001", "romfs", "UltraCam");
+    private const string ConfigFileName = "maxlastbreath.ini";
+    private const string OptionsFileName = "Options.json";
+    private const string UltracamResourceName = "Tkmm.Resources.Ultracam.tkcl";
 
-    public TotKOptimizerPageViewModel()
-    {
-        _options = LoadOptions();
-        GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
-    }
-
+    private ObservableCollection<OptimizerOption> _options;
     public ObservableCollection<OptimizerOption> Options => _options;
+
     public IEnumerable<OptimizerOption> MainOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "main" && !o.Auto);
     public IEnumerable<OptimizerOption> ExtrasOptions =>
         Options.Where(o => o.Section?.ToLowerInvariant() == "extra" && !o.Auto);
 
     public IRelayCommand GenerateConfigCommand { get; }
+    public IRelayCommand InstallUltracamCommand { get; }
+
+    private bool _isUltracamInstalled;
+    public bool IsUltracamInstalled
+    {
+        get => _isUltracamInstalled;
+        private set => SetProperty(ref _isUltracamInstalled, value);
+    }
+
+    public TotKOptimizerPageViewModel()
+    {
+        IsUltracamInstalled = Directory.Exists(UltracamFolder);
+        if (IsUltracamInstalled)
+        {
+            _options = LoadOptions();
+        }
+        else
+        {
+            _options = new ObservableCollection<OptimizerOption>();
+        }
+        GenerateConfigCommand = new RelayCommand(async () => await GenerateConfigFile());
+        InstallUltracamCommand = new AsyncRelayCommand(InstallUltracamAsync);
+    }
 
     public async Task GenerateConfigFile()
     {
-        string outputPath = Path.Combine(TKMM.MergedOutputFolder, ConfigFilePath);
-        
-        string? directory = Path.GetDirectoryName(outputPath);
-        if (!string.IsNullOrEmpty(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-        
         string configContent = GenerateConfigContent();
-        
-        await File.WriteAllTextAsync(outputPath, configContent);
+        string mergedOutputPath = Path.Combine(TKMM.MergedOutputFolder, "romfs", "UltraCam", ConfigFileName);
+
+        if (File.Exists(mergedOutputPath)) {
+            await File.WriteAllTextAsync(mergedOutputPath, configContent);
+        }
+
+        string ultracamIniPath = Path.Combine(UltracamFolder, ConfigFileName);
+        Directory.CreateDirectory(UltracamFolder);
+        await File.WriteAllTextAsync(ultracamIniPath, configContent);
     }
 
     private string GenerateConfigContent()
@@ -84,17 +104,13 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         }
 
         var sb = new StringBuilder();
-        foreach (var pair in sectionLines)
-        {
+        foreach (var pair in sectionLines) {
             sb.AppendLine($"[{pair.Key}]");
-            foreach (var line in pair.Value)
-            {
+            foreach (var line in pair.Value) {
                 sb.AppendLine(line);
             }
-
             sb.AppendLine();
         }
-
         return sb.ToString();
     }
 
@@ -112,17 +128,14 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
 
     private ObservableCollection<OptimizerOption> LoadOptions()
     {
-        var options = new ObservableCollection<OptimizerOption>();
-        string resourcePath = "Tkmm.Resources.Optimizer.Options.json";
-
-        using Stream? stream = typeof(TotKOptimizerPageViewModel).Assembly.GetManifestResourceStream(resourcePath);
-        if (stream is null)
-        {
-            throw new FileNotFoundException("Options.json not found.");
+        string optionsPath = Path.Combine(UltracamFolder, OptionsFileName);
+        if (!File.Exists(optionsPath)) {
+            throw new FileNotFoundException($"Options file not found at {optionsPath}");
         }
 
-        using StreamReader reader = new(stream);
+        using var reader = new StreamReader(optionsPath);
         string json = reader.ReadToEnd();
+        var options = new ObservableCollection<OptimizerOption>();
         var optionsData = JsonDocument.Parse(json).RootElement.GetProperty("Keys");
 
         foreach (var option in optionsData.EnumerateObject())
@@ -220,5 +233,26 @@ public partial class TotKOptimizerPageViewModel : ObservableObject
         }
 
         return options;
+    }
+
+    private async Task InstallUltracamAsync()
+    {
+        var assembly = typeof(TotKOptimizerPageViewModel).Assembly;
+        using var stream = assembly.GetManifestResourceStream(UltracamResourceName);
+        
+        if (stream == null) {
+            throw new FileNotFoundException($"Resource {UltracamResourceName} not found.");
+        }
+        
+        await TKMM.Install("Ultracam.tkcl", stream);
+
+        IsUltracamInstalled = Directory.Exists(UltracamFolder);
+        
+        if (IsUltracamInstalled) {
+            _options = LoadOptions();
+            OnPropertyChanged(nameof(Options));
+            OnPropertyChanged(nameof(MainOptions));
+            OnPropertyChanged(nameof(ExtrasOptions));
+        }
     }
 }
