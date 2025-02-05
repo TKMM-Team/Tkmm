@@ -13,7 +13,6 @@
   <UserControl.Resources>
     <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
     <conv:DoubleValueConverter x:Key="DoubleConverter"/>
-    <conv:BooleanValueConverter x:Key="BooleanConverter"/>
     <ResourceDictionary x:Key="LocalTemplates">
       <DataTemplate x:Key="DropdownTemplate" x:DataType="models:OptimizerOption">
         <StackPanel Orientation="Horizontal" Spacing="10">
@@ -38,7 +37,7 @@
       </DataTemplate>
       <DataTemplate x:Key="CheckboxTemplate" x:DataType="models:OptimizerOption">
         <CheckBox Content="{Binding Name}"
-                  IsChecked="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource BooleanConverter}}"/>
+                  IsChecked="{Binding SelectedValue, Mode=TwoWay}"/>
       </DataTemplate>
     </ResourceDictionary>
   </UserControl.Resources>
