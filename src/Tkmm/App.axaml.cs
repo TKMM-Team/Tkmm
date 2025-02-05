@@ -105,6 +105,20 @@ public class App : Application
         ShellView shellView = new() {
             DataContext = ShellViewModel.Shared
         };
+        
+#if SWITCH
+        shellView.AddVirtualKeyboard();
+        shellView.PowerOptionsMenu.IsVisible = true;
+        shellView.NxBatteryStatusPanel.IsVisible = true;
+        
+        AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
+            localeKeyName => Locale[localeKeyName, failSoftly: true]
+        );
+        nxSystemMenu.AddMenuGroup<NxMenuModel>();
+        shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
+        
+        BatteryStatusWatcher.Start();
+#endif
 
         shellView.InitializeWizard();
         
@@ -125,20 +139,6 @@ public class App : Application
 
         MenuFactory.ConfigureMenu();
         shellView.MainMenu.ItemsSource = MenuFactory.Items;
-
-#if SWITCH
-        shellView.AddVirtualKeyboard();
-        shellView.PowerOptionsMenu.IsVisible = true;
-        shellView.NxBatteryStatusPanel.IsVisible = true;
-        
-        AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
-            localeKeyName => Locale[localeKeyName, failSoftly: true]
-        );
-        nxSystemMenu.AddMenuGroup<NxMenuModel>();
-        shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
-        
-        BatteryStatusWatcher.Start();
-#endif
 
         desktop.MainWindow = shellView;
 
