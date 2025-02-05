@@ -7,7 +7,8 @@ public static class OctokitHelper
 {
     private const string USER_AGENT = "tkmm-client-application";
     
-    private static readonly string _assetName = $"tkmm-win-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}";
+    private static readonly string _runtimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
+    private static readonly string _assetName = $"tkmm-{_runtimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
     
     private static readonly HttpClient _client = new() {
         DefaultRequestHeaders = {

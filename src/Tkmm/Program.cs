@@ -5,6 +5,7 @@ using Projektanker.Icons.Avalonia.FontAwesome;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
+using Tkmm.Helpers;
 using TkSharp.Core;
 using TkSharp.Core.Common;
 
@@ -22,6 +23,8 @@ internal abstract class Program
 
             // Reroute backend localization interface
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
+            
+            ApplicationUpdatesHelper.CleanupUpdate();
             
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
