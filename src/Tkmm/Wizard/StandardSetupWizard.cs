@@ -32,6 +32,9 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         if (!result) {
             goto Return;
         }
+
+        TkConfig.Shared.Save();
+        Config.Shared.Save();
     }
 
     private async ValueTask EmulatorSelectionPage()
