@@ -38,8 +38,7 @@
               DragDrop.AllowDrop="True"
               RowDefinitions="32,*,25">
 
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
-                  IsVisible="{Binding !IsFirstTimeSetup}">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                 <Viewbox Width="26"
                          Height="26"
                          Margin="4,2"
