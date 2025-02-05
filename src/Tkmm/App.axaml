@@ -41,6 +41,6 @@
         <StyleInclude Source="/Styles/Markdown.axaml" />
         
         <!-- Controls -->
-        <StyleInclude Source="/Builders/FileOrFolderEdit.axaml" />
+        <StyleInclude Source="/Controls/PathCollectionEditor.axaml" />
     </Application.Styles>
 </Application>

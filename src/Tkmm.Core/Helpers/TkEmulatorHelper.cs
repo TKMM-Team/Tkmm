@@ -43,12 +43,12 @@ public static class TkEmulatorHelper
         foreach ((Application totk, string filePath) in TkGameRomUtils.ScanFolders(configuredGamePaths, keys)) {
             if (totk.Main is not null) {
                 result = true;
-                TkConfig.Shared.PackagedBaseGamePath = filePath;
+                TkConfig.Shared.PackagedBaseGamePaths.Add(filePath);
             }
             
             if (totk.Patch is not null && totk.DisplayVersion is not "100") {
                 hasUpdate = true;
-                TkConfig.Shared.PackagedUpdatePath = filePath;
+                TkConfig.Shared.PackagedUpdatePaths.Add(filePath);
             }
 
             if (result && hasUpdate) {
