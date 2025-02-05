@@ -68,6 +68,11 @@ public partial class PageManager : ObservableObject
         Current = this[page];
     }
 
+    partial void OnCurrentChanged(PageModel? value)
+    {
+        value?.OnActivate?.Invoke();
+    }
+    
     public T Get<T>(Page page) where T : ObservableObject
     {
         (int index, bool isFooter) = _lookup[page];
