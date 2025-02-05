@@ -189,6 +189,7 @@ public partial class CheatsPageViewModel : ObservableObject
 
             if (_cheatVersions.TryGetValue(cheatKey, out var cheatVersion))
             {
+                TkLog.Instance.LogInformation("Found matching cheat version: {CheatKey}", cheatKey);
                 SelectedVersion = cheatKey;
                 CheatsAvailable = true;
                 _persistedEnabledCheats = LoadPersistedEnabledCheats();
@@ -196,6 +197,7 @@ public partial class CheatsPageViewModel : ObservableObject
             }
             else
             {
+                TkLog.Instance.LogWarning("CheatsPageViewModel: No matching cheat version for key: {CheatKey}", cheatKey);
                 CheatsAvailable = false;
             }
         }

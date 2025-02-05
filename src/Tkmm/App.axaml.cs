@@ -173,6 +173,17 @@ public class App : Application
 #endif
         PageManager.Shared.Register(Page.Settings, TkLocale.SettingsPageTitle, settingsPage, Symbol.Settings, TkLocale.SettingsPageDesc, isFooter: true, isDefault: isValid == false);
 
+        var cheatsPage = PageManager.Shared[Page.Cheats];
+        cheatsPage.OnActivate = () =>
+        {
+            TkLog.Instance.LogInformation("Cheats page activated; refreshing version.");
+            if (cheatsPage.Content is UserControl uc &&
+                uc.DataContext is Tkmm.ViewModels.Pages.CheatsPageViewModel vm)
+            {
+                vm.RefreshVersion();
+            }
+        };
+
         OnThemeChanged(Config.Shared.Theme);
 
         base.OnFrameworkInitializationCompleted();

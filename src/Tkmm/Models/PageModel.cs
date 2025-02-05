@@ -1,4 +1,5 @@
 ﻿using FluentAvalonia.UI.Controls;
+using System;
 
 namespace Tkmm.Models;
 
@@ -8,4 +9,5 @@ public class PageModel
     public object? Content { get; set; }
     public required Symbol Icon { get; set; }
     public string? Description { get; set; }
+    public Action? OnActivate { get; set; }
 }
