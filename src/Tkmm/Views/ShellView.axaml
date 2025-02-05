@@ -33,8 +33,6 @@
         </Transitions>
     </uiw:AppWindow.Transitions>-->
     <Grid>
-        <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
-
         <Grid Background="Transparent"
               Classes="InstallModDropTarget"
               DragDrop.AllowDrop="True"
@@ -140,5 +138,7 @@
                 </TextBlock>
             </Grid>
         </Grid>
+        
+        <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
     </Grid>
 </uiw:AppWindow>
