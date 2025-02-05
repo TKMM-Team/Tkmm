@@ -17,7 +17,7 @@
         <TextBlock IsVisible="{Binding CheatsAvailable}" HorizontalAlignment="Left" Margin="0,0,0,10" >
           <TextBlock.Inlines>
             <Run Text="{ext:Locale CheatsPage_VersionLabel}" />
-            <Run Text="{Binding SelectedVersion}" Foreground="{DynamicResource SystemAccentColor}" FontWeight="Bold"/>
+            <Run Text="{Binding SelectedVersion}" Foreground="{DynamicResource SystemAccentColorLight3}" FontWeight="Bold"/>
           </TextBlock.Inlines>
         </TextBlock>
         <!-- Cheats list -->
