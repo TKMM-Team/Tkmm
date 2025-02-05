@@ -1,17 +1,15 @@
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using Tkmm.Builders;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
+using Tkmm.Helpers;
 using Tkmm.Models;
 using Tkmm.Views.Common;
 using TkSharp.Core;
@@ -45,45 +43,14 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             return;
         }
 
-        // TODO: Find a better way to store conditional popups
-        #if !SWITCH
-        const string suppressMergeExportLocationsPrompt = "SuppressMergeExportLocationsPrompt";
-        if (!Config.Shared.ExportLocations.Any(exportLocation => exportLocation.IsEnabled) && !NamedDialogConfig.Shared[suppressMergeExportLocationsPrompt].IsSuppressed) {
-            ContentDialog dialog = new() {
-                Title = "Warning",
-                Content = new StackPanel {
-                    Spacing = 5,
-                    Children = {
-                        new TextBlock {
-                            Text = "There are currently no export locations enabled. Would you like to configure them now?",
-                            TextWrapping = TextWrapping.WrapWithOverflow
-                        },
-                        new CheckBox {
-                            Content = "Never show again (recommended for Switch users).",
-                            DataContext = NamedDialogConfig.Shared,
-                            [!ToggleButton.IsCheckedProperty] = NamedDialogConfig.GetBinding(suppressMergeExportLocationsPrompt)
-                        }
-                    }
-                },
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "No",
-                DefaultButton = ContentDialogButton.Primary
-            };
-
-            // TODO: Abstract to another location (EditExportLocations)
-            {
-                if (await dialog.ShowAsync() is ContentDialogResult.Primary) {
-                    await ExportLocationControlBuilder.Edit(Config.Shared.ExportLocations);
-                }
-
-                Config.Shared.Save();
-            }
-        }
-        #endif
-
         CancellationTokenSource modalCancelTokenSource = new();
 
         try {
+            if (!await ExportLocationsHelper.CreateExportLocations()) {
+                TkStatus.SetTemporary("Merge Cancelled", "fa-regular fa-ban");
+                return;
+            }
+
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
             await TKMM.Merge(profile, ipsOutputPath, ct);
