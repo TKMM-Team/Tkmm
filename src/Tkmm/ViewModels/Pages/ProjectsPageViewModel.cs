@@ -146,6 +146,8 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         ITkModWriter writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
         using ITkRom tkRom = TKMM.GetTkRom();
         await Project.Build(writer, tkRom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
+
+        TKMM.ModManager.Import(Project.Mod);
         
         TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }
