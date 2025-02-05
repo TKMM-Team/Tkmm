@@ -34,35 +34,14 @@
     </uiw:AppWindow.Transitions>-->
     <Grid>
         <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
-        
-        <Grid IsVisible="{Binding IsFirstTimeSetup}"
-              VerticalAlignment="Top"
-              ColumnDefinitions="*,Auto,Auto">
-            <Menu Name="WizPowerOptionsMenu" IsVisible="False"
-                  Grid.Column="1" />
-            <StackPanel Name="WizNxBatteryStatusPanel"
-                        IsVisible="False"
-                        Grid.Column="2" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right" 
-                        Margin="5,0">
-                <TextBlock FontSize="15" 
-                           VerticalAlignment="Center" 
-                           Margin="0,0,4,0" 
-                           Text="{Binding BatteryCharge, StringFormat={}{0}%, Mode=OneWay}" />
-                <pi:Icon Value="{Binding BatteryIcon, Mode=OneWay}" 
-                         FontSize="25"
-                         Margin="0,0,2,0" />
-            </StackPanel>
-        </Grid>
-        
+
         <Grid Background="Transparent"
               Classes="InstallModDropTarget"
               DragDrop.AllowDrop="True"
-              IsVisible="{Binding !IsFirstTimeSetup}"
               RowDefinitions="32,*,25">
-            
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                  IsVisible="{Binding !IsFirstTimeSetup}">
                 <Viewbox Width="26"
                          Height="26"
                          Margin="4,2"
@@ -94,21 +73,23 @@
                     </Grid>
                 </Viewbox>
 
-                <Menu Name="MainMenu" Grid.Column="1" />
+                <Menu Name="MainMenu"
+                      IsVisible="{Binding !IsFirstTimeSetup}"
+                      Grid.Column="1" />
                 <Menu Name="PowerOptionsMenu" IsVisible="False" Grid.Column="2" />
-                
+
                 <StackPanel Name="NxBatteryStatusPanel"
                             IsVisible="False"
-                            Grid.Column="3" 
-                            Orientation="Horizontal" 
-                            HorizontalAlignment="Right" 
+                            Grid.Column="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
                             Margin="5,0">
-                    <TextBlock FontSize="15" 
-                               VerticalAlignment="Center" 
-                               Margin="0,0,4,0" 
+                    <TextBlock FontSize="15"
+                               VerticalAlignment="Center"
+                               Margin="0,0,4,0"
                                Text="{Binding BatteryCharge, StringFormat={}{0}%, Mode=OneWay}" />
-                    <pi:Icon Name="BatteryIcon" 
-                             Value="{Binding BatteryIcon, Mode=OneWay}" 
+                    <pi:Icon Name="BatteryIcon"
+                             Value="{Binding BatteryIcon, Mode=OneWay}"
                              FontSize="25"
                              Margin="0,0,2,0" />
                 </StackPanel>
@@ -116,6 +97,7 @@
 
             <ui:NavigationView Name="MainNavigation"
                                Grid.Row="1"
+                               IsVisible="{Binding !IsFirstTimeSetup}"
                                FooterMenuItemsSource="{Binding FooterPages, Source={x:Static components1:PageManager.Shared}}"
                                IsSettingsVisible="False"
                                MenuItemsSource="{Binding Pages, Source={x:Static components1:PageManager.Shared}}"
@@ -133,6 +115,7 @@
             </ui:NavigationView>
 
             <Grid Grid.Row="2"
+                  IsVisible="{Binding !IsFirstTimeSetup}"
                   ColumnDefinitions="Auto,Auto,*,Auto,Auto"
                   IsHitTestVisible="False">
                 <Border Grid.ColumnSpan="5" Background="{DynamicResource SystemAccentColor}" />
@@ -141,7 +124,8 @@
                            Margin="5,0"
                            VerticalAlignment="Center"
                            FontFamily="{StaticResource UbuntuMono}">
-                    <Run Text="{Binding Status, Source={x:Static tk:TkStatus.Shared}}" /><Run Text="{Binding Suffix, Source={x:Static tk:TkStatus.Shared}}" />
+                    <Run Text="{Binding Status, Source={x:Static tk:TkStatus.Shared}}" />
+                    <Run Text="{Binding Suffix, Source={x:Static tk:TkStatus.Shared}}" />
                 </TextBlock>
                 <TextBlock Grid.Column="3"
                            Margin="5,0"
