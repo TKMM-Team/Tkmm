@@ -129,16 +129,13 @@ public class App : Application
 #if SWITCH
         shellView.AddVirtualKeyboard();
         shellView.PowerOptionsMenu.IsVisible = true;
-        shellView.WizPowerOptionsMenu.IsVisible = true;
         shellView.NxBatteryStatusPanel.IsVisible = true;
-        shellView.WizNxBatteryStatusPanel.IsVisible = true;
         
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
             localeKeyName => Locale[localeKeyName, failSoftly: true]
         );
         nxSystemMenu.AddMenuGroup<NxMenuModel>();
         shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
-        shellView.WizPowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
         
         BatteryStatusWatcher.Start();
 #endif
