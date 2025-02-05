@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Views.Pages
@@ -9,6 +10,14 @@ namespace Tkmm.Views.Pages
         {
             InitializeComponent();
             DataContext = new CheatsPageViewModel();
+        }
+
+        protected override void OnAttachedToVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            if (DataContext is CheatsPageViewModel vm) {
+                vm.RefreshVersion();
+            }
         }
     }
 } 

@@ -46,7 +46,6 @@ public partial class CheatsPageViewModel : ObservableObject
     {
         SaveCommand = new AsyncRelayCommand(SaveCheatsAsync);
         LoadCheatsCatalog();
-        DetectAndApplyVersion();
     }
 
     private void LoadCheatsCatalog()
@@ -177,7 +176,7 @@ public partial class CheatsPageViewModel : ObservableObject
             JsonSerializer.Serialize(enabledCheats, new JsonSerializerOptions { WriteIndented = true }));
     }
 
-    private void DetectAndApplyVersion()
+    public void RefreshVersion()
     {
         try
         {
