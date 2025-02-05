@@ -39,6 +39,7 @@
         <StyleInclude Source="/Styles/RadioButtonStyles.axaml" />
         <StyleInclude Source="/Styles/ToastStyles.axaml" />
         <StyleInclude Source="/Styles/Markdown.axaml" />
+        <StyleInclude Source="/Styles/MessageDialogStyles.axaml" />
         
         <!-- Controls -->
         <StyleInclude Source="/Controls/PathCollectionEditor.axaml" />
