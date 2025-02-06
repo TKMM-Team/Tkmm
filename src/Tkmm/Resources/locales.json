@@ -1788,7 +1788,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Keys are missing, please reboot to Hekate and inject the Lockpick_RCM payload in order to dump them.",
+      "en_US": "The production keys (prod.keys) and/or title keys (title.keys) are missing, please reboot to Hekate and inject the Lockpick_RCM payload to dump them.",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
