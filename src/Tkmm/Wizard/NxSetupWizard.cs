@@ -1,0 +1,70 @@
+#if SWITCH
+
+using Avalonia.Controls.Presenters;
+using Tkmm.Core;
+using Tkmm.Models.MenuModels;
+using Tkmm.Wizard.Pages;
+using TkSharp.Extensions.LibHac.Util;
+
+namespace Tkmm.Wizard
+{
+    public sealed class NxSetupWizard(ContentPresenter presenter) : SetupWizard(presenter)
+    {
+        public override async ValueTask Start()
+        {
+            TkConfig.Shared.SdCardRootPath = "/flash";
+
+        FirstPage:
+            await FirstPage();
+
+            if (TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out _)) {
+                goto Verify;
+            }
+
+            bool proceed = await NextPage()
+                .WithTitle(TkLocale.SetupWizard_MissingKeys_Title)
+                .WithContent(TkLocale.SetupWizard_MissingKeys_Content)
+                .WithActionContent(TkLocale.Menu_NxReboot)
+                .Show();
+
+            if (!proceed) {
+                goto FirstPage;
+            }
+
+            NxMenuModel.Reboot();
+            await Task.Delay(-1);
+
+        Verify:
+            if (TKMM.TryGetTkRom() is not null) {
+                goto LangPage;
+            }
+
+            bool result = await NextPage()
+                .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
+                .WithContent<NxDumpConfigPage>()
+                .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
+                .Show();
+
+            if (!result) {
+                goto FirstPage;
+            }
+
+            goto Verify;
+
+        LangPage:
+            bool langResult = await NextPage()
+                .WithTitle(TkLocale.WizPageFinal_Title)
+                .WithContent<GameLanguageSelectionPage>()
+                .WithActionContent(TkLocale.WizPageFinal_Action_Finish)
+                .Show();
+
+            if (!langResult) {
+                goto FirstPage;
+            }
+
+            TkConfig.Shared.Save();
+        }
+    }
+}
+
+#endif

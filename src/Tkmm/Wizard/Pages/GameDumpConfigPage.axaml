@@ -24,7 +24,6 @@
                                    Margin="5,0,0,5" />
                         <TextBox Grid.Row="1"
                                  Name="KeysFolderPathField"
-                                 Tag="folder"
                                  Text="{Binding KeysFolderPath, Source={x:Static core:TkConfig.Shared}}"
                                  TextWrapping="NoWrap" />
                         <Button Grid.Column="1" Grid.Row="1"
