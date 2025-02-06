@@ -1,4 +1,5 @@
 #if SWITCH
+
 using Avalonia.Controls.Presenters;
 using Tkmm.Core;
 using Tkmm.Models.MenuModels;
@@ -12,47 +13,43 @@ namespace Tkmm.Wizard
         public override async ValueTask Start()
         {
             TkConfig.Shared.SdCardRootPath = "/flash";
-            TkConfig.Shared.KeysFolderPath = "/flash/switch";
 
         FirstPage:
             await FirstPage();
-            
-            if (!TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out var keys))
-            {
-                bool proceed = await NextPage()
-                    .WithTitle(TkLocale.SetupWizard_MissingKeys_Title)
-                    .WithContent(TkLocale.SetupWizard_MissingKeys_Content)
-                    .WithActionContent(TkLocale.Menu_NxReboot)
-                    .Show();
-                if (!proceed)
-                {
-                    goto FirstPage;
-                }
-                NxMenuModel.Reboot();
-                await Task.Delay(-1);
+
+            if (TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out _)) {
+                goto Verify;
             }
-  
+
+            bool proceed = await NextPage()
+                .WithTitle(TkLocale.SetupWizard_MissingKeys_Title)
+                .WithContent(TkLocale.SetupWizard_MissingKeys_Content)
+                .WithActionContent(TkLocale.Menu_NxReboot)
+                .Show();
+
+            if (!proceed) {
+                goto FirstPage;
+            }
+
+            NxMenuModel.Reboot();
+            await Task.Delay(-1);
+
         Verify:
-            if (TKMM.TryGetTkRom() is not null)
-            {
+            if (TKMM.TryGetTkRom() is not null) {
                 goto LangPage;
             }
 
             bool result = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
-                .WithContent<NxDumpConfigPage>(new NxDumpConfigPageContext())
+                .WithContent<NxDumpConfigPage>()
                 .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
                 .Show();
 
-            if (!result)
-            {
+            if (!result) {
                 goto FirstPage;
             }
-            
-            if (TKMM.TryGetTkRom() is null)
-            {
-                goto Verify;
-            }
+
+            goto Verify;
 
         LangPage:
             bool langResult = await NextPage()
@@ -61,18 +58,13 @@ namespace Tkmm.Wizard
                 .WithActionContent(TkLocale.WizPageFinal_Action_Finish)
                 .Show();
 
-            if (!langResult)
-            {
-                if (TKMM.TryGetTkRom() is not null)
-                {
-                    goto FirstPage;
-                }
-                goto Verify;
+            if (!langResult) {
+                goto FirstPage;
             }
 
             TkConfig.Shared.Save();
-            Config.Shared.Save();
         }
     }
-} 
+}
+
 #endif

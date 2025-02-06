@@ -7,7 +7,6 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              xmlns:core="using:Tkmm.Core"
              xmlns:tkc="using:Tkmm.Controls"
-             x:DataType="vm:NxDumpConfigPageContext"
              x:Class="Tkmm.Wizard.Pages.NxDumpConfigPage">
     <Grid>
         <!-- Only one section for XCI/NSP since SD card and RomFS are not needed -->
