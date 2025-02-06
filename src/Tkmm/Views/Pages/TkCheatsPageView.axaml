@@ -1,0 +1,48 @@
+<UserControl x:Class="Tkmm.Views.Pages.TkCheatsPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:DataType="vm:TkCheatsPageViewModel"
+             mc:Ignorable="d">
+    <Grid Margin="15">
+        <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding CheatsAvailable}">
+            <TextBlock Text="{ext:Locale CheatsPageTitle}"
+                       FontSize="24" />
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Left" Margin="0,0,0,10">
+                <TextBlock.Inlines>
+                    <Run Text="{ext:Locale CheatsPage_VersionLabel}" />
+                    <Run Text="{Binding SelectedVersion}"
+                         Foreground="{DynamicResource SystemAccentColorLight3}"
+                         FontWeight="Bold" />
+                </TextBlock.Inlines>
+            </TextBlock>
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding Cheats}"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TkCheatsPageViewModel+CheatItemViewModel">
+                            <CheckBox Content="{Binding Name}"
+                                      IsChecked="{Binding IsSelected}"
+                                      Margin="5" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <TextBlock Text="{ext:Locale TkCheatsPage_Unavailable}"
+                   IsVisible="{Binding !CheatsAvailable}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+    </Grid>
+</UserControl>
