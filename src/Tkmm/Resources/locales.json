@@ -1872,7 +1872,95 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_KeysFolderField_Description": {
+    "SetupWizard_GameDumpConfigPage_XciNspTab_Title": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "XCI/NSP",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_GameDumpConfigPage_RomfsTab_Title": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "RomFS Folder",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_GameDumpConfigPage_SdCardTab_Title": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "SD Card",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_GameDumpConfigPage_NandTab_Title": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "NAND",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_GameDumpConfigPage_KeysFolderField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1894,7 +1982,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_BaseGameFileField_Description": {
+    "SetupWizard_GameDumpConfigPage_BaseGameFileField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1916,7 +2004,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_GameUpdateFileField_Description": {
+    "SetupWizard_GameDumpConfigPage_GameUpdateFileField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1938,7 +2026,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_GameDumpFolderField_Description": {
+    "SetupWizard_GameDumpConfigPage_GameDumpFolderField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1960,7 +2048,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_SdCardFolderField_Description": {
+    "SetupWizard_GameDumpConfigPage_SdCardFolderField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -1982,7 +2070,29 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_SdCardFolderField_Info": {
+    "SetupWizard_GameDumpConfigPage_NandFolderField_Description": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "NAND Folder Path",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
+    "SetupWizard_GameDumpConfigPage_SdCardFolderField_Info": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -2004,7 +2114,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_OptionalGameUpdateFileField_Description": {
+    "SetupWizard_GameDumpConfigPage_OptionalGameUpdateFileField_Description": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -2026,7 +2136,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "WizDumpPage_Action_Browse": {
+    "SetupWizard_GameDumpConfigPage_Action_Browse": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
