@@ -45,7 +45,6 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         bool result = await NextPage()
             .WithTitle(TkLocale.SetupWizard_EmulatorSelection_Title)
             .WithContent<EmulatorSelectionPage>(context)
-            .WithHelpContent("Test")
             .Show();
 
         switch (result) {
