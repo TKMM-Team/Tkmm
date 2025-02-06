@@ -16,11 +16,11 @@
                 <Setter Property="Padding" Value="10,6" />
             </Style>
         </TabControl.Styles>
-        <TabItem Header="XCI/NSP">
+        <TabItem Header="{ext:Locale SetupWizard_GameDumpConfigPage_XciNspTab_Title}">
             <ScrollViewer>
                 <StackPanel Spacing="15" Margin="0,10,15,0">
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
-                        <TextBlock Text="{ext:Locale WizDumpPage_KeysFolderField_Description}"
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_KeysFolderField_Description}"
                                    Margin="5,0,0,5" />
                         <TextBox Grid.Row="1"
                                  Name="KeysFolderPathField"
@@ -28,19 +28,19 @@
                                  TextWrapping="NoWrap" />
                         <Button Grid.Column="1" Grid.Row="1"
                                 Margin="5,0,0,0"
-                                Content="{ext:Locale WizDumpPage_Action_Browse}"
+                                Content="{ext:Locale SetupWizard_GameDumpConfigPage_Action_Browse}"
                                 Command="{Binding BrowseCommand}"
                                 CommandParameter="{Binding #KeysFolderPathField}" />
                     </Grid>
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
-                        <TextBlock Text="{ext:Locale WizDumpPage_BaseGameFileField_Description}"
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_BaseGameFileField_Description}"
                                    Margin="5,0,0,5" />
                         <tkc:PathCollectionEditor Grid.Row="1"
                                                   FileBrowserFilter="XCI/NSP:*.xci;*.nsp|All files:*.*"
                                                   Value="{Binding PackagedBaseGamePaths, Source={x:Static core:TkConfig.Shared}}" />
                     </Grid>
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
-                        <TextBlock Text="{ext:Locale WizDumpPage_GameUpdateFileField_Description}"
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_GameUpdateFileField_Description}"
                                    Margin="5,0,0,5" />
                         <tkc:PathCollectionEditor Grid.Row="1"
                                                   FileBrowserFilter="NSP:*.nsp|All files:*.*"
@@ -49,11 +49,11 @@
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="RomFS Folder">
+        <TabItem Header="{ext:Locale SetupWizard_GameDumpConfigPage_RomfsTab_Title}">
             <ScrollViewer>
                 <StackPanel Spacing="15" Margin="0,10,15,0">
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
-                        <TextBlock Text="{ext:Locale WizDumpPage_GameDumpFolderField_Description}"
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_GameDumpFolderField_Description}"
                                    Margin="5,0,0,5" />
                         <tkc:PathCollectionEditor Grid.Row="1"
                                                   Type="Folder"
@@ -62,11 +62,11 @@
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="SD Card">
+        <TabItem Header="{ext:Locale SetupWizard_GameDumpConfigPage_SdCardTab_Title}">
             <ScrollViewer>
                 <StackPanel Spacing="15" Margin="0,10,15,0">
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
-                        <TextBlock Text="{ext:Locale WizDumpPage_SdCardFolderField_Description}"
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_SdCardFolderField_Description}"
                                    Margin="5,0,0,5" />
                         <TextBox Grid.Row="1"
                                  Name="SdCardFolderField"
@@ -75,12 +75,12 @@
                                  TextWrapping="NoWrap" />
                         <Button Grid.Column="1" Grid.Row="1"
                                 Margin="5,0,0,0"
-                                Content="{ext:Locale WizDumpPage_Action_Browse}"
+                                Content="{ext:Locale SetupWizard_GameDumpConfigPage_Action_Browse}"
                                 Command="{Binding BrowseCommand}"
                                 CommandParameter="{Binding #SdCardFolderField}" />
                     </Grid>
 
-                    <TextBlock Text="{ext:Locale WizDumpPage_SdCardFolderField_Info}"
+                    <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_SdCardFolderField_Info}"
                                TextWrapping="WrapWithOverflow"
                                FontSize="12"
                                FontStyle="Italic"
@@ -88,7 +88,7 @@
 
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
                         <TextBlock Margin="5,0,0,5">
-                            <Run Text="{ext:Locale WizDumpPage_BaseGameFileField_Description}" /> *
+                            <Run Text="{ext:Locale SetupWizard_GameDumpConfigPage_BaseGameFileField_Description}" /> *
                         </TextBlock>
                         <tkc:PathCollectionEditor Grid.Row="1"
                                                   FileBrowserFilter="XCI/NSP:*.xci;*.nsp|All files:*.*"
@@ -96,11 +96,36 @@
                     </Grid>
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
                         <TextBlock Margin="5,0,0,5">
-                            <Run Text="{ext:Locale WizDumpPage_GameUpdateFileField_Description}" /> *
+                            <Run Text="{ext:Locale SetupWizard_GameDumpConfigPage_GameUpdateFileField_Description}" /> *
                         </TextBlock>
                         <tkc:PathCollectionEditor Grid.Row="1"
                                                   FileBrowserFilter="NSP:*.nsp|All files:*.*"
                                                   Value="{Binding PackagedUpdatePaths, Source={x:Static core:TkConfig.Shared}}" />
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+        <TabItem Header="{ext:Locale SetupWizard_GameDumpConfigPage_NandTab_Title}">
+            <ScrollViewer>
+                <StackPanel Spacing="15" Margin="0,10,15,0">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_KeysFolderField_Description}"
+                                   Margin="5,0,0,5" />
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding KeysFolderPath, Source={x:Static core:TkConfig.Shared}}"
+                                 TextWrapping="NoWrap" />
+                        <Button Grid.Column="1" Grid.Row="1"
+                                Margin="5,0,0,0"
+                                Content="{ext:Locale SetupWizard_GameDumpConfigPage_Action_Browse}"
+                                Command="{Binding BrowseCommand}"
+                                CommandParameter="{Binding #KeysFolderPathField}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
+                        <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_NandFolderField_Description}"
+                                   Margin="5,0,0,5" />
+                        <tkc:PathCollectionEditor Grid.Row="1"
+                                                  Type="Folder"
+                                                  Value="{Binding NandFolderPaths, Source={x:Static core:TkConfig.Shared}}" />
                     </Grid>
                 </StackPanel>
             </ScrollViewer>
