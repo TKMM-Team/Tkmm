@@ -1,6 +1,7 @@
 using LanguageExt;
 using LibHac.Common.Keys;
 using LibHac.Tools.Fs;
+using Tkmm.Core.Models;
 using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Core.Helpers;
@@ -11,11 +12,11 @@ public static class TkEmulatorHelper
     {
         bool result = false;
         hasUpdate = false;
-        
+
         if (!File.Exists(emulatorFilePath)) {
             return Locale["EmulatorFilePathNotFound", emulatorFilePath];
         }
-        
+
         Config.Shared.EmulatorPath = emulatorFilePath;
 
         if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out string emulatorName)
@@ -26,8 +27,17 @@ public static class TkEmulatorHelper
         if (GetKeys(emulatorDataFolderPath, out string keysFolderPath) is not KeySet keys) {
             return Locale["EmulatorKeysNotFound", emulatorName];
         }
-        
+
         TkConfig.Shared.KeysFolderPath = keysFolderPath;
+
+        string nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
+        TkConfig.Shared.NandFolderPaths.Add(nandFolderPath);
+
+        string modFolderPath = Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
+        Config.Shared.ExportLocations.Add(new ExportLocation {
+            SymlinkPath = modFolderPath,
+            IsEnabled = true
+        });
 
         if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
             return false;
@@ -45,34 +55,45 @@ public static class TkEmulatorHelper
                 result = true;
                 TkConfig.Shared.PackagedBaseGamePaths.Add(filePath);
             }
-            
+
             if (totk.Patch is not null && totk.DisplayVersion is not "100") {
                 hasUpdate = true;
                 TkConfig.Shared.PackagedUpdatePaths.Add(filePath);
-            }
-
-            if (result && hasUpdate) {
-                return true;
             }
         }
 
         return result;
     }
-    
+
     private static string? TryGetEmulatorDataFolder(string emulatorFilePath, out string emulatorDataFolderPath, out string emulatorName)
     {
         emulatorName = OperatingSystem.IsWindows()
             ? Path.GetFileNameWithoutExtension(emulatorFilePath)
             : Path.GetFileName(emulatorFilePath);
-        
+
+        if (Path.GetFileName(emulatorFilePath) is string exeFolder
+            && Path.Combine(exeFolder, "user") is var portableDataFolderPath
+            && File.Exists(portableDataFolderPath)) {
+            emulatorDataFolderPath = portableDataFolderPath;
+            if (CheckConfig(emulatorDataFolderPath) is var result) {
+                return result;
+            }
+        }
+
         emulatorDataFolderPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), emulatorName);
-        
+
+    CheckConfig:
         string emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
-        
         return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
     }
-    
+
+    private static string? CheckConfig(string emulatorDataFolderPath)
+    {
+        string emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
+        return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
+    }
+
     private static KeySet? GetKeys(string emulatorDataFolder, out string keysFolderPath)
     {
         keysFolderPath = Path.Combine(emulatorDataFolder, "keys");
@@ -83,13 +104,13 @@ public static class TkEmulatorHelper
     {
         using FileStream fs = File.OpenRead(qtConfigFilePath);
         using StreamReader reader = new(fs);
-        
+
         List<string> results = [];
 
         Span<Range> ranges = stackalloc Range[2];
         ref Range itemKey = ref ranges[0];
         ref Range itemValue = ref ranges[1];
-        
+
         while (reader.ReadLine() is string line) {
             ReadOnlySpan<char> item = line.AsSpan();
 
@@ -100,13 +121,13 @@ public static class TkEmulatorHelper
             if (item.Split(ranges, '=') < 2 || item[itemKey][^4..] is not "path") {
                 continue;
             }
-            
+
             string romFolderPath = line[itemValue];
 
             if (!Directory.Exists(romFolderPath)) {
                 continue;
             }
-            
+
             results.Add(romFolderPath);
         }
 

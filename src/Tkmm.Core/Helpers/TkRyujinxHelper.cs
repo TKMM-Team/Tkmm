@@ -5,6 +5,7 @@ using LanguageExt;
 using LibHac.Common.Keys;
 using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;
+using Tkmm.Core.Models;
 using TkSharp.Core;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -37,6 +38,12 @@ public class TkRyujinxHelper
         }
         
         TkConfig.Shared.KeysFolderPath = systemFolderPath;
+        
+        string modFolderPath = Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
+        Config.Shared.ExportLocations.Add(new ExportLocation {
+            SymlinkPath = modFolderPath,
+            IsEnabled = true
+        });
 
         return TkEmulatorHelper.CheckConfiguredGamePaths(ref result, ref hasUpdate, config.GameDirs, keys);
     }
