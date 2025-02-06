@@ -100,6 +100,18 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _gameDumpFolderPaths = [];
 
+    [ObservableProperty]
+    [property: Config(
+        Header = "NAND Folder Path(s)",
+        Description = "The absolute path to your virtual NAND folder.",
+        Group = "Game Dump")]
+    [property: BrowserConfig(
+        BrowserMode = BrowserMode.OpenFolder,
+        InstanceBrowserKey = "nand-folder-path",
+        Title = "Select virtual NAND folder path")]
+    [property: PathCollectionOptions(PathType.Folder)]
+    private PathCollection _nandFolderPaths = [];
+
     /// <summary>
     /// The original GamePath property used by NXE and other application
     /// </summary>
@@ -116,6 +128,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
+            .WithNand(() => NandFolderPaths)
             .Build();
     }
 }
