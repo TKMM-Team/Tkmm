@@ -48,9 +48,9 @@
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal" Spacing="5">
                                         <TextBlock Text="{Binding Ssid}" />
-                                        <TextBlock Text="[Connected]"
+                                        <TextBlock Text="{ext:Locale NetworkSettings_Connected_Watermark}"
                                                    IsVisible="{Binding IsConnected}"
-                                                   Foreground="{DynamicResource HighlightColor}" />
+                                                   Foreground="{DynamicResource SystemAccentColorLight3}" />
                                     </StackPanel>
                                 </Expander.Header>
 
