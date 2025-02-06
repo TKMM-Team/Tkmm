@@ -164,25 +164,14 @@ public class App : Application
         PageManager.Shared.Register(Page.Profiles, TkLocale.ProfilesPageTitle, new ProfilesPageView(), Symbol.OtherUser, TkLocale.ProfilesPageDesc);
         PageManager.Shared.Register(Page.Tools, TkLocale.ProjectsPageTitle, new ProjectsPageView(), Symbol.CodeHTML, TkLocale.ProjectsPageDesc);
         PageManager.Shared.Register(Page.GbMods, TkLocale.GameBananaPageTitle, new GameBananaPageView(), Symbol.Globe, TkLocale.GameBananaPageDesc);
-        PageManager.Shared.Register(Page.TotKOptimizer, TkLocale.TotkOptimizer, new TotKOptimizerPageView(), Symbol.StarEmphasis, TkLocale.TotkOptimizerDesc);
-        PageManager.Shared.Register(Page.Cheats, TkLocale.CheatsPageTitle, new CheatsPageView(), Symbol.Games, TkLocale.CheatsPageDesc);
+        PageManager.Shared.Register(Page.TotKOptimizer, TkLocale.TotkOptimizerPageTitle, new TkOptimizerPageView(), Symbol.StarEmphasis, TkLocale.TotkOptimizerPageDesc);
+        PageManager.Shared.Register(Page.Cheats, TkLocale.CheatsPageTitle, new TkCheatsPageView(), Symbol.Games, TkLocale.CheatsPageDesc, onPageFocused: TkCheatsPageView.OnPageFocused);
 
         PageManager.Shared.Register(Page.Logs, TkLocale.LogsPageTitle, new LogsPageView(), Symbol.AllApps, TkLocale.LogsPageDesc, isFooter: true);
 #if SWITCH
         PageManager.Shared.Register(Page.NetworkSettings, TkLocale.NetworkSettingsPageTitle, new NetworkSettingsPageView(), Symbol.Wifi4, TkLocale.NetworkSettingsPageDesc, isFooter: true);
 #endif
         PageManager.Shared.Register(Page.Settings, TkLocale.SettingsPageTitle, settingsPage, Symbol.Settings, TkLocale.SettingsPageDesc, isFooter: true, isDefault: isValid == false);
-
-        var cheatsPage = PageManager.Shared[Page.Cheats];
-        cheatsPage.OnActivate = () =>
-        {
-            TkLog.Instance.LogInformation("Cheats page activated; refreshing version.");
-            if (cheatsPage.Content is UserControl uc &&
-                uc.DataContext is Tkmm.ViewModels.Pages.CheatsPageViewModel vm)
-            {
-                vm.RefreshVersion();
-            }
-        };
 
         OnThemeChanged(Config.Shared.Theme);
 

@@ -374,7 +374,7 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "TotkOptimizer": {
+    "TotkOptimizerPageTitle": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
@@ -396,11 +396,11 @@
       "zh_CN": "",
       "zh_TW": ""
     },
-    "TotkOptimizerDesc": {
+    "TotkOptimizerPageDesc": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Settings for Ultracam",
+      "en_US": "In-app TotK Optimizer (UltraCam) client.",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
@@ -444,7 +444,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Enable and disable cheats",
+      "en_US": "TotK cheats",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
