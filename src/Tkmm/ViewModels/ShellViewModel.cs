@@ -18,6 +18,6 @@ public partial class ShellViewModel : ObservableObject
     
     public ShellViewModel()
     {
-        // IsFirstTimeSetup = !Config.Shared.ConfigExists() || TKMM.TryGetTkRom() is null;
+        IsFirstTimeSetup = !Config.Shared.ConfigExists() || TKMM.TryGetTkRom() is null;
     }
 }
