@@ -1,3 +1,5 @@
+#if !SWITCH
+
 using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using Tkmm.Controls;
@@ -75,3 +77,4 @@ public static class ExportLocationsHelper
         await dialog.ShowAsync();
     }
 }
+#endif

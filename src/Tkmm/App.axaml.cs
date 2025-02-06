@@ -55,7 +55,9 @@ public class App : Application
 
     static App()
     {
+#if !SWITCH
         ExportLocationControlBuilder.Shared.Register();
+#endif
         PathCollectionControlBuilder.Shared.Register();
     }
 

@@ -46,10 +46,12 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         CancellationTokenSource modalCancelTokenSource = new();
 
         try {
+#if !SWITCH
             if (!await ExportLocationsHelper.CreateExportLocations()) {
                 TkStatus.SetTemporary("Merge Cancelled", "fa-regular fa-ban");
                 return;
             }
+#endif
 
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
