@@ -24,8 +24,8 @@ namespace Tkmm.Wizard
                     .WithContent(TkLocale.SetupWizard_MissingKeys_Content)
                     .WithActionContent(TkLocale.Menu_NxReboot)
                     .Show();
-                if (!proceed)
-                {
+                
+                if (!proceed) {
                     goto FirstPage;
                 }
                 NxMenuModel.Reboot();
