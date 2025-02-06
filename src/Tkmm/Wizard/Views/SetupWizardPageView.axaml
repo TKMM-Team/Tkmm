@@ -4,18 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ext="using:Tkmm.Markup"
              xmlns:wiz="using:Tkmm.Wizard"
+             xmlns:fa="https://github.com/projektanker/icons.avalonia"
+             xmlns:controls="clr-namespace:Tkmm.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="wiz:SetupWizardPage"
              x:Class="Tkmm.Wizard.Views.SetupWizardPageView">
     <Grid RowDefinitions="*,Auto" Margin="60">
-        <StackPanel VerticalAlignment="Center"
-                    Spacing="20"
-                    HorizontalAlignment="Center">
+        <StackPanel Spacing="20">
             <TextBlock TextWrapping="WrapWithOverflow"
                        FontFamily="{StaticResource HyliaGlyph}"
                        FontSize="46"
                        Text="{Binding Title}" />
             <ContentPresenter Content="{Binding}"
+                              IsVisible="{Binding !#InfoToggle.IsChecked}"
                               TextWrapping="WrapWithOverflow">
                 <ContentPresenter.DataTemplates>
                     <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
@@ -23,19 +24,47 @@
                     </DataTemplate>
                 </ContentPresenter.DataTemplates>
             </ContentPresenter>
-            <HyperlinkButton NavigateUri="https://discord.gg/BbVXenRFVc" Content="Join Discord" />
+            
+            <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding #InfoToggle.IsChecked}">
+                <StackPanel Spacing="5" VerticalAlignment="Top">
+                    <Border BorderBrush="Black"
+                            BorderThickness="1"
+                            CornerRadius="15"
+                            Background="White">
+                        <controls:DiscordQrCode Width="200" Foreground="Black" />
+                    </Border>
+                    <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
+                </StackPanel>
+                <ContentPresenter Content="{Binding}"
+                                  Grid.Column="1"
+                                  Margin="20,0,0,0"
+                                  TextWrapping="WrapWithOverflow">
+                    <ContentPresenter.DataTemplates>
+                        <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
+                            <ContentControl Content="{Binding HelpContent}" />
+                        </DataTemplate>
+                    </ContentPresenter.DataTemplates>
+                </ContentPresenter>
+            </Grid>
         </StackPanel>
 
-        <Grid ColumnDefinitions="Auto,*" Grid.Row="1">
+        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1">
+            <ToggleButton Name="InfoToggle"
+                          Padding="6">
+                <fa:Icon Value="fa-regular fa-info-circle" />
+            </ToggleButton>
+            
+            <Button IsVisible="{Binding !IsFirstPage}"
+                    Grid.Column="1"
+                    Content="{ext:Locale Action_Back}"
+                    Margin="10,0,0,0"
+                    Command="{Binding MoveBackCommand}" />
             <StackPanel Orientation="Horizontal">
-                <Button IsVisible="{Binding !IsFirstPage}"
-                        Content="{ext:Locale Action_Back}"
-                        Command="{Binding MoveBackCommand}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
-                        Grid.Column="1">
+                        Grid.Column="2">
                 <Button Content="{Binding ActionContent}"
                         Command="{Binding MoveNextCommand}" />
             </StackPanel>

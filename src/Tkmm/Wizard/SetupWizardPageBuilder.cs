@@ -29,6 +29,14 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
         return this;
     }
 
+    public SetupWizardPageBuilder WithHelpContent(TkLocale content) => WithHelpContent(Locale[content]);
+
+    public SetupWizardPageBuilder WithHelpContent(object? content)
+    {
+        _page.HelpContent = content;
+        return this;
+    }
+
     public SetupWizardPageBuilder WithContent<TControl>(object? context = null) where TControl : Control, new()
     {
         _page.Content = new TControl {

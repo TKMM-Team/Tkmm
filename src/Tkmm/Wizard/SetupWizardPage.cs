@@ -19,6 +19,9 @@ public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObjec
     private object? _content;
 
     [ObservableProperty]
+    private object? _helpContent;
+
+    [ObservableProperty]
     private object? _actionContent = Locale[TkLocale.Action_Next];
 
     [RelayCommand]
