@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿#if !SWITCH
+
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
@@ -36,3 +38,4 @@ internal class ExportLocationControlBuilder : ControlBuilder<ExportLocationContr
         return type == typeof(ExportLocations);
     }
 }
+#endif
