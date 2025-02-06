@@ -3,6 +3,7 @@ global using static TkSharp.Core.Common.TkLocalizationInterface;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.IO.Readers;
 using Tkmm.Core.Providers;
 using TkSharp;
 using TkSharp.Core;
@@ -121,5 +122,6 @@ public static class TKMM
 
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
+        _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
     }
 }
