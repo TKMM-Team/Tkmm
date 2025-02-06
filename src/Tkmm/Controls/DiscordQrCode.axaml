@@ -1,0 +1,365 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Tkmm.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Tkmm.Controls.DiscordQrCode">
+    <UserControl.Styles>
+        <Style Selector="Rectangle.qbit">
+            <Setter Property="Width" Value="24.72" />
+            <Setter Property="Height" Value="24.72" />
+            <Setter Property="Fill" Value="{Binding $parent[UserControl].Foreground}" />
+        </Style>
+        <Style Selector="Border.anchor">
+            <Setter Property="Width" Value="70" />
+            <Setter Property="Height" Value="70" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Background" Value="{Binding $parent[UserControl].Foreground}" />
+        </Style>
+        <Style Selector="Border.anchor-border">
+            <Setter Property="Width" Value="170" />
+            <Setter Property="Height" Value="170" />
+            <Setter Property="CornerRadius" Value="50" />
+            <Setter Property="BorderThickness" Value="30" />
+            <Setter Property="BorderBrush" Value="{Binding $parent[UserControl].Foreground}" />
+        </Style>
+    </UserControl.Styles>
+    <Viewbox Width="{Binding $parent[UserControl].Width}" Height="{Binding $parent[UserControl].Width}">
+        <Grid>
+            <Viewbox Width="200"
+                     Height="200">
+                <controls:TkmmIcon Foreground="{DynamicResource SystemAccentColor}" />
+            </Viewbox>
+            <Grid Margin="24" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border Classes="anchor-border" />
+                <Border Classes="anchor" />
+            </Grid>
+            <Grid Margin="24" VerticalAlignment="Top" HorizontalAlignment="Right">
+                <Border Classes="anchor-border" />
+                <Border Classes="anchor" />
+            </Grid>
+            <Grid Margin="24" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                <Border Classes="anchor-border" />
+                <Border Classes="anchor" />
+            </Grid>
+            <Canvas Width="744" Height="744">
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 24px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 48px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 48px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 48px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 48px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 48px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 72px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 96px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 120px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 144px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 144px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 144px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 144px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 144px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 168px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 192px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(72px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 216px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(48px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(144px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 240px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(144px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 264px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(48px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 288px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(48px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 312px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(72px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 336px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(48px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 360px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(72px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(144px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 384px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(120px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 408px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(72px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 432px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(96px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(144px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 456px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 480px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(24px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(144px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(168px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(192px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 504px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 528px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 552px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 576px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(696px, 600px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(336px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(408px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 624px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(216px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(288px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(384px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(576px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(624px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 648px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(240px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(504px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(528px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(672px, 672px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(264px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(312px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(360px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(432px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(456px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(480px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(552px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(600px, 696px)" />
+                <Rectangle Classes="qbit" RenderTransform="translate(648px, 696px)" />
+            </Canvas>
+        </Grid>
+    </Viewbox>
+</UserControl>

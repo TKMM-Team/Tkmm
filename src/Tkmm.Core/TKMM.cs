@@ -71,7 +71,7 @@ public static class TKMM
 
     public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs"], recursive: true);
+        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs", "cheats"], recursive: true);
         
         string metadataFilePath = Path.Combine(MergedOutputFolder, "romfs_metadata.bin");
         if (File.Exists(metadataFilePath)) {
@@ -92,6 +92,23 @@ public static class TKMM
         long startTime = Stopwatch.GetTimestamp();
 
         await merger.MergeAsync(TkModManager.GetMergeTargets(profile), ct);
+
+        TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
+        TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+    }
+
+    public static async ValueTask MergeCheats(TkProfile profile, CancellationToken ct = default)
+    {
+        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats"], recursive: true);
+        ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
+
+        // This is very unsafe, only use here
+        // for explicitly merging cheats
+        TkMerger merger = new(writer, null!, null!);
+
+        long startTime = Stopwatch.GetTimestamp();
+
+        await merger.MergeCheatsAsync(TkModManager.GetMergeTargets(profile), ct);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
