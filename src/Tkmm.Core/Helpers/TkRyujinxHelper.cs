@@ -1,9 +1,10 @@
+#if !SWITCH
+
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LanguageExt;
 using LibHac.Common.Keys;
-using LibHac.Tools.Fs;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Models;
 using TkSharp.Core;
@@ -97,3 +98,5 @@ public class TkRyujinxHelper
 public record RyujinxConfig(
     [property: JsonPropertyName("game_dirs")] List<string> GameDirs
 );
+
+#endif

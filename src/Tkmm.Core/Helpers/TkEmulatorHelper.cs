@@ -1,3 +1,5 @@
+#if !SWITCH
+
 using LanguageExt;
 using LibHac.Common.Keys;
 using LibHac.Tools.Fs;
@@ -83,7 +85,6 @@ public static class TkEmulatorHelper
         emulatorDataFolderPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), emulatorName);
 
-    CheckConfig:
         string emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
         return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
     }
@@ -134,3 +135,5 @@ public static class TkEmulatorHelper
         return results;
     }
 }
+
+#endif
