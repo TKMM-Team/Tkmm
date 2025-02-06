@@ -57,8 +57,8 @@ public sealed partial class Config : ConfigModule<Config>
     private bool _autoSaveSettings = true;
     
 #if SWITCH
-    [ObservableProperty]
-    private string _sevenZipPath = "/usr/bin/7zz";
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public string SevenZipPath => "/usr/bin/7zz";
 #else
     [ObservableProperty]
     [property: Config(
@@ -73,6 +73,7 @@ public sealed partial class Config : ConfigModule<Config>
     private string? _sevenZipPath;
 #endif
     
+#if !SWITCH
     [property: Config(
         Header = "Emulator Executable Path",
         Description = "The absolute path to your emulator's executable.",
@@ -86,10 +87,9 @@ public sealed partial class Config : ConfigModule<Config>
         Filter = "Executable:*",
 #endif
         Title = "Select emulator executable")]
-// #if !SWITCH TODO: Exclude other usages
     [ObservableProperty]
     private string? _emulatorPath;
-// #endif
+#endif
     
     [ObservableProperty]
     [property: Config(

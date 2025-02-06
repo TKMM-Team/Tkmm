@@ -24,7 +24,6 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 
         try {
             if (await TKMM.Install(input, stream, context, profile, ct) is not TkMod mod) {
-                // TODO: Fetch message template from locale
                 TkLog.Instance.LogError("The input of type '{InputType}' ('{Input}') failed to install.",
                     input.GetType(), input);
                 return null;
@@ -152,18 +151,13 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        // TODO: Fetch message template from locale
         ContentDialog dialog = new() {
-            Title = "Permanently uninstall?",
-            Content = $"""
-                WARNING: THIS CANNOT BE UNDONE
-
-                Are you sure you would like to permanently uninstall the mod '{target.Name}'?
-                """,
+            Title = Locale[TkLocale.System_Popup_UninstallMod_Title],
+            Content = Locale[TkLocale.System_Popup_UninstallMod_Content, target.Name],
             IsPrimaryButtonEnabled = true,
             IsSecondaryButtonEnabled = true,
-            PrimaryButtonText = "Uninstall",
-            SecondaryButtonText = "Cancel",
+            PrimaryButtonText = Locale[TkLocale.Action_Uninstall],
+            SecondaryButtonText = Locale[TkLocale.Action_Cancel],
             DefaultButton = ContentDialogButton.Secondary,
         };
 
@@ -176,7 +170,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while uninstalling the mod '{ModName}'. " +
-                                     "Manual cleanup may be required.", target.Name);
+                                        "Manual cleanup may be required.", target.Name);
             await ErrorDialog.ShowAsync(ex);
         }
     }

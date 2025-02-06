@@ -1,3 +1,5 @@
+#if !SWITCH
+
 using Avalonia.Controls.Presenters;
 using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
@@ -162,3 +164,5 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         goto Verify;
     }
 }
+
+#endif

@@ -79,8 +79,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
     protected virtual bool EnsureConfiguration([MaybeNullWhen(true)] out string reason)
     {
         if (TKMM.TryGetTkRom() is not { } tkRom) {
-            // TODO: Set reason to a translated message
-            reason = "Failed to retrieve TotK rom. Please review your TotK configuration.";
+            reason = Locale[TkLocale.Error_IncompleteRomConfig];
             TkLog.Instance.LogCritical("[ROM Check] Failed to retrieve TotK rom.");
             return false;
         }
