@@ -40,7 +40,7 @@ public partial class ShellView : AppWindow
             if (!ShellViewModel.Shared.IsFirstTimeSetup) {
                 return;
             }
-#if DEBUG
+#if SWITCH
             SetupWizard wizard = new NxSetupWizard(WizardPresenter);
 #else
             SetupWizard wizard = new StandardSetupWizard(WizardPresenter);

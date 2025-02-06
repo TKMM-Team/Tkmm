@@ -1,7 +1,9 @@
+#if SWITCH
 using Avalonia.Controls.Presenters;
 using Tkmm.Core;
-using Tkmm.Dialogs;
+using Tkmm.Models.MenuModels;
 using Tkmm.Wizard.Pages;
+using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Wizard
 {
@@ -9,45 +11,50 @@ namespace Tkmm.Wizard
     {
         public override async ValueTask Start()
         {
-            // Set configuration paths early so that the verification check can succeed
-            TkConfig.Shared.SdCardRootPath = "F:\\TOTK\\Test Stuff\\SdCard";
-            TkConfig.Shared.KeysFolderPath = "F:\\TOTK\\Test Stuff\\SdCard\\switch";
+            TkConfig.Shared.SdCardRootPath = "/flash";
+            TkConfig.Shared.KeysFolderPath = "/flash/switch";
 
-            // Show the same first page as in the standard wizard.
+        FirstPage:
             await FirstPage();
-
+            
+            if (!TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out var keys))
+            {
+                bool proceed = await NextPage()
+                    .WithTitle(TkLocale.SetupWizard_MissingKeys_Title)
+                    .WithContent(TkLocale.SetupWizard_MissingKeys_Content)
+                    .WithActionContent(TkLocale.Menu_NxReboot)
+                    .Show();
+                if (!proceed)
+                {
+                    goto FirstPage;
+                }
+                NxMenuModel.Reboot();
+                await Task.Delay(-1);
+            }
+  
         Verify:
-            // If configuration is already valid, skip the dump config page.
             if (TKMM.TryGetTkRom() is not null)
             {
                 goto LangPage;
             }
 
-            // Show the NX dump configuration page.
-            bool dumpResult = await NextPage()
+            bool result = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
-                // Use the NX dump page (with keys and SD paths set statically)
                 .WithContent<NxDumpConfigPage>(new NxDumpConfigPageContext())
-                // Use the "Verify" button text (same as in GameDumpConfigPage) so that the button is not empty.
                 .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
                 .Show();
 
-            if (!dumpResult)
+            if (!result)
             {
-                // If the user clicks Back, return to the first page.
-                await FirstPage();
-                goto Verify;
+                goto FirstPage;
             }
-
-            // After the NX dump config page finishes, check the configuration again.
+            
             if (TKMM.TryGetTkRom() is null)
             {
-                // If still invalid, re-show the dump config page.
                 goto Verify;
             }
 
         LangPage:
-            // Show the final game language selection page.
             bool langResult = await NextPage()
                 .WithTitle(TkLocale.WizPageFinal_Title)
                 .WithContent<GameLanguageSelectionPage>()
@@ -56,12 +63,16 @@ namespace Tkmm.Wizard
 
             if (!langResult)
             {
-                goto LangPage;
+                if (TKMM.TryGetTkRom() is not null)
+                {
+                    goto FirstPage;
+                }
+                goto Verify;
             }
 
-            // Save the configuration if everything is complete.
             TkConfig.Shared.Save();
             Config.Shared.Save();
         }
     }
 } 
+#endif
