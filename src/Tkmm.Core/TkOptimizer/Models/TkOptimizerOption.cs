@@ -22,12 +22,14 @@ public sealed class TkOptimizerOption(string key, string name, string descriptio
             (Class: "scale", Type: "s32")
                 => new TkOptimizerRangeValue(option.Default.GetInt32()) {
                     MinValue = option.Values![0].GetInt32(),
-                    MaxValue = option.Values![1].GetInt32()
+                    MaxValue = option.Values![1].GetInt32(),
+                    IncrementSize = option.Increments.GetInt32()
                 },
             (Class: "scale", Type: "f32")
                 => new TkOptimizerFloatingPointRangeValue(option.Default.GetDouble()) {
                     MinValue = option.Values![0].GetDouble(),
-                    MaxValue = option.Values![1].GetDouble()
+                    MaxValue = option.Values![1].GetDouble(),
+                    IncrementSize = option.Increments.GetDouble()
                 },
             (Class: "bool", _) => new TkOptimizerBoolValue(option.Default.GetBoolean()),
             _ => throw new NotSupportedException(

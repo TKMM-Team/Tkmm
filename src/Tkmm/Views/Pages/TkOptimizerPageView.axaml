@@ -63,6 +63,9 @@
                                                                     Text="{Binding Value, StringFormat='{}{0:F2}'}" />
                                                                 <Slider Grid.Row="1"
                                                                         Value="{Binding Value}"
+                                                                        TickPlacement="Outside"
+                                                                        TickFrequency="{Binding IncrementSize}"
+                                                                        IsSnapToTickEnabled="True"
                                                                         Maximum="{Binding MaxValue}"
                                                                         Minimum="{Binding MinValue}" />
                                                             </Grid>
@@ -73,6 +76,9 @@
                                                                     Text="{Binding Value, StringFormat='{}{0:N0}'}" />
                                                                 <Slider Grid.Row="1"
                                                                         Value="{Binding Value}"
+                                                                        TickPlacement="Outside"
+                                                                        TickFrequency="{Binding IncrementSize}"
+                                                                        IsSnapToTickEnabled="True"
                                                                         Maximum="{Binding MaxValue}"
                                                                         Minimum="{Binding MinValue}" />
                                                             </Grid>

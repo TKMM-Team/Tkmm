@@ -9,4 +9,7 @@ public sealed partial class TkOptimizerFloatingPointRangeValue(double @default) 
     
     [ObservableProperty]
     private double _maxValue;
+    
+    [ObservableProperty]
+    private double _incrementSize;
 }
