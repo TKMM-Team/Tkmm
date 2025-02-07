@@ -9,7 +9,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Version Condition="'$(Configuration)' == 'Debug'">0.0.999-dev</Version>
-    <NoWarn>0657</NoWarn>
+    <NoWarn>CS0657,CA1822</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup>

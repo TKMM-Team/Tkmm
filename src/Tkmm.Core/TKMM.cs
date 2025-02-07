@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.IO.Readers;
 using Tkmm.Core.Providers;
+using Tkmm.Core.Services;
 using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
@@ -79,7 +80,7 @@ public static class TKMM
             File.Delete(metadataFilePath);
         }
 
-        ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
+        FolderModWriter writer = new(MergedOutputFolder);
         
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
@@ -92,7 +93,12 @@ public static class TKMM
 
         long startTime = Stopwatch.GetTimestamp();
 
-        await merger.MergeAsync(TkModManager.GetMergeTargets(profile), ct);
+        IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile);
+        if (TkOptimizerService.GetMod(profile) is { } optimizer) {
+            targets = targets.Prepend(optimizer);
+        }
+
+        await merger.MergeAsync(targets, ct);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);

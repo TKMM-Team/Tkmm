@@ -1,96 +1,101 @@
 <UserControl x:Class="Tkmm.Views.Pages.TkOptimizerPageView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:pages="using:Tkmm.ViewModels.Pages"
-             xmlns:conv="using:Tkmm.Converters"
-             xmlns:models="using:Tkmm.Models"
+             xmlns:vm="using:Tkmm.ViewModels.Pages"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ext="using:Tkmm.Markup"
-             x:DataType="pages:TkOptimizerPageViewModel"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=pages:TkOptimizerPageViewModel, IsDesignTimeCreatable=True}">
-
-  <UserControl.Resources>
-    <conv:ClassToTemplateConverter x:Key="ClassToTemplateConverter"/>
-    <conv:DoubleValueConverter x:Key="DoubleConverter"/>
-    <ResourceDictionary x:Key="LocalTemplates">
-      <DataTemplate x:Key="DropdownTemplate" x:DataType="models:OptimizerOption">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-          <TextBlock Text="{Binding Name}" Width="150"/>
-          <ComboBox ItemsSource="{Binding DisplayValues}"
-                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
-                    Width="150"/>
-        </StackPanel>
-      </DataTemplate>
-      <DataTemplate x:Key="SliderTemplate" x:DataType="models:OptimizerOption">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-          <TextBlock Text="{Binding Name}" Width="150"/>
-          <Slider Minimum="{Binding Values[0], Converter={StaticResource DoubleConverter}}"
-                  Maximum="{Binding Values[1], Converter={StaticResource DoubleConverter}}"
-                  Value="{Binding SelectedValue, Mode=TwoWay, Converter={StaticResource DoubleConverter}}"
-                  TickFrequency="{Binding Increments}"
-                  IsSnapToTickEnabled="True"
-                  Width="150"/>
-          <TextBlock Text="{Binding SelectedValue, Converter={StaticResource DoubleConverter}}"
-                     Width="50" VerticalAlignment="Center"/>
-        </StackPanel>
-      </DataTemplate>
-      <DataTemplate x:Key="CheckboxTemplate" x:DataType="models:OptimizerOption">
-        <CheckBox Content="{Binding Name}"
-                  IsChecked="{Binding SelectedValue, Mode=TwoWay}"/>
-      </DataTemplate>
-    </ResourceDictionary>
-
-    <DataTemplate x:Key="InstallUltracamTemplate" x:DataType="pages:TkOptimizerPageViewModel">
-      <StackPanel Margin="20,15,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button Content="Install Ultracam" Command="{Binding InstallUltracamCommand}" />
-      </StackPanel>
-    </DataTemplate>
-
-    <DataTemplate x:Key="OptimizerOptionsTemplate" x:DataType="pages:TkOptimizerPageViewModel">
-      <StackPanel Margin="20,15,0,0">
-        <TextBlock Text="{ext:Locale TotkOptimizerPageTitle}" FontSize="24" Margin="0,0,0,10"/>
-        <Grid ColumnDefinitions="*,*">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <TextBlock Grid.Row="0" Grid.Column="0" Text="Main" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-          <TextBlock Grid.Row="0" Grid.Column="1" Text="Extras" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-          <ItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MainOptions}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="models:OptimizerOption">
-                <ContentControl Content="{Binding}"
-                                ContentTemplate="{Binding Class,
-                                                       Converter={StaticResource ClassToTemplateConverter},
-                                                       ConverterParameter={StaticResource LocalTemplates}}"/>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-          <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ExtrasOptions}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="models:OptimizerOption">
-                <ContentControl Content="{Binding}"
-                                ContentTemplate="{Binding Class,
-                                                       Converter={StaticResource ClassToTemplateConverter},
-                                                       ConverterParameter={StaticResource LocalTemplates}}"/>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+             xmlns:tkm="using:Tkmm.Core.TkOptimizer.Models"
+             xmlns:tkv="using:Tkmm.Core.TkOptimizer.Models.ValueTypes"
+             xmlns:tko="using:Tkmm.Core.TkOptimizer"
+             x:DataType="vm:TkOptimizerPageViewModel"
+             mc:Ignorable="d">
+    <Grid Margin="15">
+        <Grid ColumnDefinitions="Auto,Auto" Margin="10,0,0,0"
+              VerticalAlignment="Top">
+            <TextBlock Text="{ext:Locale TotkOptimizerPageTitle}"
+                       FontSize="32"
+                       FontFamily="{StaticResource HyliaGlyph}" />
+            <ToggleButton Grid.Column="1" Margin="5,0,0,0"
+                          IsChecked="{Binding Context.IsEnabled}">
+                <ToggleButton.Styles>
+                    <Style Selector="ToggleButton">
+                        <Setter Property="Content" Value="{ext:Locale Tip_Disabled}" />
+                    </Style>
+                    <Style Selector="ToggleButton:checked">
+                        <Setter Property="Content" Value="{ext:Locale Tip_Enabled}" />
+                    </Style>
+                </ToggleButton.Styles>
+            </ToggleButton>
         </Grid>
-      </StackPanel>
-    </DataTemplate>
-  </UserControl.Resources>
-
-  <ScrollViewer>
-    <Grid>
-      <ContentControl Content="{Binding}"
-                      ContentTemplate="{StaticResource OptimizerOptionsTemplate}"
-                      IsVisible="{Binding IsUltracamInstalled}"/>
-      <ContentControl Content="{Binding}"
-                      ContentTemplate="{StaticResource InstallUltracamTemplate}"
-                      IsVisible="{Binding IsUltracamInstalled, Converter={x:Static BoolConverters.Not}}"/>
+        <TabControl ItemsSource="{Binding Context.Groups}" Margin="0,25,0,0">
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type tkm:TkOptimizerOptionGroup}">
+                    <ScrollViewer>
+                        <Grid Margin="0,0,6,0">
+                            <ItemsControl ItemsSource="{Binding Options}"
+                                          Margin="-8,3,0,-8"
+                                          Width="{Binding $parent[Grid].Bounds.Width}"
+                                          MaxWidth="860"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type tkm:TkOptimizerOption}">
+                                        <Border Margin="8"
+                                                Padding="10"
+                                                Background="{DynamicResource SystemChromeMediumColor}"
+                                                BorderThickness="1"
+                                                CornerRadius="{DynamicResource ControlCornerRadius}"
+                                                ToolTip.Tip="{Binding Description}">
+                                            <StackPanel Spacing="5">
+                                                <TextBlock Text="{Binding Name}" />
+                                                <ContentControl Content="{Binding Value}">
+                                                    <ContentControl.DataTemplates>
+                                                        <DataTemplate
+                                                            DataType="{x:Type tkv:TkOptimizerFloatingPointRangeValue}">
+                                                            <Grid RowDefinitions="Auto,Auto">
+                                                                <TextBlock
+                                                                    Text="{Binding Value, StringFormat='{}{0:F2}'}" />
+                                                                <Slider Grid.Row="1"
+                                                                        Value="{Binding Value}"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerRangeValue}">
+                                                            <Grid RowDefinitions="Auto,Auto">
+                                                                <TextBlock
+                                                                    Text="{Binding Value, StringFormat='{}{0:N0}'}" />
+                                                                <Slider Grid.Row="1"
+                                                                        Value="{Binding Value}"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerEnumValue}">
+                                                            <ComboBox SelectedIndex="{Binding Value}"
+                                                                      ItemsSource="{Binding Values}"
+                                                                      DisplayMemberBinding="{Binding Name}" />
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerBoolValue}">
+                                                            <ToggleSwitch IsChecked="{Binding Value}" />
+                                                        </DataTemplate>
+                                                    </ContentControl.DataTemplates>
+                                                </ContentControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </Grid>
-  </ScrollViewer>
 </UserControl>
