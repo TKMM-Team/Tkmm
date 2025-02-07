@@ -95,7 +95,7 @@ public static class TKMM
 
         IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile);
         if (TkOptimizerService.GetMod(profile) is { } optimizer) {
-            targets = targets.Prepend(optimizer);
+            targets = targets.Append(optimizer);
         }
 
         await merger.MergeAsync(targets, ct);
