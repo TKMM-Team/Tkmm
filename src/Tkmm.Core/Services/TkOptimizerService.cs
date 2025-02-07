@@ -22,7 +22,7 @@ public class TkOptimizerService
             },
             Source = new EmbeddedSource(
                 "Tkmm.Resources.UltraCam",
-                Assembly.GetCallingAssembly())
+                Assembly.GetEntryAssembly())
         };
     }
 }
