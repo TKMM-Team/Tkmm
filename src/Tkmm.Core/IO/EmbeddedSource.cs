@@ -7,13 +7,30 @@ public class EmbeddedSource(string root, Assembly assembly) : ITkSystemSource
 {
     public Stream OpenRead(string relativeFilePath)
     {
-        relativeFilePath = relativeFilePath.Replace('/', '.').Replace('\\', '.');
-        return assembly.GetManifestResourceStream($"{root}.{relativeFilePath}")!;
+        return assembly.GetManifestResourceStream(GetAbsolute(relativeFilePath))!;
     }
 
     public bool Exists(string relativeFilePath)
     {
-        relativeFilePath = relativeFilePath.Replace('/', '.').Replace('\\', '.');
-        return assembly.GetManifestResourceInfo($"{root}.{relativeFilePath}") is not null;
+        return assembly.GetManifestResourceInfo(GetAbsolute(relativeFilePath)) is not null;
+    }
+
+    public string GetAbsolute(string relativeFilePath)
+    {
+        return string.Create(root.Length + 1 + relativeFilePath.Length, relativeFilePath, (span, chars) => {
+            int pos = -1;
+            foreach (char @char in root) {
+                span[++pos] = @char;
+            }
+
+            span[++pos] = '.';
+
+            foreach (char @char in chars) {
+                span[++pos] = @char switch {
+                    '\\' or '/' => '.',
+                    _ => @char
+                };
+            }
+        });
     }
 }
