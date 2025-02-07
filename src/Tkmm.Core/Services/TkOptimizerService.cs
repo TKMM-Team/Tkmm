@@ -1,4 +1,3 @@
-using System.Reflection;
 using Tkmm.Core.IO;
 using Tkmm.Core.TkOptimizer;
 using TkSharp.Core.Models;
@@ -21,8 +20,7 @@ public class TkOptimizerService
                 "subsdk3"
             },
             Source = new EmbeddedSource(
-                "Tkmm.Resources.UltraCam",
-                Assembly.GetEntryAssembly())
+                "Tkmm.Resources.UltraCam", typeof(TkOptimizerService).Assembly),
         };
     }
 }
