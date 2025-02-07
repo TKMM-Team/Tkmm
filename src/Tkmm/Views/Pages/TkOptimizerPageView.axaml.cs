@@ -10,4 +10,11 @@ public partial class TkOptimizerPageView : UserControl
         InitializeComponent();
         DataContext = new TkOptimizerPageViewModel();
     }
+
+    public static void OnPageFocused(TkOptimizerPageView? view)
+    {
+        if (view?.DataContext is TkOptimizerPageViewModel vm) {
+            vm.Reload();
+        }
+    }
 } 
