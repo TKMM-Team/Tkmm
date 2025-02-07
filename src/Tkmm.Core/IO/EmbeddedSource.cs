@@ -1,4 +1,3 @@
-using System.IO;
 using System.Reflection;
 using TkSharp.Core;
 
