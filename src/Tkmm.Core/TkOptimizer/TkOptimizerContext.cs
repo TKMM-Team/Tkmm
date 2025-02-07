@@ -24,6 +24,7 @@ public sealed class TkOptimizerContext : ObservableObject
         set {
             TkOptimizerStore.Current.IsEnabled = value;
             OnPropertyChanged();
+            WriteToMergeOutput();
         }
     }
 
@@ -32,6 +33,7 @@ public sealed class TkOptimizerContext : ObservableObject
         set {
             TkOptimizerStore.Current.Preset = value;
             OnPropertyChanged();
+            WriteToMergeOutput();
         }
     }
 
@@ -49,7 +51,9 @@ public sealed class TkOptimizerContext : ObservableObject
         foreach (IGrouping<string, KeyValuePair<string, TkOptimizerJson.Option>> section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
             foreach ((string key, TkOptimizerJson.Option option) in section) {
-                group.Options.Add(TkOptimizerOption.FromJson(key, option));
+                var tkOption = TkOptimizerOption.FromJson(key, option);
+                tkOption.Value.PropertyChanged += (s, e) => context.WriteToMergeOutput();
+                group.Options.Add(tkOption);
             }
             
             context.Groups.Add(group);
