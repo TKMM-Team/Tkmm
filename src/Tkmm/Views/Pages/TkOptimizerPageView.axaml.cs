@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Tkmm.Core;
 using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Views.Pages;
@@ -9,6 +10,10 @@ public partial class TkOptimizerPageView : UserControl
     {
         InitializeComponent();
         DataContext = new TkOptimizerPageViewModel();
+        
+        // Ensure the startup
+        // config is written
+        TKMM.MergeBasic();
     }
 
     public static void OnPageFocused(TkOptimizerPageView? view)

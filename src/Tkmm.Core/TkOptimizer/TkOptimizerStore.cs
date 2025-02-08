@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Tkmm.Core.Services;
 using TkSharp.Core.Models;
@@ -6,28 +7,17 @@ using TkOptimizerConfig = System.Collections.Generic.Dictionary<System.Ulid, Tkm
 
 namespace Tkmm.Core.TkOptimizer;
 
-public enum TkOptimizerStoreMode
-{
-    Immediate,
-    Session
-}
-
-public class TkOptimizerStore(Ulid id, TkOptimizerStoreMode mode)
+public class TkOptimizerStore(Ulid id)
 {
     private static readonly string _storeFilePath = Path.Combine(TKMM.ModManager.DataFolderPath, "tk-optimizer.json");
     private static readonly TkOptimizerConfig _store = FromDisk();
 
-    public static TkOptimizerStore Current { get; set; } = Attach();
-    
-    public static void ResetCurrent(TkProfile? profile = null, TkOptimizerStoreMode mode = TkOptimizerStoreMode.Immediate)
-    {
-        Current = Attach(profile, mode);
-    }
+    public static TkOptimizerStore Current => Attach(TKMM.ModManager.GetCurrentProfile());
 
-    public static TkOptimizerStore Attach(TkProfile? profile = null, TkOptimizerStoreMode mode = TkOptimizerStoreMode.Immediate)
+    public static TkOptimizerStore Attach(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
-        return new TkOptimizerStore(profile.Id, mode);
+        return new TkOptimizerStore(profile.Id);
     }
 
     public static bool IsProfileEnabled(TkProfile? profile = null)
@@ -40,7 +30,8 @@ public class TkOptimizerStore(Ulid id, TkOptimizerStoreMode mode)
         get => GetProfile().IsEnabled;
         set {
             GetProfile().IsEnabled = value;
-            if (mode is TkOptimizerStoreMode.Immediate) Save();
+            Save();
+            TKMM.MergeBasic();
         }
     }
 
@@ -48,14 +39,14 @@ public class TkOptimizerStore(Ulid id, TkOptimizerStoreMode mode)
         get => GetProfile().Preset;
         set {
             GetProfile().Preset = value;
-            if (mode is TkOptimizerStoreMode.Immediate) Save();
+            Save();
         }
     }
 
     public void Set<T>(string key, T value) where T : unmanaged
     {
         GetProfile().Values[key] = JsonSerializer.SerializeToElement(value);
-        if (mode is TkOptimizerStoreMode.Immediate) Save();
+        Save();
     }
 
     public T Get<T>(string key, T @default) where T : unmanaged
@@ -75,17 +66,16 @@ public class TkOptimizerStore(Ulid id, TkOptimizerStoreMode mode)
     }
 
     private TkOptimizerProfile GetProfile()
-    {
-        if (!_store.TryGetValue(id, out TkOptimizerProfile? profile)) {
-            _store[id] = profile = new TkOptimizerProfile();
-        }
+    {   
+        ref TkOptimizerProfile? profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out bool exists);
+        if (!exists || profile is null) profile = new TkOptimizerProfile();
 
         return profile;
     }
 
     private static TkOptimizerConfig FromDisk()
     {
-        if (!File.Exists(_storeFilePath)) {
+        if (!File.Exists(_storeFilePath) || new FileInfo(_storeFilePath) is { Length: 0 }) {
             return [];
         }
 
@@ -104,5 +94,7 @@ public class TkOptimizerStore(Ulid id, TkOptimizerStoreMode mode)
         JsonSerializer.Serialize(fs,
             _store.ToDictionary(x => x.Key.ToString(), x => x.Value)
         );
+        
+        TkOptimizerService.Context.ApplyToMergedOutput();
     }
 }

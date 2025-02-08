@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core.TkOptimizer.Models;
 using Tkmm.Core.TkOptimizer.Models.ValueTypes;
 using TkSharp.Core;
+using TkSharp.Core.Models;
 using TkSharp.IO.Writers;
 
 namespace Tkmm.Core.TkOptimizer;
@@ -17,6 +18,14 @@ namespace Tkmm.Core.TkOptimizer;
 /// </summary>
 public sealed class TkOptimizerContext : ObservableObject
 {
+    private TkOptimizerStore? _store;
+
+    [NotNull]
+    public TkOptimizerStore? Store {
+        get => _store ?? TkOptimizerStore.Current;
+        set => _store = value;
+    }
+    
     public ObservableCollection<TkOptimizerOptionGroup> Groups { get; } = [];
 
     public bool IsEnabled {
@@ -24,7 +33,6 @@ public sealed class TkOptimizerContext : ObservableObject
         set {
             TkOptimizerStore.Current.IsEnabled = value;
             OnPropertyChanged();
-            WriteToMergeOutput();
         }
     }
 
@@ -33,13 +41,12 @@ public sealed class TkOptimizerContext : ObservableObject
         set {
             TkOptimizerStore.Current.Preset = value;
             OnPropertyChanged();
-            WriteToMergeOutput();
         }
     }
 
-    public static TkOptimizerContext Create(Assembly? assembly = null)
+    public static TkOptimizerContext Create()
     {
-        using Stream input = GetOptionsJson(assembly ?? Assembly.GetCallingAssembly());
+        using Stream input = GetOptionsJson();
         var json = JsonSerializer.Deserialize<TkOptimizerJson>(input, TkOptimizerJsonContext.Default.TkOptimizerJson);
         return json is null ? new TkOptimizerContext() : FromJson(json);
     }
@@ -51,9 +58,7 @@ public sealed class TkOptimizerContext : ObservableObject
         foreach (IGrouping<string, KeyValuePair<string, TkOptimizerJson.Option>> section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
             foreach ((string key, TkOptimizerJson.Option option) in section) {
-                var tkOption = TkOptimizerOption.FromJson(key, option);
-                tkOption.Value.PropertyChanged += (s, e) => context.WriteToMergeOutput();
-                group.Options.Add(tkOption);
+                group.Options.Add(TkOptimizerOption.FromJson(context, key, option));
             }
             
             context.Groups.Add(group);
@@ -62,7 +67,7 @@ public sealed class TkOptimizerContext : ObservableObject
         return context;
     }
 
-    private static Stream GetOptionsJson(Assembly assembly)
+    private static Stream GetOptionsJson()
     {
         long plainId = 1;
         Ulid id = Unsafe.As<long, Ulid>(ref plainId);
@@ -76,17 +81,25 @@ public sealed class TkOptimizerContext : ObservableObject
             }
         }
 
-        return result ?? assembly.GetManifestResourceStream("Tkmm.Resources.Optimizer.Options.json")!;
+        return result ?? typeof(TkOptimizerContext).Assembly
+            .GetManifestResourceStream("Tkmm.Core.Resources.Optimizer.Options.json")!;
+    }
+
+    public void ApplyToMergedOutput()
+    {
+        ITkModWriter writer = new FolderModWriter(TKMM.MergedOutputFolder);
+        Apply(writer);
     }
     
-    public void WriteToMergeOutput()
+    public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
+        Store = TkOptimizerStore.Attach(profile);
+
         string outputFileName = Path.Combine("romfs", "UltraCam",
             // ReSharper disable once StringLiteralTypo
             "maxlastbreath.ini");
         
-        FolderModWriter mergeOutput = new(TKMM.MergedOutputFolder);
-        using Stream output = mergeOutput.OpenWrite(outputFileName);
+        using Stream output = mergeOutputWriter.OpenWrite(outputFileName);
         using StreamWriter writer = new(output);
 
         foreach (IGrouping<string, TkOptimizerOption> options in Groups.SelectMany(x => x.Options).GroupBy(x => x.ConfigClass[0])) {
@@ -119,6 +132,8 @@ public sealed class TkOptimizerContext : ObservableObject
             
             writer.WriteLine();
         }
+
+        Store = null;
     }
 
     private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)
