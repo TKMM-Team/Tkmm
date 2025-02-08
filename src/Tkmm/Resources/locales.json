@@ -2200,6 +2200,28 @@
       "zh_CN": "",
       "zh_TW": ""
     },
+    "SetupWizard_NxDumpConfigPage_Help": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "If you have reached this page, the game was either not installed on your SD card, or your keys were not able to decrypt it.\n\nIf your game is a cartridge, you can dump it as a split XCI using nxdumptool.",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
     "WizPageFinal_Title": {
       "ar_SA": "",
       "de_DE": "",
