@@ -1,3 +1,5 @@
+using System.Runtime.Versioning;
+
 namespace Tkmm.Core.Helpers;
 
 public static class DirectoryHelper
@@ -91,6 +93,20 @@ public static class DirectoryHelper
         foreach (string directory in Directory.EnumerateDirectories(source)) {
             string outputDirectory = Path.Combine(output, Path.GetFileName(directory));
             Copy(directory, outputDirectory, overwrite);
+        }
+    }
+
+    public static void HideTargetsInDirectory(string directory, params Span<string> targets)
+    {
+        foreach (string target in targets) {
+            string path = Path.Combine(directory, target);
+            
+            if (!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
+            }
+            
+            DirectoryInfo info = new(path);
+            info.Attributes |= FileAttributes.Hidden;
         }
     }
 }

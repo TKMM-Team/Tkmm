@@ -138,6 +138,9 @@ public static class TKMM
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
         _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
+
+        Span<string> hiddenSystemFolders = [".data", ".layout", ".merged"];
+        DirectoryHelper.HideTargetsInDirectory(AppContext.BaseDirectory, hiddenSystemFolders);
     }
 
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
