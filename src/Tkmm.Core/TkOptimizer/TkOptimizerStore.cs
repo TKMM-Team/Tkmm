@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Tkmm.Core.Services;
+using Tkmm.Core.TkOptimizer.Models;
 using TkSharp.Core.Models;
 using TkOptimizerConfigJson = System.Collections.Generic.Dictionary<string, Tkmm.Core.TkOptimizer.TkOptimizerProfile>;
 using TkOptimizerConfig = System.Collections.Generic.Dictionary<System.Ulid, Tkmm.Core.TkOptimizer.TkOptimizerProfile>;
@@ -43,6 +44,27 @@ public class TkOptimizerStore(Ulid id)
         }
     }
 
+    public void SetCheat(TkOptimizerCheatGroup cheat, string key, bool isEnabled)
+    {
+        HashSet<string> cheatProfileGroup = GetCheatGroup(cheat.Version);
+        switch (isEnabled) {
+            case true:
+                cheatProfileGroup.Add(key);
+                break;
+            case false:
+                cheatProfileGroup.Remove(key);
+                break;
+        }
+
+        Save();
+        TKMM.MergeBasic();
+    }
+
+    public bool GetCheat(TkOptimizerCheatGroup cheat, string key)
+    {
+        return GetCheatGroup(cheat.Version).Contains(key);
+    }
+
     public void Set<T>(string key, T value) where T : unmanaged
     {
         GetProfile().Values[key] = JsonSerializer.SerializeToElement(value);
@@ -71,6 +93,16 @@ public class TkOptimizerStore(Ulid id)
         if (!exists || profile is null) profile = new TkOptimizerProfile();
 
         return profile;
+    }
+
+    private HashSet<string> GetCheatGroup(string version)
+    {
+        TkOptimizerProfile profile = GetProfile();
+        
+        ref HashSet<string>? group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out bool exists);
+        if (!exists || group is null) group = [];
+
+        return group;
     }
 
     private static TkOptimizerConfig FromDisk()

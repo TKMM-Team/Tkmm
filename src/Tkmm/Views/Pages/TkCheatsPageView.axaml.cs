@@ -18,7 +18,7 @@ namespace Tkmm.Views.Pages
             TkLog.Instance.LogInformation("Cheats page activated; refreshing version.");
             
             if (view?.DataContext is TkCheatsPageViewModel vm) {
-                vm.RefreshVersion();
+                vm.Reload();
             }
         }
     }

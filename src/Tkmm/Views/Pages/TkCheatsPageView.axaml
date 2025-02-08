@@ -5,10 +5,11 @@
              xmlns:ext="using:Tkmm.Markup"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tkm="using:Tkmm.Core.TkOptimizer.Models"
              x:DataType="vm:TkCheatsPageViewModel"
              mc:Ignorable="d">
     <Grid Margin="25,15">
-        <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding CheatsAvailable}">
+        <Grid RowDefinitions="Auto,Auto,*" IsVisible="{Binding Cheats}">
             <TextBlock Text="{ext:Locale CheatsPageTitle}"
                        FontSize="32"
                        FontFamily="{StaticResource HyliaGlyph}" />
@@ -16,7 +17,7 @@
                        HorizontalAlignment="Left" Margin="0,0,0,10">
                 <TextBlock.Inlines>
                     <Run Text="{ext:Locale CheatsPage_VersionLabel}" />
-                    <Run Text="{Binding SelectedVersion}"
+                    <Run Text="{Binding GameVersion}"
                          Foreground="{DynamicResource SystemAccentColorLight3}"
                          FontWeight="Bold" />
                 </TextBlock.Inlines>
@@ -31,9 +32,9 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:TkCheatsPageViewModel+CheatItemViewModel">
+                        <DataTemplate x:DataType="tkm:TkOptimizerCheat">
                             <CheckBox Content="{Binding Name}"
-                                      IsChecked="{Binding IsSelected}"
+                                      IsChecked="{Binding IsEnabled}"
                                       Margin="5" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -42,7 +43,7 @@
         </Grid>
 
         <TextBlock Text="{ext:Locale TkCheatsPage_Unavailable}"
-                   IsVisible="{Binding !CheatsAvailable}"
+                   IsVisible="{Binding Cheats, Converter={x:Static ObjectConverters.IsNull}}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center" />
     </Grid>

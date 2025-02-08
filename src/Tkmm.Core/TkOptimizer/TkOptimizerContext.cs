@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -27,6 +28,8 @@ public sealed class TkOptimizerContext : ObservableObject
     }
     
     public ObservableCollection<TkOptimizerOptionGroup> Groups { get; } = [];
+    
+    public ObservableCollection<TkOptimizerCheatGroup> CheatGroups { get; } = [];
 
     public bool IsEnabled {
         get => TkOptimizerStore.Current.IsEnabled;
@@ -46,15 +49,23 @@ public sealed class TkOptimizerContext : ObservableObject
 
     public static TkOptimizerContext Create()
     {
-        using Stream input = GetOptionsJson();
-        var json = JsonSerializer.Deserialize<TkOptimizerJson>(input, TkOptimizerJsonContext.Default.TkOptimizerJson);
-        return json is null ? new TkOptimizerContext() : FromJson(json);
+        TkOptimizerContext context = new();
+        
+        using Stream optionsJsonStream = GetOptionsJsonStream();
+        if (JsonSerializer.Deserialize<TkOptimizerJson>(optionsJsonStream, TkOptimizerJsonContext.Default.TkOptimizerJson) is { } optionsJson) {
+            LoadOptions(context, optionsJson);
+        }
+        
+        using Stream cheatsJsonStream = GetCheatsJsonStream();
+        if (JsonSerializer.Deserialize<TkOptimizerCheatsJson>(cheatsJsonStream, TkOptimizerCheatsJsonContext.Default.TkOptimizerCheatsJson) is { } cheatsJson) {
+            LoadCheats(context, cheatsJson);
+        }
+
+        return context;
     }
     
-    private static TkOptimizerContext FromJson(TkOptimizerJson json)
+    private static void LoadOptions(TkOptimizerContext context, TkOptimizerJson json)
     {
-        TkOptimizerContext context = new();
-
         foreach (IGrouping<string, KeyValuePair<string, TkOptimizerJson.Option>> section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
             foreach ((string key, TkOptimizerJson.Option option) in section) {
@@ -63,11 +74,24 @@ public sealed class TkOptimizerContext : ObservableObject
             
             context.Groups.Add(group);
         }
-        
-        return context;
+    }
+    
+    private static void LoadCheats(TkOptimizerContext context, TkOptimizerCheatsJson json)
+    {
+        foreach (TkOptimizerCheatsJson.Cheat cheat in json) {
+            TkOptimizerCheatGroup group = new(cheat.DisplayVersion);
+            foreach ((string name, string value) in cheat.Cheats) {
+                using MemoryStream ms = new(Encoding.UTF8.GetBytes(value));
+                group.Cheats.Add(
+                    new TkOptimizerCheat(context, group, name, TkCheat.FromText(ms, cheat.Version))
+                );
+            }
+            
+            context.CheatGroups.Add(group);
+        }
     }
 
-    private static Stream GetOptionsJson()
+    private static Stream GetOptionsJsonStream()
     {
         long plainId = 1;
         Ulid id = Unsafe.As<long, Ulid>(ref plainId);
@@ -83,6 +107,12 @@ public sealed class TkOptimizerContext : ObservableObject
 
         return result ?? typeof(TkOptimizerContext).Assembly
             .GetManifestResourceStream("Tkmm.Core.Resources.Optimizer.Options.json")!;
+    }
+
+    private static Stream GetCheatsJsonStream()
+    {
+        return typeof(TkOptimizerContext).Assembly
+            .GetManifestResourceStream("Tkmm.Core.Resources.Optimizer.Cheats.json")!;
     }
 
     public void ApplyToMergedOutput()
