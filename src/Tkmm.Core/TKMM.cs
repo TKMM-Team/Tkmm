@@ -1,9 +1,10 @@
 global using static TkSharp.Core.Common.TkLocalizationInterface;
-
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.IO.Readers;
 using Tkmm.Core.Providers;
+using Tkmm.Core.Services;
 using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
@@ -26,7 +27,6 @@ public static class TKMM
 #else
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
 #endif
-
 
     public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
 
@@ -72,14 +72,14 @@ public static class TKMM
     public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs", "cheats"], recursive: true);
-        
+
         string metadataFilePath = Path.Combine(MergedOutputFolder, "romfs_metadata.bin");
         if (File.Exists(metadataFilePath)) {
             File.Delete(metadataFilePath);
         }
 
-        ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
-        
+        FolderModWriter writer = new(MergedOutputFolder);
+
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
         // this path jumps back to write behind that folder.
@@ -91,24 +91,33 @@ public static class TKMM
 
         long startTime = Stopwatch.GetTimestamp();
 
-        await merger.MergeAsync(TkModManager.GetMergeTargets(profile), ct);
+        await merger.MergeAsync(GetMergeTargets(profile), ct);
+        TkOptimizerService.Context.Apply(writer, profile);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
     }
 
-    public static async ValueTask MergeCheats(TkProfile profile, CancellationToken ct = default)
+    /// <summary>
+    /// Merges exefs, subsdk and cheats
+    /// </summary>
+    /// <param name="profile"></param>
+    /// <param name="ct"></param>
+    public static void MergeBasic(TkProfile? profile = null, CancellationToken ct = default)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats"], recursive: true);
-        ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
+        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats", "exefs"],
+            target => Path.GetExtension(target.AsSpan()) is not ".ips", recursive: true);
 
-        // This is very unsafe, only use here
-        // for explicitly merging cheats
-        TkMerger merger = new(writer, null!, null!);
+        ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
         long startTime = Stopwatch.GetTimestamp();
 
-        await merger.MergeCheatsAsync(TkModManager.GetMergeTargets(profile), ct);
+        TkChangelog[] targets = GetMergeTargets(profile)
+            .ToArray();
+
+        TkMerger.MergeCheats(writer, targets);
+        TkMerger.MergeExeFs(writer, targets);
+        TkMerger.MergeSubSdk(writer, targets);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
@@ -119,7 +128,22 @@ public static class TKMM
         ModManager = TkModManager.CreatePortable();
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
+        ModManager.PropertyChanged += static (s, e) => {
+            if (e.PropertyName == nameof(TkModManager.CurrentProfile)) {
+                MergeBasic();
+                TkOptimizerService.Context.ApplyToMergedOutput();
+            }
+        };
+
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
+        _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
+    }
+
+    private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
+    {
+        profile ??= ModManager.GetCurrentProfile();
+        return TkModManager.GetMergeTargets(profile)
+            .Append(TkOptimizerService.GetMod(profile));
     }
 }
