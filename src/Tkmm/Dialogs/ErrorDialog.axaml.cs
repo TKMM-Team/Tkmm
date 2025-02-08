@@ -28,7 +28,7 @@ public partial class ErrorDialog : UserControl
 
             TaskDialog dialog = new() {
                 XamlRoot = App.XamlRoot,
-                Title = $"{ex.GetType().Name.Humanize()}",
+                Title = $"{ex.GetType().Name.Humanize(LetterCasing.Title)}",
                 Content = new ErrorDialog() {
                     DataContext = ex
                 },
