@@ -13,10 +13,12 @@ public enum Page
     Tools,
     ShopParam,
     GbMods,
+    TotKOptimizer,
+    Cheats,
     About,
     Logs,
     NetworkSettings,
-    Settings,
+    Settings
 }
 
 public partial class PageManager : ObservableObject
@@ -44,7 +46,7 @@ public partial class PageManager : ObservableObject
         }
     }
 
-    public void Register(Page page, TkLocale title, object? content, Symbol icon, TkLocale description, bool isDefault = false, bool isFooter = false)
+    public void Register<T>(Page page, TkLocale title, T? content, Symbol icon, TkLocale description, bool isDefault = false, bool isFooter = false, Action<T?>? onPageFocused = null) where T : class
     {
         ObservableCollection<PageModel> source = isFooter ? FooterPages : Pages;
         _lookup[page] = (source.Count, isFooter);
@@ -53,7 +55,8 @@ public partial class PageManager : ObservableObject
             Title = Locale[title],
             Content = content,
             Description = Locale[description],
-            Icon = icon
+            Icon = icon,
+            OnPageFocused = x => onPageFocused?.Invoke(x as T)
         });
 
         if (isDefault) {
@@ -66,6 +69,11 @@ public partial class PageManager : ObservableObject
         Current = this[page];
     }
 
+    partial void OnCurrentChanged(PageModel? value)
+    {
+        value?.OnPageFocused?.Invoke(value.Content);
+    }
+    
     public T Get<T>(Page page) where T : ObservableObject
     {
         (int index, bool isFooter) = _lookup[page];
