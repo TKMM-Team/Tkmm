@@ -42,6 +42,7 @@ namespace Tkmm.Wizard
                 .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
                 .WithContent<NxDumpConfigPage>(new GameDumpConfigPageContext())
                 .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
+                .WithHelpContent(TkLocale.SetupWizard_NxDumpConfigPage_Help)
                 .Show();
 
             if (!result)
