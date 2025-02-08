@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Core.TkOptimizer.Models.ValueTypes;
 
-public sealed partial class TkOptimizerFloatingPointRangeValue(double @default) : TkOptimizerValue<double>(@default)
+public sealed partial class TkOptimizerFloatingPointRangeValue(TkOptimizerContext context, double @default) : TkOptimizerValue<double>(context, @default)
 {
     [ObservableProperty]
     private double _minValue;
@@ -11,5 +11,5 @@ public sealed partial class TkOptimizerFloatingPointRangeValue(double @default) 
     private double _maxValue;
     
     [ObservableProperty]
-    private double _incrementSize;
+    private double _incrementSize; 
 }
