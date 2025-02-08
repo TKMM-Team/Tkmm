@@ -9,10 +9,19 @@ public class TkOptimizerService
 {
     public static TkOptimizerContext Context { get; } = TkOptimizerContext.Create();
 
-    public static TkChangelog? GetMod(TkProfile? profile = null)
+    public static TkChangelog GetMod(TkProfile? profile = null)
     {
+        EmbeddedSource source = new(
+            "Tkmm.Core.Resources.UltraCam", typeof(TkOptimizerService).Assembly);
+
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
-            return null;
+            // Only return with cheats when disabled
+            return new TkChangelog {
+                BuilderVersion = 100,
+                GameVersion = 0,
+                CheatFiles = GetCheats(),
+                Source = source
+            };
         }
 
         Context.Store = TkOptimizerStore.Attach(profile);
@@ -27,8 +36,7 @@ public class TkOptimizerService
             SubSdkFiles = {
                 "subsdk3"
             },
-            Source = new EmbeddedSource(
-                "Tkmm.Core.Resources.UltraCam", typeof(TkOptimizerService).Assembly),
+            Source = source
         };
     }
 
