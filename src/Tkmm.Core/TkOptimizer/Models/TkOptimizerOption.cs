@@ -5,9 +5,9 @@ namespace Tkmm.Core.TkOptimizer.Models;
 
 public sealed class TkOptimizerOption(string key, string name, string description, List<string> configClass, TkOptimizerValue value)
 {
-    public string Name => TryGetTranslated($"TkOptimizer_{key.Dehumanize()}_Title", name);
+    public string Name => GetLocaleOrDefault($"TkOptimizer_{key.Dehumanize()}_Title", name);
 
-    public string Description => TryGetTranslated($"TkOptimizer_{key.Dehumanize()}_Description", description);
+    public string Description => GetLocaleOrDefault($"TkOptimizer_{key.Dehumanize()}_Description", description);
 
     public List<string> ConfigClass { get; } = configClass;
 
@@ -39,14 +39,5 @@ public sealed class TkOptimizerOption(string key, string name, string descriptio
         value.Key = key;
 
         return new TkOptimizerOption(key, option.Name, option.Description, option.ConfigClass, value);
-    }
-
-    private static string TryGetTranslated(string localeName, string @default)
-    {
-        if (Locale[localeName, failSoftly: true] is not { } translated || translated == localeName) {
-            return @default;
-        }
-
-        return translated;
     }
 }
