@@ -11,7 +11,7 @@
              x:DataType="vm:TkOptimizerPageViewModel"
              mc:Ignorable="d">
     <Grid Margin="15">
-        <Grid ColumnDefinitions="Auto,Auto" Margin="10,0,0,0"
+        <Grid ColumnDefinitions="Auto,Auto,*" Margin="10,0,0,0"
               VerticalAlignment="Top">
             <TextBlock Text="{ext:Locale TotkOptimizerPageTitle}"
                        FontSize="32"
@@ -27,6 +27,13 @@
                     </Style>
                 </ToggleButton.Styles>
             </ToggleButton>
+            <TextBlock Text="{ext:Locale TotkOptimizerPageCredits}"
+                       FontSize="26"
+                       VerticalAlignment="Center"
+                       Grid.Column="2"
+                       Opacity="90"
+                       HorizontalAlignment="Right"
+                       FontFamily="{StaticResource HyliaGlyph}" />
         </Grid>
         <TabControl ItemsSource="{Binding Context.Groups}" Margin="0,25,0,0">
             <TabControl.ContentTemplate>
