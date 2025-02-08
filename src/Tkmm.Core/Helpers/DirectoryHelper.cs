@@ -73,6 +73,14 @@ public static class DirectoryHelper
 
     public static void Copy(string source, string output, bool overwrite = false)
     {
+        source = Path.GetFullPath(source);
+        output = Path.GetFullPath(output);
+
+        if (output.Length >= source.Length && output[..source.Length] == source) {
+            throw new InvalidOperationException(
+                $"The folder '{source}' cannot be recursively copied into itself ('{output}').");
+        }
+        
         Directory.CreateDirectory(output);
         
         foreach (string sourceFile in Directory.EnumerateFiles(source)) {
