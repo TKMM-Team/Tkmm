@@ -106,7 +106,7 @@ public static class TKMM
     /// <param name="ct"></param>
     public static void MergeBasic(TkProfile? profile = null, CancellationToken ct = default)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats"], recursive: true);
+        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats", "exefs"], recursive: true);
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
         long startTime = Stopwatch.GetTimestamp();
