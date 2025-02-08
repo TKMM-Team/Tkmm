@@ -40,7 +40,7 @@ namespace Tkmm.Wizard
 
             bool result = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
-                .WithContent<NxDumpConfigPage>(new NxDumpConfigPageContext())
+                .WithContent<NxDumpConfigPage>(new GameDumpConfigPageContext())
                 .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
                 .Show();
 
