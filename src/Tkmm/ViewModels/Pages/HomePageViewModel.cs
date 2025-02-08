@@ -62,6 +62,18 @@ public partial class HomePageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private static void MoveToTop()
+    {
+        TKMM.ModManager.GetCurrentProfile().MoveToTop();
+    }
+
+    [RelayCommand]
+    private static void MoveToBottom()
+    {
+        TKMM.ModManager.GetCurrentProfile().MoveToBottom();
+    }
+
+    [RelayCommand]
     private static Task Remove()
     {
         return ModActions.Instance.RemoveModFromProfile();

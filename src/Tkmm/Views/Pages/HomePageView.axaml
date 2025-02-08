@@ -8,6 +8,7 @@
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:desktop="clr-namespace:Tkmm"
              xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
+             xmlns:ext="clr-namespace:Tkmm.Markup"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
@@ -340,13 +341,27 @@
                     </Button>
                     <Button Margin="2.5"
                             VerticalAlignment="Stretch"
+                            ToolTip.Tip="{ext:Locale Tip_MoveUp}"
                             Command="{Binding MoveUpCommand}">
-                        <pi:Icon Value="fa-solid fa-caret-up" />
+                        <pi:Icon Value="fa-solid fa-angle-up" />
                     </Button>
                     <Button Margin="2.5"
                             VerticalAlignment="Stretch"
+                            ToolTip.Tip="{ext:Locale Tip_MoveDown}"
                             Command="{Binding MoveDownCommand}">
-                        <pi:Icon Value="fa-solid fa-caret-down" />
+                        <pi:Icon Value="fa-solid fa-angle-down" />
+                    </Button>
+                    <Button Margin="2.5"
+                            VerticalAlignment="Stretch"
+                            ToolTip.Tip="{ext:Locale Tip_MoveToTop}"
+                            Command="{Binding MoveToTopCommand}">
+                        <pi:Icon Value="fa-solid fa-angles-up" />
+                    </Button>
+                    <Button Margin="2.5"
+                            VerticalAlignment="Stretch"
+                            ToolTip.Tip="{ext:Locale Tip_MoveToBottom}"
+                            Command="{Binding MoveToBottomCommand}">
+                        <pi:Icon Value="fa-solid fa-angles-down" />
                     </Button>
                     <Button Margin="2.5" Command="{Binding MergeCommand}">
                         <StackPanel Orientation="Horizontal">
