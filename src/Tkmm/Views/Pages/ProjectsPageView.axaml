@@ -309,7 +309,8 @@
                             BorderThickness="1">
                         <Border CornerRadius="5"
                                 ClipToBounds="True">
-                            <Image Source="{Binding Project.Mod.Thumbnail.Bitmap}" />
+                            <Image Source="{Binding Project.Mod.Thumbnail.Bitmap}"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality" />
                         </Border>
                     </Border>
                 </TabItem>
