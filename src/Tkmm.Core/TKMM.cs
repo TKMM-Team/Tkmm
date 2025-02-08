@@ -25,7 +25,7 @@ public static class TKMM
 #if SWITCH
     public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
-    public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
+    public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, "Merged");
 #endif
 
     public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
@@ -139,7 +139,7 @@ public static class TKMM
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
         _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
 
-        Span<string> hiddenSystemFolders = [".data", ".layout", ".merged"];
+        Span<string> hiddenSystemFolders = [".data", ".layout"];
         DirectoryHelper.HideTargetsInDirectory(AppContext.BaseDirectory, hiddenSystemFolders);
     }
 
