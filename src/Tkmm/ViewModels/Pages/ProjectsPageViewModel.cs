@@ -265,8 +265,13 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             }
         }
 
-        DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
-        TkProjectManager.LoadOptionGroupFolder(Project, output);
+        try {
+            DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
+            TkProjectManager.LoadOptionGroupFolder(Project, output);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Failed to import option group.");
+        }
     }
 
     [RelayCommand]
@@ -323,9 +328,15 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 group.Options.Remove(target);
             }
         }
+        
+        try {
+            DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
+            TkProjectManager.LoadOptionFolder(Project, group, output);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Failed to import option.");
+        }
 
-        DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
-        TkProjectManager.LoadOptionFolder(Project, group, output);
     }
 
     private void ApplyDeletions()
