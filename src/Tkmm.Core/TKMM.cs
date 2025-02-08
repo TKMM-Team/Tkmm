@@ -28,7 +28,6 @@ public static class TKMM
     public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, ".merged");
 #endif
 
-
     public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
 
     public static ITkRom? TryGetTkRom()
@@ -73,14 +72,14 @@ public static class TKMM
     public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs", "cheats"], recursive: true);
-        
+
         string metadataFilePath = Path.Combine(MergedOutputFolder, "romfs_metadata.bin");
         if (File.Exists(metadataFilePath)) {
             File.Delete(metadataFilePath);
         }
 
         FolderModWriter writer = new(MergedOutputFolder);
-        
+
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
         // this path jumps back to write behind that folder.
@@ -108,7 +107,7 @@ public static class TKMM
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats", "exefs"],
             target => Path.GetExtension(target.AsSpan()) is not ".ips", recursive: true);
-        
+
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
         long startTime = Stopwatch.GetTimestamp();
@@ -129,6 +128,13 @@ public static class TKMM
         ModManager = TkModManager.CreatePortable();
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
+        ModManager.PropertyChanged += static (s, e) => {
+            if (e.PropertyName == nameof(TkModManager.CurrentProfile)) {
+                MergeBasic();
+                TkOptimizerService.Context.ApplyToMergedOutput();
+            }
+        };
+
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
         _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
@@ -138,11 +144,11 @@ public static class TKMM
     {
         profile ??= ModManager.GetCurrentProfile();
         IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile);
-        
+
         if (TkOptimizerService.GetMod(profile) is { } optimizer) {
             return targets.Append(optimizer);
         }
-        
+
         return targets;
     }
 }

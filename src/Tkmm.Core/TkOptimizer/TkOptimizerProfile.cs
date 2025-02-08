@@ -4,7 +4,9 @@ namespace Tkmm.Core.TkOptimizer;
 
 public class TkOptimizerProfile
 {
-    public Dictionary<string, JsonElement> Values { get; set; } = [];
+    public Dictionary<string, JsonElement> Values { get; init; } = [];
+
+    public Dictionary<string, HashSet<string>> Cheats { get; init; } = [];
 
     public bool IsEnabled { get; set; } = true;
 
