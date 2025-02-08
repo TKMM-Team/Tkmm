@@ -15,6 +15,11 @@ public class EmbeddedSource(string root, Assembly assembly) : ITkSystemSource
         return assembly.GetManifestResourceInfo(GetAbsolute(relativeFilePath)) is not null;
     }
 
+    public ITkSystemSource GetRelative(string relativeSourcePath)
+    {
+        return new EmbeddedSource($"{root}.{relativeSourcePath}", assembly);
+    }
+
     public string GetAbsolute(string relativeFilePath)
     {
         return string.Create(root.Length + 1 + relativeFilePath.Length, relativeFilePath, (span, chars) => {
