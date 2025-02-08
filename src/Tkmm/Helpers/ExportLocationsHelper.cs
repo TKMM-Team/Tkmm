@@ -30,6 +30,8 @@ public static class ExportLocationsHelper
         if (result is not MessageDialogResult.Yes) {
             return result is not MessageDialogResult.Cancel;
         }
+        
+        bool isFirstSelection = true;
 
     RequestAnother:
         FolderPickerOpenOptions options = new() {
@@ -40,6 +42,11 @@ public static class ExportLocationsHelper
         IReadOnlyList<IStorageFolder> browseResult = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(options);
 
         if (browseResult is not [IStorageFolder target] || target.TryGetLocalPath() is not string path) {
+            goto RequestNext;
+        }
+
+        if (isFirstSelection) {
+            Config.Shared.MergeOutput = path;
             goto RequestNext;
         }
         
@@ -55,6 +62,7 @@ public static class ExportLocationsHelper
             MessageDialogButtons.YesNo) is MessageDialogResult.Yes;
 
         if (addAnother) {
+            isFirstSelection = false;
             goto RequestAnother;
         }
 

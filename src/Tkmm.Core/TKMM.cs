@@ -25,7 +25,7 @@ public static class TKMM
 #if SWITCH
     public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
-    public static readonly string MergedOutputFolder = Path.Combine(AppContext.BaseDirectory, "Merged");
+    public static string MergedOutputFolder => Config.Shared.MergeOutput ?? Path.Combine(AppContext.BaseDirectory, "Merged");
 #endif
 
     public static ITkRom GetTkRom() => _romProvider.Value.GetRom();

@@ -120,6 +120,13 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Define custom locations to export the merged mod to.",
         Group = "Merging")]
     private ExportLocations _exportLocations = [];
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Merge Output Folder",
+        Description = "The location to write the merged output to. (Default location is './Merged' next to the TKMM executable)",
+        Group = "Merging")]
+    private string? _mergeOutput;
 #endif
     
     [ObservableProperty]
