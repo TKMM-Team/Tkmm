@@ -1,5 +1,4 @@
 global using static TkSharp.Core.Common.TkLocalizationInterface;
-
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
@@ -93,29 +92,31 @@ public static class TKMM
 
         long startTime = Stopwatch.GetTimestamp();
 
-        IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile);
-        if (TkOptimizerService.GetMod(profile) is { } optimizer) {
-            targets = targets.Append(optimizer);
-        }
-
-        await merger.MergeAsync(targets, ct);
+        await merger.MergeAsync(GetMergeTargets(profile), ct);
+        TkOptimizerService.Context.Apply(writer, profile);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
     }
 
-    public static async ValueTask MergeCheats(TkProfile profile, CancellationToken ct = default)
+    /// <summary>
+    /// Merges exefs, subsdk and cheats
+    /// </summary>
+    /// <param name="profile"></param>
+    /// <param name="ct"></param>
+    public static void MergeBasic(TkProfile? profile = null, CancellationToken ct = default)
     {
         DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["cheats"], recursive: true);
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
-        // This is very unsafe, only use here
-        // for explicitly merging cheats
-        TkMerger merger = new(writer, null!, null!);
-
         long startTime = Stopwatch.GetTimestamp();
 
-        await merger.MergeCheatsAsync(TkModManager.GetMergeTargets(profile), ct);
+        TkChangelog[] targets = GetMergeTargets(profile)
+            .ToArray();
+
+        TkMerger.MergeCheats(writer, targets);
+        TkMerger.MergeExeFs(writer, targets);
+        TkMerger.MergeSubSdk(writer, targets);
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
@@ -129,5 +130,17 @@ public static class TKMM
         _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
         _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
+    }
+
+    private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
+    {
+        profile ??= ModManager.GetCurrentProfile();
+        IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile);
+        
+        if (TkOptimizerService.GetMod(profile) is { } optimizer) {
+            return targets.Append(optimizer);
+        }
+        
+        return targets;
     }
 }
