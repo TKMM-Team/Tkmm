@@ -9,7 +9,7 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     [Config(
         Header = "Use Threaded Downloads",
         Description = "Use multi-threaded downloads for potentially faster downloads. Disable this if you experience network issues.",
-        Group = "Game Banana Client")]
+        Group = "GameBanana Client")]
     public bool UseThreadedDownloads {
         get => DownloadHelper.Config.UseThreadedDownloads;
         set {
@@ -22,7 +22,7 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     [Config(
         Header = "Download Timeout Seconds",
         Description = "The maximum amount of seconds to wait for a response before failing.",
-        Group = "Game Banana Client")]
+        Group = "GameBanana Client")]
     public int GameBananaTimeoutSeconds {
         get => DownloadHelper.Config.TimeoutSeconds;
         set {
@@ -33,9 +33,9 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     }
 
     [Config(
-        Header = "Game Banana Download Max Retries",
+        Header = "GameBanana Download Max Retries",
         Description = "The maximum amount of times to retry a download before failing.",
-        Group = "Game Banana Client")]
+        Group = "GameBanana Client")]
     public int GameBananaMaxRetries {
         get => DownloadHelper.Config.MaxRetries;
         set {
