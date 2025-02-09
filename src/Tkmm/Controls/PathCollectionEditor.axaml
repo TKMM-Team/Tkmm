@@ -11,69 +11,56 @@
     <Style Selector="controls|PathCollectionEditor">
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel Spacing="5">
-                    <ItemsControl Name="LocationsListBox"
-                                  ItemsSource="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type core:PathCollectionItem}">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,5">
-                                    <TextBox MinHeight="0"
-                                             Padding="8,3"
-                                             TextWrapping="NoWrap"
-                                             Background="Transparent"
-                                             Text="{Binding Target}"
-                                             ToolTip.Tip="{Binding Target}" />
-                                    <Button Grid.Column="1"
-                                            IsVisible="{Binding Type,
-                                                Converter={x:Static converters:PathTypeToBoolConverter.Instance},
-                                                ConverterParameter=file,
-                                                RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="5,0,0,0"
-                                            Padding="2"
-                                            Command="{Binding OpenFileCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
-                                            CommandParameter="{Binding}">
-                                        <pi:Icon Value="fa-regular fa-file" />
-                                    </Button>
-                                    <Button Grid.Column="2"
-                                            IsVisible="{Binding Type,
-                                                Converter={x:Static converters:PathTypeToBoolConverter.Instance},
-                                                ConverterParameter=folder,
-                                                RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="5,0,0,0"
-                                            Padding="2"
-                                            Command="{Binding OpenFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
-                                            CommandParameter="{Binding}">
-                                        <pi:Icon Value="fa-regular fa-folder-open" />
-                                    </Button>
-                                    <Button Grid.Column="3"
-                                            Width="20"
-                                            Height="20"
-                                            Margin="5,0,0,0"
-                                            Padding="0"
-                                            Command="{Binding DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
-                                            CommandParameter="{Binding}">
-                                        <pi:Icon Value="fa-regular fa-trash" />
-                                    </Button>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <StackPanel HorizontalAlignment="Right"
-                                Orientation="Horizontal"
-                                Spacing="5">
-                        <Button Command="{Binding CreateNewCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                Width="20"
-                                Height="20"
-                                Padding="2">
-                            <pi:Icon Value="fa-regular fa-plus" />
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
+                <ItemsControl Name="LocationsListBox"
+                              ItemsSource="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type core:PathCollectionItem}">
+                            <Grid ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,5">
+                                <TextBox MinHeight="0"
+                                         Padding="8,3"
+                                         TextWrapping="NoWrap"
+                                         Background="Transparent"
+                                         Text="{Binding Target}"
+                                         ToolTip.Tip="{Binding Target}" />
+                                <Button Grid.Column="1"
+                                        IsVisible="{Binding Type,
+                                            Converter={x:Static converters:PathTypeToBoolConverter.Instance},
+                                            ConverterParameter=file,
+                                            RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        Padding="2"
+                                        Command="{Binding OpenFileCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
+                                        CommandParameter="{Binding}">
+                                    <pi:Icon Value="fa-regular fa-file" />
+                                </Button>
+                                <Button Grid.Column="2"
+                                        IsVisible="{Binding Type,
+                                            Converter={x:Static converters:PathTypeToBoolConverter.Instance},
+                                            ConverterParameter=folder,
+                                            RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        Padding="2"
+                                        Command="{Binding OpenFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
+                                        CommandParameter="{Binding}">
+                                    <pi:Icon Value="fa-regular fa-folder-open" />
+                                </Button>
+                                <Button Grid.Column="3"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        Padding="0"
+                                        Command="{Binding DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:PathCollectionEditor}}}"
+                                        CommandParameter="{Binding}">
+                                    <pi:Icon Value="fa-regular fa-trash" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ControlTemplate>
         </Setter>
     </Style>

@@ -96,12 +96,6 @@ public partial class PathCollectionEditor : TemplatedControl
     }
 
     [RelayCommand]
-    private void CreateNew()
-    {
-        Value.Add(new PathCollectionItem());
-    }
-
-    [RelayCommand]
     private void Delete(PathCollectionItem item)
     {
         Value.Remove(item);

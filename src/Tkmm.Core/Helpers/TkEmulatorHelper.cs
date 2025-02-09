@@ -33,7 +33,7 @@ public static class TkEmulatorHelper
         TkConfig.Shared.KeysFolderPath = keysFolderPath;
 
         string nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
-        TkConfig.Shared.NandFolderPaths.Add(nandFolderPath);
+        TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
 
         string modFolderPath = Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
         Config.Shared.ExportLocations.Add(new ExportLocation {
@@ -55,12 +55,12 @@ public static class TkEmulatorHelper
         foreach ((Application totk, string filePath) in TkGameRomUtils.ScanFolders(configuredGamePaths, keys)) {
             if (totk.Main is not null) {
                 result = true;
-                TkConfig.Shared.PackagedBaseGamePaths.Add(filePath);
+                TkConfig.Shared.PackagedBaseGamePaths.New(filePath);
             }
 
             if (totk.Patch is not null && totk.DisplayVersion is not "100") {
                 hasUpdate = true;
-                TkConfig.Shared.PackagedUpdatePaths.Add(filePath);
+                TkConfig.Shared.PackagedUpdatePaths.New(filePath);
             }
         }
 
