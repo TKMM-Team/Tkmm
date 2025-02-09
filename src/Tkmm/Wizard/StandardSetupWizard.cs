@@ -97,7 +97,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             return;
         }
 
-        await EnsureConfigurationPage();
+        await EnsureConfigurationPage(warnInvalid: true);
     }
 
     private async ValueTask SetupEmulatorPage()
@@ -138,14 +138,20 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             return;
         }
 
-        await EnsureConfigurationPage();
+        await EnsureConfigurationPage(warnInvalid: true);
     }
 
-    private async ValueTask EnsureConfigurationPage()
+    private async ValueTask EnsureConfigurationPage(bool warnInvalid = false)
     {
     Verify:
-        if (TKMM.TryGetTkRom() is not null) {
+        if (TKMM.TryGetTkRom(out string? error) is not null) {
             return;
+        }
+
+        if (warnInvalid) {
+            await MessageDialog.Show(
+                error ?? Locale[TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration],
+                TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
         }
         
         bool result = await NextPage()
@@ -161,6 +167,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             return;
         }
 
+        warnInvalid = true;
         goto Verify;
     }
 }

@@ -31,10 +31,16 @@ public static class TKMM
     public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
 
     public static ITkRom? TryGetTkRom()
-    {
-        _romProvider.Value.TryGetRom(out ITkRom? rom);
-        return rom;
-    }
+        => TryGetTkRom(out _, out _, out _);
+    
+    public static ITkRom? TryGetTkRom(out string? error)
+        => TryGetTkRom(out _, out _, out error);
+    
+    public static ITkRom? TryGetTkRom(out bool hasBaseGame, out bool hasUpdate)
+        => TryGetTkRom(out hasBaseGame, out hasUpdate, out _);
+    
+    public static ITkRom? TryGetTkRom(out bool hasBaseGame, out bool hasUpdate, out string? error)
+        => _romProvider.Value.TryGetRom(out hasBaseGame, out hasUpdate, out error);
 
     public static Config Config => Config.Shared;
 
