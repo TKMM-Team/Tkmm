@@ -1,12 +1,12 @@
 [Desktop Entry]
 Categories=Game
 Comment=
-Exec=tkmm
+Exec=Tkmm
 GenericName=
 Icon=tkmm
 MimeType=
 Name=TKMM
-Path=/usr/bin/tkmm
+Path=/usr/bin/Tkmm
 StartupNotify=true
 Terminal=false
 TerminalOptions=

@@ -34,14 +34,13 @@ jobs:
   build:
     needs: release
     permissions: write-all
-    name: ${{ matrix.target.name }} on ${{ matrix.config.name }}
+    name: ${{ matrix.target.project }} on ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: true
       matrix:
         target:
           - project: Tkmm
-            name: tkmm
         config:
           - name: Windows (x64)
             os: ubuntu-latest
@@ -96,7 +95,7 @@ jobs:
         run: |
           dotnet publish src/${{ matrix.target.project }} \
           -c Release \
-          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
+          -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
@@ -106,15 +105,15 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.6
         with:
           type: zip
-          filename: ../${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
-          directory: ${{ matrix.target.name }}-${{ matrix.config.runtime }}
+          filename: ../${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
+          directory: ${{ matrix.target.project }}-${{ matrix.config.runtime }}
           path: ./**
 
       - name: Create Checksum File
         shell: bash
         run: |
-          md5=($(md5sum -b ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip))
-          echo $md5 > ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip.checksum
+          md5=($(md5sum -b ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip))
+          echo $md5 > ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip.checksum
 
       - name: Upload Release
         uses: actions/upload-release-asset@v1
@@ -122,8 +121,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
-          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.zip
+          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
+          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.zip
           asset_content_type: application/zip
           
       - name: Upload Release Checksum
@@ -132,21 +131,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip.checksum
-          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.zip.checksum
+          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip.checksum
+          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.zip.checksum
           asset_content_type: application/zip
 
   appimage:
     needs: release
     runs-on: ubuntu-latest
     permissions: write-all
-    name: AppImage for ${{ matrix.target.name }} on ${{ matrix.config.name }}
+    name: AppImage for ${{ matrix.target.project }} on ${{ matrix.config.name }}
     strategy:
       fail-fast: true
       matrix:
         target:
           - project: Tkmm
-            name: tkmm
         config:
           - name: Linux (x64)
             os: ubuntu-latest
@@ -173,7 +171,7 @@ jobs:
         run: |
           dotnet publish src/${{ matrix.target.project }} \
           -c Release \
-          -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
+          -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
@@ -195,9 +193,9 @@ jobs:
           cp distribution/appimage/AppRun AppDir/AppRun
           cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
 
-          cp -R ${{ matrix.target.name }}-${{ matrix.config.runtime }}/* AppDir/usr/bin/
+          cp -R ${{ matrix.target.project }}-${{ matrix.config.runtime }}/* AppDir/usr/bin/
 
-          chmod +x AppDir/AppRun AppDir/usr/bin/tkmm*
+          chmod +x AppDir/AppRun AppDir/usr/bin/${{ matrix.target.project }}*
 
           # Set $ARCH for appimagetool based on the runtime
           if [ "${{ matrix.config.runtime }}" = "linux-x64" ]; then
@@ -214,7 +212,7 @@ jobs:
           export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
 
           ./tools/appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
-          mv ./*.AppImage ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
+          mv ./*.AppImage ${{ matrix.target.project }}-${{ matrix.config.runtime }}.AppImage
 
       - name: Upload AppImage
         uses: actions/upload-release-asset@v1
@@ -222,6 +220,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
-          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.AppImage
+          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.AppImage
+          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.AppImage
           asset_content_type: application/octet-stream
