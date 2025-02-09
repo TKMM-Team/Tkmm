@@ -44,21 +44,23 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     public GameBananaPageViewModel()
     {
-        DownloadHelper.Reporter = new DownloadReporter {
-            ProgressReporter = new Progress<double>(
-                progress => {
-                    if (IsLoading) LoadProgress = progress;
-                }
-            ),
-            SpeedReporter = new Progress<double>(
-                speed => {
-                    if (IsLoading) DownloadSpeed = speed;
-                })
-        };
-        
+        DownloadHelper.Reporters.Push(
+            new DownloadReporter {
+                ProgressReporter = new Progress<double>(
+                    progress => {
+                        if (IsLoading) LoadProgress = progress;
+                    }
+                ),
+                SpeedReporter = new Progress<double>(
+                    speed => {
+                        if (IsLoading) DownloadSpeed = speed;
+                    })
+            }
+        );
+
         DownloadHelper.OnDownloadStarted += () => {
             IsLoading = true;
-            
+
             return Task.CompletedTask;
         };
 
@@ -67,7 +69,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsLoadSuccess = true;
             LoadProgress = 0;
             DownloadSpeed = null;
-            
+
             return Task.CompletedTask;
         };
 
@@ -83,14 +85,14 @@ public partial class GameBananaPageViewModel : ObservableObject
             Config.Shared.Save();
         };
     }
-    
+
     [RelayCommand]
     public async Task Refresh(ScrollViewer? modsViewer = null)
     {
         await ReloadPage(
             IsShowingSuggested ? _suggestedModsFeed : null
         );
-        
+
         modsViewer?.ScrollToHome();
     }
 
@@ -173,7 +175,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         if (await dialog.ShowAsync() is not ContentDialogResult.Primary || target is null) {
             return;
         }
-        
+
         TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
         await ModActions.Instance.Install((mod.Full, target));
     }
@@ -210,7 +212,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                 "An error occured when reading the suggested mods list. The feature will be disabled until restarting.");
             App.ToastError(ex);
         }
-        
+
         return null;
     }
 }

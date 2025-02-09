@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Octokit;
+using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core.Helpers;
 
@@ -30,14 +31,27 @@ public static class OctokitHelper
             .GetLatest(owner, name);
     }
     
-    public static async Task<Stream?> DownloadReleaseAsset(Release release)
+    public static async Task<Stream?> DownloadReleaseAsset(Release release, CancellationToken ct = default)
     {
+        ReleaseAsset? md5HashAsset = release
+            .Assets
+            .FirstOrDefault(asset => asset.Name == _assetName + ".checksum");
+        
         ReleaseAsset? asset = release
             .Assets
             .FirstOrDefault(asset => asset.Name == _assetName);
 
-        return asset is not null
-            ? await _client.GetStreamAsync(asset.BrowserDownloadUrl)
-            : null;
+        if (md5HashAsset is null || asset is null) {
+            return null;
+        }
+
+        await using Stream checksumFile = await _client.GetStreamAsync(asset.Url, ct);
+        using StreamReader reader = new(checksumFile);
+        if (await reader.ReadLineAsync(ct) is not string md5) {
+            return null;
+        }
+        
+        byte[] buffer = await DownloadHelper.DownloadAndVerify(asset.Url, Convert.FromHexString(md5), ct);
+        return new MemoryStream(buffer);
     }
 }

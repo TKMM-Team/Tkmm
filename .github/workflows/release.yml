@@ -46,26 +46,38 @@ jobs:
           - name: Windows (x64)
             os: ubuntu-latest
             runtime: win-x64
+            runtime_name: win-x64
             extension: .exe
           - name: Windows (arm64)
             os: ubuntu-latest
             runtime: win-arm64
+            runtime_name: win-arm64
             extension: .exe
           - name: Linux (x64)
             os: ubuntu-latest
             runtime: linux-x64
+            runtime_name: linux-x64
             extension: ~
           - name: Linux (arm64)
             os: ubuntu-latest
             runtime: linux-arm64
+            runtime_name: linux-arm64
+            extension: ~
+          - name: Switch (arm64)
+            os: ubuntu-latest
+            runtime: linux-arm64
+            runtime_name: linux-nx
+            flags: "-p:IsSwitch=true"
             extension: ~
           - name: MacOS (x64)
             os: ubuntu-latest
             runtime: osx-x64
+            runtime_name: osx-x64
             extension: ~
           - name: MacOS (arm64)
             os: ubuntu-latest
             runtime: osx-arm64
+            runtime_name: osx-arm64
             extension: ~
 
     steps:
@@ -88,10 +100,7 @@ jobs:
           -r ${{ matrix.config.runtime }} \
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
-          -p:DebugType=embedded \
-          -p:IncludeNativeLibrariesForSelfExtract=true \
-          -p:PublishSingleFile=true \
-          -p:Version=${{ needs.release.outputs.version }}
+          -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }}
 
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
@@ -101,6 +110,12 @@ jobs:
           directory: ${{ matrix.target.name }}-${{ matrix.config.runtime }}
           path: ./**
 
+      - name: Create Checksum File
+        shell: bash
+        run: |
+          md5=($(md5sum -b ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip))
+          echo $md5 > ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip.checksum
+
       - name: Upload Release
         uses: actions/upload-release-asset@v1
         env:
@@ -108,7 +123,17 @@ jobs:
         with:
           upload_url: ${{ needs.release.outputs.release }}
           asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
-          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip
+          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.zip
+          asset_content_type: application/zip
+          
+      - name: Upload Release Checksum
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          upload_url: ${{ needs.release.outputs.release }}
+          asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.zip.checksum
+          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.zip.checksum
           asset_content_type: application/zip
 
   appimage:
@@ -152,13 +177,10 @@ jobs:
           -r ${{ matrix.config.runtime }} \
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
-          -p:DebugType=embedded \
-          -p:IncludeNativeLibrariesForSelfExtract=true \
-          -p:PublishSingleFile=true \
-          -p:Version=${{ needs.release.outputs.version }}
+          -p:Version=${{ needs.release.outputs.version }} \
+          -p:NoUpdate=true
 
       - name: Build AppImage
-        if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.target.project == 'Tkmm.Desktop' }}
         shell: bash
         run: |
           # Setup appimagetool
@@ -201,5 +223,5 @@ jobs:
         with:
           upload_url: ${{ needs.release.outputs.release }}
           asset_path: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
-          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime }}.AppImage
+          asset_name: ${{ matrix.target.name }}-${{ matrix.config.runtime_name }}.AppImage
           asset_content_type: application/octet-stream

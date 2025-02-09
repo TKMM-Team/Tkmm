@@ -1,16 +1,14 @@
 using System.Diagnostics;
 using Avalonia.Controls.Notifications;
 using Avalonia.Platform;
-using Avalonia.Threading;
 using AvaMark;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 using Microsoft.Extensions.Logging;
-using Octokit;
+using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Dialogs;
-using Tkmm.Helpers;
 using TkSharp.Core;
 
 namespace Tkmm.Actions;
@@ -57,70 +55,12 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
     public static async Task CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
-        if (!OperatingSystem.IsWindows()) {
-            if (!isUserInvoked) return;
-
-            await ApplicationUpdatesHelper.ShowUnsupportedPlatformDialog();
-        }
-
         try {
-            if (await ApplicationUpdatesHelper.HasAvailableUpdates() is not Release release) {
-                return;
-            }
-            
-            if (!isUserInvoked) {
-                MessageDialogResult result = await MessageDialog.Show(
-                    TkLocale.System_Popup_UpdateAvailable,
-                    TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
-
-                if (result is not MessageDialogResult.Yes) {
-                    return;
-                }
-            }
-
-            await RequestUpdate(release, ct);
+            await AppUpdater.CheckForUpdates(isUserInvoked, ct);
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex,
-                "An error occured while checking for application updates.");
-            await ErrorDialog.ShowAsync(ex);
+            TkLog.Instance.LogError(ex, "An error occured while checking for updates.");
         }
-    }
-
-    public static Task RequestUpdate(Release release, CancellationToken ct = default)
-    {
-        return Dispatcher.UIThread.InvokeAsync(
-            () => RequestUpdateInternal(release, ct));
-    }
-
-    private static async Task RequestUpdateInternal(Release release, CancellationToken ct = default)
-    {
-        if (!OperatingSystem.IsWindows()) {
-            return;
-        }
-        
-        try {
-            await ApplicationUpdatesHelper.PerformUpdates(release, ct);
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogError(ex,
-                "An error occured while updating the application.");
-            await ErrorDialog.ShowAsync(ex);
-            return;
-        }
-        
-        ContentDialog dialog = new() {
-            Title = Locale[TkLocale.System_Popup_UpdateComplete_Title],
-            Content = Locale[TkLocale.System_Popup_UpdateComplete],
-            PrimaryButtonText = Locale[TkLocale.Action_Yes],
-            SecondaryButtonText = Locale[TkLocale.Action_No]
-        };
-
-        if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
-            return;
-        }
-
-        await ApplicationUpdatesHelper.Restart();
     }
 
     [RelayCommand]

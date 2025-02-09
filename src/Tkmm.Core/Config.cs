@@ -19,6 +19,13 @@ public sealed partial class Config : ConfigModule<Config>
     public string[] GameLanguages { get; set; } = [
         "USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh"
     ];
+    
+    public static void SaveAll()
+    {
+        TkConfig.Shared.Save();
+        GbConfig.Shared.Save();
+        Shared.Save();
+    }
 
     public Config()
     {

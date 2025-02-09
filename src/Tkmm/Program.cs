@@ -17,16 +17,16 @@ internal abstract class Program
     public static void Main(string[] args)
     {
         try {
+            // Will lock until the old
+            // files can be deleted
+            AppUpdater.CleanupUpdate();
+            
             const string logCategoryName = nameof(TKMM);
             TkLog.Instance.Register(new DesktopLogger(logCategoryName));
             TkLog.Instance.Register(new EventLogger(logCategoryName));
 
             // Reroute backend localization interface
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
-
-            _ = Task.Run(async () => {
-                await ApplicationUpdatesHelper.CleanupUpdate();
-            });
             
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
