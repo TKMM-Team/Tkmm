@@ -73,7 +73,7 @@ public static class TkEmulatorHelper
             ? Path.GetFileNameWithoutExtension(emulatorFilePath)
             : Path.GetFileName(emulatorFilePath);
 
-        if (Path.GetFileName(emulatorFilePath) is string exeFolder
+        if (Path.GetDirectoryName(emulatorFilePath) is string exeFolder
             && Path.Combine(exeFolder, "user") is var portableDataFolderPath
             && Directory.Exists(portableDataFolderPath)) {
             emulatorDataFolderPath = portableDataFolderPath;
