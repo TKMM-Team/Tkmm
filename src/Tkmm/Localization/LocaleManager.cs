@@ -12,7 +12,7 @@ public sealed class LocaleManager : ObservableObject
     private const string DEFAULT_LOCALE = "en_US";
 
     private readonly Dictionary<string, LocalesEntry> _entries;
-    private readonly string _localeKey = Config.Shared.CultureName.Replace('-', '_');
+    private string _currentCulture;
 
     public static LocaleManager Locale { get; } = Load();
 
@@ -29,6 +29,15 @@ public sealed class LocaleManager : ObservableObject
     {
         Languages = json.Languages;
         _entries = json.Locales;
+        _currentCulture = Config.Shared.CultureName.Value.Replace('-', '_');
+
+        Config.Shared.PropertyChanged += (s, e) => {
+            if (e.PropertyName == nameof(Config.Shared.CultureName)) {
+                _currentCulture = Config.Shared.CultureName.Value.Replace('-', '_');
+                // ReSharper disable once ExplicitCallerInfoArgument
+                OnPropertyChanged("Translation");
+            }
+        };
     }
 
     public string this[TkLocale key] => this[Enum.GetName(key)!];
