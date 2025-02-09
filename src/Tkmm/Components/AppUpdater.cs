@@ -59,7 +59,7 @@ public static class AppUpdater
         taskDialog.Opened += async (dialog, e) => {
             DownloadHelper.Reporters.Push(new DownloadReporter {
                 ProgressReporter = new Progress<double>(
-                    progress => dialog.SetProgressBarState(progress, TaskDialogProgressState.Normal)
+                    progress => dialog.SetProgressBarState(progress * 100.0, TaskDialogProgressState.Normal)
                 ),
                 SpeedReporter = new Progress<double>(_ => { })
             });
