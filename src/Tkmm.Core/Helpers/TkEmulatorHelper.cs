@@ -36,10 +36,17 @@ public static class TkEmulatorHelper
         TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
 
         string modFolderPath = Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
-        Config.Shared.ExportLocations.Add(new ExportLocation {
-            SymlinkPath = modFolderPath,
-            IsEnabled = true
-        });
+
+        if (!string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
+            Directory.CreateDirectory(modFolderPath);
+            Config.Shared.MergeOutput = modFolderPath;
+        }
+        else {
+            Config.Shared.ExportLocations.Add(new ExportLocation {
+                SymlinkPath = modFolderPath,
+                IsEnabled = true
+            });
+        }
 
         if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
             return false;
