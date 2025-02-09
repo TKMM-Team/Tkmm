@@ -123,7 +123,7 @@ public sealed class TkOptimizerContext : ObservableObject
     
     public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
-        Store = TkOptimizerStore.Attach(profile);
+        Store = TkOptimizerStore.CreateStore(profile);
 
         string outputFileName = Path.Combine("romfs", "UltraCam",
             // ReSharper disable once StringLiteralTypo

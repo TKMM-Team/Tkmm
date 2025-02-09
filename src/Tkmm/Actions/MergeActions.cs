@@ -55,7 +55,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
-            await TKMM.Merge(profile, ipsOutputPath, ct);
+            await TKMM.Merge(profile, ipsOutputPath, ct: ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
                 "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");

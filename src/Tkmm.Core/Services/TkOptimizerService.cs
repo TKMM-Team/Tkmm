@@ -24,7 +24,7 @@ public class TkOptimizerService
             };
         }
 
-        Context.Store = TkOptimizerStore.Attach(profile);
+        Context.Store = TkOptimizerStore.CreateStore(profile);
 
         return new TkChangelog {
             BuilderVersion = 100,
@@ -42,7 +42,7 @@ public class TkOptimizerService
 
     private static List<TkCheat> GetCheats(TkProfile? profile = null)
     {
-        Context.Store = TkOptimizerStore.Attach(profile);
+        Context.Store = TkOptimizerStore.CreateStore(profile);
 
         List<TkCheat> result = [
             ..

@@ -13,12 +13,17 @@ public class TkOptimizerStore(Ulid id)
     private static readonly string _storeFilePath = Path.Combine(TKMM.ModManager.DataFolderPath, "tk-optimizer.json");
     private static readonly TkOptimizerConfig _store = FromDisk();
 
-    public static TkOptimizerStore Current => Attach(TKMM.ModManager.GetCurrentProfile());
+    public static TkOptimizerStore Current => CreateStore(TKMM.ModManager.GetCurrentProfile());
 
-    public static TkOptimizerStore Attach(TkProfile? profile = null)
+    public static TkOptimizerStore CreateStore(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
         return new TkOptimizerStore(profile.Id);
+    }
+
+    public static bool Remove(TkProfile profile)
+    {
+        return _store.Remove(profile.Id);
     }
 
     public static bool IsProfileEnabled(TkProfile? profile = null)

@@ -1,17 +1,21 @@
 global using static TkSharp.Core.Common.TkLocalizationInterface;
 using System.Diagnostics;
+using System.IO.Compression;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.IO.Readers;
 using Tkmm.Core.Providers;
 using Tkmm.Core.Services;
+using Tkmm.Core.TkOptimizer;
 using TkSharp;
 using TkSharp.Core;
+using TkSharp.Core.Extensions;
 using TkSharp.Core.Models;
 using TkSharp.Extensions.GameBanana.Readers;
 using TkSharp.Extensions.LibHac;
 using TkSharp.IO.Writers;
 using TkSharp.Merging;
+using TkSharp.Packaging.IO.Serialization;
 
 namespace Tkmm.Core;
 
@@ -32,13 +36,13 @@ public static class TKMM
 
     public static ITkRom? TryGetTkRom()
         => TryGetTkRom(out _, out _, out _);
-    
+
     public static ITkRom? TryGetTkRom(out string? error)
         => TryGetTkRom(out _, out _, out error);
-    
+
     public static ITkRom? TryGetTkRom(out bool hasBaseGame, out bool hasUpdate)
         => TryGetTkRom(out hasBaseGame, out hasUpdate, out _);
-    
+
     public static ITkRom? TryGetTkRom(out bool hasBaseGame, out bool hasUpdate, out string? error)
         => _romProvider.Value.TryGetRom(out hasBaseGame, out hasUpdate, out error);
 
@@ -75,16 +79,18 @@ public static class TKMM
         return mod;
     }
 
-    public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
+    public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, string? mergeOutput = null, CancellationToken ct = default)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(MergedOutputFolder, ["romfs", "exefs", "cheats"], recursive: true);
+        mergeOutput ??= MergedOutputFolder;
+        
+        DirectoryHelper.DeleteTargetsFromDirectory(mergeOutput, ["romfs", "exefs", "cheats"], recursive: true);
 
-        string metadataFilePath = Path.Combine(MergedOutputFolder, "romfs_metadata.bin");
+        string metadataFilePath = Path.Combine(mergeOutput, "romfs_metadata.bin");
         if (File.Exists(metadataFilePath)) {
             File.Delete(metadataFilePath);
         }
 
-        FolderModWriter writer = new(MergedOutputFolder);
+        FolderModWriter writer = new(mergeOutput);
 
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
@@ -154,5 +160,29 @@ public static class TKMM
         profile ??= ModManager.GetCurrentProfile();
         return TkModManager.GetMergeTargets(profile)
             .Append(TkOptimizerService.GetMod(profile));
+    }
+
+    public static void ExportPackage(TkMod target, Stream output)
+    {
+        string modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
+        using MemoryStream contentArchiveOutput = new();
+        ZipFile.CreateFromDirectory(modPath, contentArchiveOutput);
+        TkPackWriter.Write(output, target, contentArchiveOutput.GetSpan());
+    }
+
+    public static async ValueTask ExportRomfs(TkMod target, string outputFolderPath, CancellationToken ct = default)
+    {
+        TkProfile profile = new() {
+            Mods = {
+                new TkProfileMod(target)
+            }
+        };
+        
+        // Make sure the optimizer is disabled
+        TkOptimizerStore.CreateStore(profile)
+            .IsEnabled = false;
+
+        await Merge(profile, mergeOutput: outputFolderPath, ct: ct);
+        TkOptimizerStore.Remove(profile);
     }
 }

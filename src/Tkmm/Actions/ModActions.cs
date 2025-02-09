@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -7,7 +8,9 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using TkSharp.Core;
+using TkSharp.Core.Extensions;
 using TkSharp.Core.Models;
+using TkSharp.Packaging.IO.Serialization;
 
 namespace Tkmm.Actions;
 
@@ -68,12 +71,51 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
 
         try {
-            // TODO: Export packaged mod
+            TkStatus.Set(Locale[TkLocale.Status_ExportingMod, target.Mod.Name, result.Name], TkIcons.GEAR_FOLDER);
+            
+            await using (Stream output = await result.OpenWriteAsync()) {
+                TKMM.ExportPackage(target.Mod, output);
+            }
             TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyExported, target.Mod.Name], TkIcons.CIRCLE_CHECK);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while exporting the mod '{ModName}' to '{TargetFile}'.",
                 target.Mod.Name, result.Name);
+            await ErrorDialog.ShowAsync(ex);
+        }
+    }
+
+    [RelayCommand]
+    public async Task ExportModRomfs(CancellationToken ct = default)
+    {
+        await CanActionRun(showError: false);
+
+        if (TKMM.ModManager.CurrentProfile?.Selected is not TkProfileMod target) {
+            return;
+        }
+
+        string? targetOutputFolder = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            Title = "Export Mod as ROMFS",
+            AllowMultiple = false,
+            SuggestedFileName = target.Mod.Name
+        }) switch {
+            [var first, ..] when first.TryGetLocalPath() is string path => path,
+            _ => null
+        };
+
+        if (targetOutputFolder is null) {
+            return;
+        }
+
+        try {
+            TkStatus.Set(Locale[TkLocale.Status_ExportingMod, target.Mod.Name, targetOutputFolder], TkIcons.GEAR_FOLDER);
+            
+            await TKMM.ExportRomfs(target.Mod, targetOutputFolder, ct);
+            TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyExported, target.Mod.Name], TkIcons.CIRCLE_CHECK);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "An error occured while exporting the mod '{ModName}' to '{TargetFolder}'.",
+                target.Mod.Name, targetOutputFolder);
             await ErrorDialog.ShowAsync(ex);
         }
     }
