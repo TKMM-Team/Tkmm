@@ -27,6 +27,7 @@ internal abstract class Program
 
             // Reroute backend localization interface
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
+            TkLocalizationInterface.GetCultureName = culture => Locale["Language", failSoftly: false, culture];
             
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);

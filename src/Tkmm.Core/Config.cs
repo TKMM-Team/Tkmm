@@ -9,6 +9,7 @@ namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
 {   
+    [JsonIgnore]
     public override string Name => "tkmm";
     
     public event Action<string> ThemeChanged = delegate { };
@@ -16,6 +17,7 @@ public sealed partial class Config : ConfigModule<Config>
     [JsonIgnore]
     public Func<List<string>>? GetLanguages { get; set; }
 
+    [JsonIgnore]
     public string[] GameLanguages { get; set; } = [
         "USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh"
     ];
@@ -53,8 +55,10 @@ public sealed partial class Config : ConfigModule<Config>
         Header = "System Language",
         Description = "The language to use in the user interface (restart required)",
         Group = "Application")]
-    [property: DropdownConfig(RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
-    private string _cultureName = "en_US";
+    [property: DropdownConfig(
+        DisplayMemberPath = nameof(SystemLanguage.DisplayName),
+        RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
+    private SystemLanguage _cultureName = "en_US";
 
     [ObservableProperty]
     [property: Config(
@@ -144,5 +148,8 @@ public sealed partial class Config : ConfigModule<Config>
         return File.Exists(LocalPath);
     }
 
-    public List<string> GetLanguagesInternal() => GetLanguages?.Invoke() ?? ["en_US"];
+    public List<SystemLanguage> GetLanguagesInternal() => GetLanguages?.Invoke() switch {
+        [..] values => values.Select(x => new SystemLanguage(x)).ToList(), 
+        null => ["en_US"],
+    };
 }

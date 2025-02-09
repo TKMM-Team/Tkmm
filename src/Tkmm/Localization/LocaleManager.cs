@@ -44,9 +44,11 @@ public sealed class LocaleManager : ObservableObject
 
     public string this[TkLocale key, params object[] arguments] => string.Format(this[key], arguments);
 
-    public string this[string key] => this[key, failSoftly: false];
+    public string this[string key] => this[key, failSoftly: false, culture: null];
 
-    public string this[string key, bool failSoftly] {
+    public string this[string key, bool failSoftly] => this[key, failSoftly, culture: null];
+
+    public string this[string key, bool failSoftly, string? culture] {
         get {
             if (!_entries.TryGetValue(key, out LocalesEntry? entry)) {
                 if (failSoftly) {
@@ -57,9 +59,10 @@ public sealed class LocaleManager : ObservableObject
                     $"The locale entry '{key}' does not exist.");
             }
 
-            if (!entry.TryGetValue(_localeKey, out string? value)) {
+            culture ??= _currentCulture;
+            if (!entry.TryGetValue(culture, out string? value)) {
                 throw new ArgumentException(
-                    $"The locale entry '{key}' is missing a translation entry for '{_localeKey}'.");
+                    $"The locale entry '{key}' is missing a translation entry for '{culture}'.");
             }
 
             return string.IsNullOrWhiteSpace(value)
