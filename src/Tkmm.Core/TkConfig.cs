@@ -14,7 +14,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     public const string DEFAULT_GAME_VERSION = "Any";
 
     [JsonIgnore]
-    public override string Name => "totk";
+    public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.Shared.Name, "TkConfig.json");
 
     public TkConfig()
     {
@@ -22,14 +22,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         if (configFileInfo is { Exists: true, Length: 0 }) {
             File.Delete(LocalPath);
         }
-
-        OnSaving += () => {
-            if (GameDumpFolderPaths is [PathCollectionItem item, ..]) {
-                GamePath ??= item.Target;
-            }
-
-            return true;
-        };
     }
 
     [ObservableProperty]
@@ -112,11 +104,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _nandFolderPaths = [];
 
-    /// <summary>
-    /// The original GamePath property used by NXE and other application
-    /// </summary>
-    public string? GamePath { get; set; }
-
     public TkExtensibleRomProvider CreateRomProvider()
     {   
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
@@ -124,7 +111,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         return TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
-            .WithExtractedGameDump(() => GamePath is null ? GameDumpFolderPaths : GameDumpFolderPaths.Append(GamePath))
+            .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths)
             .WithPackagedUpdate(() => PackagedUpdatePaths)

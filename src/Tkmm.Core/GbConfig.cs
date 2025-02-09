@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using TkSharp.Extensions.GameBanana.Helpers;

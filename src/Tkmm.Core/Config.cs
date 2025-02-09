@@ -10,7 +10,7 @@ namespace Tkmm.Core;
 public sealed partial class Config : ConfigModule<Config>
 {
     [JsonIgnore]
-    public override string Name => "tkmm";
+    public override string Name => "tkmm2";
 
     public event Action<string> ThemeChanged = delegate { };
 
@@ -38,7 +38,6 @@ public sealed partial class Config : ConfigModule<Config>
     public static void SaveAll()
     {
         TkConfig.Shared.Save();
-        GbConfig.Shared.Save();
         Shared.Save();
     }
 
