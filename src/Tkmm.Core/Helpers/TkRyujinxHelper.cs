@@ -42,7 +42,7 @@ public class TkRyujinxHelper
         
         string modFolderPath = Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
         
-        if (!string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
+        if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
             Config.Shared.MergeOutput = modFolderPath;
         }

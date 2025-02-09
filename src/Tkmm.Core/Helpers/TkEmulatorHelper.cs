@@ -37,7 +37,7 @@ public static class TkEmulatorHelper
 
         string modFolderPath = Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
 
-        if (!string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
+        if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
             Config.Shared.MergeOutput = modFolderPath;
         }
