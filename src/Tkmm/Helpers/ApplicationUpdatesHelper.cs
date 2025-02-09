@@ -31,7 +31,7 @@ public static class ApplicationUpdatesHelper
             string target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
             File.Move(target, $"{target}.moldy");
         }
-        
+
         archive.ExtractToDirectory(AppContext.BaseDirectory);
     }
 
@@ -47,7 +47,7 @@ public static class ApplicationUpdatesHelper
     public static async ValueTask Restart()
     {
         string processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
-        
+
         switch (processName.Length) {
             case >= 6 when Path.GetExtension(processName.AsSpan()) is ".moldy":
                 processName = processName[..6];
@@ -56,15 +56,20 @@ public static class ApplicationUpdatesHelper
                 processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
                 break;
         }
-     
-        Process.Start(processName);
+
+        ProcessStartInfo processStart = new(processName) {
+            UseShellExecute = true,
+            WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
+        };
+
+        Process.Start(processStart);
         await SystemActions.SoftClose();
     }
 
     public static async ValueTask CleanupUpdate()
     {
         await Task.Delay(2000);
-        
+
         foreach (string oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
         Retry:
             try {
