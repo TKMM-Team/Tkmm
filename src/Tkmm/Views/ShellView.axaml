@@ -14,7 +14,6 @@
                Title="{x:Static desktop:App.ShortTitle}"
                xmlns:tk="using:TkSharp.Core"
                xmlns:controls="clr-namespace:Tkmm.Controls"
-               CanResize="{Binding !IsFirstTimeSetup}"
                Width="870"
                Height="550"
                MinWidth="650"
