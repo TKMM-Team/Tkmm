@@ -97,7 +97,7 @@ jobs:
           -c Release \
           -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
-          --sc true \
+          --sc ${{ matrix.config.runtime != 'linux-nx' }} \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }} \
           -p:DebugType=embedded
