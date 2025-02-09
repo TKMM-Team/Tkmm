@@ -66,7 +66,7 @@ public static class AppUpdater
 
             try {
                 await PerformUpdate(release, ct);
-                dialog.Hide();
+                dialog.Hide(TaskDialogStandardResult.Yes);
             }
             catch (Exception ex) {
                 TkLog.Instance.LogError(ex, "Update failed.");
@@ -84,11 +84,10 @@ public static class AppUpdater
         switch (await taskDialog.ShowAsync()) {
             case TaskDialogStandardResult.Retry:
                 goto Retry;
-            case TaskDialogStandardResult.Cancel:
+            case TaskDialogStandardResult.Yes:
+                Restart();
                 return;
         }
-
-        Restart();
     }
 
     private static async ValueTask<Release?> HasAvailableUpdates()
