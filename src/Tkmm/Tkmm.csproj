@@ -11,13 +11,15 @@
     <Version Condition="'$(Configuration)' == 'Debug'">0.0.999-dev</Version>
     <NoWarn>CS0657,CA1822</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <DefineConstants Condition="'$(NoUpdate)' == 'true'">$(DefineConstants);NO_UPDATE</DefineConstants>
+    <DefineConstants Condition="'$(IsSwitch)' == 'true'">$(DefineConstants);SWITCH;TARGET_NX</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
     <PublishSingleFile>true</PublishSingleFile>
     <DebugType>embedded</DebugType>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup>
 
   <ItemGroup>
