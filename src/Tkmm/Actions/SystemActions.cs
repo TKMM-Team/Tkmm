@@ -64,32 +64,27 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }
 
         try {
-            if (await ApplicationUpdatesHelper.HasAvailableUpdates() is Release release) {
-                if (!isUserInvoked) {
-                    MessageDialogResult result = await MessageDialog.Show(
-                        TkLocale.System_Popup_UpdateAvailable,
-                        TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
-
-                    if (result is not MessageDialogResult.Yes) {
-                        return;
-                    }
-                }
-
-                await RequestUpdate(release, ct);
+            if (await ApplicationUpdatesHelper.HasAvailableUpdates() is not Release release) {
                 return;
             }
+            
+            if (!isUserInvoked) {
+                MessageDialogResult result = await MessageDialog.Show(
+                    TkLocale.System_Popup_UpdateAvailable,
+                    TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
+
+                if (result is not MessageDialogResult.Yes) {
+                    return;
+                }
+            }
+
+            await RequestUpdate(release, ct);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex,
                 "An error occured while checking for application updates.");
             await ErrorDialog.ShowAsync(ex);
         }
-
-        await new ContentDialog {
-            Title = "Check for updates result",
-            Content = "Software up to date.",
-            PrimaryButtonText = "OK"
-        }.ShowAsync();
     }
 
     public static Task RequestUpdate(Release release, CancellationToken ct = default)
@@ -159,7 +154,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             Environment.Exit(0);
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "An error occured while saving the mod manager state.");
+            TkLog.Instance.LogError(ex, "An error occured while attempting to close the application.");
 
             object errorReportResult = await ErrorDialog.ShowAsync(ex,
                 TaskDialogStandardResult.Close, TaskDialogStandardResult.Cancel);
