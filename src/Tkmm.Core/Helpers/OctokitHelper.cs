@@ -10,7 +10,7 @@ public static class OctokitHelper
     
     private static readonly string _runtimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
 #if SWITCH
-    private static readonly string _assetName = $"Tkmm-{_runtimeId}-linux-nx.zip";
+    private static readonly string _assetName = $"Tkmm-{_runtimeId}-nx.zip";
 #else
     private static readonly string _assetName = $"Tkmm-{_runtimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
 #endif
