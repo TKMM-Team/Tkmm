@@ -1,0 +1,120 @@
+<UserControl x:Class="Tkmm.Views.Pages.TkOptimizerPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tkmm.ViewModels.Pages"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:tkm="using:Tkmm.Core.TkOptimizer.Models"
+             xmlns:tkv="using:Tkmm.Core.TkOptimizer.Models.ValueTypes"
+             d:DesignWidth="700"
+             x:DataType="vm:TkOptimizerPageViewModel"
+             mc:Ignorable="d">
+    <Grid Margin="15">
+        <Grid ColumnDefinitions="Auto,Auto,*" Margin="10,0,0,0"
+              VerticalAlignment="Top">
+            <TextBlock Text="{ext:Locale TotkOptimizerPageTitle}"
+                       FontSize="32"
+                       FontFamily="{StaticResource HyliaGlyph}" />
+            <ToggleButton Grid.Column="1" Margin="5,0,0,0"
+                          IsChecked="{Binding Context.IsEnabled}">
+                <ToggleButton.Styles>
+                    <Style Selector="ToggleButton">
+                        <Setter Property="Content" Value="{ext:Locale Tip_Disabled}" />
+                    </Style>
+                    <Style Selector="ToggleButton:checked">
+                        <Setter Property="Content" Value="{ext:Locale Tip_Enabled}" />
+                    </Style>
+                </ToggleButton.Styles>
+            </ToggleButton>
+            <TextBlock Text="{ext:Locale TotkOptimizerPageCredits}"
+                       FontSize="26"
+                       VerticalAlignment="Center"
+                       Grid.Column="2"
+                       Opacity="90"
+                       HorizontalAlignment="Right"
+                       FontFamily="{StaticResource HyliaGlyph}" />
+        </Grid>
+        <TabControl ItemsSource="{Binding Context.Groups}" Margin="0,25,0,0">
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type tkm:TkOptimizerOptionGroup}">
+                    <ScrollViewer>
+                        <Grid Margin="0,0,6,0">
+                            <ItemsControl ItemsSource="{Binding Options}"
+                                          Margin="-8,3,0,-8"
+                                          Width="{Binding $parent[Grid].Bounds.Width}"
+                                          MaxWidth="1000"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type tkm:TkOptimizerOption}">
+                                        <Border Margin="8"
+                                                Padding="10"
+                                                Background="{DynamicResource SystemChromeMediumColor}"
+                                                BorderThickness="1"
+                                                CornerRadius="{DynamicResource ControlCornerRadius}"
+                                                ToolTip.Tip="{Binding Description}">
+                                            <StackPanel Spacing="5">
+                                                <TextBlock Text="{Binding Name}" />
+                                                <ContentControl Content="{Binding Value}">
+                                                    <ContentControl.DataTemplates>
+                                                        <DataTemplate
+                                                            DataType="{x:Type tkv:TkOptimizerFloatingPointRangeValue}">
+                                                            <Grid RowDefinitions="Auto,Auto">
+                                                                <TextBlock
+                                                                    Foreground="{DynamicResource SystemAccentColorLight2}"
+                                                                    FontFamily="{StaticResource UbuntuMono}"
+                                                                    Text="{Binding Value, StringFormat='{}{0:F2}'}" />
+                                                                <Slider Grid.Row="1"
+                                                                        Height="35"
+                                                                        Value="{Binding Value}"
+                                                                        TickPlacement="Outside"
+                                                                        TickFrequency="{Binding IncrementSize}"
+                                                                        IsSnapToTickEnabled="True"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerRangeValue}">
+                                                            <Grid RowDefinitions="Auto,Auto">
+                                                                <TextBlock
+                                                                    Foreground="{DynamicResource SystemAccentColorLight2}"
+                                                                    FontFamily="{StaticResource UbuntuMono}"
+                                                                    Text="{Binding Value, StringFormat='{}{0:N0}'}" />
+                                                                <Slider Grid.Row="1"
+                                                                        Height="35"
+                                                                        Value="{Binding Value}"
+                                                                        TickPlacement="Outside"
+                                                                        TickFrequency="{Binding IncrementSize}"
+                                                                        IsSnapToTickEnabled="True"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerEnumValue}">
+                                                            <ComboBox SelectedIndex="{Binding Value}"
+                                                                      ItemsSource="{Binding Values}"
+                                                                      DisplayMemberBinding="{Binding Name}" />
+                                                        </DataTemplate>
+                                                        <DataTemplate DataType="{x:Type tkv:TkOptimizerBoolValue}">
+                                                            <ToggleSwitch IsChecked="{Binding Value}" />
+                                                        </DataTemplate>
+                                                    </ContentControl.DataTemplates>
+                                                </ContentControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>

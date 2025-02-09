@@ -1,65 +1,57 @@
-﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.Versioning;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using TkSharp.Core;
 
 namespace Tkmm.Core.Helpers;
 
-internal static class SymlinkHelper
+public class SymlinkHelper
 {
-    public static bool CreateMany((string Path, string PathToTarget)[] targets)
+    public static async ValueTask CreateMany(IEnumerable<string> targets, string linkToPath)
     {
-        if (!OperatingSystem.IsWindows() || IsDeveloperModeEnabled()) {
-            return CreateManyWithPermission(targets);
+        if (OperatingSystem.IsWindows() && !IsDeveloperModeEnabled()) {
+            await CreateManyRequestPermission(targets, linkToPath);
+            return;
         }
 
-        return CreateManyRequestPermission(targets);
+        Create(targets, linkToPath);
     }
 
-    private static bool CreateManyWithPermission((string Path, string PathToTarget)[] targets)
+    private static void Create(IEnumerable<string> targets, string linkToPath)
     {
-        foreach ((string path, string pathToTarget)  in targets) {
-            if (!TryDeleteFolder(path)) {
-                continue;
+        foreach (string path in targets) {
+            if (CheckFolder(path)) {
+                Directory.CreateSymbolicLink(path, linkToPath);
             }
-
-            Directory.CreateSymbolicLink(path, pathToTarget);
         }
-
-        return true;
     }
 
-    private static bool CreateManyRequestPermission((string Path, string PathToTarget)[] targets)
+    [SupportedOSPlatform("windows")]
+    private static async ValueTask CreateManyRequestPermission(IEnumerable<string> targets, string linkToPath)
     {
         StringBuilder arguments = new();
 
-        foreach ((string path, string pathToTarget)  in targets) {
-            if (!TryDeleteFolder(path)) {
-                continue;
+        foreach (string path in targets) {
+            if (CheckFolder(path)) {
+                arguments.Append($"""
+                    MKLINK /D "{path}" "{linkToPath}" &&
+                    """);
             }
-
-            arguments.Append($"""
-                MKLINK /D "{path}" "{pathToTarget}" &&
-                """);
         }
 
         ProcessStartInfo processInfo = new() {
             CreateNoWindow = true,
             WindowStyle = ProcessWindowStyle.Hidden,
             FileName = "cmd.exe",
-            Arguments = $"""
-                /c {arguments}ECHO Success
-                """,
+            Arguments = $"/c {arguments}ECHO Success",
             UseShellExecute = true,
             Verb = "runas"
         };
 
-        try {
-            Process.Start(processInfo)?.WaitForExit();
-            return true;
-        }
-        catch {
-            return false;
+        if (Process.Start(processInfo) is { } process) {
+            await process.WaitForExitAsync();
         }
     }
 
@@ -67,28 +59,25 @@ internal static class SymlinkHelper
     private static bool IsDeveloperModeEnabled()
     {
         RegistryKey? key = Registry.LocalMachine.OpenSubKey(
-            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", writable: false);
-        return (key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int?) == 1;
+            @"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock", writable: false);
+        return key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int? == 1;
     }
 
-    private static bool TryDeleteFolder(string path)
+    private static bool CheckFolder(string path)
     {
-        try {
-            if (!Directory.Exists(path)) {
-                if (Path.GetDirectoryName(path) is string folder) {
-                    Directory.CreateDirectory(folder);
-                }
-
-                return true;
-            }
-
-            Directory.Delete(path);
+        if (!Directory.Exists(path) && Path.GetDirectoryName(path) is string parent) {
+            Directory.CreateDirectory(parent);
+            return true;
         }
-        catch (Exception ex) {
-            AppLog.Log(ex);
+
+        if (Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Any()) {
+            TkLog.Instance.LogWarning(
+                "The export location '{ExportLocationPath}' cannot be created because it has contents.",
+                path);
             return false;
         }
-
+        
+        Directory.Delete(path, recursive: true);
         return true;
     }
 }

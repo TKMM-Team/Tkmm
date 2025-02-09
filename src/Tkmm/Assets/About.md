@@ -21,4 +21,4 @@ Rashad Taylor, Steve K, vintii, xPretorianx, and 감자.
 
 ***
 
-p=. Copyright (C) TKMM Team. [MIT](https://github.com/TKMM-Team/Tkmm/blob/master/License.md).
+Copyright (C) TKMM Team. [MIT](https://github.com/TKMM-Team/Tkmm/blob/master/License.md).

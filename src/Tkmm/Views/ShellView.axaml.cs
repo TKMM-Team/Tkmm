@@ -1,38 +1,21 @@
-using Avalonia.Controls;
-using Avalonia.Input;
+using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
-using System.Timers;
-using Avalonia;
-using Tkmm.Controls.Keyboard;
-using Tkmm.Controls.Keyboard.Layout;
-using Tkmm.Helpers;
+using Microsoft.Extensions.Logging;
+using Tkmm.Components;
 using Tkmm.Models;
+using Tkmm.ViewModels;
+using Tkmm.Wizard;
+using TkSharp.Core;
 
 namespace Tkmm.Views;
 
 public partial class ShellView : AppWindow
 {
-    private bool _iskeyboardCooldown;
-    private bool _iskeyboardCooldownStarted;
-
-    private readonly System.Timers.Timer _keyboardCoolDown;
-
     public ShellView()
     {
-        VirtualKeyboard.AddLayout<VirtualKeyboardLayoutUS>();
-        VirtualKeyboard.SetDefaultLayout(() => typeof(VirtualKeyboardLayoutUS));
-
         InitializeComponent();
-
-        #if SWITCH
-        _keyboardCoolDown = new System.Timers.Timer();
-        _keyboardCoolDown.Interval = 200;
-        _keyboardCoolDown.Elapsed += ResetCoolDown;
-        AddHandler(GotFocusEvent, OpenVirtualKeyboard);
-        #endif
-
         SplashScreen = new SplashScreen();
 
         TitleBar.ExtendsContentIntoTitleBar = true;
@@ -48,35 +31,26 @@ public partial class ShellView : AppWindow
         };
     }
 
-    private void ResetCoolDown(object? sender, ElapsedEventArgs e)
+    /// <summary>
+    /// Start the setup wizard if this the first setup.
+    /// </summary>
+    public async void InitializeWizard()
     {
-        _iskeyboardCooldown = false;
-        _iskeyboardCooldownStarted = false;
-        _keyboardCoolDown.Stop();
-    }
+        try {
+            if (!ShellViewModel.Shared.IsFirstTimeSetup) {
+                return;
+            }
+#if SWITCH
+            SetupWizard wizard = new NxSetupWizard(WizardPresenter);
+#else
+            SetupWizard wizard = new StandardSetupWizard(WizardPresenter);
+#endif
+            await wizard.Start();
 
-    private void OpenVirtualKeyboard(object? sender, GotFocusEventArgs e)
-    {
-        if (_iskeyboardCooldown && !_iskeyboardCooldownStarted) {
-            _iskeyboardCooldownStarted = true;
-            _keyboardCoolDown.Start();
+            ShellViewModel.Shared.IsFirstTimeSetup = false;
         }
-
-        if (e.Source?.GetType() != typeof(TextBox) || Keyboard.IsVisible) {
-            return;
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Setup Wizard initialization failed");
         }
-
-        var tb = e.Source as Control;
-
-        switch (tb?.Tag?.ToString()) {
-            case "numpad":
-                Keyboard.ShowKeyboard((TextBox)e.Source, typeof(VirtualKeyboardLayoutNumpad));
-                break;
-            default:
-                Keyboard.ShowKeyboard((TextBox)e.Source);
-                break;
-        }
-        
-        _iskeyboardCooldown = true;
     }
 }
