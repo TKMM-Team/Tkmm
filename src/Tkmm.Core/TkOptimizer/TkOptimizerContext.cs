@@ -99,7 +99,7 @@ public sealed class TkOptimizerContext : ObservableObject
         Stream? result = null;
 
         if (TKMM.ModManager.Mods.FirstOrDefault(x => x.Id == id) is { Changelog.Source: ITkSystemSource optimizerSource }) {
-            const string target = "extras\\Options.json";
+            const string target = "extras/Options.json";
             if (optimizerSource.Exists(target)) {
                 result = optimizerSource.OpenRead(target);
             }
