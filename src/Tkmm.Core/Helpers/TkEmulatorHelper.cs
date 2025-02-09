@@ -75,7 +75,7 @@ public static class TkEmulatorHelper
 
         if (Path.GetFileName(emulatorFilePath) is string exeFolder
             && Path.Combine(exeFolder, "user") is var portableDataFolderPath
-            && File.Exists(portableDataFolderPath)) {
+            && Directory.Exists(portableDataFolderPath)) {
             emulatorDataFolderPath = portableDataFolderPath;
             if (CheckConfig(emulatorDataFolderPath) is var result) {
                 return result;
