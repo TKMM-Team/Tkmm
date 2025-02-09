@@ -8,20 +8,33 @@ using TkSharp.Extensions.GameBanana;
 namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
-{   
+{
     [JsonIgnore]
     public override string Name => "tkmm";
-    
+
     public event Action<string> ThemeChanged = delegate { };
-    
+
     [JsonIgnore]
     public Func<List<string>>? GetLanguages { get; set; }
 
     [JsonIgnore]
-    public string[] GameLanguages { get; set; } = [
-        "USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh"
+    public GameLanguage[] GameLanguages { get; set; } = [
+        new("USen", "American English"),
+        new("EUen", "British English"),
+        new("JPja", "日本語"),
+        new("EUfr", "Français (France)"),
+        new("USfr", "Français canadien"),
+        new("USes", "Español (América)"),
+        new("EUes", "Español (Europa)"),
+        new("EUde", "Deutsch"),
+        new("EUnl", "Nederlands"),
+        new("EUit", "Italiano"),
+        new("EUru", "Русский"),
+        new("KRko", "한국어"),
+        new("CNzh", "简体中文"),
+        new("TWzh", "繁體中文 (台灣)")
     ];
-    
+
     public static void SaveAll()
     {
         TkConfig.Shared.Save();
@@ -35,8 +48,10 @@ public sealed partial class Config : ConfigModule<Config>
         if (configFileInfo is { Exists: true, Length: 0 }) {
             File.Delete(LocalPath);
         }
+
+        _gameLanguage = GameLanguages[0];
     }
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "Theme",
@@ -49,7 +64,7 @@ public sealed partial class Config : ConfigModule<Config>
     {
         ThemeChanged(value);
     }
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "System Language",
@@ -66,7 +81,7 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Automatically save the settings when a change is made and there are no errors.",
         Group = "Application")]
     private bool _autoSaveSettings = true;
-    
+
 #if SWITCH
     // ReSharper disable once MemberCanBeMadeStatic.Global
     public string SevenZipPath => "/usr/bin/7zz";
@@ -83,7 +98,7 @@ public sealed partial class Config : ConfigModule<Config>
         Title = "7z Location")]
     private string? _sevenZipPath;
 #endif
-    
+
 #if !SWITCH
     [property: Config(
         Header = "Emulator Executable Path",
@@ -101,29 +116,31 @@ public sealed partial class Config : ConfigModule<Config>
     [ObservableProperty]
     private string? _emulatorPath;
 #endif
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "Show Trivia Popup",
         Description = "Show the trivia popup when merging.",
         Group = "Application")]
     private bool _showTriviaPopup = true;
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "Default Author",
         Description = "The default author used when packaging TKCL mods.",
         Group = "Packaging")]
     private string _defaultAuthor = string.Empty;
-    
+
     [ObservableProperty]
     [property: Config(
         Header = "Target Language",
         Description = "The target language that MalsMerger should create an archive for.",
         Group = "Merging")]
-    [property: DropdownConfig("USen", "EUen", "JPja", "EUfr", "USfr", "USes", "EUes", "EUde", "EUnl", "EUit", "EUru", "KRko", "CNzh", "TWzh")]
-    private string _gameLanguage = "USen";
-    
+    [property: DropdownConfig(
+        DisplayMemberPath = "DisplayName",
+        RuntimeItemsSourceMethodName = nameof(GetGameLanguages))]
+    private GameLanguage _gameLanguage;
+
 #if !SWITCH
     [ObservableProperty]
     [property: Config(
@@ -139,7 +156,7 @@ public sealed partial class Config : ConfigModule<Config>
         Group = "Merging")]
     private string? _mergeOutput;
 #endif
-    
+
     [ObservableProperty]
     private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
 
@@ -148,8 +165,10 @@ public sealed partial class Config : ConfigModule<Config>
         return File.Exists(LocalPath);
     }
 
+    public GameLanguage[] GetGameLanguages() => GameLanguages;
+
     public List<SystemLanguage> GetLanguagesInternal() => GetLanguages?.Invoke() switch {
-        [..] values => values.Select(x => new SystemLanguage(x)).ToList(), 
+        [..] values => values.Select(x => new SystemLanguage(x)).ToList(),
         null => ["en_US"],
     };
 }

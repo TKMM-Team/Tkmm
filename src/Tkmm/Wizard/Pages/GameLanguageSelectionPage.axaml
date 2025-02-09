@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:core="using:Tkmm.Core"
+             x:CompileBindings="False"
              x:Class="Tkmm.Wizard.Pages.GameLanguageSelectionPage">
     <Grid>
         <ComboBox ItemsSource="{Binding GameLanguages, Source={x:Static core:Config.Shared}}"
+                  DisplayMemberBinding="{Binding DisplayName}"
                   SelectedItem="{Binding GameLanguage, Source={x:Static core:Config.Shared}}" />
     </Grid>
 </UserControl>
