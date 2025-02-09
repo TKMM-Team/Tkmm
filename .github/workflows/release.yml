@@ -40,12 +40,8 @@ jobs:
       fail-fast: true
       matrix:
         target:
-          - project: Tkmm.Desktop
-            name: TKMM
-            exe: tkmm
-          - project: Tkmm.Launcher
-            name: TKMM-Launcher
-            exe: tkmm-launcher
+          - project: Tkmm
+            name: tkmm
         config:
           - name: Windows (x64)
             os: ubuntu-latest
@@ -81,7 +77,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.0.0
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "9.x.x"
 
       - name: Build
         shell: bash
@@ -90,19 +86,12 @@ jobs:
           -c Release \
           -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
-          --sc false \
+          --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:DebugType=embedded \
           -p:IncludeNativeLibrariesForSelfExtract=true \
           -p:PublishSingleFile=true \
           -p:Version=${{ needs.release.outputs.version }}
-
-      - name: Rename Executable
-        shell: bash
-        run: |-
-          mv                                                                                                          \
-          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.project }}${{ matrix.config.extension }} \
-          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.exe }}${{ matrix.config.extension }}     \
 
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
@@ -132,8 +121,7 @@ jobs:
       matrix:
         target:
           - project: Tkmm.Desktop
-            name: TKMM
-            exe: tkmm
+            name: tkmm
         config:
           - name: Linux (x64)
             os: ubuntu-latest
@@ -153,7 +141,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.0.0
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "9.x.x"
 
       - name: Build
         shell: bash
@@ -162,21 +150,14 @@ jobs:
           -c Release \
           -o ${{ matrix.target.name }}-${{ matrix.config.runtime }} \
           -r ${{ matrix.config.runtime }} \
+          --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:DebugType=embedded \
           -p:IncludeNativeLibrariesForSelfExtract=true \
           -p:PublishSingleFile=true \
-          -p:Version=${{ needs.release.outputs.version }} \
-          --self-contained
+          -p:Version=${{ needs.release.outputs.version }}
 
-      - name: Rename Executable
-        shell: bash
-        run: |-
-          mv                                                                                                          \
-          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.project }}${{ matrix.config.extension }} \
-          ${{ matrix.target.name }}-${{ matrix.config.runtime }}/${{ matrix.target.exe }}${{ matrix.config.extension }}     \
-
-      - name: Build Appimage
+      - name: Build AppImage
         if: ${{ matrix.config.os == 'ubuntu-latest' && matrix.target.project == 'Tkmm.Desktop' }}
         shell: bash
         run: |
@@ -188,7 +169,7 @@ jobs:
           rm -rf AppDir
           mkdir -p AppDir/usr/bin
 
-          cp distribution/appimage/Tkmm.desktop AppDir/tkmm.desktop
+          cp distribution/appimage/Tkmm.desktop AppDir/Tkmm.desktop
           cp distribution/appimage/AppRun AppDir/AppRun
           cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
 
