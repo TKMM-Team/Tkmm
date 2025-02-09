@@ -61,10 +61,18 @@ public static class ApplicationUpdatesHelper
         await SystemActions.SoftClose();
     }
 
-    public static void CleanupUpdate()
+    public static async ValueTask CleanupUpdate()
     {
+        await Task.Delay(2000);
+        
         foreach (string oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
-            File.Delete(oldFile);
+        Retry:
+            try {
+                File.Delete(oldFile);
+            }
+            catch {
+                goto Retry;
+            }
         }
     }
 }

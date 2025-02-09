@@ -23,8 +23,10 @@ internal abstract class Program
 
             // Reroute backend localization interface
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
-            
-            ApplicationUpdatesHelper.CleanupUpdate();
+
+            _ = Task.Run(async () => {
+                await ApplicationUpdatesHelper.CleanupUpdate();
+            });
             
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
