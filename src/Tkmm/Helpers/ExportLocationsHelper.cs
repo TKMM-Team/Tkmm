@@ -83,6 +83,7 @@ public static class ExportLocationsHelper
         };
 
         await dialog.ShowAsync();
+        await Config.Shared.ExportLocations.Create();
     }
 }
 #endif
