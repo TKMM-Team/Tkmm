@@ -23,9 +23,7 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             return null;
         }
         
-        if (context.Id == Ulid.Empty) {
-            context.Id = Ulid.NewUlid();
-        }
+        context.EnsureId();
 
         // Use a random ID instead of the
         // mod ID to avoid possible issues
