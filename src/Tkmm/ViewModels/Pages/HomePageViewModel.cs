@@ -50,6 +50,12 @@ public partial class HomePageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private static Task Update()
+    {
+        return ImportActions.Instance.Update();
+    }
+
+    [RelayCommand]
     private static void MoveUp()
     {
         TKMM.ModManager.GetCurrentProfile().MoveUp();

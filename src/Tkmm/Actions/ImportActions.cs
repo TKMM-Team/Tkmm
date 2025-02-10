@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using TkSharp.Core;
+using TkSharp.Core.Models;
 
 namespace Tkmm.Actions;
 
@@ -23,10 +24,13 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
     protected override string ActionGroupName { get; } = nameof(ImportActions).Humanize();
 
     [RelayCommand]
-    public async Task ImportFromFile(CancellationToken ct = default)
+    public Task ImportFromFile(CancellationToken ct = default)
+        => ImportFromFile(default, ct);
+    
+    public async Task<bool> ImportFromFile(TkModContext context, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
-            return;
+            return false;
         }
 
         IReadOnlyList<IStorageFile> results = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
@@ -40,26 +44,35 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         });
 
         if (results.Count <= 0) {
-            return;
+            return false;
         }
 
         foreach (IStorageFile targetFile in results) {
             try {
+                TkStatus.Set(Locale[TkLocale.Status_Importing, targetFile.Name], TkIcons.PROGRESS);
                 await using Stream stream = await targetFile.OpenReadAsync();
-                await TKMM.Install(targetFile.Name, stream, ct: ct);
+                if (await TKMM.Install(targetFile.Name, stream, context, ct: ct) is TkMod result) {
+                    TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
+                    return true;
+                }
             }
             catch (Exception ex) {
                 TkLog.Instance.LogError(ex, "An error occured while importing the file '{TargetFile}'.", targetFile?.Name);
                 await ErrorDialog.ShowAsync(ex);
             }
         }
+        
+        return false;
     }
 
     [RelayCommand]
-    public async Task ImportFromFolder(CancellationToken ct = default)
+    public Task ImportFromFolder(CancellationToken ct = default)
+        => ImportFromFolder(default, ct);
+    
+    public async Task<bool> ImportFromFolder(TkModContext context, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
-            return;
+            return false;
         }
 
         IReadOnlyList<IStorageFolder> results = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
@@ -68,7 +81,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         });
 
         if (results.Count <= 0) {
-            return;
+            return false;
         }
 
         foreach (IStorageFolder targetFolder in results) {
@@ -77,7 +90,11 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
                     continue;
                 }
                 
-                await TKMM.Install(folder, ct: ct);
+                TkStatus.Set(Locale[TkLocale.Status_Importing, folder], TkIcons.GEAR_FOLDER);
+                if (await TKMM.Install(folder, context: context, ct: ct) is TkMod result) {
+                    TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
+                    return true;
+                }
             }
             catch (Exception ex) {
                 TkLog.Instance.LogError(ex, "An error occured while importing the folder '{TargetFolder}'.", targetFolder?.Name);
@@ -85,13 +102,17 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             }
         }
         
+        return false;
     }
 
     [RelayCommand]
-    public async Task ImportFromArgument(CancellationToken ct = default)
+    public Task ImportFromArgument(CancellationToken ct = default)
+        => ImportFromArgument(default, ct);
+
+    public async Task<bool> ImportFromArgument(TkModContext context, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
-            return;
+            return false;
         }
         
         ContentDialog dialog = new() {
@@ -104,18 +125,64 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         };
         
         if (await dialog.ShowAsync() is not ContentDialogResult.Primary) {
-            return;
+            return false;
         }
         
         if (dialog.Content is TextBox { Text: not null } textBox) {
             string argument = textBox.Text;
             try {
-                await TKMM.Install(argument, ct: ct);
+                TkStatus.Set(Locale[TkLocale.Status_Importing, argument], TkIcons.GEAR_FOLDER);
+                if (await TKMM.Install(argument, context: context, ct: ct) is TkMod result) {
+                    TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
+                    return true;
+                }
             }
             catch (Exception ex) {
                 TkLog.Instance.LogError(ex, "An error occured while importing the argument '{Argument}'.", argument);
                 await ErrorDialog.ShowAsync(ex);
             }
+        }
+
+        return false;
+    }
+
+    [RelayCommand]
+    public async Task Update(CancellationToken ct = default)
+    {
+        if (TKMM.ModManager.CurrentProfile?.Selected is not TkProfileMod target) {
+            return;
+        }
+        
+        TaskDialog dialog = new() {
+            Header = Locale[TkLocale.System_Popup_UpdateMod_Title],
+            SubHeader = Locale[TkLocale.System_Popup_UpdateMod, target.Mod.Name],
+            IconSource = new SymbolIconSource {
+                Symbol = Symbol.Upload
+            },
+            Buttons = {
+                new TaskDialogButton(Locale[TkLocale.Word_Argument], "arg"),
+                new TaskDialogButton(Locale[TkLocale.Word_Folder], "folder"),
+                new TaskDialogButton(Locale[TkLocale.Word_File], "file"),
+            },
+            XamlRoot = App.XamlRoot
+        };
+
+        TkModContext context = new(target.Mod.Id);
+
+        Func<TkModContext, CancellationToken, Task<bool>>? exec = await dialog.ShowAsync() switch {
+            "arg" => ImportFromArgument,
+            "folder" => ImportFromFolder,
+            "file" => ImportFromFile,
+            _ => null
+        };
+
+        if (exec is null) {
+            return;
+        }
+        
+        TkStatus.Set(Locale[TkLocale.Status_Updating, target.Mod.Name], TkIcons.GEAR_FOLDER);
+        if (await exec(context, ct)) {
+            TkStatus.SetTemporary(Locale[TkLocale.Status_Updated, target.Mod.Name], TkIcons.CIRCLE_CHECK);
         }
     }
 }

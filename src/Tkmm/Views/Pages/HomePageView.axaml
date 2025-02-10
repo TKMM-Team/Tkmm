@@ -363,16 +363,22 @@
                             Command="{Binding MoveToBottomCommand}">
                         <pi:Icon Value="fa-solid fa-angles-down" />
                     </Button>
-                    <Button Margin="2.5" Command="{Binding MergeCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <pi:Icon Value="fa-solid fa-list-check" />
-                            <TextBlock Margin="10,0,0,0" Text="Merge" />
-                        </StackPanel>
-                    </Button>
                     <Button Margin="2.5" Command="{Binding InstallCommand}">
                         <StackPanel Orientation="Horizontal">
                             <pi:Icon Value="fa-solid fa-file-import" />
                             <TextBlock Margin="10,0,0,0" Text="Install" />
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="2.5"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding UpdateCommand}"
+                            ToolTip.Tip="{ext:Locale Tip_UpdateMod}">
+                        <pi:Icon Value="fa-regular fa-file-arrow-up" />
+                    </Button>
+                    <Button Margin="2.5" Command="{Binding MergeCommand}" Classes="accent">
+                        <StackPanel Orientation="Horizontal">
+                            <pi:Icon Value="fa-solid fa-list-check" />
+                            <TextBlock Margin="10,0,0,0" Text="Merge" />
                         </StackPanel>
                     </Button>
                 </WrapPanel>
