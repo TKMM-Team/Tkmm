@@ -17,7 +17,7 @@ public static class ExportLocationsHelper
     /// <returns><see langword="false"/> if the calling operation should be cancelled</returns>
     public static async ValueTask<bool> CreateExportLocations()
     {
-        if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput) || Config.Shared.ExportLocations.Any(x => x.IsEnabled)) {
+        if (!string.IsNullOrWhiteSpace(Config.Shared.MergeOutput) || Config.Shared.ExportLocations.Any(x => x.IsEnabled)) {
             return true;
         }
 
