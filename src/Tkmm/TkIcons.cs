@@ -13,4 +13,5 @@ public static class TkIcons
     public const string SD_CARD = "fa-solid fa-sd-card";
     public const string WARNING = "fa-solid fa-triangle-exclamation";
     public const string ERROR = "fa-regular fa-circle-exclamation";
+    public const string LIST_CHECK = "fa-regular fa-list-check";
 }

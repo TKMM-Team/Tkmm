@@ -162,12 +162,14 @@ public static class TKMM
             .Append(TkOptimizerService.GetMod(profile));
     }
 
-    public static void ExportPackage(TkMod target, Stream output)
+    public static async ValueTask ExportPackage(TkMod target, Stream output)
     {
-        string modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
-        using MemoryStream contentArchiveOutput = new();
-        ZipFile.CreateFromDirectory(modPath, contentArchiveOutput);
-        TkPackWriter.Write(output, target, contentArchiveOutput.GetSpan());
+        await Task.Run(() => {
+            string modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
+            using MemoryStream contentArchiveOutput = new();
+            ZipFile.CreateFromDirectory(modPath, contentArchiveOutput);
+            TkPackWriter.Write(output, target, contentArchiveOutput.GetSpan());
+        });
     }
 
     public static async ValueTask ExportRomfs(TkMod target, string outputFolderPath, CancellationToken ct = default)
