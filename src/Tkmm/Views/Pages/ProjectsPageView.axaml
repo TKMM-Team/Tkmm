@@ -25,8 +25,7 @@
                                 <Button Width="25"
                                         Height="25"
                                         Padding="0"
-                                        x:CompileBindings="False"
-                                        Command="{Binding #Root.DataContext.Project.Mod.RemoveContributorCommand}"
+                                        Command="{Binding $parent[ContentControl].((pages:ProjectsPageViewModel)DataContext).Project.Mod.RemoveContributorCommand}"
                                         CommandParameter="{Binding}">
                                     <fa:Icon Value="fa-solid fa-trash" />
                                 </Button>
