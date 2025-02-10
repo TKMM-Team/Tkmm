@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using AvaloniaEdit.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tkmm.Actions;
@@ -32,6 +33,24 @@ public partial class ProfilesPageViewModel : ObservableObject
         TkProfile newProfile = new() {
             Name = Locale[TkLocale.DefaultProfileName, TKMM.ModManager.Profiles.Count + 1]
         };
+        
+        TKMM.ModManager.Profiles.Add(newProfile);
+        TKMM.ModManager.CurrentProfile = newProfile;
+    }
+
+    [RelayCommand]
+    private static void Duplicate()
+    {
+        TkProfile source = TKMM.ModManager.GetCurrentProfile();
+        
+        TkProfile newProfile = new() {
+            Name = $"{source.Name} ({Locale[TkLocale.Word_Copy]})",
+            Thumbnail = source.Thumbnail
+        };
+        
+        newProfile.Mods.AddRange(source.Mods.Select(mod => new TkProfileMod(mod.Mod)));
+        newProfile.Selected = newProfile.Mods
+            .FirstOrDefault(x => x.Mod.Id == source.Selected?.Mod.Id);
         
         TKMM.ModManager.Profiles.Add(newProfile);
         TKMM.ModManager.CurrentProfile = newProfile;
