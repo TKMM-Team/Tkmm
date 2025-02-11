@@ -92,7 +92,9 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static Stream GetOptionsJsonStream()
     {
-        Ulid id = new Ulid(Enumerable.Range(0, 16).Select(i => i == 15 ? (byte)1 : (byte)0).ToArray());
+        Span<byte> idBuffer = stackalloc byte[16];
+        idBuffer[^1] = 1;
+        Ulid id = new(idBuffer);
 
         Stream? result = null;
 
