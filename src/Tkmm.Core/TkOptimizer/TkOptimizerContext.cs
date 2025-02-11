@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
@@ -93,8 +92,7 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static Stream GetOptionsJsonStream()
     {
-        long plainId = 1;
-        Ulid id = Unsafe.As<long, Ulid>(ref plainId);
+        Ulid id = new Ulid(Enumerable.Range(0, 16).Select(i => i == 15 ? (byte)1 : (byte)0).ToArray());
 
         Stream? result = null;
 
