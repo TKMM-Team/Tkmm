@@ -43,7 +43,7 @@
                             <ItemsControl ItemsSource="{Binding Options}"
                                           Margin="-8,3,0,-8"
                                           Width="{Binding $parent[Grid].Bounds.Width}"
-                                          MaxWidth="1000"
+                                          MaxWidth="1200"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Top">
                                 <ItemsControl.ItemsPanel>
