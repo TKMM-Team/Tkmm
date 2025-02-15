@@ -51,6 +51,8 @@ public partial class ProfilesPageViewModel : ObservableObject
         newProfile.Mods.AddRange(source.Mods.Select(mod => new TkProfileMod(mod.Mod)));
         newProfile.Selected = newProfile.Mods
             .FirstOrDefault(x => x.Mod.Id == source.Selected?.Mod.Id);
+
+        newProfile.EnsureOptionSelection();
         
         TKMM.ModManager.Profiles.Add(newProfile);
         TKMM.ModManager.CurrentProfile = newProfile;
