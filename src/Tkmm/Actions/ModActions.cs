@@ -18,10 +18,10 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
 {
     protected override string ActionGroupName { get; } = nameof(ModActions).Humanize();
 
-    public Task<TkMod?> Install(object input, Stream? stream = null, TkModContext context = default, CancellationToken ct = default)
+    public Task<TkMod?> Install(object input, Stream? stream = null, TkModContext? context = null, CancellationToken ct = default)
         => Install(input, TKMM.ModManager.GetCurrentProfile(), stream, context, ct);
 
-    public async Task<TkMod?> Install(object input, TkProfile profile, Stream? stream = null, TkModContext context = default, CancellationToken ct = default)
+    public async Task<TkMod?> Install(object input, TkProfile profile, Stream? stream = null, TkModContext? context = null, CancellationToken ct = default)
     {
         await CanActionRun(showError: false);
 

@@ -59,7 +59,7 @@ public static class TKMM
         );
     }
 
-    public static async ValueTask<TkMod?> Install(object input, Stream? stream = null, TkModContext context = default, TkProfile? profile = null, CancellationToken ct = default)
+    public static async ValueTask<TkMod?> Install(object input, Stream? stream = null, TkModContext? context = null, TkProfile? profile = null, CancellationToken ct = default)
     {
         if (_readerProvider.GetReader(input) is not ITkModReader reader) {
             TkLog.Instance.LogError("Could not locate mod reader for input: '{Input}'", input);

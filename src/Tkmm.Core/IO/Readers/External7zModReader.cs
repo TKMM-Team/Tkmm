@@ -15,11 +15,11 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
     private readonly ITkSystemProvider _systemProvider = systemProvider;
     private readonly ITkRomProvider _romProvider = romProvider;
     
-    public async ValueTask<TkMod?> ReadMod(object? input, Stream? stream = null, TkModContext context = default, CancellationToken ct = default)
+    public async ValueTask<TkMod?> ReadMod(TkModContext context, CancellationToken ct = default)
     {
-        if (input is not string fileName || stream is null) {
+        if (context.Input is not string fileName || context.Stream is null) {
             TkLog.Instance.LogWarning(
-                "[External 7z] Invalid input ('{Input}') with null stream", input);
+                "[External 7z] Invalid input ('{Input}') with null stream", context.Input);
             return null;
         }
         
@@ -37,14 +37,14 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
         try {
             if (!File.Exists(tmpInput)) {
                 await using FileStream fs = File.Create(tmpInput);
-                await stream.CopyToAsync(fs, ct);
+                await context.Stream.CopyToAsync(fs, ct);
             }
             
             await External7zHelper.ExtractToFolder(tmpInput, tmpOutput, ct);
 
             if (!TryGetRoot(tmpOutput, out string? root)) {
                 TkLog.Instance.LogWarning(
-                    "[External 7z] Root folder could not be found when installing '{Input}'", input);
+                    "[External 7z] Root folder could not be found when installing '{Input}'", context.Input);
                 return null;
             }
             
