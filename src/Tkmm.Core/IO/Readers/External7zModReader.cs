@@ -87,11 +87,15 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             }
 
             ReadOnlySpan<char> normalized = directory[^1] is '\\' or '/' ? path[..^1] : path;
+            ReadOnlySpan<char> normalizedLowercase = normalized
+                .ToString()
+                .ToLowerInvariant();
+            
             switch (normalized.Length) {
-                case > 4 when normalized[^5..] is "romfs" or "exefs":
-                case > 5 when normalized[^6..] is "cheats":
-                    root = Path.GetDirectoryName(directory);
-                    return root is not null;
+                case > 4 when normalizedLowercase[^5..] is "romfs" or "exefs":
+                case > 5 when normalizedLowercase[^6..] is "cheats" or "extras":
+                    root = Path.GetDirectoryName(directory)!;
+                    return true;
             }
         }
         
