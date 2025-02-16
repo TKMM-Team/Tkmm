@@ -23,8 +23,8 @@ public class TkRyujinxHelper
     {
         bool result = false;
         hasUpdate = false;
-        
-        if (GetRyujinxDataFolder(out string? ryujinxExeFilePath) is not string ryujinxDataFolder) {
+
+        if (GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath) is not string ryujinxDataFolder) {
             return Locale["RyujinxDataFolderNotFound"];
         }
 
@@ -37,11 +37,11 @@ public class TkRyujinxHelper
         if (GetRyujinxKeys(ryujinxDataFolder, out string systemFolderPath) is not KeySet keys) {
             return Locale["RyujinxKeysNotFound"];
         }
-        
+
         TkConfig.Shared.KeysFolderPath = systemFolderPath;
-        
-        string modFolderPath = Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
-        
+
+        string modFolderPath = GetModFolder(ryujinxDataFolder);
+
         if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
             Config.Shared.MergeOutput = modFolderPath;
@@ -55,7 +55,7 @@ public class TkRyujinxHelper
 
         return TkEmulatorHelper.CheckConfiguredGamePaths(ref result, ref hasUpdate, config.GameDirs, keys);
     }
-    
+
     private static KeySet? GetRyujinxKeys(string ryujinxDataFolder, out string systemFolderPath)
     {
         systemFolderPath = Path.Combine(ryujinxDataFolder, "system");
@@ -65,76 +65,81 @@ public class TkRyujinxHelper
     private static RyujinxConfig? GetRyujinxConfig(string ryujinxDataFolder)
     {
         string path = Path.Combine(ryujinxDataFolder, "Config.json");
-        
+
         if (!File.Exists(path)) {
             TkLog.Instance.LogError("Ryujinx config file could not be found.");
             return null;
         }
-        
+
         using FileStream fs = File.OpenRead(path);
         return JsonSerializer.Deserialize<RyujinxConfig>(fs);
     }
 
-    private static string? GetRyujinxDataFolder(out string? ryujinxExeFilePath)
+    private static string? GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath)
     {
         Process? ryujinx = Process
             .GetProcesses()
             .FirstOrDefault(x => x.ProcessName.Contains("Ryujinx", StringComparison.OrdinalIgnoreCase));
 
-        ryujinxExeFilePath = ryujinx?.MainModule?.FileName;
+        return (ryujinxExeFilePath = ryujinx?.MainModule?.FileName) is null
+            ? null
+            : GetRyujinxDataFolder(ryujinxExeFilePath);
+    }
 
-        if (ryujinxExeFilePath is null) {
-            return null;
-        }
-
+    private static string GetRyujinxDataFolder(string ryujinxExeFilePath)
+    {
         if (Path.GetDirectoryName(ryujinxExeFilePath) is not string ryujinxFolder) {
             goto UseAppDataInstall;
         }
-        
+
         string portable = Path.Combine(ryujinxFolder, "portable");
-        
+
         if (Directory.Exists(portable)) {
             return portable;
         }
-        
+
     UseAppDataInstall:
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
     }
 
     public static string? GetSelectedUpdatePath()
     {
-        if (GetRyujinxDataFolder(out string? dummy) is not string ryujinxDataFolder)
-        {
+        if (GetRyujinxDataFolderFromProcess(out string? dummy) is not string ryujinxDataFolder) {
             return null;
         }
 
         string updatesJsonPath = Path.Combine(ryujinxDataFolder, "games", "0100f2c0115b6000", "updates.json");
-        if (File.Exists(updatesJsonPath))
-        {
-            try
-            {
+        if (File.Exists(updatesJsonPath)) {
+            try {
                 string json = File.ReadAllText(updatesJsonPath);
                 var updates = JsonSerializer.Deserialize<RyujinxUpdates>(json);
-                if (updates != null && !string.IsNullOrWhiteSpace(updates.Selected))
-                {
+                if (updates != null && !string.IsNullOrWhiteSpace(updates.Selected)) {
                     return updates.Selected;
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 TkLog.Instance.LogError("Failed to read updates.json: {Error}", ex.Message);
             }
         }
+
         return null;
     }
+
+    public static string GetModPath(string emulatorExecutablePath)
+        => GetModFolder(GetRyujinxDataFolder(emulatorExecutablePath));
+
+    private static string GetModFolder(string ryujinxDataFolder)
+        => Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
 }
 
 public record RyujinxConfig(
-    [property: JsonPropertyName("game_dirs")] List<string> GameDirs
+    [property: JsonPropertyName("game_dirs")]
+    List<string> GameDirs
 );
 
 public record RyujinxUpdates(
-    [property: JsonPropertyName("selected")] string Selected
+    [property: JsonPropertyName("selected")]
+    string Selected
 );
 
 #endif

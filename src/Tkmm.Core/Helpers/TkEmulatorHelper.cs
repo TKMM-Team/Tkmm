@@ -10,6 +10,22 @@ namespace Tkmm.Core.Helpers;
 
 public static class TkEmulatorHelper
 {
+    public static string? GetModPath(string emulatorFilePath)
+    {
+        ReadOnlySpan<char> exePath = emulatorFilePath;
+
+        if (Path.GetFileNameWithoutExtension(exePath).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
+            return TkRyujinxHelper.GetModPath(emulatorFilePath);
+        }
+        
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+            return null;
+        }
+        
+        return GetModFolder(emulatorDataFolderPath);
+    }
+    
     public static Either<bool, string> UseEmulator(string emulatorFilePath, out bool hasUpdate)
     {
         bool result = false;
@@ -35,7 +51,7 @@ public static class TkEmulatorHelper
         string nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
         TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
 
-        string modFolderPath = Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
+        string modFolderPath = GetModFolder(emulatorDataFolderPath);
 
         if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
@@ -141,6 +157,9 @@ public static class TkEmulatorHelper
 
         return results;
     }
+    
+    private static string GetModFolder(string emulatorDataFolderPath)
+        => Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
 }
 
 #endif

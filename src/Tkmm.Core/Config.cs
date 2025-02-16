@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.GameBanana;
 
@@ -170,4 +171,16 @@ public sealed partial class Config : ConfigModule<Config>
         [..] values => values.Select(x => new SystemLanguage(x)).ToList(),
         null => ["en_US"],
     };
+
+    partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
+    {
+        if (newValue is null || oldValue is null || string.IsNullOrWhiteSpace(MergeOutput)) {
+            return;
+        }
+        
+        string? oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
+        if (MergeOutput == oldMergedModPath) {
+            MergeOutput = TkEmulatorHelper.GetModPath(newValue);
+        }
+    }
 }
