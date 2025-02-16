@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using FluentAvalonia.UI.Windowing;
@@ -51,6 +52,28 @@ public partial class ShellView : AppWindow
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "Setup Wizard initialization failed");
+        }
+    }
+
+    private void InputElement_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        // ReSharper disable once ConvertIfStatementToSwitchStatement
+        if (e.Key is Key.PageUp) {
+            if (PageManager.Shared.Current?.Id is Page page && (int)(page -= 1) > -1) {
+                PageManager.Shared.Focus(page);
+            }
+        }
+        
+        if (e.Key is Key.PageDown) {
+            if (PageManager.Shared.Current?.Id is not Page page) {
+                return;
+            }
+
+            page += 1;
+
+            if (Enum.IsDefined(page)) {
+                PageManager.Shared.Focus(page);
+            }
         }
     }
 }

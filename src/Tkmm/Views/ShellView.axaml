@@ -17,6 +17,7 @@
                Width="870"
                Height="550"
                MinWidth="650"
+               KeyDown="InputElement_OnKeyDown"
                MinHeight="450"
                d:DesignHeight="450"
                d:DesignWidth="800"

@@ -11,13 +11,13 @@ public enum Page
     Home,
     Profiles,
     Tools,
-    ShopParam,
     GbMods,
     TotKOptimizer,
     Cheats,
-    About,
     Logs,
+#if SWITCH 
     NetworkSettings,
+#endif
     Settings
 }
 
@@ -52,6 +52,7 @@ public partial class PageManager : ObservableObject
         _lookup[page] = (source.Count, isFooter);
 
         source.Add(new PageModel {
+            Id = page,
             Title = Locale[title],
             Content = content,
             Description = Locale[description],
