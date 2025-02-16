@@ -109,13 +109,13 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     {
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
 
+#if !SWITCH
         var builder = TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths);
-
-#if !SWITCH
+        
         string? emulatorExePath = Config.Shared.EmulatorPath;
         if (!string.IsNullOrWhiteSpace(emulatorExePath) && PreferredGameVersion.Equals(DEFAULT_GAME_VERSION))
         {
