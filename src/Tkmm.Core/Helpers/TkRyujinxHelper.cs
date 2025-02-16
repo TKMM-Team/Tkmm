@@ -100,10 +100,41 @@ public class TkRyujinxHelper
     UseAppDataInstall:
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
     }
+
+    public static string? GetSelectedUpdatePath()
+    {
+        if (GetRyujinxDataFolder(out string? dummy) is not string ryujinxDataFolder)
+        {
+            return null;
+        }
+
+        string updatesJsonPath = Path.Combine(ryujinxDataFolder, "games", "0100f2c0115b6000", "updates.json");
+        if (File.Exists(updatesJsonPath))
+        {
+            try
+            {
+                string json = File.ReadAllText(updatesJsonPath);
+                var updates = JsonSerializer.Deserialize<RyujinxUpdates>(json);
+                if (updates != null && !string.IsNullOrWhiteSpace(updates.Selected))
+                {
+                    return updates.Selected;
+                }
+            }
+            catch (Exception ex)
+            {
+                TkLog.Instance.LogError("Failed to read updates.json: {Error}", ex.Message);
+            }
+        }
+        return null;
+    }
 }
 
 public record RyujinxConfig(
     [property: JsonPropertyName("game_dirs")] List<string> GameDirs
+);
+
+public record RyujinxUpdates(
+    [property: JsonPropertyName("selected")] string Selected
 );
 
 #endif

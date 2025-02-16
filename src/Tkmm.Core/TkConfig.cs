@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Tkmm.Core.Attributes;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 using TkSharp.Data.Embedded;
 using TkSharp.Extensions.LibHac;
@@ -11,7 +12,7 @@ namespace Tkmm.Core;
 
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
-    public const string DEFAULT_GAME_VERSION = "Any";
+    public const string DEFAULT_GAME_VERSION = "Auto";
 
     [JsonIgnore]
     public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.Shared.Name, "TkConfig.json");
@@ -105,17 +106,52 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     private PathCollection _nandFolderPaths = [];
 
     public TkExtensibleRomProvider CreateRomProvider()
-    {   
+    {
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
 
-        return TkExtensibleRomProviderBuilder.Create(checksums)
+        var builder = TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPaths)
-            .WithSdCard(() => SdCardRootPath)
-            .WithPackagedBaseGame(() => PackagedBaseGamePaths)
-            .WithPackagedUpdate(() => PackagedUpdatePaths)
-            .WithNand(() => NandFolderPaths)
-            .Build();
+            .WithPackagedBaseGame(() => PackagedBaseGamePaths);
+
+        string? emulatorExePath = Config.Shared.EmulatorPath;
+        if (!string.IsNullOrWhiteSpace(emulatorExePath))
+        {
+            string exeName = Path.GetFileName(emulatorExePath);
+            if (exeName.IndexOf("ryujinx", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                builder = builder
+                    .WithSdCard(() => null)
+                    .WithPackagedUpdate(() =>
+                    {
+                        string? update = TkRyujinxHelper.GetSelectedUpdatePath();
+                        if (!string.IsNullOrWhiteSpace(update))
+                        {
+                            var pathCollection = new PathCollection();
+                            pathCollection.New(update);
+                            return pathCollection;
+                        }
+                        return null;
+                    })
+                    .WithNand(() => null);
+            }
+            else
+            {
+                builder = builder
+                    .WithSdCard(() => null)
+                    .WithPackagedUpdate(() => null)
+                    .WithNand(() => NandFolderPaths);
+            }
+        }
+        else
+        {
+            builder = builder
+                .WithSdCard(() => SdCardRootPath)
+                .WithPackagedUpdate(() => PackagedUpdatePaths)
+                .WithNand(() => NandFolderPaths);
+        }
+
+        return builder.Build();
     }
 }
