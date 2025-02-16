@@ -117,9 +117,6 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
 #if !SWITCH
         string? emulatorExePath = Config.Shared.EmulatorPath;
-#else
-        string? emulatorExePath = null;
-#endif
         if (!string.IsNullOrWhiteSpace(emulatorExePath))
         {
             string exeName = Path.GetFileName(emulatorExePath);
@@ -129,11 +126,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                     .WithSdCard(() => null)
                     .WithPackagedUpdate(() =>
                     {
-#if !SWITCH
                         string? update = TkRyujinxHelper.GetSelectedUpdatePath();
-#else
-                        string? update = null;
-#endif
                         if (!string.IsNullOrWhiteSpace(update))
                         {
                             var pathCollection = new PathCollection();
@@ -161,5 +154,16 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
 
         return builder.Build();
+#else
+        return TkExtensibleRomProviderBuilder.Create(checksums)
+            .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
+            .WithKeysFolder(() => KeysFolderPath)
+            .WithExtractedGameDump(() => GameDumpFolderPaths)
+            .WithSdCard(() => SdCardRootPath)
+            .WithPackagedBaseGame(() => PackagedBaseGamePaths)
+            .WithPackagedUpdate(() => PackagedUpdatePaths)
+            .WithNand(() => NandFolderPaths)
+            .Build();
+#endif
     }
 }
