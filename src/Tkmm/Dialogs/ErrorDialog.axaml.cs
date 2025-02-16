@@ -1,8 +1,6 @@
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
-#if RELEASE
 using Humanizer;
-#endif
 
 namespace Tkmm.Dialogs;
 
@@ -13,12 +11,17 @@ public partial class ErrorDialog : UserControl
         InitializeComponent();
     }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    public static async ValueTask<object> ShowAsync(Exception ex, params TaskDialogStandardResult[] buttons)
+    public static ValueTask<object> ShowAsync(Exception ex, params TaskDialogStandardResult[] buttons)
+        => ShowAsync(ex, forceShowInDebug: false, buttons);
+    
+    public static async ValueTask<object> ShowAsync(Exception ex, bool forceShowInDebug = false, params TaskDialogStandardResult[] buttons)
     {
 #if DEBUG
-        throw ex;
-#else
+        if (!forceShowInDebug) {
+            throw ex;
+        }
+#endif
+        
         return await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () => {
             if (buttons.Length is 0) {
                 buttons = [
@@ -40,7 +43,6 @@ public partial class ErrorDialog : UserControl
 
             return await dialog.ShowAsync();
         });
-#endif
     }
 
     private static TaskDialogButton MapToButton(TaskDialogStandardResult result)

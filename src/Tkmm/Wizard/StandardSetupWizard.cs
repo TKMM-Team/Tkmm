@@ -86,7 +86,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
 
         if (TkRyujinxHelper.UseRyujinx(out _).Case is string error) {
-            object errorResult = await ErrorDialog.ShowAsync(new Exception(error),
+            object errorResult = await ErrorDialog.ShowAsync(new Exception(error), forceShowInDebug: true,
                 TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
             
             if (errorResult is TaskDialogStandardResult.Retry) {
