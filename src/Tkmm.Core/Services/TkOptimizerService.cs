@@ -9,22 +9,22 @@ public class TkOptimizerService
 {
     public static TkOptimizerContext Context { get; } = TkOptimizerContext.Create();
 
-    public static TkChangelog GetMod(TkProfile? profile = null)
+    public static TkChangelog GetMod(TkProfile profile)
     {
         EmbeddedSource source = new(
             "Tkmm.Core.Resources.UltraCam", typeof(TkOptimizerService).Assembly);
 
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
             // Only return with cheats when disabled
-            return new TkChangelog {
-                BuilderVersion = 100,
-                GameVersion = 0,
-                CheatFiles = GetCheats(),
-                Source = source
-            };
+            goto CheatsOnly;
         }
 
         Context.Store = TkOptimizerStore.CreateStore(profile);
+
+        Ulid id = GetStaticId();
+        if (profile.Mods.Any(x => x.Mod.Id == id)) {
+            goto CheatsOnly;
+        }
 
         return new TkChangelog {
             BuilderVersion = 100,
@@ -36,6 +36,14 @@ public class TkOptimizerService
             SubSdkFiles = {
                 "subsdk3"
             },
+            Source = source
+        };
+        
+    CheatsOnly:
+        return new TkChangelog {
+            BuilderVersion = 100,
+            GameVersion = 0,
+            CheatFiles = GetCheats(),
             Source = source
         };
     }
@@ -54,5 +62,12 @@ public class TkOptimizerService
 
         Context.Store = null;
         return result;
+    }
+
+    public static Ulid GetStaticId()
+    {
+        Span<byte> idBuffer = stackalloc byte[16];
+        idBuffer[^1] = 1;
+        return new Ulid(idBuffer);
     }
 }

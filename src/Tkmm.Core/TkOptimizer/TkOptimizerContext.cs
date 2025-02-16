@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
 using Tkmm.Core.TkOptimizer.Models.ValueTypes;
 using TkSharp.Core;
@@ -92,9 +93,7 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static Stream GetOptionsJsonStream()
     {
-        Span<byte> idBuffer = stackalloc byte[16];
-        idBuffer[^1] = 1;
-        Ulid id = new(idBuffer);
+        Ulid id = TkOptimizerService.GetStaticId();
 
         Stream? result = null;
 
