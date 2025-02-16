@@ -117,7 +117,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
 #if !SWITCH
         string? emulatorExePath = Config.Shared.EmulatorPath;
-        if (!string.IsNullOrWhiteSpace(emulatorExePath))
+        if (!string.IsNullOrWhiteSpace(emulatorExePath) && PreferredGameVersion.Equals(DEFAULT_GAME_VERSION))
         {
             string exeName = Path.GetFileName(emulatorExePath);
             if (exeName.IndexOf("ryujinx", StringComparison.OrdinalIgnoreCase) >= 0)
