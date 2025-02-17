@@ -172,6 +172,7 @@ public sealed partial class Config : ConfigModule<Config>
         null => ["en_US"],
     };
 
+#if !SWITCH
     partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
     {
         if (newValue is null || oldValue is null || string.IsNullOrWhiteSpace(MergeOutput)) {
@@ -183,4 +184,5 @@ public sealed partial class Config : ConfigModule<Config>
             MergeOutput = TkEmulatorHelper.GetModPath(newValue);
         }
     }
+#endif
 }
