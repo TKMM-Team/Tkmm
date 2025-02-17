@@ -122,11 +122,26 @@ public sealed class TkOptimizerContext : ObservableObject
     
     public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
-        Store = TkOptimizerStore.CreateStore(profile);
 
         string outputFileName = Path.Combine("romfs", "UltraCam",
             // ReSharper disable once StringLiteralTypo
             "maxlastbreath.ini");
+        
+        if (!TkOptimizerStore.IsProfileEnabled(profile)) {
+            string deleteFilePath = Path.Combine(TKMM.MergedOutputFolder, outputFileName);
+            if (File.Exists(deleteFilePath)) {
+                try {    
+                    File.Delete(deleteFilePath);
+                }
+                catch {
+                    // ignored
+                }
+            }
+            
+            return;
+        }
+        
+        Store = TkOptimizerStore.CreateStore(profile);
         
         using Stream output = mergeOutputWriter.OpenWrite(outputFileName);
         using StreamWriter writer = new(output);
