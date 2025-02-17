@@ -145,7 +145,9 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public static async Task InstallMod(GameBananaModRecord mod)
     {
-        ArgumentNullException.ThrowIfNull(mod.Full, nameof(mod.Full));
+        if (mod.Full is null) {
+            await mod.DownloadFullMod();
+        }
 
         GameBananaInstallPreview preview = new() {
             DataContext = mod
