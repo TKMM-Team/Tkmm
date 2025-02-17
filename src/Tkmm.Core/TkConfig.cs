@@ -120,7 +120,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         if (!string.IsNullOrWhiteSpace(emulatorExePath) && PreferredGameVersion.Equals(DEFAULT_GAME_VERSION))
         {
             string exeName = Path.GetFileName(emulatorExePath);
-            if (exeName.IndexOf("ryujinx", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase))
             {
                 builder = builder
                     .WithSdCard(() => null)
