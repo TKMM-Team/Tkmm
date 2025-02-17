@@ -74,7 +74,7 @@
                 </Button>
             </StackPanel>
 
-            <TextBlock Grid.Row="1" Text="Recent projects" Margin="0,25,0,0"
+            <TextBlock Grid.Row="1" Text="Recent Projects" Margin="0,25,0,0"
                        FontWeight="Bold" FontSize="16" />
 
             <ListBox ItemsSource="{x:Static tk:TkProjectManager.RecentProjects}"
