@@ -177,7 +177,7 @@ jobs:
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:Version=${{ needs.release.outputs.version }} \
-          -p:NoUpdate=true
+          -p:NoUpdate=true \
           -p:DebugType=embedded
 
       - name: Build AppImage
