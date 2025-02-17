@@ -102,13 +102,9 @@ public class TkRyujinxHelper
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
     }
 
-    public static string? GetSelectedUpdatePath()
+    public static string? GetSelectedUpdatePath(string emulatorFilePath)
     {
-        if (GetRyujinxDataFolderFromProcess(out string? dummy) is not string ryujinxDataFolder) {
-            return null;
-        }
-
-        string updatesJsonPath = Path.Combine(ryujinxDataFolder, "games", "0100f2c0115b6000", "updates.json");
+        string updatesJsonPath = Path.Combine(GetRyujinxDataFolder(emulatorFilePath), "games", "0100f2c0115b6000", "updates.json");
         if (File.Exists(updatesJsonPath)) {
             try {
                 string json = File.ReadAllText(updatesJsonPath);

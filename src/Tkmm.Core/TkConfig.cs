@@ -110,50 +110,31 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
 
 #if !SWITCH
-        var builder = TkExtensibleRomProviderBuilder.Create(checksums)
+        TkExtensibleRomProviderBuilder builder = TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths);
-        
-        string? emulatorExePath = Config.Shared.EmulatorPath;
-        if (!string.IsNullOrWhiteSpace(emulatorExePath) && PreferredGameVersion.Equals(DEFAULT_GAME_VERSION))
-        {
-            string exeName = Path.GetFileName(emulatorExePath);
-            if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase))
-            {
-                builder = builder
-                    .WithSdCard(() => null)
-                    .WithPackagedUpdate(() =>
-                    {
-                        string? update = TkRyujinxHelper.GetSelectedUpdatePath();
-                        if (!string.IsNullOrWhiteSpace(update))
-                        {
-                            var pathCollection = new PathCollection();
-                            pathCollection.New(update);
-                            return pathCollection;
-                        }
-                        return null;
-                    })
-                    .WithNand(() => null);
-            }
-            else
-            {
-                builder = builder
-                    .WithSdCard(() => null)
-                    .WithPackagedUpdate(() => null)
-                    .WithNand(() => NandFolderPaths);
-            }
-        }
-        else
-        {
-            builder = builder
-                .WithSdCard(() => SdCardRootPath)
-                .WithPackagedUpdate(() => PackagedUpdatePaths)
-                .WithNand(() => NandFolderPaths);
-        }
 
-        return builder.Build();
+        string? emulatorFilePath = Config.Shared.EmulatorPath;
+        if (string.IsNullOrWhiteSpace(emulatorFilePath) || !PreferredGameVersion.Equals(DEFAULT_GAME_VERSION)) {
+            goto Configured;
+        }
+        
+        if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
+            return builder
+                .WithSdCard(() => null)
+                .WithPackagedUpdate(() => [updateFilePath])
+                .WithNand(() => null)
+                .Build();
+        }
+        
+    Configured:
+        return builder
+            .WithSdCard(() => SdCardRootPath)
+            .WithPackagedUpdate(() => PackagedUpdatePaths)
+            .WithNand(() => NandFolderPaths)
+            .Build();
 #else
         return TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
