@@ -52,7 +52,7 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
         
         for (int i = 1; i < Count; i++) {
             PathCollectionItem item = this[i];
-            if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Contains(item)) {
+            if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Count(x => Equals(x, item)) > 1) {
                 RemoveAt(i);
                 i--;
             }
