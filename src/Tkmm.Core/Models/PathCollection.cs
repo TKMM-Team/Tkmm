@@ -49,18 +49,23 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
         if (Count == 0) {
             New();
         }
-        
-        for (int i = 1; i < Count; i++) {
-            PathCollectionItem item = this[i];
-            if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Contains(item)) {
+
+        var seen = new HashSet<string>();
+        for (int i = Count - 1; i >= 1; i--) {
+            string normalizedTarget = NormalizeTarget(this[i].Target);
+            if (string.IsNullOrWhiteSpace(normalizedTarget) || !seen.Add(normalizedTarget)) {
                 RemoveAt(i);
-                i--;
             }
         }
 
         if (!string.IsNullOrWhiteSpace(this[0].Target)) {
             Insert(0, new PathCollectionItem(this));
         }
+    }
+
+    private static string NormalizeTarget(string target)
+    {
+        return target.Replace('\\', '/').Trim();
     }
 }
 
