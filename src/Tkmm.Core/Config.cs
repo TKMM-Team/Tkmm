@@ -179,6 +179,13 @@ public sealed partial class Config : ConfigModule<Config>
             return;
         }
         
+        if (Path.GetFileNameWithoutExtension(newValue).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
+            TkRyujinxHelper.UseRyujinx(out _);
+        }
+        else {
+            TkEmulatorHelper.UseEmulator(newValue, out _);
+        }
+        
         string? oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
         if (MergeOutput == oldMergedModPath) {
             MergeOutput = TkEmulatorHelper.GetModPath(newValue);
