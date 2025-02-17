@@ -22,17 +22,18 @@ namespace Tkmm.Core;
 // ReSharper disable once InconsistentNaming
 public static class TKMM
 {
-    private static readonly Lazy<TkExtensibleRomProvider> _romProvider = new(() => TkConfig.Shared.CreateRomProvider());
     private static readonly TkModReaderProvider _readerProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
+    private static TkExtensibleRomProvider RomProvider => TkConfig.Shared.CreateRomProvider();
+    
 #if SWITCH
     public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
     public static string MergedOutputFolder => Config.Shared.MergeOutput ?? Path.Combine(AppContext.BaseDirectory, "Merged");
 #endif
 
-    public static ITkRom GetTkRom() => _romProvider.Value.GetRom();
+    public static ITkRom GetTkRom() => RomProvider.GetRom();
 
     public static ITkRom? TryGetTkRom()
         => TryGetTkRom(out _, out _, out _);
@@ -44,7 +45,7 @@ public static class TKMM
         => TryGetTkRom(out hasBaseGame, out hasUpdate, out _);
 
     public static ITkRom? TryGetTkRom(out bool hasBaseGame, out bool hasUpdate, out string? error)
-        => _romProvider.Value.TryGetRom(out hasBaseGame, out hasUpdate, out error);
+        => RomProvider.TryGetRom(out hasBaseGame, out hasUpdate, out error);
 
     public static Config Config => Config.Shared;
 
@@ -147,9 +148,9 @@ public static class TKMM
             }
         };
 
-        _readerProvider = new TkModReaderProvider(ModManager, _romProvider.Value);
+        _readerProvider = new TkModReaderProvider(ModManager, RomProvider);
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
-        _readerProvider.Register(new External7zModReader(ModManager, _romProvider.Value));
+        _readerProvider.Register(new External7zModReader(ModManager, RomProvider));
 
         Span<string> hiddenSystemFolders = [".data", ".layout"];
         DirectoryHelper.HideTargetsInDirectory(AppContext.BaseDirectory, hiddenSystemFolders);
