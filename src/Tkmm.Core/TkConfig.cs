@@ -121,15 +121,25 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             goto Configured;
         }
         
-        if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
+        string exeName = Path.GetFileName(emulatorFilePath);
+        if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase) &&
+            TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
             return builder
                 .WithSdCard(() => null)
                 .WithPackagedUpdate(() => [updateFilePath])
                 .WithNand(() => null)
                 .Build();
         }
-        
-    Configured:
+
+        if (_nandFolderPaths.Cast<PathCollectionItem>().Any(item => Directory.Exists(item.Target))) {
+            return builder
+                .WithSdCard(() => null)
+                .WithPackagedUpdate(() => null)
+                .WithNand(() => NandFolderPaths)
+                .Build();
+        }
+
+        Configured:
         return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
