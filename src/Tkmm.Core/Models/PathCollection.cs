@@ -51,7 +51,8 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
         }
         
         for (int i = 1; i < Count; i++) {
-            if (string.IsNullOrWhiteSpace(this[i].Target)) {
+            PathCollectionItem item = this[i];
+            if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Contains(item)) {
                 RemoveAt(i);
                 i--;
             }
