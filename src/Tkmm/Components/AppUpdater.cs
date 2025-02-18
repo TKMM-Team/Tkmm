@@ -121,6 +121,7 @@ public static class AppUpdater
 
     private static void Restart()
     {
+#if !SWITCH
         string processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 
         switch (processName.Length) {
@@ -138,6 +139,7 @@ public static class AppUpdater
         };
 
         Process.Start(processStart);
+#endif
         Environment.Exit(0);
     }
 
