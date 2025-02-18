@@ -49,13 +49,24 @@ public static class OctokitHelper
             return null;
         }
 
-        await using Stream checksumFile = await _client.GetStreamAsync(asset.Url, ct);
+        await using Stream checksumFile = await _client.GetStreamAsync(md5HashAsset.Url, ct);
         using StreamReader reader = new(checksumFile);
-        if (await reader.ReadLineAsync(ct) is not string md5) {
+
+        string? md5 = null;
+        while (!reader.EndOfStream) {
+            string? line = await reader.ReadLineAsync(ct);
+            if (!string.IsNullOrWhiteSpace(line)) {
+                md5 = line.Trim();
+                break;
+            }
+        }
+
+        if (string.IsNullOrEmpty(md5)) {
             return null;
         }
-        
-        byte[] buffer = await DownloadHelper.DownloadAndVerify(asset.Url, Convert.FromHexString(md5), ct);
+
+        byte[] expectedHash = Convert.FromHexString(md5);
+        byte[] buffer = await DownloadHelper.DownloadAndVerify(asset.Url, expectedHash, ct);
         return new MemoryStream(buffer);
     }
 }
