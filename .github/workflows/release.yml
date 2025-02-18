@@ -27,9 +27,6 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
-          body: |
-            > [!IMPORTANT]
-            > The latest [.NET runtime](https://dotnet.microsoft.com/en-us/download/dotnet/latest) from [Microsoft](https://dotnet.microsoft.com/en-us/) is required on all operating systems, make sure you download and install that before proceeding.
 
   build:
     needs: release
