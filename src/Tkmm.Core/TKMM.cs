@@ -154,6 +154,16 @@ public static class TKMM
 
         Span<string> hiddenSystemFolders = [".data", ".layout"];
         DirectoryHelper.HideTargetsInDirectory(AppContext.BaseDirectory, hiddenSystemFolders);
+
+        if (Environment.ProcessPath is null) {
+            return;
+        }
+        
+        const string processName = "Tkmm";
+        RegistryHelper.CreateGameBananaWebProtocol(processName, Environment.ProcessPath);
+        
+        // --use-single-instance and args[0] needs to be handled on startup
+        // RegistryHelper.CreateFileAssociations(processName, ".tkcl", Environment.ProcessPath);
     }
 
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
