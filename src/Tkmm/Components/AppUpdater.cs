@@ -125,7 +125,7 @@ public static class AppUpdater
 
         switch (processName.Length) {
             case >= 6 when Path.GetExtension(processName.AsSpan()) is ".moldy":
-                processName = processName[..6];
+                processName = processName[..^6];
                 break;
             case 0:
                 processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
