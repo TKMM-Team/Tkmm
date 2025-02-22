@@ -1,5 +1,7 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Layout;
 
 namespace Tkmm.Wizard;
 
@@ -25,6 +27,10 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
 
     public SetupWizardPageBuilder WithContent(object? content)
     {
+        if (content is StyledElement { Parent: ContentControl parent }) {
+            parent.Content = null;
+        }
+        
         _page.Content = content;
         return this;
     }

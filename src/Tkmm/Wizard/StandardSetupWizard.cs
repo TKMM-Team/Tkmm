@@ -143,6 +143,10 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
 
     private async ValueTask EnsureConfigurationPage(bool warnInvalid = false)
     {
+        GameDumpConfigPage page = new() {
+            DataContext = new GameDumpConfigPageContext()
+        };
+        
     Verify:
         if (TKMM.TryGetTkRom(out string? error) is not null) {
             return;
@@ -156,9 +160,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         
         bool result = await NextPage()
             .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
-            .WithContent(new GameDumpConfigPage {
-                DataContext = new GameDumpConfigPageContext()
-            })
+            .WithContent(page)
             .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
             .Show();
 
