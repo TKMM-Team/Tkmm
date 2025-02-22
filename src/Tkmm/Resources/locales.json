@@ -3480,7 +3480,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "\nMissing Base Game: {0}\n\nMissing Update: {1}",
+      "en_US": "\nBase Game Found: {0}\n\nUpdate Found: {1}",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
