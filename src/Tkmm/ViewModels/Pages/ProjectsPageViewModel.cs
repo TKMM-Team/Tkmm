@@ -18,15 +18,15 @@ namespace Tkmm.ViewModels.Pages;
 public sealed partial class ProjectsPageViewModel : ObservableObject
 {
     private readonly List<string> _deletions = [];
-    
+
     public ProjectsPageViewModel()
     {
         TkProjectManager.Load();
     }
-    
+
     [ObservableProperty]
     private TkProject? _project;
-    
+
     [RelayCommand]
     private async Task NewProject()
     {
@@ -41,11 +41,11 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 folder);
             return;
         }
-        
+
         Project = TkProjectManager.NewProject(localFolderPath);
         TkProjectManager.Save();
     }
-    
+
     [RelayCommand]
     private async Task OpenProject()
     {
@@ -60,7 +60,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 }
             ]
         };
-        
+
         if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [IStorageFile file]) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
@@ -72,40 +72,40 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 file);
             return;
         }
-        
+
         Project = TkProjectManager.OpenProject(localFolderPath);
         TkProjectManager.Save();
     }
-    
+
     [RelayCommand]
     private void Exit()
     {
         Project = null;
     }
-    
+
     [RelayCommand]
     private void Save()
     {
         if (Project is null) {
             return;
         }
-        
+
         TkStatus.Set($"Saving '{Project.Mod.Name}'", "fa-regular fa-floppy-disk-circle-arrow-right", StatusType.Working);
-        
+
         ApplyDeletions();
         Project.Save();
         TkProjectManager.Save();
-        
+
         TkStatus.SetTemporary($"Saved '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }
-    
+
     [RelayCommand]
     private async Task Package()
     {
         if (Project is null) {
             return;
         }
-        
+
         FilePickerSaveOptions filePickerOptions = new() {
             Title = "Export TotK changelog package.",
             SuggestedFileName = $"{Project.Mod.Name}.tkcl",
@@ -118,29 +118,29 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 }
             ]
         };
-        
+
         if (await App.XamlRoot.StorageProvider.SaveFilePickerAsync(filePickerOptions) is not IStorageFile file) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
         }
 
         TkStatus.Set($"Packaging '{Project.Mod.Name}'", "fa-regular fa-boxes-packing", StatusType.Working);
-        
+
         await using Stream output = await file.OpenWriteAsync();
 
         using ITkRom tkRom = TKMM.GetTkRom();
         await Project.Package(output, tkRom);
-        
+
         TkStatus.SetTemporary($"Packaged '{Project.Mod.Name}'", "fa-regular fa-box-circle-check");
     }
-    
+
     [RelayCommand]
     private async Task Install()
     {
         if (Project is null) {
             return;
         }
-        
+
         TkStatus.Set($"Installing '{Project.Mod.Name}'", "fa-regular fa-download", StatusType.Working);
 
         ITkModWriter writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
@@ -148,7 +148,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         await Project.Build(writer, tkRom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
 
         TKMM.ModManager.Import(Project.Mod);
-        
+
         TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
     }
 
@@ -179,12 +179,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 FilePickerFileTypes.ImageAll
             ]
         };
-        
+
         if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [IStorageFile file]) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
         }
-        
+
         if (file.TryGetLocalPath() is not string localFilePath) {
             TkLog.Instance.LogError(
                 "Storage file {File} could not be converted into a local file path.", file);
@@ -203,11 +203,11 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         if (Project is null) {
             return;
         }
-        
+
         if (await MessageDialog.Show("Unsaved changes will be lost, would you like to proceed?", "Warning!", MessageDialogButtons.YesNoCancel) is not MessageDialogResult.Yes) {
             return;
         }
-        
+
         Project.Refresh();
     }
 
@@ -222,14 +222,14 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             _deletions.Add(groupFolderPath);
         }
     }
-    
+
     [RelayCommand]
     private async Task ImportOptionGroup()
     {
         if (Project is null) {
             return;
         }
-        
+
         if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [IStorageFolder folder]) {
             TkLog.Instance.LogInformation("Folder picker operation returned an invalid result or was cancelled.");
             return;
@@ -241,31 +241,31 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 folder);
             return;
         }
-        
+
         string name = Path.GetFileName(localFolderPath);
         string output = Path.Combine(Project.FolderPath, "options", name);
-        
-        if (Directory.Exists(output)) {
-            ContentDialog warningDialog = new() {
-                Title = "Warning",
-                Content = $"The option group '{name}' already exists, would you like to replace it?",
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary,
-            };
-
-            if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
-                return;
-            }
-
-            Directory.Delete(output, recursive: true);
-
-            if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out string? optionGroupFolderPath) && optionGroupFolderPath == output) is TkModOptionGroup target) {
-                Project.Mod.OptionGroups.Remove(target);
-            }
-        }
 
         try {
+            if (Directory.Exists(output)) {
+                ContentDialog warningDialog = new() {
+                    Title = "Warning",
+                    Content = $"The option group '{name}' already exists, would you like to replace it?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "Cancel",
+                    DefaultButton = ContentDialogButton.Primary,
+                };
+
+                if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
+                    return;
+                }
+
+                Directory.Delete(output, recursive: true);
+
+                if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out string? optionGroupFolderPath) && optionGroupFolderPath == output) is TkModOptionGroup target) {
+                    Project.Mod.OptionGroups.Remove(target);
+                }
+            }
+
             DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
             TkProjectManager.LoadOptionGroupFolder(Project, output);
         }
@@ -278,7 +278,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     private void RemoveOption(TkModOption option)
     {
         if (Project?.Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(option)) is not TkModOptionGroup group
-                || !Project.TryGetPath(option, out string? optionFolderPath)) {
+            || !Project.TryGetPath(option, out string? optionFolderPath)) {
             return;
         }
 
@@ -293,7 +293,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         if (Project is null || !Project.TryGetPath(group, out string? groupFolderPath)) {
             return;
         }
-        
+
         if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [IStorageFolder folder]) {
             TkLog.Instance.LogInformation("Folder picker operation returned an invalid result or was cancelled.");
             return;
@@ -305,38 +305,37 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
                 folder);
             return;
         }
-        
+
         string name = Path.GetFileName(localFolderPath);
         string output = Path.Combine(groupFolderPath, name);
-        
-        if (Directory.Exists(output)) {
-            ContentDialog warningDialog = new() {
-                Title = "Warning",
-                Content = $"The option group '{name}' already exists, would you like to replace it?",
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary,
-            };
 
-            if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
-                return;
-            }
-
-            Directory.Delete(output, recursive: true);
-
-            if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out string? optionFolderPath) && optionFolderPath == output) is TkModOption target) {
-                group.Options.Remove(target);
-            }
-        }
-        
         try {
+            if (Directory.Exists(output)) {
+                ContentDialog warningDialog = new() {
+                    Title = "Warning",
+                    Content = $"The option group '{name}' already exists, would you like to replace it?",
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "Cancel",
+                    DefaultButton = ContentDialogButton.Primary,
+                };
+
+                if (await warningDialog.ShowAsync() is not ContentDialogResult.Primary) {
+                    return;
+                }
+
+                Directory.Delete(output, recursive: true);
+
+                if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out string? optionFolderPath) && optionFolderPath == output) is TkModOption target) {
+                    group.Options.Remove(target);
+                }
+            }
+
             DirectoryHelper.Copy(localFolderPath, output, overwrite: true);
             TkProjectManager.LoadOptionFolder(Project, group, output);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "Failed to import option.");
         }
-
     }
 
     private void ApplyDeletions()
@@ -344,7 +343,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         foreach (string path in _deletions.Where(Directory.Exists)) {
             Directory.Delete(path, true);
         }
-        
+
         _deletions.Clear();
     }
 }
