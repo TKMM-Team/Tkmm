@@ -88,28 +88,33 @@ public partial class ShellView : AppWindow
     }
 
 #if SWITCH
-    private async void ShowRebootShutdownPopup()
+    private static async void ShowRebootShutdownPopup()
     {
-        var taskDialog = new TaskDialog {
-            Header = Locale[TkLocale.Menu_Nx],
-            SubHeader = Locale[TkLocale.Menu_NxReboot],
-            Buttons = {
-                new TaskDialogButton(Locale[TkLocale.Menu_NxReboot], null),
-                new TaskDialogButton(Locale[TkLocale.Menu_NxShutdown], null)
-            }
-        };
+        try {
+            var taskDialog = new TaskDialog {
+                Header = Locale[TkLocale.Menu_Nx],
+                SubHeader = Locale[TkLocale.Menu_NxReboot],
+                Buttons = {
+                    new TaskDialogButton(Locale[TkLocale.Menu_NxReboot], null),
+                    new TaskDialogButton(Locale[TkLocale.Menu_NxShutdown], null),
+                    new TaskDialogButton(Locale[TkLocale.Action_Cancel], null)
+                },
+                XamlRoot = App.XamlRoot
+            };
 
-        taskDialog.Buttons[0].Click += async (s, e) => {
-            NxMenuModel.Reboot();
-            taskDialog.Hide();
-        };
+            taskDialog.Buttons[0].Click += (_, _) => {
+                NxMenuModel.Reboot();
+            };
 
-        taskDialog.Buttons[1].Click += async (s, e) => {
-            NxMenuModel.Shutdown();
-            taskDialog.Hide();
-        };
+            taskDialog.Buttons[1].Click += (_, _) => {
+                NxMenuModel.Shutdown();
+            };
 
-        await taskDialog.ShowAsync();
+            await taskDialog.ShowAsync();
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Error occured while showing the system reboot dialog.");
+        }
     }
 #endif
 }
