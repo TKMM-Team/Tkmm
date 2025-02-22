@@ -11,6 +11,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="pages:ProjectsPageViewModel"
              x:Class="Tkmm.Views.Pages.ProjectsPageView">
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Ctrl + S" Command="{Binding SaveCommand}" />
+    </UserControl.KeyBindings>
     <UserControl.DataContext>
         <pages:ProjectsPageViewModel />
     </UserControl.DataContext>
