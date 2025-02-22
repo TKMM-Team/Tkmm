@@ -9,9 +9,10 @@
                 <Border>
                     <StackPanel Spacing="6">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
-                            <vk:VirtualKey Key="1" ShiftKey="#" />
-                            <vk:VirtualKey Key="2" ShiftKey="[" />
-                            <vk:VirtualKey Key="3" ShiftKey="]" />
+                            <vk:VirtualKey Key="`" ShiftKey="~" />
+                            <vk:VirtualKey Key="1" ShiftKey="!" />
+                            <vk:VirtualKey Key="2" ShiftKey="@" />
+                            <vk:VirtualKey Key="3" ShiftKey="#" />
                             <vk:VirtualKey Key="4" ShiftKey="$" />
                             <vk:VirtualKey Key="5" ShiftKey="%" />
                             <vk:VirtualKey Key="6" ShiftKey="^" />
@@ -20,6 +21,7 @@
                             <vk:VirtualKey Key="9" ShiftKey="(" />
                             <vk:VirtualKey Key="0" ShiftKey=")" />
                             <vk:VirtualKey Key="-" ShiftKey="_" />
+                            <vk:VirtualKey Key="=" ShiftKey="+" />
                             <vk:VirtualKey
                                 SimulatedKey="Back"
                                 Width="152">
@@ -38,9 +40,13 @@
                             <vk:VirtualKey Key="i" ShiftKey="I" />
                             <vk:VirtualKey Key="o" ShiftKey="O" />
                             <vk:VirtualKey Key="p" ShiftKey="P" />
-                            <vk:VirtualKey Key="/" ShiftKey="@" Width="118" />
+                            <vk:VirtualKey Key="[" ShiftKey="{}{" />
+                            <vk:VirtualKey Key="]" ShiftKey="{}}" />
+                            <vk:VirtualKey Key="\" ShiftKey="|" Width="118" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
+                            <vk:VirtualKey Key="—" ShiftKey="¿" />
+                            <vk:VirtualKey Key="„" ShiftKey="“" />
                             <vk:VirtualKey Key="a" ShiftKey="A" />
                             <vk:VirtualKey Key="s" ShiftKey="S" />
                             <vk:VirtualKey Key="d" ShiftKey="D" />
@@ -58,7 +64,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
                             <vk:VirtualShiftKey
                                 IsChecked="{Binding IsShiftEnabled, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                Width="118">
+                                Width="208">
                                 <vk:VirtualShiftKey.OffContent>
                                     <fa:Icon Value="fa-regular fa-square-up" />
                                 </vk:VirtualShiftKey.OffContent>
@@ -75,10 +81,10 @@
                             <vk:VirtualKey Key="m" ShiftKey="M" />
                             <vk:VirtualKey Key="," ShiftKey="&lt;" />
                             <vk:VirtualKey Key="." ShiftKey="&gt;" />
-                            <vk:VirtualKey Key="/" ShiftKey="?" />
+                            <vk:VirtualKey Key="?" ShiftKey="/" />
                             <vk:VirtualShiftKey
                                 IsChecked="{Binding IsShiftEnabled, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                Width="118">
+                                Width="208">
                                 <vk:VirtualShiftKey.OffContent>
                                     <fa:Icon Value="fa-regular fa-square-up" />
                                 </vk:VirtualShiftKey.OffContent>
@@ -95,7 +101,7 @@
                             <vk:VirtualKey SimulatedKey="End">
                                 <fa:Icon Value="fa-regular fa-arrow-right-long-to-line" />
                             </vk:VirtualKey>
-                            <vk:VirtualKey Content="SPACE" Key="&#xA0;" Width="692" />
+                            <vk:VirtualKey Content="SPACE" Key="&#xA0;" Width="872" />
                             <vk:VirtualKey SimulatedKey="Left">
                                 <fa:Icon Value="fa-regular fa-arrow-left" />
                             </vk:VirtualKey>
