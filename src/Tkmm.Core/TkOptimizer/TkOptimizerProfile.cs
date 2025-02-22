@@ -8,7 +8,7 @@ public class TkOptimizerProfile
 
     public Dictionary<string, HashSet<string>> Cheats { get; init; } = [];
 
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled { get; set; }
 
     public string? Preset { get; set; }
 }
