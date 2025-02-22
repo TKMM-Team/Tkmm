@@ -93,7 +93,6 @@ public partial class ShellView : AppWindow
         try {
             var taskDialog = new TaskDialog {
                 Header = Locale[TkLocale.Menu_Nx],
-                SubHeader = Locale[TkLocale.Menu_NxReboot],
                 Buttons = {
                     new TaskDialogButton(Locale[TkLocale.Menu_NxReboot], null),
                     new TaskDialogButton(Locale[TkLocale.Menu_NxShutdown], null),
