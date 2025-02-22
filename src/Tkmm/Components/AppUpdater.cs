@@ -69,12 +69,13 @@ public static class AppUpdater
                 dialog.Hide(TaskDialogStandardResult.Yes);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Update failed.");
                 dialog.Header = Locale[TkLocale.System_Popup_UpdaterFailed_Title];
                 dialog.SubHeader = ex.GetType().ToString().Humanize(LetterCasing.Title);
                 dialog.ShowProgressBar = false;
                 dialog.Buttons.Add(TaskDialogButton.RetryButton);
                 dialog.Buttons.Add(TaskDialogButton.CancelButton);
+                
+                TkLog.Instance.LogError(ex, "Update failed.");
             }
             finally {
                 DownloadHelper.Reporters.Pop();
