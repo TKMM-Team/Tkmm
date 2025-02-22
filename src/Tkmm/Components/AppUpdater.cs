@@ -30,8 +30,8 @@ public static class AppUpdater
         if (await HasAvailableUpdates() is not Release release) {
             if (isUserInvoked) {
                 await MessageDialog.Show(
-                    TkLocale.System_Popup_UpdateAvailable,
-                    TkLocale.System_Popup_UpdateAvailable_Title);
+                    TkLocale.System_Popup_SoftwareUpToData,
+                    TkLocale.System_Popup_Updater_Title);
             }
 
             return;
