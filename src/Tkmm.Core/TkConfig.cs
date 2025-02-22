@@ -133,7 +133,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             goto Configured;
         }
 
-        if (_nandFolderPaths.Cast<PathCollectionItem>().Any(item => Directory.Exists(item.Target))) {
+        if (NandFolderPaths.Any<string>(Directory.Exists)) {
             return builder
                 .WithSdCard(() => null)
                 .WithPackagedUpdate(() => null)
@@ -141,7 +141,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                 .Build();
         }
 
-        Configured:
+    Configured:
         return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
