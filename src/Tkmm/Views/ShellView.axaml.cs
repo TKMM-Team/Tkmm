@@ -9,6 +9,10 @@ using Tkmm.Models;
 using Tkmm.ViewModels;
 using Tkmm.Wizard;
 using TkSharp.Core;
+#if SWITCH
+using FluentAvalonia.UI.Controls;
+using Tkmm.Models.MenuModels;
+#endif
 
 namespace Tkmm.Views;
 
@@ -75,5 +79,37 @@ public partial class ShellView : AppWindow
                 PageManager.Shared.Focus(page);
             }
         }
+
+#if SWITCH
+        if (e.Key is Key.LWin or Key.RWin) {
+            ShowRebootShutdownPopup();
+        }
+#endif
     }
+
+#if SWITCH
+    private async void ShowRebootShutdownPopup()
+    {
+        var taskDialog = new TaskDialog {
+            Header = Locale[TkLocale.Menu_Nx],
+            SubHeader = Locale[TkLocale.Menu_NxReboot],
+            Buttons = {
+                new TaskDialogButton(Locale[TkLocale.Menu_NxReboot], null),
+                new TaskDialogButton(Locale[TkLocale.Menu_NxShutdown], null)
+            }
+        };
+
+        taskDialog.Buttons[0].Click += async (s, e) => {
+            NxMenuModel.Reboot();
+            taskDialog.Hide();
+        };
+
+        taskDialog.Buttons[1].Click += async (s, e) => {
+            NxMenuModel.Shutdown();
+            taskDialog.Hide();
+        };
+
+        await taskDialog.ShowAsync();
+    }
+#endif
 }
