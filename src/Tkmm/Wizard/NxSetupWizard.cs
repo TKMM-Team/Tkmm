@@ -33,28 +33,23 @@ namespace Tkmm.Wizard
             }
   
         Verify:
-            if (TKMM.TryGetTkRom() is not null)
-            {
+            if (TKMM.TryGetTkRom() is not null) {
                 goto LangPage;
             }
 
-            bool result = await NextPage()
-                .WithTitle(TkLocale.SetupWizard_GameDumpConfigPage_Title)
-                .WithContent<NxDumpConfigPage>(new GameDumpConfigPageContext())
-                .WithActionContent(TkLocale.SetupWizard_GameDumpConfigPage_Action)
-                .WithHelpContent(TkLocale.SetupWizard_NxDumpConfigPage_Help)
+            bool oopsie = await NextPage()
+                .WithTitle(TkLocale.SetupWizard_MissingDump_Title)
+                .WithContent(TkLocale.SetupWizard_MissingDump_Content)
+                .WithActionContent(TkLocale.Menu_NxReboot)
                 .Show();
 
-            if (!result)
-            {
+            if (!oopsie) {
                 goto FirstPage;
             }
-            
-            if (TKMM.TryGetTkRom() is null)
-            {
-                goto Verify;
-            }
 
+            NxMenuModel.Reboot();
+            await Task.Delay(-1);
+            
         LangPage:
             bool langResult = await NextPage()
                 .WithTitle(TkLocale.WizPageFinal_Title)
@@ -64,8 +59,7 @@ namespace Tkmm.Wizard
 
             if (!langResult)
             {
-                if (TKMM.TryGetTkRom() is not null)
-                {
+                if (TKMM.TryGetTkRom() is not null) {
                     goto FirstPage;
                 }
                 goto Verify;
