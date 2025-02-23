@@ -56,8 +56,8 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             case true when context.IsValid: {
                 await (context.GetSelection() switch {
                     EmulatorSelection.Ryujinx => SetupRyujinxPage(),
-                    EmulatorSelection.Switch => EnsureConfigurationPage(),
                     EmulatorSelection.Other => SetupEmulatorPage(),
+                    EmulatorSelection.Switch => EnsureConfigurationPage(),
                     _ => throw new ArgumentException("Invalid emulator selection")
                 });
                 return;

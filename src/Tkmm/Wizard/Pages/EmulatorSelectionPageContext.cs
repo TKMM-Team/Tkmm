@@ -28,12 +28,12 @@ public sealed partial class EmulatorSelectionPageContext : ObservableObject
             return EmulatorSelection.Ryujinx;
         }
         
-        if (IsSwitch) {
-            return EmulatorSelection.Switch;
-        }
-        
         if (IsOtherEmulator) {
             return EmulatorSelection.Other;
+        }
+        
+        if (IsSwitch) {
+            return EmulatorSelection.Switch;
         }
 
         return 0;
