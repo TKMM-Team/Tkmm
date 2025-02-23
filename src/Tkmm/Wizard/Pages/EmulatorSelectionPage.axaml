@@ -12,10 +12,10 @@
                      IsChecked="{Binding IsRyujinx}"
                      Content="{ext:Locale SetupWizard_EmulatorSelection_RyujinxOption}" />
         <RadioButton GroupName="selection"
-                     IsChecked="{Binding IsSwitch}"
-                     Content="{ext:Locale SetupWizard_EmulatorSelection_SwitchOption}" />
-        <RadioButton GroupName="selection"
                      IsChecked="{Binding IsOtherEmulator}"
                      Content="{ext:Locale SetupWizard_EmulatorSelection_OtherOption}" />
+        <RadioButton GroupName="selection"
+                     IsChecked="{Binding IsSwitch}"
+                     Content="{ext:Locale SetupWizard_EmulatorSelection_SwitchOption}" />
     </StackPanel>
 </UserControl>
