@@ -1,7 +1,7 @@
 using System.IO.Pipes;
 using System.Text;
 
-namespace Tkmm.Components;
+namespace Tkmm.Core.Services;
 
 public static class SingleInstanceAppManager
 {

@@ -8,6 +8,7 @@ using Tkmm.Components;
 using Tkmm.CLI;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
+using Tkmm.Core.Services;
 using TkSharp.Core;
 using TkSharp.Core.Common;
 
