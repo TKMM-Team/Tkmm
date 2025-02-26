@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.VirtualKeyboard", "Tkm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.LocaleGenerator", "Tkmm.LocaleGenerator\Tkmm.LocaleGenerator.csproj", "{FFE19802-37FC-40B3-BE6F-353B7852124F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tkmm.CLI", "Tkmm.CLI\Tkmm.CLI.csproj", "{CA739386-B6CA-499F-8B7A-6CDA79FBAD2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{FFE19802-37FC-40B3-BE6F-353B7852124F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFE19802-37FC-40B3-BE6F-353B7852124F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFE19802-37FC-40B3-BE6F-353B7852124F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA739386-B6CA-499F-8B7A-6CDA79FBAD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA739386-B6CA-499F-8B7A-6CDA79FBAD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA739386-B6CA-499F-8B7A-6CDA79FBAD2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA739386-B6CA-499F-8B7A-6CDA79FBAD2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
