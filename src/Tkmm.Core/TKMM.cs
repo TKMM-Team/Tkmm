@@ -22,6 +22,12 @@ namespace Tkmm.Core;
 // ReSharper disable once InconsistentNaming
 public static class TKMM
 {
+#if READONLY_FS
+    public static readonly string BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
+#else
+    public static readonly string BaseDirectory = AppContext.BaseDirectory;
+#endif
+    
     private static readonly TkModReaderProvider _readerProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
@@ -30,7 +36,7 @@ public static class TKMM
 #if SWITCH
     public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
-    public static string MergedOutputFolder => Config.Shared.MergeOutput ?? Path.Combine(AppContext.BaseDirectory, "Merged");
+    public static string MergedOutputFolder => Config.Shared.MergeOutput ?? Path.Combine(BaseDirectory, "Merged");
 #endif
 
     public static ITkRom GetTkRom() => RomProvider.GetRom();
@@ -138,7 +144,8 @@ public static class TKMM
 
     static TKMM()
     {
-        ModManager = TkModManager.CreatePortable();
+        string dataFolder = Path.Combine(BaseDirectory, ".data");
+        ModManager = TkModManager.Create(dataFolder);
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
         ModManager.PropertyChanged += static (s, e) => {
@@ -153,7 +160,7 @@ public static class TKMM
         _readerProvider.Register(new External7zModReader(ModManager, RomProvider));
 
         Span<string> hiddenSystemFolders = [".data", ".layout"];
-        DirectoryHelper.HideTargetsInDirectory(AppContext.BaseDirectory, hiddenSystemFolders);
+        DirectoryHelper.HideTargetsInDirectory(TKMM.BaseDirectory, hiddenSystemFolders);
 
         if (Environment.ProcessPath is null) {
             return;

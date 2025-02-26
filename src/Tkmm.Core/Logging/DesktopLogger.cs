@@ -6,7 +6,7 @@ namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
-    private static readonly string _logsFolder = Path.Combine(AppContext.BaseDirectory, "Logs");
+    private static readonly string _logsFolder = Path.Combine(TKMM.BaseDirectory, "Logs");
     private static readonly string _targetLogFile = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
 
     private readonly string _group;

@@ -175,7 +175,8 @@ jobs:
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:Version=${{ needs.release.outputs.version }} \
           -p:NoUpdate=true \
-          -p:DebugType=embedded
+          -p:DebugType=embedded \
+          -p:IsReadonlyFileSystem=True
 
       - name: Build AppImage
         shell: bash
