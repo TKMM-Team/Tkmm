@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NoWarn>CA1822</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
@@ -16,14 +17,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\lib\TkSharp\TkSharp.Core\TkSharp.Core.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Remove="Commands\Mods.cs" />
+    <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
   </ItemGroup>
 
 </Project>

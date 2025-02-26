@@ -29,7 +29,7 @@ public static class SingleInstanceAppManager
             writer.Write(arg);
         }
 
-        Console.WriteLine($"[Info] Waiting for '{ID}'...");
+        Console.WriteLine($"Redirecting [{args.Length}] to '{ID}'...");
         client.ReadByte();
         return false;
     }
