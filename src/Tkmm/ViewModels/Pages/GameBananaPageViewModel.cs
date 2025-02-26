@@ -153,7 +153,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             DataContext = mod
         };
 
-        GameBananaFile? target = mod.Full.Files
+        GameBananaFile? target = mod.Full?.Files
             .FirstOrDefault(file => file.IsSelected);
 
         ContentDialog dialog = new() {
@@ -165,7 +165,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsPrimaryButtonEnabled = target is not null,
         };
 
-        foreach (GameBananaFile file in mod.Full.Files) {
+        foreach (GameBananaFile file in mod.Full!.Files) {
             file.PropertyChanged += (_, eventArgs) => {
                 if (eventArgs.PropertyName == nameof(file.IsSelected)) {
                     target = file;
