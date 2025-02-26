@@ -136,7 +136,7 @@ public static class AppUpdater
 
         ProcessStartInfo processStart = new(processName) {
             UseShellExecute = true,
-            WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
+            WorkingDirectory = AppContext.BaseDirectory,
         };
 
         Process.Start(processStart);

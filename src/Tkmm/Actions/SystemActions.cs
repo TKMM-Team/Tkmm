@@ -67,7 +67,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public static async Task CleanupTempFolder()
     {
         try {
-            string tempFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".temp");
+            string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
 
             if (!Directory.Exists(tempFolder)) {
                 return;

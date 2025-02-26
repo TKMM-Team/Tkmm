@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tkmm.Core;
 
 namespace Tkmm.Models;
 
@@ -34,7 +35,7 @@ public partial class LayoutConfig : ObservableObject
         }
 
         using FileStream fs = File.OpenRead(file);
-        LayoutConfig result = JsonSerializer.Deserialize(fs, Tkmm.Models.LayoutConfigJsonContext.Default.LayoutConfig) ?? new LayoutConfig();
+        LayoutConfig result = JsonSerializer.Deserialize(fs, LayoutConfigJsonContext.Default.LayoutConfig) ?? new LayoutConfig();
 
         result.Name = name;
         result.TopPanel = new GridLength(result.TopPanelValue, result.TopPanelGridUnitType);
@@ -51,7 +52,7 @@ public partial class LayoutConfig : ObservableObject
 
     private static string GetPath(string name)
     {
-        string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".layout");
+        string folder = Path.Combine(TKMM.BaseDirectory, ".layout");
         Directory.CreateDirectory(folder);
         return Path.Combine(folder, $"{name}.json");
     }
