@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO.Compression;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -8,9 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using TkSharp.Core;
-using TkSharp.Core.Extensions;
 using TkSharp.Core.Models;
-using TkSharp.Packaging.IO.Serialization;
 
 namespace Tkmm.Actions;
 
@@ -26,22 +23,20 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         await CanActionRun(showError: false);
 
         try {
+            TkStatus.Set(Locale[TkLocale.Status_Importing, input], TkIcons.GEAR_FOLDER, StatusType.Working);
             if (await TKMM.Install(input, stream, context, profile, ct) is not TkMod mod) {
                 TkLog.Instance.LogError("The input of type '{InputType}' ('{Input}') failed to install.",
                     input.GetType(), input);
                 return null;
             }
 
-            TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyInstalled, mod.Name], TkIcons.CIRCLE_CHECK);
+            TkStatus.SetTemporary(Locale[TkLocale.Status_ModSuccessfullyInstalled, mod.Name], TkIcons.CIRCLE_CHECK);
             return mod;
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while installing an input of type '{InputType}' ('{Input}').",
                 input.GetType(), input);
             await ErrorDialog.ShowAsync(ex);
-        }
-        finally {
-            TkStatus.Reset();
         }
 
         return null;
