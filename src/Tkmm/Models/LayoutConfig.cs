@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tkmm.Core.Helpers;
 
 namespace Tkmm.Models;
 
@@ -51,7 +52,7 @@ public partial class LayoutConfig : ObservableObject
 
     private static string GetPath(string name)
     {
-        string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".layout");
+        string folder = Path.Combine(DirectoryHelper.GetAppDataDirectory(), ".layout");
         Directory.CreateDirectory(folder);
         return Path.Combine(folder, $"{name}.json");
     }
