@@ -1,7 +1,6 @@
 using System.Text.Json;
 using FluentAvalonia.UI.Controls;
 using Tkmm.Models;
-using Tkmm.Core.Helpers;
 
 namespace Tkmm.Dialogs;
 
@@ -91,7 +90,7 @@ public static class MessageDialog
         return result;
     }
 
-    private static readonly string _dialogsStorePath = Path.Combine(DirectoryHelper.GetAppDataDirectory(), ".layout", "dialogs.json");
+    private static readonly string _dialogsStorePath = Path.Combine(AppContext.BaseDirectory, ".layout", "dialogs.json");
     
     public static HashSet<MessageDialogs> LoadDialogs()
     {

@@ -1,13 +1,12 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
-using Tkmm.Core.Helpers;
 
 namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
-    private static readonly string _logsFolder = Path.Combine(DirectoryHelper.GetAppDataDirectory(), "Logs");
+    private static readonly string _logsFolder = Path.Combine(AppContext.BaseDirectory, "Logs");
     private static readonly string _targetLogFile = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
 
     private readonly string _group;
