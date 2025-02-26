@@ -34,6 +34,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return mod;
         }
         catch (Exception ex) {
+            TkStatus.SetTemporary(Locale[TkLocale.Status_ModFailedInstalling, input], TkIcons.ERROR);
             TkLog.Instance.LogError(ex, "An error occured while installing an input of type '{InputType}' ('{Input}').",
                 input.GetType(), input);
             await ErrorDialog.ShowAsync(ex);
