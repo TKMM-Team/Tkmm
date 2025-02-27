@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 using Microsoft.Extensions.Logging;
+using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using TkSharp.Core;
@@ -204,6 +205,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
 
         try {
+            TkImageResolver.CleanTarget(target.Id.ToString());
             TKMM.ModManager.Uninstall(target);
         }
         catch (Exception ex) {

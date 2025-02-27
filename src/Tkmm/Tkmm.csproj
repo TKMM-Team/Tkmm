@@ -36,7 +36,7 @@
     <!--Versions greater than 11.0.10.2 causes https://github.com/TKMM-Team/Tkmm/issues/5 -->
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="[11.0.10.2]" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.4" />
-    <PackageReference Include="AvaMark" Version="0.1.1" />
+    <PackageReference Include="AvaMark" Version="0.2.1" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.3" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.2.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
