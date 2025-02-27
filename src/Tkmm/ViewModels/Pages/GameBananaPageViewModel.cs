@@ -35,7 +35,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     private bool _isLoadSuccess;
 
     [ObservableProperty]
-    private IGameBananaSource _source = new GameBananaSource(GAME_ID);
+    private GameBananaSource _source = new(GAME_ID);
 
     [ObservableProperty]
     private double? _downloadSpeed;
@@ -47,6 +47,12 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     public GameBananaPageViewModel()
     {
+        Source.PropertyChanged += (_, e) => {
+            if (e.PropertyName is nameof(Source.Feed)) {
+                OnPropertyChanged(nameof(Feed));
+            }
+        };
+        
         DownloadHelper.Reporters.Push(
             new DownloadReporter {
                 ProgressReporter = new Progress<double>(
