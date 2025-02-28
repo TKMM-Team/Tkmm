@@ -9,6 +9,8 @@
              xmlns:desktop="clr-namespace:Tkmm"
              xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
              xmlns:ext="clr-namespace:Tkmm.Markup"
+             xmlns:components="clr-namespace:Tkmm.Components"
+             xmlns:ex="clr-namespace:Tkmm.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
@@ -159,7 +161,7 @@
 
                     <Grid Grid.Row="2">
                         <ScrollViewer>
-                            <avaMark:MarkdownViewer Markdown="{Binding ModManager.CurrentProfile.Selected.Mod.Description}" />
+                            <avaMark:MarkdownViewer ex:MarkdownView.Mod="{Binding ModManager.CurrentProfile.Selected.Mod}" />
                         </ScrollViewer>
                     </Grid>
                 </Grid>
