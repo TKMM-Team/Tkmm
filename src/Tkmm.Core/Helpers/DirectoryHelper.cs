@@ -109,4 +109,28 @@ public static class DirectoryHelper
             info.Attributes |= FileAttributes.Hidden;
         }
     }
+
+    public static bool IsDirectoryWritable(string path)
+    {
+        try {
+            string testFile = Path.Combine(path, Path.GetRandomFileName());
+            using (FileStream fs = File.Create(testFile, 1, FileOptions.DeleteOnClose)) { }
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public static string GetAppDataDirectory()
+    {
+        string baseDir = AppContext.BaseDirectory;
+        if (IsDirectoryWritable(baseDir)) {
+            return baseDir;
+        }
+
+        return Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "tkmm2");
+    }
 }
