@@ -67,7 +67,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\TkSharp\TkSharp.Packaging\TkSharp.Packaging.csproj" />
-    <ProjectReference Include="..\Tkmm.CLI\Tkmm.CLI.csproj" />
+    <ProjectReference Condition="'$(IsSwitch)' != 'true'" Include="..\Tkmm.CLI\Tkmm.CLI.csproj" />
     <ProjectReference Include="..\Tkmm.Core\Tkmm.Core.csproj" />
     <ProjectReference Include="..\Tkmm.VirtualKeyboard\Tkmm.VirtualKeyboard.csproj" />
     <ProjectReference Include="..\Tkmm.LocaleGenerator\Tkmm.LocaleGenerator.csproj"
