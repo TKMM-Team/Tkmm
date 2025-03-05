@@ -499,6 +499,75 @@
             "_bIsOwnedByAccessor": false
         },
         {
+            "_idRow": 579452,
+            "_sModelName": "Mod",
+            "_sSingularTitle": "Mod",
+            "_sIconClasses": "SubmissionType Mod",
+            "_sName": "Hero's Home",
+            "_sProfileUrl": "https:\/\/gamebanana.com\/mods\/579452",
+            "_tsDateAdded": 1741206293,
+            "_tsDateModified": 1741207081,
+            "_bHasFiles": true,
+            "_aTags": [],
+            "_aPreviewMedia": {
+                "_aImages": [
+                    {
+                        "_sType": "screenshot",
+                        "_sBaseUrl": "https:\/\/images.gamebanana.com\/img\/ss\/mods",
+                        "_sFile": "67c8b46d26b43.jpg",
+                        "_sFile220": "220-90_67c8b46d26b43.jpg",
+                        "_hFile220": 129,
+                        "_wFile220": 220,
+                        "_sFile530": "530-90_67c8b46d26b43.jpg",
+                        "_hFile530": 311,
+                        "_wFile530": 530,
+                        "_sFile100": "100-90_67c8b46d26b43.jpg",
+                        "_hFile100": 59,
+                        "_wFile100": 100,
+                        "_sFile800": "800-90_67c8b46d26b43.jpg",
+                        "_hFile800": 470,
+                        "_wFile800": 800
+                    },
+                    {
+                        "_sType": "screenshot",
+                        "_sBaseUrl": "https:\/\/images.gamebanana.com\/img\/ss\/mods",
+                        "_sFile": "67c89e0582f85.jpg",
+                        "_sFile100": "100-90_67c89e0582f85.jpg",
+                        "_hFile100": 56,
+                        "_wFile100": 100
+                    },
+                    {
+                        "_sType": "screenshot",
+                        "_sBaseUrl": "https:\/\/images.gamebanana.com\/img\/ss\/mods",
+                        "_sFile": "67c89be155f6e.jpg",
+                        "_sFile100": "100-90_67c89be155f6e.jpg",
+                        "_hFile100": 56,
+                        "_wFile100": 100
+                    }
+                ]
+            },
+            "_aSubmitter": {
+                "_idRow": 2980766,
+                "_sName": "-alpha-",
+                "_bIsOnline": true,
+                "_bHasRipe": false,
+                "_sProfileUrl": "https:\/\/gamebanana.com\/members\/2980766",
+                "_sAvatarUrl": "https:\/\/images.gamebanana.com\/img\/av\/67933f8bc5901.png"
+            },
+            "_aRootCategory": {
+                "_sName": "Map",
+                "_sProfileUrl": "https:\/\/gamebanana.com\/mods\/cats\/22559",
+                "_sIconUrl": "https:\/\/images.gamebanana.com\/img\/ico\/ModCategory\/646827df449f6.png"
+            },
+            "_sVersion": "",
+            "_bIsObsolete": false,
+            "_sInitialVisibility": "show",
+            "_bHasContentRatings": false,
+            "_nLikeCount": 5,
+            "_bWasFeatured": false,
+            "_bIsOwnedByAccessor": false
+        },
+        {
             "_idRow": 479009,
             "_sModelName": "Mod",
             "_sSingularTitle": "Mod",
