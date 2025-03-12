@@ -154,7 +154,8 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         try {
             ProcessStartInfo info = new() {
                 FileName = TKMM.MergedOutputFolder,
-                UseShellExecute = true
+                UseShellExecute = true,
+                Verb = "open"
             };
 
             Process.Start(info);
