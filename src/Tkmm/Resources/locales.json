@@ -63,8 +63,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "未定义版本",
+      "zh_TW": "未定義版本"
     },
     "HomePageTitle": {
       "ar_SA": "",
@@ -85,8 +85,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "主页",
+      "zh_TW": "首頁"
     },
     "HomePageDesc": {
       "ar_SA": "",
@@ -107,8 +107,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "主页",
+      "zh_TW": "首頁"
     },
     "ProfilesPageTitle": {
       "ar_SA": "",
@@ -129,8 +129,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "配置文件",
+      "zh_TW": "配置文件"
     },
     "ProfilesPageDesc": {
       "ar_SA": "",
@@ -151,8 +151,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "管理您的模组配置文件",
+      "zh_TW": "管理您的模組配置文件"
     },
     "ProjectsPageTitle": {
       "ar_SA": "",
@@ -173,8 +173,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "项目",
+      "zh_TW": "專案"
     },
     "ProjectsPageDesc": {
       "ar_SA": "",
@@ -195,8 +195,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "管理您的项目",
+      "zh_TW": "管理您的專案"
     },
     "GameBananaPageTitle": {
       "ar_SA": "",
@@ -217,8 +217,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "GameBanana 浏览器",
+      "zh_TW": "GameBanana 瀏覽器"
     },
     "GameBananaPageDesc": {
       "ar_SA": "",
@@ -239,8 +239,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "专为《王国之泪》模组设计的 GameBanana 客户端",
+      "zh_TW": "專為《王國之淚》模組設計的 GameBanana 客戶端"
     },
     "LogsPageTitle": {
       "ar_SA": "",
@@ -261,8 +261,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "日志",
+      "zh_TW": "日誌"
     },
     "LogsPageDesc": {
       "ar_SA": "",
@@ -283,8 +283,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "系统日志",
+      "zh_TW": "系統日誌"
     },
     "NetworkSettingsPageTitle": {
       "ar_SA": "",
@@ -305,8 +305,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "网络设置",
+      "zh_TW": "網路設定"
     },
     "NetworkSettingsPageDesc": {
       "ar_SA": "",
@@ -327,8 +327,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "WiFi 和其他网络服务的设置",
+      "zh_TW": "WiFi 和其他網路服務的設定"
     },
     "SettingsPageTitle": {
       "ar_SA": "",
@@ -349,8 +349,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "设置",
+      "zh_TW": "設定"
     },
     "SettingsPageDesc": {
       "ar_SA": "",
@@ -371,8 +371,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "应用程序设置和配置",
+      "zh_TW": "應用程式設定和配置"
     },
     "TotkOptimizerPageTitle": {
       "ar_SA": "",
@@ -393,8 +393,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "王国之泪优化器",
+      "zh_TW": "王國之淚優化器"
     },
     "TotkOptimizerPageCredits": {
       "ar_SA": "",
@@ -415,8 +415,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "作者：MaxLastBreath",
+      "zh_TW": "作者：MaxLastBreath"
     },
     "TotkOptimizerPageDesc": {
       "ar_SA": "",
@@ -437,8 +437,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "应用内《王国之泪》优化器（UltraCam）客户端。",
+      "zh_TW": "應用內《王國之淚》優化器（UltraCam）客戶端。"
     },
     "CheatsPageTitle": {
       "ar_SA": "",
@@ -459,8 +459,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "作弊",
+      "zh_TW": "作弊"
     },
     "CheatsPageDesc": {
       "ar_SA": "",
@@ -481,8 +481,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "《王国之泪》作弊功能",
+      "zh_TW": "《王國之淚》作弊功能"
     },
     "CheatsPage_VersionLabel": {
       "ar_SA": "",
@@ -503,8 +503,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "検出されたゲームバージョン: ",
-      "zh_TW": ""
+      "zh_CN": "检测到的游戏版本：",
+      "zh_TW": "檢測到的遊戲版本："
     },
     "TkCheatsPage_Unavailable": {
       "ar_SA": "",
@@ -526,7 +526,7 @@
       "tr_TR": "",
       "uk_UA": "",
       "zh_CN": "当前配置没有可用的作弊功能。",
-      "zh_TW": "目前配置中沒有可用的作弊功能。"
+      "zh_TW": "當前配置沒有可用的作弊功能。"
     },
     "NoticePopupMessage": {
       "ar_SA": "",
@@ -547,8 +547,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "通知",
+      "zh_TW": "通知"
     },
     "Menu_Debug": {
       "ar_SA": "",
@@ -569,8 +569,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "调试",
+      "zh_TW": "除錯"
     },
     "Menu_DebugOpenModFolder": {
       "ar_SA": "",
@@ -591,8 +591,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打开模组文件夹",
+      "zh_TW": "開啟模組資料夾"
     },
     "Menu_DebugOpenMergedOutput": {
       "ar_SA": "",
@@ -613,8 +613,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打开合并输出文件夹",
+      "zh_TW": "開啟合併輸出資料夾"
     },
     "Menu_File": {
       "ar_SA": "",
@@ -635,8 +635,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "文件",
+      "zh_TW": "檔案"
     },
     "Menu_FileInstallFile": {
       "ar_SA": "",
@@ -657,8 +657,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "安装文件",
+      "zh_TW": "安裝檔案"
     },
     "Menu_FileInstallFolder": {
       "ar_SA": "",
@@ -679,8 +679,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "安装文件夹",
+      "zh_TW": "安裝資料夾"
     },
     "Menu_FileInstallArg": {
       "ar_SA": "",
@@ -701,8 +701,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "从参数安装",
+      "zh_TW": "從參數安裝"
     },
     "Menu_FileClearTempFiles": {
       "ar_SA": "",
@@ -723,8 +723,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "清除临时文件",
+      "zh_TW": "清除臨時檔案"
     },
     "Menu_FileExit": {
       "ar_SA": "",
@@ -745,8 +745,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "退出",
+      "zh_TW": "退出"
     },
     "Menu_Help": {
       "ar_SA": "",
@@ -767,8 +767,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "帮助",
+      "zh_TW": "幫助"
     },
     "Menu_HelpCheckForUpdates": {
       "ar_SA": "",
@@ -789,8 +789,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "检查更新",
+      "zh_TW": "檢查更新"
     },
     "Menu_HelpAbout": {
       "ar_SA": "",
@@ -811,8 +811,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "关于",
+      "zh_TW": "關於"
     },
     "Menu_Mod": {
       "ar_SA": "",
@@ -833,8 +833,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "模组",
+      "zh_TW": "模組"
     },
     "Menu_ModExportFile": {
       "ar_SA": "",
@@ -855,8 +855,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "导出模组为TKCL",
+      "zh_TW": "匯出模組為TKCL"
     },
     "Menu_ModExportFolder": {
       "ar_SA": "",
@@ -877,8 +877,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "导出模组为RomFS",
+      "zh_TW": "匯出模組為RomFS"
     },
     "Menu_ModConfigureOptions": {
       "ar_SA": "",
@@ -899,8 +899,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "编辑模组选项",
+      "zh_TW": "編輯模組選項"
     },
     "Menu_ModRemoveFromProfile": {
       "ar_SA": "",
@@ -921,8 +921,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "从配置文件中移除",
+      "zh_TW": "從配置文件中移除"
     },
     "Menu_ModUninstall": {
       "ar_SA": "",
@@ -943,8 +943,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "卸载",
+      "zh_TW": "解除安裝"
     },
     "Menu_ModEditExportLocations": {
       "ar_SA": "",
@@ -965,8 +965,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "编辑导出位置",
+      "zh_TW": "編輯匯出位置"
     },
     "Menu_ModMerge": {
       "ar_SA": "",
@@ -987,8 +987,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并",
+      "zh_TW": "合併"
     },
     "Menu_Nx": {
       "ar_SA": "",
@@ -1009,8 +1009,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "TKMM NX",
+      "zh_TW": "TKMM NX"
     },
     "Menu_NxReboot": {
       "ar_SA": "",
@@ -1031,8 +1031,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "重启",
+      "zh_TW": "重新啟動"
     },
     "Menu_NxShutdown": {
       "ar_SA": "",
@@ -1053,8 +1053,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "关机",
+      "zh_TW": "關機"
     },
     "Menu_Tools": {
       "ar_SA": "",
@@ -1075,8 +1075,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "工具",
+      "zh_TW": "工具"
     },
     "Menu_ToolsExportToSdCard": {
       "ar_SA": "",
@@ -1097,8 +1097,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "导出到SD卡",
+      "zh_TW": "匯出到SD卡"
     },
     "DefaultProfileName": {
       "ar_SA": "",
@@ -1119,8 +1119,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "配置文件 {0}",
+      "zh_TW": "配置文件 {0}"
     },
     "Status_Ready": {
       "ar_SA": "",
@@ -1141,8 +1141,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "就绪",
+      "zh_TW": "就緒"
     },
     "Status_Merging": {
       "ar_SA": "",
@@ -1163,8 +1163,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并中...",
+      "zh_TW": "合併中..."
     },
     "Status_Importing": {
       "ar_SA": "",
@@ -1185,8 +1185,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在安装 '{0}'",
+      "zh_TW": "正在安裝 '{0}'"
     },
     "Status_Imported": {
       "ar_SA": "",
@@ -1207,8 +1207,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "已安装 '{0}'",
+      "zh_TW": "已安裝 '{0}'"
     },
     "Status_Updating": {
       "ar_SA": "",
@@ -1229,8 +1229,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在更新 '{0}'",
+      "zh_TW": "正在更新 '{0}'"
     },
     "Status_Updated": {
       "ar_SA": "",
@@ -1251,8 +1251,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "已更新 '{0}'",
+      "zh_TW": "已更新 '{0}'"
     },
     "NetworkSettings_WiFiService_Name": {
       "ar_SA": "",
@@ -1273,8 +1273,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "WiFi",
+      "zh_TW": "WiFi"
     },
     "NetworkSettings_SshService_Name": {
       "ar_SA": "",
@@ -1295,8 +1295,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "SSH",
+      "zh_TW": "SSH"
     },
     "NetworkSettings_SmbService_Name": {
       "ar_SA": "",
@@ -1317,8 +1317,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "SMB",
+      "zh_TW": "SMB"
     },
     "NetworkSettings_Action_RefreshNetworks_Name": {
       "ar_SA": "",
@@ -1339,8 +1339,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "刷新",
+      "zh_TW": "重新整理"
     },
     "NetworkSettings_Modal_ScanningMessage": {
       "ar_SA": "",
@@ -1361,8 +1361,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在扫描网络...",
+      "zh_TW": "正在掃描網路..."
     },
     "NetworkSettings_Header_WirelessNetworks": {
       "ar_SA": "",
@@ -1383,8 +1383,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无线网络",
+      "zh_TW": "無線網路"
     },
     "NetworkSettings_Action_ConnectNetwork": {
       "ar_SA": "",
@@ -1405,8 +1405,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "连接",
+      "zh_TW": "連接"
     },
     "NetworkSettings_Action_DisconnectNetwork": {
       "ar_SA": "",
@@ -1427,8 +1427,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "断开连接",
+      "zh_TW": "中斷連接"
     },
     "NetworkSettings_Action_ForgetNetwork": {
       "ar_SA": "",
@@ -1449,8 +1449,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "忘记",
+      "zh_TW": "忘記"
     },
     "NetworkSettings_Input_Password_Watermark": {
       "ar_SA": "",
@@ -1471,8 +1471,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "密码",
+      "zh_TW": "密碼"
     },
     "NetworkSettings_Connected_Watermark": {
       "ar_SA": "",
@@ -1493,8 +1493,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "[已连接]",
+      "zh_TW": "[已連接]"
     },
     "NetworkSettings_Header_Services": {
       "ar_SA": "",
@@ -1515,8 +1515,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "服务",
+      "zh_TW": "服務"
     },
     "NetworkSettings_Header_Properties": {
       "ar_SA": "",
@@ -1537,8 +1537,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "属性",
+      "zh_TW": "屬性"
     },
     "NetworkSettings_Header_LocalMacAddressProperty": {
       "ar_SA": "",
@@ -1559,8 +1559,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "本地MAC地址",
+      "zh_TW": "本地MAC位址"
     },
     "NetworkSettings_Header_IpAddressProperty": {
       "ar_SA": "",
@@ -1581,8 +1581,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "IP地址",
+      "zh_TW": "IP位址"
     },
     "NetworkSettings_Header_SubnetMaskProperty": {
       "ar_SA": "",
@@ -1603,8 +1603,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "子网掩码",
+      "zh_TW": "子網路遮罩"
     },
     "NetworkSettings_Header_GatewayProperty": {
       "ar_SA": "",
@@ -1625,8 +1625,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "网关",
+      "zh_TW": "閘道器"
     },
     "NetworkSettings_Header_MacAddressProperty": {
       "ar_SA": "",
@@ -1647,8 +1647,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "MAC地址",
+      "zh_TW": "MAC位址"
     },
     "SetupWizard_FirstPage_Title": {
       "ar_SA": "",
@@ -1669,8 +1669,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "欢迎使用《王国之泪》模组管理器！",
+      "zh_TW": "歡迎使用《王國之淚》模組管理器！"
     },
     "SetupWizard_FirstPage_Content": {
       "ar_SA": "",
@@ -1691,8 +1691,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "这个设置向导将指导您设置TKMM以与您的计算机一起工作。\n\n随时点击左下角的信息按钮（i）获取更多信息。",
+      "zh_TW": "這個設置向導將指導您設置TKMM以與您的計算機一起工作。\n\n隨時點擊左下角的資訊按鈕（i）獲取更多資訊。"
     },
     "SetupWizard_FirstPage_Action": {
       "ar_SA": "",
@@ -1713,8 +1713,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "开始设置",
+      "zh_TW": "開始設置"
     },
     "SetupWizard_Popup_InvalidEmulatorSelection_Title": {
       "ar_SA": "",
@@ -1735,8 +1735,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无效选择",
+      "zh_TW": "無效選擇"
     },
     "SetupWizard_Popup_InvalidEmulatorSelection_Content": {
       "ar_SA": "",
@@ -1757,8 +1757,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请在继续之前选择一个选项。",
+      "zh_TW": "請在繼續之前選擇一個選項。"
     },
     "SetupWizard_EmulatorSelection_Title": {
       "ar_SA": "",
@@ -1779,8 +1779,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您如何玩《王国之泪》？",
+      "zh_TW": "您如何玩《王國之淚》？"
     },
     "SetupWizard_EmulatorSelection_RyujinxOption": {
       "ar_SA": "",
@@ -1801,8 +1801,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使用基于Ryujinx的模拟器",
+      "zh_TW": "使用基於Ryujinx的模擬器"
     },
     "SetupWizard_EmulatorSelection_OtherOption": {
       "ar_SA": "",
@@ -1823,8 +1823,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使用其他模拟器",
+      "zh_TW": "使用其他模擬器"
     },
     "SetupWizard_EmulatorSelection_SwitchOption": {
       "ar_SA": "",
@@ -1845,8 +1845,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "直接在我的Switch主机上",
+      "zh_TW": "直接在我的Switch主機上"
     },
     "SetupWizard_RyujinxSetup_Title": {
       "ar_SA": "",
@@ -1867,8 +1867,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请打开Ryujinx并按\"开始\"",
+      "zh_TW": "請打開Ryujinx並按\"開始\""
     },
     "SetupWizard_RyujinxSetup_Content": {
       "ar_SA": "",
@@ -1889,8 +1889,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "确保您已配置prod和title密钥，并安装了\"塞尔达传说：王国之泪\"至少有一个更新。",
+      "zh_TW": "確保您已配置prod和title密鑰，並安裝了\"塞爾達傳說：王國之淚\"至少有一個更新。"
     },
     "SetupWizard_RyujinxSetup_Action": {
       "ar_SA": "",
@@ -1911,8 +1911,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "开始",
+      "zh_TW": "開始"
     },
     "SetupWizard_MissingKeys_Title": {
       "ar_SA": "",
@@ -1933,8 +1933,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "缺少密钥",
+      "zh_TW": "缺少密鑰"
     },
     "SetupWizard_MissingKeys_Content": {
       "ar_SA": "",
@@ -1955,8 +1955,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "生产密钥（prod.keys）和/或标题密钥（title.keys）缺失，请重启到Hekate并注入最新版本的Lockpick_RCM payload来转储它们。",
+      "zh_TW": "生產密鑰（prod.keys）和/或標題密鑰（title.keys）缺失，請重啟到Hekate並注入最新版本的Lockpick_RCM payload來轉儲它們。"
     },
     "SetupWizard_MissingDump_Title": {
       "ar_SA": "",
@@ -1977,8 +1977,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "缺少转储或密钥",
+      "zh_TW": "缺少轉儲或密鑰"
     },
     "SetupWizard_MissingDump_Content": {
       "ar_SA": "",
@@ -1999,8 +1999,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "TKMM无法找到或解密您的游戏转储。\n\n要转储您的密钥，请重启到Hekate并注入最新版本的Lockpick_RCM payload。\n\n如果您使用的是卡带或您的游戏或游戏更新安装在内部存储器中，请使用NxDumpTool进行转储。",
+      "zh_TW": "TKMM無法找到或解密您的遊戲轉儲。\n\n要轉儲您的密鑰，請重啟到Hekate並注入最新版本的Lockpick_RCM payload。\n\n如果您使用的是卡帶或您的遊戲或遊戲更新安裝在內部儲存器中，請使用NxDumpTool進行轉儲。"
     },
     "SetupWizard_GameDumpConfigPage_Title": {
       "ar_SA": "",
@@ -2021,8 +2021,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "设置游戏转储",
+      "zh_TW": "設置遊戲轉儲"
     },
     "SetupWizard_GameDumpConfigPage_Action": {
       "ar_SA": "",
@@ -2043,8 +2043,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "验证",
+      "zh_TW": "驗證"
     },
     "SetupWizard_GameDumpConfigPage_InvalidConfiguration": {
       "ar_SA": "",
@@ -2065,8 +2065,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "提供的配置不完整或无效，请检查您的配置。",
+      "zh_TW": "提供的配置不完整或無效，請檢查您的配置。"
     },
     "SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title": {
       "ar_SA": "",
@@ -2087,8 +2087,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无效或不完整的配置",
+      "zh_TW": "無效或不完整的配置"
     },
     "SetupWizard_GameDumpConfigPage_XciNspTab_Title": {
       "ar_SA": "",
@@ -2109,8 +2109,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "XCI/NSP",
+      "zh_TW": "XCI/NSP"
     },
     "SetupWizard_GameDumpConfigPage_RomfsTab_Title": {
       "ar_SA": "",
@@ -2131,8 +2131,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "RomFS文件夹",
+      "zh_TW": "RomFS資料夾"
     },
     "SetupWizard_GameDumpConfigPage_SdCardTab_Title": {
       "ar_SA": "",
@@ -2153,8 +2153,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "SD卡",
+      "zh_TW": "SD卡"
     },
     "SetupWizard_GameDumpConfigPage_NandTab_Title": {
       "ar_SA": "",
@@ -2175,8 +2175,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "NAND",
+      "zh_TW": "NAND"
     },
     "SetupWizard_GameDumpConfigPage_KeysFolderField_Description": {
       "ar_SA": "",
@@ -2197,8 +2197,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "密钥文件夹路径",
+      "zh_TW": "密鑰資料夾路徑"
     },
     "SetupWizard_GameDumpConfigPage_BaseGameFileField_Description": {
       "ar_SA": "",
@@ -2219,8 +2219,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "基础游戏文件路径（XCI/NSP）",
+      "zh_TW": "基礎遊戲檔案路徑（XCI/NSP）"
     },
     "SetupWizard_GameDumpConfigPage_GameUpdateFileField_Description": {
       "ar_SA": "",
@@ -2241,8 +2241,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏更新文件路径（NSP）",
+      "zh_TW": "遊戲更新檔案路徑（NSP）"
     },
     "SetupWizard_GameDumpConfigPage_GameDumpFolderField_Description": {
       "ar_SA": "",
@@ -2263,8 +2263,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏转储文件夹路径（romfs）",
+      "zh_TW": "遊戲轉儲資料夾路徑（romfs）"
     },
     "SetupWizard_GameDumpConfigPage_SdCardFolderField_Description": {
       "ar_SA": "",
@@ -2285,8 +2285,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "SD卡文件夹路径",
+      "zh_TW": "SD卡資料夾路徑"
     },
     "SetupWizard_GameDumpConfigPage_NandFolderField_Description": {
       "ar_SA": "",
@@ -2307,8 +2307,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "NAND文件夹路径",
+      "zh_TW": "NAND資料夾路徑"
     },
     "SetupWizard_GameDumpConfigPage_SdCardFolderField_Info": {
       "ar_SA": "",
@@ -2329,8 +2329,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "* 如果基础游戏或更新文件在SD卡中缺失，请在下方字段中添加缺失的文件。",
+      "zh_TW": "* 如果基礎遊戲或更新檔案在SD卡中缺失，請在下方欄位中添加缺失的檔案。"
     },
     "SetupWizard_GameDumpConfigPage_OptionalGameUpdateFileField_Description": {
       "ar_SA": "",
@@ -2351,8 +2351,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏更新文件路径（NSP）",
+      "zh_TW": "遊戲更新檔案路徑（NSP）"
     },
     "SetupWizard_GameDumpConfigPage_Action_Browse": {
       "ar_SA": "",
@@ -2373,8 +2373,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "...",
+      "zh_TW": "..."
     },
     "SetupWizard_NxDumpConfigPage_Help": {
       "ar_SA": "",
@@ -2395,8 +2395,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "TKMM无法找到或解密您的游戏转储。\n\n要转储您的密钥，请重启到Hekate并注入最新版本的Lockpick_RCM payload。\n\n如果您使用的是卡带或您的游戏或游戏更新安装在内部存储器中，请使用NxDumpTool进行转储。",
+      "zh_TW": "TKMM無法找到或解密您的遊戲轉儲。\n\n要轉儲您的密鑰，請重啟到Hekate並注入最新版本的Lockpick_RCM payload。\n\n如果您使用的是卡帶或您的遊戲或遊戲更新安裝在內部儲存器中，請使用NxDumpTool進行轉儲。"
     },
     "WizPageFinal_Title": {
       "ar_SA": "",
@@ -2417,8 +2417,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请选择您首选的语言",
+      "zh_TW": "請選擇您首選的語言"
     },
     "WizPageFinal_Action_Finish": {
       "ar_SA": "",
@@ -2439,8 +2439,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "完成",
+      "zh_TW": "完成"
     },
     "Status_ModSuccessfullyInstalled": {
       "ar_SA": "",
@@ -2461,8 +2461,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "{0} 安装成功！",
+      "zh_TW": "{0} 安裝成功！"
     },
     "Status_ModFailedInstalling": {
       "ar_SA": "",
@@ -2483,8 +2483,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "{0} 安装失败！",
+      "zh_TW": "{0} 安裝失敗！"
     },
     "Status_ModSuccessfullyExported": {
       "ar_SA": "",
@@ -2505,8 +2505,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "'{0}' 导出成功！",
+      "zh_TW": "'{0}' 匯出成功！"
     },
     "Status_ExportingMod": {
       "ar_SA": "",
@@ -2527,8 +2527,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在将 '{0}' 导出到 '{1}'",
+      "zh_TW": "正在將 '{0}' 匯出到 '{1}'"
     },
     "Error_InvalidSetting": {
       "ar_SA": "",
@@ -2549,8 +2549,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无效设置，{0} 无效。",
+      "zh_TW": "無效設置，{0} 無效。"
     },
     "Error_IncompleteRomConfig": {
       "ar_SA": "",
@@ -2571,8 +2571,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法获取 TotK rom。请检查您的 TotK 配置。",
+      "zh_TW": "無法獲取 TotK rom。請檢查您的 TotK 配置。"
     },
     "Tip_Auto": {
       "ar_SA": "",
@@ -2593,8 +2593,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "自动",
+      "zh_TW": "自動"
     },
     "Tip_CreateProfile": {
       "ar_SA": "",
@@ -2615,8 +2615,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "创建新配置文件",
+      "zh_TW": "創建新配置文件"
     },
     "Tip_DuplicateProfile": {
       "ar_SA": "",
@@ -2637,8 +2637,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "复制当前配置文件",
+      "zh_TW": "複製當前配置文件"
     },
     "Tip_Enabled": {
       "ar_SA": "",
@@ -2659,8 +2659,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "已启用",
+      "zh_TW": "已啟用"
     },
     "Tip_Disabled": {
       "ar_SA": "",
@@ -2681,8 +2681,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "已禁用",
+      "zh_TW": "已停用"
     },
     "Tip_MoveUp": {
       "ar_SA": "",
@@ -2703,8 +2703,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将选中的模组上移（提高优先级）",
+      "zh_TW": "將選中的模組上移（提高優先級）"
     },
     "Tip_MoveDown": {
       "ar_SA": "",
@@ -2725,8 +2725,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将选中的模组下移（降低优先级）",
+      "zh_TW": "將選中的模組下移（降低優先級）"
     },
     "Tip_MoveToTop": {
       "ar_SA": "",
@@ -2747,8 +2747,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将选中的模组移至顶部（最高优先级）",
+      "zh_TW": "將選中的模組移至頂部（最高優先級）"
     },
     "Tip_MoveToBottom": {
       "ar_SA": "",
@@ -2769,8 +2769,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将选中的模组移至底部（最低优先级）",
+      "zh_TW": "將選中的模組移至底部（最低優先級）"
     },
     "Tip_UpdateMod": {
       "ar_SA": "",
@@ -2791,8 +2791,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "更新当前选中的模组",
+      "zh_TW": "更新當前選中的模組"
     },
     "Tip_BrowseFile": {
       "ar_SA": "",
@@ -2813,8 +2813,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "浏览文件...",
+      "zh_TW": "瀏覽檔案..."
     },
     "Tip_BrowseFolder": {
       "ar_SA": "",
@@ -2835,8 +2835,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "浏览文件夹...",
+      "zh_TW": "瀏覽資料夾..."
     },
     "Tip_OpenModFolder": {
       "ar_SA": "",
@@ -2857,8 +2857,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打开或创建 TKMM 模组文件夹",
+      "zh_TW": "開啟或創建 TKMM 模組資料夾"
     },
     "Tip_NeverShowAgain": {
       "ar_SA": "",
@@ -2879,8 +2879,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "不再显示",
+      "zh_TW": "不再顯示"
     },
     "Action_Back": {
       "ar_SA": "",
@@ -2901,8 +2901,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "返回",
+      "zh_TW": "返回"
     },
     "Action_Next": {
       "ar_SA": "",
@@ -2923,8 +2923,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "下一步",
+      "zh_TW": "下一步"
     },
     "RyujinxDataFolderNotFound": {
       "ar_SA": "",
@@ -2945,8 +2945,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "找不到 Ryujinx 数据文件夹。请确保 Ryujinx 已打开，然后重试。",
+      "zh_TW": "找不到 Ryujinx 資料資料夾。請確保 Ryujinx 已開啟，然後重試。"
     },
     "RyujinxConfigNotFound": {
       "ar_SA": "",
@@ -2967,8 +2967,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法找到您的 Ryujinx 安装的配置文件。",
+      "zh_TW": "無法找到您的 Ryujinx 安裝的配置文件。"
     },
     "RyujinxKeysNotFound": {
       "ar_SA": "",
@@ -2989,8 +2989,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的 Ryujinx 安装缺少所需的密钥。请确保已安装标题密钥 (title.keys) 和生产密钥 (prod.keys)。",
+      "zh_TW": "您的 Ryujinx 安裝缺少所需的密鑰。請確保已安裝標題密鑰 (title.keys) 和生產密鑰 (prod.keys)。"
     },
     "EmulatorFilePathNotFound": {
       "ar_SA": "",
@@ -3011,8 +3011,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "找不到指定的模拟器 '{0}'。",
+      "zh_TW": "找不到指定的模擬器 '{0}'。"
     },
     "EmulatorConfigFileNotFound": {
       "ar_SA": "",
@@ -3033,8 +3033,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "找不到 '{0}' 的配置文件。",
+      "zh_TW": "找不到 '{0}' 的配置文件。"
     },
     "EmulatorKeysNotFound": {
       "ar_SA": "",
@@ -3055,8 +3055,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的 {0} 安装缺少所需的密钥。请确保已安装标题密钥 (title.keys) 和生产密钥 (prod.keys)。",
+      "zh_TW": "您的 {0} 安裝缺少所需的密鑰。請確保已安裝標題密鑰 (title.keys) 和生產密鑰 (prod.keys)。"
     },
     "System_Popup_UpdateNotSupported_Title": {
       "ar_SA": "",
@@ -3077,8 +3077,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "不支持的操作系统",
+      "zh_TW": "不支援的作業系統"
     },
     "System_Popup_UpdateNotSupported": {
       "ar_SA": "",
@@ -3099,8 +3099,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "应用内更新仅在 Windows 上受支持。请使用应用商店或包管理器进行更新。",
+      "zh_TW": "應用內更新僅在 Windows 上受支援。請使用應用商店或套件管理器進行更新。"
     },
     "System_Popup_UpdateAvailable_Title": {
       "ar_SA": "",
@@ -3121,8 +3121,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "有可用更新",
+      "zh_TW": "有可用更新"
     },
     "System_Popup_UpdateAvailable": {
       "ar_SA": "",
@@ -3143,8 +3143,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您想将 TKMM 更新到最新版本吗？\n\n此操作将在完成后保存并重启 TKMM。",
+      "zh_TW": "您想將 TKMM 更新到最新版本嗎？\n\n此操作將在完成後儲存並重啟 TKMM。"
     },
     "System_Popup_SoftwareUpToData": {
       "ar_SA": "",
@@ -3165,8 +3165,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "软件已是最新版本。",
+      "zh_TW": "軟體已是最新版本。"
     },
     "System_Popup_Updater_Title": {
       "ar_SA": "",
@@ -3187,8 +3187,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "更新程序",
+      "zh_TW": "更新程式"
     },
     "System_Popup_Updater": {
       "ar_SA": "",
@@ -3209,8 +3209,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在安装更新...",
+      "zh_TW": "正在安裝更新..."
     },
     "System_Popup_UpdaterFailed_Title": {
       "ar_SA": "",
@@ -3231,8 +3231,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "更新失败",
+      "zh_TW": "更新失敗"
     },
     "System_Popup_UpdateMod_Title": {
       "ar_SA": "",
@@ -3253,8 +3253,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "更新模组",
+      "zh_TW": "更新模組"
     },
     "System_Popup_UpdateMod": {
       "ar_SA": "",
@@ -3275,8 +3275,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您想如何更新 '{0}'？",
+      "zh_TW": "您想如何更新 '{0}'？"
     },
     "System_Popup_UninstallMod_Title": {
       "ar_SA": "",
@@ -3297,8 +3297,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "永久卸载模组？",
+      "zh_TW": "永久解除安裝模組？"
     },
     "System_Popup_UninstallMod_Content": {
       "ar_SA": "",
@@ -3319,8 +3319,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "警告：此操作无法撤销\n\n您确定要永久卸载模组 '{0}' 吗？",
+      "zh_TW": "警告：此操作無法撤銷\n\n您確定要永久解除安裝模組 '{0}' 嗎？"
     },
     "Action_Yes": {
       "ar_SA": "",
@@ -3341,8 +3341,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "是",
+      "zh_TW": "是"
     },
     "Action_No": {
       "ar_SA": "",
@@ -3363,8 +3363,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "否",
+      "zh_TW": "否"
     },
     "Action_Edit": {
       "ar_SA": "",
@@ -3385,8 +3385,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "编辑",
+      "zh_TW": "編輯"
     },
     "Action_Uninstall": {
       "ar_SA": "",
@@ -3407,8 +3407,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "卸载",
+      "zh_TW": "解除安裝"
     },
     "Action_Cancel": {
       "ar_SA": "",
@@ -3429,8 +3429,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "取消",
+      "zh_TW": "取消"
     },
     "EditExportLocations_Title": {
       "ar_SA": "",
@@ -3451,8 +3451,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "编辑导出位置",
+      "zh_TW": "編輯匯出位置"
     },
     "EditPaths_Title": {
       "ar_SA": "",
@@ -3473,8 +3473,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "编辑路径",
+      "zh_TW": "編輯路徑"
     },
     "System_Popup_CreateExportLocation": {
       "ar_SA": "",
@@ -3495,8 +3495,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并模组的输出目录尚未配置，您想现在配置它吗？",
+      "zh_TW": "合併模組的輸出目錄尚未配置，您想現在配置它嗎？"
     },
     "System_Popup_CreateExportLocation_Title": {
       "ar_SA": "",
@@ -3517,8 +3517,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "配置合并输出",
+      "zh_TW": "配置合併輸出"
     },
     "System_Popup_AddExportLocation": {
       "ar_SA": "",
@@ -3539,8 +3539,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您想添加另一个输出位置吗？",
+      "zh_TW": "您想添加另一個輸出位置嗎？"
     },
     "TkExtensibleRomProvider_MissingKeys": {
       "ar_SA": "",
@@ -3561,8 +3561,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法读取《王国之泪》配置，因为未配置 prod.keys 文件。",
+      "zh_TW": "無法讀取《王國之淚》配置，因為未配置 prod.keys 文件。"
     },
     "TkExtensibleRomProvider_InvalidGameDump": {
       "ar_SA": "",
@@ -3583,8 +3583,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "提供的 RomFS 游戏转储无效。",
+      "zh_TW": "提供的 RomFS 遊戲轉儲無效。"
     },
     "TkExtensibleRomProvider_InvalidGameDumpVersion": {
       "ar_SA": "",
@@ -3605,8 +3605,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "提供的 RomFS 游戏转储未安装任何更新。",
+      "zh_TW": "提供的 RomFS 遊戲轉儲未安裝任何更新。"
     },
     "TkExtensibleRomProvider_InvalidConfig": {
       "ar_SA": "",
@@ -3627,8 +3627,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "\n找到基础游戏：{0}\n\n找到更新：{1}",
+      "zh_TW": "\n找到基礎遊戲：{0}\n\n找到更新：{1}"
     },
     "Word_Copy": {
       "ar_SA": "",
@@ -3649,8 +3649,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "复制",
+      "zh_TW": "複製"
     },
     "Word_Argument": {
       "ar_SA": "",
@@ -3671,8 +3671,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "参数",
+      "zh_TW": "參數"
     },
     "Word_Folder": {
       "ar_SA": "",
@@ -3693,8 +3693,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "文件夹",
+      "zh_TW": "資料夾"
     },
     "Word_File": {
       "ar_SA": "",
@@ -3715,8 +3715,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "文件",
+      "zh_TW": "檔案"
     }
   }
 }
