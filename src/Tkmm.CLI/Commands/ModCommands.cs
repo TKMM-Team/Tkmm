@@ -1,4 +1,5 @@
 using ConsoleAppFramework;
+using TkSharp.Packaging;
 using Tkmm.Core;
 
 namespace Tkmm.CLI.Commands;
@@ -16,5 +17,17 @@ public class ModCommands
         if (fs is not null) {
             await fs.DisposeAsync();
         }
+    }
+
+    public async Task Package(
+        [Argument] string sourcePath,
+        [Argument] string outputPath)
+    {
+        Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
+
+        TkProject project = TkProjectManager.OpenProject(sourcePath);
+        
+        using FileStream output = File.Create(outputPath);
+        await project.Package(output, TKMM.GetTkRom());
     }
 }
