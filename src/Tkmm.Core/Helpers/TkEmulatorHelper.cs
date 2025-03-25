@@ -25,6 +25,22 @@ public static class TkEmulatorHelper
         
         return GetModFolder(emulatorDataFolderPath);
     }
+
+    public static string? GetSdPath(string emulatorFilePath)
+    {
+        ReadOnlySpan<char> exePath = emulatorFilePath;
+
+        if (Path.GetFileNameWithoutExtension(exePath).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
+            return TkRyujinxHelper.GetSdPath(emulatorFilePath);
+        }
+        
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+            return null;
+        }
+        
+        return Path.Combine(emulatorDataFolderPath, "sdmc");
+    }
     
     public static Either<bool, string> UseEmulator(string emulatorFilePath, out bool hasUpdate)
     {

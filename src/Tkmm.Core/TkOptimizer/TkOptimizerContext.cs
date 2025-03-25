@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
 using Tkmm.Core.TkOptimizer.Models.ValueTypes;
@@ -124,7 +125,10 @@ public sealed class TkOptimizerContext : ObservableObject
     {
 
         string outputFileName = Path.Combine("romfs", "UltraCam",
-            // ReSharper disable once StringLiteralTypo
+            // ReSharper disable twice StringLiteralTypo
+            "maxlastbreath.ini");
+        
+        string outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config",
             "maxlastbreath.ini");
         
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
@@ -142,10 +146,51 @@ public sealed class TkOptimizerContext : ObservableObject
         }
         
         Store = TkOptimizerStore.CreateStore(profile);
-        
-        using Stream output = mergeOutputWriter.OpenWrite(outputFileName);
-        using StreamWriter writer = new(output);
 
+        using MemoryStream memoryStream = new();
+        using (StreamWriter writer = new(memoryStream, leaveOpen: true))
+        {
+            WriteConfigContent(writer);
+        }
+        
+        memoryStream.Position = 0;
+
+        using (Stream output = mergeOutputWriter.OpenWrite(outputFileName))
+        {
+            memoryStream.CopyTo(output);
+        }
+
+#if !SWITCH
+        if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath))
+        {
+            string? emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
+            if (!string.IsNullOrWhiteSpace(emulatorSdPath))
+            {
+                string fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+                
+                memoryStream.Position = 0;
+                using FileStream emulatorOutput = File.Create(fullPath);
+                memoryStream.CopyTo(emulatorOutput);
+            }
+        }
+#endif
+
+        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath))
+        {
+            string fullPath = Path.Combine(TkConfig.Shared.SdCardRootPath, outputSdFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+            
+            memoryStream.Position = 0;
+            using FileStream sdOutput = File.Create(fullPath);
+            memoryStream.CopyTo(sdOutput);
+        }
+
+        Store = null;
+    }
+
+    private void WriteConfigContent(StreamWriter writer)
+    {
         foreach (IGrouping<string, TkOptimizerOption> options in Groups.SelectMany(x => x.Options).GroupBy(x => x.ConfigClass[0])) {
             writer.Write("[");
             writer.Write(options.Key);
@@ -176,8 +221,6 @@ public sealed class TkOptimizerContext : ObservableObject
             
             writer.WriteLine();
         }
-
-        Store = null;
     }
 
     private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)

@@ -124,6 +124,9 @@ public class TkRyujinxHelper
     public static string GetModPath(string emulatorExecutablePath)
         => GetModFolder(GetRyujinxDataFolder(emulatorExecutablePath));
 
+    public static string GetSdPath(string emulatorExecutablePath)
+        => Path.Combine(GetRyujinxDataFolder(emulatorExecutablePath), "sdcard");
+
     private static string GetModFolder(string ryujinxDataFolder)
         => Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
 }
