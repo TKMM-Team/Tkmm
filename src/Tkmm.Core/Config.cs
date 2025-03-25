@@ -175,7 +175,7 @@ public sealed partial class Config : ConfigModule<Config>
 #if !SWITCH
     partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
     {
-        if (newValue is null || oldValue is null || string.IsNullOrWhiteSpace(MergeOutput)) {
+        if (newValue is null || oldValue is null) {
             return;
         }
         
