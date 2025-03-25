@@ -60,7 +60,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     [ObservableProperty]
     [property: Config(
         Header = "Game Update File Path(s)",
-        Description = "The absolute path to your dumped game update file (.xci or .nsp) or split folder.",
+        Description = "The absolute path to your dumped game update file (.nsp) or split folder.",
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
