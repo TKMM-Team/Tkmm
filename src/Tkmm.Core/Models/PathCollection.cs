@@ -9,6 +9,11 @@ namespace Tkmm.Core.Models;
 [JsonConverter(typeof(PathCollectionJsonSerializer))]
 public sealed partial class PathCollection : ObservableCollection<PathCollectionItem>, IEnumerable<string>
 {
+    private static string NormalizePath(string path)
+    {
+        return Path.GetFullPath(path).Replace('\\', '/');
+    }
+
     public PathCollection()
     {
         EnsureBlankEntry();
@@ -22,9 +27,13 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
 
     public void New(string target)
     {
-        Add(new PathCollectionItem(this) {
-            Target = target
-        });
+        string normalizedPath = NormalizePath(target);
+        if (!Items.Any(x => x.Target.Equals(normalizedPath, StringComparison.OrdinalIgnoreCase)))
+        {
+            Add(new PathCollectionItem(this) {
+                Target = normalizedPath
+            });
+        }
     }
 
     [RelayCommand]
