@@ -2,11 +2,15 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using LibHac.Common.Keys;
+using Microsoft.Extensions.Logging;
 using Tkmm.Core.Attributes;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
+using TkSharp.Core;
 using TkSharp.Data.Embedded;
 using TkSharp.Extensions.LibHac;
+using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Core;
 
@@ -123,29 +127,56 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         
         string exeName = Path.GetFileName(emulatorFilePath);
         if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
-            if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
-                return builder
-                    .WithSdCard(() => null)
-                    .WithPackagedUpdate(() => [updateFilePath])
-                    .WithNand(() => null)
-                    .Build();
+            try {
+                if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
+                    return builder
+                        .WithSdCard(() => null)
+                        .WithPackagedUpdate(() => [updateFilePath])
+                        .WithNand(() => null)
+                        .Build();
+                }
+                throw new Exception("No update is selected in Ryujinx. Right click the game in the emulator, go to 'Manage Title Updates' and select one.");
             }
-            goto Configured;
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Failed to detect a TotK update");
+                goto Configured;
+            }
         }
 
-        if (NandFolderPaths.Any<string>(Directory.Exists)) {
-            return builder
-                .WithSdCard(() => null)
-                .WithPackagedUpdate(() => null)
-                .WithNand(() => NandFolderPaths)
-                .Build();
+        try {
+            if (NandFolderPaths.Any<string>(Directory.Exists)) {
+                bool hasValidNand = false;
+                KeySet? keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath);
+                if (keys == null) {
+                    throw new Exception("Keys not found");
+                }
+
+                foreach (PathCollectionItem nandItem in NandFolderPaths) {
+                    if (TkNandUtils.IsValid(keys, nandItem.Target, out bool hasUpdate)) {
+                        hasValidNand = true;
+                        break;
+                    }
+                }
+
+                if (!hasValidNand) {
+                    throw new Exception("Invalid NAND");
+                }
+
+                return builder
+                    .WithSdCard(() => null)
+                    .WithPackagedUpdate(() => null)
+                    .WithNand(() => NandFolderPaths)
+                    .Build();
+            }
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Ensure your keys and a TotK update are installed on your emulator, or configure the preferred game version manually in the dump settings.");
         }
 
     Configured:
         return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
-            .WithNand(() => NandFolderPaths)
             .Build();
 #else
         return TkExtensibleRomProviderBuilder.Create(checksums)
