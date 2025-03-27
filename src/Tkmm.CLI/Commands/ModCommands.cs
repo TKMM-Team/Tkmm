@@ -30,4 +30,17 @@ public class ModCommands
         using FileStream output = File.Create(outputPath);
         await project.Package(output, TKMM.GetTkRom());
     }
+
+    public async Task PackageOptimizer(
+        [Argument] string sourcePath,
+        [Argument] string outputPath)
+    {
+        Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
+
+        TkProject project = TkProjectManager.OpenProject(sourcePath);
+        
+        using FileStream output = File.Create(outputPath);
+        await project.PackageOptimizer(output);
+    }
+
 }
