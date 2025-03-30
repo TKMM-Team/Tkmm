@@ -112,7 +112,7 @@ public static class AppUpdater
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
         foreach (ZipArchiveEntry entry in archive.Entries) {
             string target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
-            File.Move(target, $"{target}.moldy");
+            if (File.Exists(target)) File.Move(target, $"{target}.moldy");
         }
 
         archive.ExtractToDirectory(AppContext.BaseDirectory);
