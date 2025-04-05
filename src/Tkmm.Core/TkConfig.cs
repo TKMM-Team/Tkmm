@@ -85,6 +85,12 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select SD card root folder")]
     private string? _sdCardRootPath;
 
+#if SWITCH
+    [ObservableProperty]
+    private PathCollection _gameDumpFolderPaths = [];
+    [ObservableProperty]
+    private PathCollection _nandFolderPaths = [];
+#else
     [ObservableProperty]
     [property: Config(
         Header = "Game Dump Folder Path(s)",
@@ -108,7 +114,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Title = "Select virtual NAND folder path")]
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _nandFolderPaths = [];
-
+#endif
+    
     public TkExtensibleRomProvider CreateRomProvider()
     {
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
@@ -182,11 +189,9 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         return TkExtensibleRomProviderBuilder.Create(checksums)
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
-            .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
-            .WithNand(() => NandFolderPaths)
             .Build();
 #endif
     }
