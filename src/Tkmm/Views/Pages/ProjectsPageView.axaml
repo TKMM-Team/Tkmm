@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:Tkmm.Converters"
              xmlns:tkm="using:TkSharp.Core.Models"
              xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
+             xmlns:markup="clr-namespace:Tkmm.Markup"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="pages:ProjectsPageViewModel"
              x:Class="Tkmm.Views.Pages.ProjectsPageView">
@@ -315,6 +316,13 @@
                                    RenderOptions.BitmapInterpolationMode="HighQuality" />
                         </Border>
                     </Border>
+                </TabItem>
+                <TabItem Header="Advanced">
+                    <StackPanel Spacing="5">
+                        <CheckBox Content="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries}"
+                                  ToolTip.Tip="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries_Description}"
+                                  IsChecked="{Binding Project.Flags.TrackRemovedRsDbEntries}" />
+                    </StackPanel>
                 </TabItem>
             </TabControl>
         </Grid>
