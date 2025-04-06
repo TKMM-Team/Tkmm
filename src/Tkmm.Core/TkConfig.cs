@@ -153,7 +153,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         try {
             if (NandFolderPaths.Any<string>(Directory.Exists)) {
                 bool hasValidNand = false;
-                KeySet? keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath);
+                KeySet? keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath!);
                 if (keys == null) {
                     throw new Exception("Keys not found");
                 }
