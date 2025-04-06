@@ -22,22 +22,38 @@ public sealed partial class ExportLocations : ObservableCollection<ExportLocatio
 
     public async ValueTask Create()
     {
+        RemoveDuplicatesAndInvalid();
         await SymlinkHelper.CreateMany(GetValidTargets(this), TKMM.MergedOutputFolder);
     }
 
-    private static IEnumerable<string> GetValidTargets(IEnumerable<ExportLocation> locations)
+    private void RemoveDuplicatesAndInvalid()
     {
-        foreach (ExportLocation location in locations.Where(x => x.IsEnabled)) {
+        HashSet<string> seenPaths = new(StringComparer.OrdinalIgnoreCase);
+        var toRemove = new List<ExportLocation>();
+
+        foreach (ExportLocation location in this.Where(x => x.IsEnabled)) {
             string path = location.SymlinkPath;
+
+            if (string.Equals(path, TKMM.MergedOutputFolder, StringComparison.OrdinalIgnoreCase) || !seenPaths.Add(path)) {
+                toRemove.Add(location);
+                continue;
+            }
+
             if (Directory.Exists(path) && Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Any()) {
                 location.IsEnabled = false;
                 TkLog.Instance.LogWarning(
                     "Export location '{ExportLocationPath}' was omitted and disabled because the folder contained contents.",
                     path);
-                continue;
             }
-            
-            yield return path;
         }
+
+        foreach (var location in toRemove) {
+            Remove(location);
+        }
+    }
+
+    private static IEnumerable<string> GetValidTargets(IEnumerable<ExportLocation> locations)
+    {
+        return locations.Where(x => x.IsEnabled).Select(x => x.SymlinkPath);
     }
 }
