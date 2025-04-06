@@ -10,7 +10,7 @@ public class ModCommands
     public async Task Install([Argument] string arg)
     {
         Console.WriteLine($"Installing {arg}");
-        
+
         FileStream? fs = null;
         await TKMM.Install(arg, File.Exists(arg) ? fs = File.OpenRead(arg) : null);
 
@@ -26,8 +26,8 @@ public class ModCommands
         Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
 
         TkProject project = TkProjectManager.OpenProject(sourcePath);
-        
-        using FileStream output = File.Create(outputPath);
+
+        await using FileStream output = File.Create(outputPath);
         await project.Package(output, TKMM.GetTkRom());
     }
 
@@ -38,9 +38,8 @@ public class ModCommands
         Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
 
         TkProject project = TkProjectManager.OpenProject(sourcePath);
-        
-        using FileStream output = File.Create(outputPath);
+
+        await using FileStream output = File.Create(outputPath);
         await project.PackageOptimizer(output);
     }
-
 }
