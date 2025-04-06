@@ -9,6 +9,7 @@
              x:Class="Tkmm.Wizard.Pages.EmulatorSelectionPage">
     <StackPanel>
         <RadioButton GroupName="selection"
+                     IsEnabled="{Binding !IsIntelMac}"
                      IsChecked="{Binding IsRyujinx}"
                      Content="{ext:Locale SetupWizard_EmulatorSelection_RyujinxOption}" />
         <RadioButton GroupName="selection"

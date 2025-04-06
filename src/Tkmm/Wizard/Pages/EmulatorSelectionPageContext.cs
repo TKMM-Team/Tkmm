@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Wizard.Pages;
@@ -13,6 +14,9 @@ public sealed partial class EmulatorSelectionPageContext : ObservableObject
 {
     [ObservableProperty]
     private bool _isRyujinx = true;
+    
+    [ObservableProperty]
+    private bool _isIntelMac = RuntimeInformation.OSArchitecture is Architecture.X64 && OperatingSystem.IsMacOS();
 
     [ObservableProperty]
     private bool _isSwitch;
