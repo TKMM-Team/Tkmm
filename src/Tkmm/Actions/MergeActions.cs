@@ -24,20 +24,20 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
     [RelayCommand]
     public Task Merge(CancellationToken ct = default)
     {
-        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath: null, ct);
+        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath: null, ct: ct);
     }
 
     public Task Merge(string ipsOutputPath, CancellationToken ct = default)
     {
-        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath, ct);
+        return Merge(TKMM.ModManager.GetCurrentProfile(), ipsOutputPath, ct: ct);
     }
 
     public Task Merge(TkProfile profile, CancellationToken ct = default)
     {
-        return Merge(profile, ipsOutputPath: null, ct);
+        return Merge(profile, ipsOutputPath: null, ct: ct);
     }
 
-    public async Task Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
+    public async Task Merge(TkProfile profile, string? ipsOutputPath = null, string? mergeOutput = null, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -55,7 +55,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
-            await TKMM.Merge(profile, ipsOutputPath, ct: ct);
+            await TKMM.Merge(profile, ipsOutputPath: ipsOutputPath, mergeOutput: mergeOutput, ct: ct);
             App.Toast($"The profile '{profile.Name}' was merged successfully.",
                 "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");
@@ -123,12 +123,10 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 }
             }) return;
         
+        string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
         string ipsOutputPath = Path.Combine("..", "..", "exefs_patches", "TKMM");
-        await Merge(profile, ipsOutputPath, ct);
 
         try {
-            string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
-
             MessageDialogResult canDeleteResult = await MessageDialog.Show(
                 "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
             
@@ -136,8 +134,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 return;
             }
             
-            DirectoryHelper.DeleteTargetsFromDirectory(output, ["romfs", "exefs"], recursive: true);
-            DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
+            await Merge(profile, ipsOutputPath: ipsOutputPath, mergeOutput: output, ct);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured when exporting the profile '{Profile}' to the external drive " +
