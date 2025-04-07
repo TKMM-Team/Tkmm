@@ -159,10 +159,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                 }
 
                 foreach (PathCollectionItem nandItem in NandFolderPaths) {
-                    if (TkNandUtils.IsValid(keys, nandItem.Target, out bool hasUpdate)) {
-                        hasValidNand = true;
-                        break;
-                    }
+                    hasValidNand = TkNandUtils.IsValid(keys, nandItem.Target, out bool hasUpdate) || hasUpdate;
+                    if (hasValidNand) break;
                 }
 
                 if (!hasValidNand) {
@@ -177,7 +175,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             }
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Ensure your keys and a TotK update are installed on your emulator, or configure the preferred game version manually in the dump settings.");
+            TkLog.Instance.LogError(ex, "Ensure your keys and a TotK update are installed on your emulator, " +
+                                        "or configure the preferred game version manually in the dump settings.");
         }
 
     Configured:
