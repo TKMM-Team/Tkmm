@@ -108,14 +108,11 @@ public static class TkEmulatorHelper
 
     private static string? TryGetEmulatorDataFolder(string emulatorFilePath, out string emulatorDataFolderPath, out string emulatorName)
     {
-        if (emulatorFilePath.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase)) {
-            emulatorName = Path.GetFileNameWithoutExtension(emulatorFilePath).ToLower();
-        }
-        else {
-            emulatorName = OperatingSystem.IsWindows()
+        emulatorName = OperatingSystem.IsWindows()
                 ? Path.GetFileNameWithoutExtension(emulatorFilePath)
-                : Path.GetFileName(emulatorFilePath).ToLower();
-        }
+                : emulatorFilePath.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase)
+                    ? Path.GetFileNameWithoutExtension(emulatorFilePath).ToLower()
+                    : Path.GetFileName(emulatorFilePath).ToLower();
 
         if (Path.GetDirectoryName(emulatorFilePath) is string exeFolder
             && Path.Combine(exeFolder, "user") is var portableDataFolderPath
