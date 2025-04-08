@@ -158,8 +158,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                     throw new Exception("Keys not found");
                 }
 
-                foreach (PathCollectionItem nandItem in NandFolderPaths)
-                {
+                foreach (PathCollectionItem nandItem in NandFolderPaths) {
                     TkNandUtils.IsValid(keys, nandItem.Target, out bool hasUpdate);
                     hasUpdateOnNand = hasUpdate;
                     if (hasUpdateOnNand) break;
