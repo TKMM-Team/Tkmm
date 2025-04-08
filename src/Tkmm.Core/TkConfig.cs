@@ -64,14 +64,14 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     [ObservableProperty]
     [property: Config(
         Header = "Game Update File Path(s)",
-        Description = "The absolute path to your dumped game update file (.nsp) or split folder.",
+        Description = "The absolute path to your dumped game update file (.nsp).",
         Group = "Game Dump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
         Filter = "NSP:*.nsp|All files:*.*",
         InstanceBrowserKey = "game-update-file-path",
         Title = "Select game update NSP")]
-    [property: PathCollectionOptions(PathType.FileOrFolder)]
+    [property: PathCollectionOptions(PathType.File)]
     private PathCollection _packagedUpdatePaths = [];
 
     [ObservableProperty]

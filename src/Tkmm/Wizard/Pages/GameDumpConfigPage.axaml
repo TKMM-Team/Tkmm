@@ -43,6 +43,7 @@
                         <TextBlock Text="{ext:Locale SetupWizard_GameDumpConfigPage_GameUpdateFileField_Description}"
                                    Margin="5,0,0,5" />
                         <tkc:PathCollectionEditor Grid.Row="1"
+                                                  Type="File"
                                                   FileBrowserFilter="NSP:*.nsp|All files:*.*"
                                                   Value="{Binding PackagedUpdatePaths, Source={x:Static core:TkConfig.Shared}}" />
                     </Grid>
