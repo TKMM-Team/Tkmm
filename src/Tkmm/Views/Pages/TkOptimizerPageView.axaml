@@ -71,13 +71,13 @@
                                                                     FontFamily="{StaticResource UbuntuMono}"
                                                                     Text="{Binding Value, StringFormat='{}{0:F2}'}" />
                                                                 <Slider Grid.Row="1"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}"
                                                                         Height="35"
                                                                         Value="{Binding Value}"
                                                                         TickPlacement="Outside"
                                                                         TickFrequency="{Binding IncrementSize}"
-                                                                        IsSnapToTickEnabled="True"
-                                                                        Maximum="{Binding MaxValue}"
-                                                                        Minimum="{Binding MinValue}" />
+                                                                        IsSnapToTickEnabled="True" />
                                                             </Grid>
                                                         </DataTemplate>
                                                         <DataTemplate DataType="{x:Type tkv:TkOptimizerRangeValue}">
@@ -87,13 +87,13 @@
                                                                     FontFamily="{StaticResource UbuntuMono}"
                                                                     Text="{Binding Value, StringFormat='{}{0:N0}'}" />
                                                                 <Slider Grid.Row="1"
+                                                                        Maximum="{Binding MaxValue}"
+                                                                        Minimum="{Binding MinValue}"
                                                                         Height="35"
                                                                         Value="{Binding Value}"
                                                                         TickPlacement="Outside"
                                                                         TickFrequency="{Binding IncrementSize}"
-                                                                        IsSnapToTickEnabled="True"
-                                                                        Maximum="{Binding MaxValue}"
-                                                                        Minimum="{Binding MinValue}" />
+                                                                        IsSnapToTickEnabled="True" />
                                                             </Grid>
                                                         </DataTemplate>
                                                         <DataTemplate DataType="{x:Type tkv:TkOptimizerEnumValue}">
