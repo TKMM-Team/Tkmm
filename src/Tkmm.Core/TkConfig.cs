@@ -133,9 +133,10 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
         
         string exeName = Path.GetFileName(emulatorFilePath);
+        
         if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
             try {
-                if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is string updateFilePath) {
+                if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is { } updateFilePath) {
                     return builder
                         .WithSdCard(() => null)
                         .WithPackagedUpdate(() => [updateFilePath])
@@ -151,27 +152,22 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
 
         try {
-            if (NandFolderPaths.Any<string>(Directory.Exists)) {
-                bool hasUpdateOnNand = false;
+            if (TkEmulatorHelper.GetNandPath(emulatorFilePath) is { } emulatorNandPath && Directory.Exists(emulatorNandPath)) {
                 KeySet? keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath!);
                 if (keys == null) {
                     throw new Exception("Keys not found");
                 }
 
-                foreach (PathCollectionItem nandItem in NandFolderPaths) {
-                    TkNandUtils.IsValid(keys, nandItem.Target, out bool hasUpdate);
-                    hasUpdateOnNand = hasUpdate;
-                    if (hasUpdateOnNand) break;
-                }
+                TkNandUtils.IsValid(keys, emulatorNandPath, out bool hasUpdate);
 
-                if (!hasUpdateOnNand) {
+                if (!hasUpdate) {
                     throw new Exception("No update on NAND");
                 }
 
                 return builder
                     .WithSdCard(() => null)
                     .WithPackagedUpdate(() => null)
-                    .WithNand(() => NandFolderPaths)
+                    .WithNand(() => [emulatorNandPath])
                     .Build();
             }
         }
@@ -184,6 +180,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
+            .WithNand(() => NandFolderPaths)
             .Build();
 #else
         return TkExtensibleRomProviderBuilder.Create(checksums)

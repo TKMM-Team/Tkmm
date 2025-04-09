@@ -42,6 +42,16 @@ public static class TkEmulatorHelper
         return Path.Combine(emulatorDataFolderPath, "sdmc");
     }
     
+    public static string? GetNandPath(string emulatorFilePath)
+    {
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+            return null;
+        }
+        
+        return Path.Combine(emulatorDataFolderPath, "nand");
+    }
+    
     public static Either<bool, string> UseEmulator(string emulatorFilePath, out bool hasUpdate)
     {
         bool result = false;
