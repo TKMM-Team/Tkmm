@@ -144,7 +144,7 @@ public static class TKMM
 
     static TKMM()
     {
-        string dataFolder = Path.Combine(BaseDirectory, ".data");
+        string dataFolder = Path.Combine(BaseDirectory, ".data2");
         ModManager = TkModManager.Create(dataFolder);
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
@@ -159,8 +159,8 @@ public static class TKMM
         _readerProvider.Register(new GameBananaModReader(_readerProvider));
         _readerProvider.Register(new External7zModReader(ModManager, RomProvider));
 
-        Span<string> hiddenSystemFolders = [".data", ".layout"];
-        DirectoryHelper.HideTargetsInDirectory(TKMM.BaseDirectory, hiddenSystemFolders);
+        Span<string> hiddenSystemFolders = [".data", ".data2", ".layout"];
+        DirectoryHelper.HideTargetsInDirectory(BaseDirectory, hiddenSystemFolders);
 
         if (Environment.ProcessPath is null) {
             return;
