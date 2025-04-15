@@ -144,7 +144,28 @@ public static class TKMM
 
     static TKMM()
     {
+        string legacyDataFolder = Path.Combine(BaseDirectory, ".data");
         string dataFolder = Path.Combine(BaseDirectory, ".data2");
+        
+        if (Directory.Exists(legacyDataFolder)) {
+            try {
+                if (!TkSystemUpdater.UpdateToData2(dataFolder, legacyDataFolder)) {
+                    goto SkipLegacyUpdate;
+                }
+                
+                try {
+                    Directory.Delete(legacyDataFolder, true);
+                }
+                catch (Exception ex) {
+                    TkLog.Instance.LogError(ex, "Could not delete legacy data folder");
+                }
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Failed to upgrade legacy data folder");
+            }
+        } 
+        
+    SkipLegacyUpdate:
         ModManager = TkModManager.Create(dataFolder);
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
