@@ -28,14 +28,14 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.2.6" TreatAsUsed="True" />
+    <PackageReference Include="Avalonia" Version="11.2.7" TreatAsUsed="True" />
     <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.2.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.6" TreatAsUsed="True" />
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.6" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.2.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.7" TreatAsUsed="True" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.7" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.7" />
     <!--Versions greater than 11.0.10.2 causes https://github.com/TKMM-Team/Tkmm/issues/5 -->
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="[11.0.10.2]" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.6" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.7" />
     <PackageReference Include="AvaMark" Version="0.2.1" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.3" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
