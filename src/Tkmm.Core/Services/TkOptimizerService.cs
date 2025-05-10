@@ -11,7 +11,7 @@ public class TkOptimizerService
 
     public static TkChangelog GetMod(TkProfile profile)
     {
-        EmbeddedSource source = new(
+        ITkSystemSource? source = new EmbeddedSource(
             "Tkmm.Core.Resources.UltraCam", typeof(TkOptimizerService).Assembly);
 
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
@@ -22,8 +22,8 @@ public class TkOptimizerService
         Context.Store = TkOptimizerStore.CreateStore(profile);
 
         Ulid id = GetStaticId();
-        if (profile.Mods.Any(x => x.Mod.Id == id)) {
-            goto CheatsOnly;
+        if (profile.Mods.FirstOrDefault(x => x.Mod.Id == id) is TkProfileMod uc) {
+            source = uc.Mod.Changelog.Source;
         }
 
         return new TkChangelog {
