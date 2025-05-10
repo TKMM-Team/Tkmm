@@ -195,7 +195,8 @@ public static class TKMM
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
     {
         profile ??= ModManager.GetCurrentProfile();
-        return TkModManager.GetMergeTargets(profile)
+        Ulid optimizerId = TkOptimizerService.GetStaticId();
+        return TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
             .Append(TkOptimizerService.GetMod(profile));
     }
 
