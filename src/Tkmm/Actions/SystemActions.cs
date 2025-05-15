@@ -58,9 +58,14 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         try {
             await AppUpdater.CheckForUpdates(isUserInvoked, ct);
         }
-        catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "An error occured while checking for updates.");
+        catch (HttpRequestException ex) {
+            var truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
+            TkLog.Instance.LogWarning("An error occured while checking for updates: {truncatedEx}", truncatedEx);
         }
+        catch (Exception ex) {
+            TkLog.Instance.LogWarning("An error occured while checking for updates: {ex}", ex);
+        }
+
     }
 
     [RelayCommand]

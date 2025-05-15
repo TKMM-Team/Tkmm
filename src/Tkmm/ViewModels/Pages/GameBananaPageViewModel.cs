@@ -180,11 +180,17 @@ public partial class GameBananaPageViewModel : ObservableObject
             await Source.LoadPage(Source.CurrentPage, SearchArgument);
             IsLoadSuccess = true;
         }
+        catch (HttpRequestException ex) {
+            IsLoadSuccess = false;
+            var truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
+            TkLog.Instance.LogWarning("An error occured when reloading page {CurrentPage} with search {SearchArgument}: {truncatedEx}",
+                Source.CurrentPage, SearchArgument, truncatedEx);
+            App.ToastError(ex);
+        }
         catch (Exception ex) {
             IsLoadSuccess = false;
-            TkLog.Instance.LogError(ex,
-                "An error occured when reloading page {CurrentPage} with search {SearchArgument}",
-                Source.CurrentPage, SearchArgument);
+            TkLog.Instance.LogWarning("An error occured when reloading page {CurrentPage} with search {SearchArgument}: {ex}",
+                Source.CurrentPage, SearchArgument, ex);
             App.ToastError(ex);
         }
         finally {
