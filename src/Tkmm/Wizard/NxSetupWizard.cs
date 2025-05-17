@@ -38,15 +38,15 @@ namespace Tkmm.Wizard
                 goto LangPage;
             }
 
+            if (error is not null) {
+                await MessageDialog.Show(error, TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
+            }
+
             bool oopsie = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_MissingDump_Title)
                 .WithContent(TkLocale.SetupWizard_MissingDump_Content)
                 .WithActionContent(TkLocale.Menu_NxReboot)
                 .Show();
-
-            if (error is not null) {
-                await MessageDialog.Show(error, TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
-            }
 
             if (!oopsie) {
                 goto FirstPage;
