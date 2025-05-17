@@ -6,7 +6,11 @@ namespace Tkmm.Core.Logging;
 
 public class DesktopLogger : ILogger
 {
+#if SWITCH
+    private static readonly string _logsFolder = Path.Combine("flash", "tkmm", "Logs");
+#else
     private static readonly string _logsFolder = Path.Combine(TKMM.BaseDirectory, "Logs");
+#endif
     private static readonly string _targetLogFile = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
 
     private readonly string _group;
