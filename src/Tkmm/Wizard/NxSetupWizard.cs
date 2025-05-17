@@ -1,6 +1,7 @@
 #if SWITCH
 using Avalonia.Controls.Presenters;
 using Tkmm.Core;
+using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
 using Tkmm.Wizard.Pages;
 using TkSharp.Extensions.LibHac.Util;
@@ -33,7 +34,7 @@ namespace Tkmm.Wizard
             }
   
         Verify:
-            if (TKMM.TryGetTkRom() is not null) {
+            if (TKMM.TryGetTkRom(out string? error) is not null) {
                 goto LangPage;
             }
 
@@ -42,6 +43,10 @@ namespace Tkmm.Wizard
                 .WithContent(TkLocale.SetupWizard_MissingDump_Content)
                 .WithActionContent(TkLocale.Menu_NxReboot)
                 .Show();
+
+            if (error is not null) {
+                await MessageDialog.Show(error, TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
+            }
 
             if (!oopsie) {
                 goto FirstPage;
