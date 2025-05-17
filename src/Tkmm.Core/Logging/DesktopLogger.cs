@@ -7,7 +7,7 @@ namespace Tkmm.Core.Logging;
 public class DesktopLogger : ILogger
 {
 #if SWITCH
-    private static readonly string _logsFolder = Path.Combine("flash", "tkmm", "Logs");
+    private static readonly string _logsFolder = Path.Combine("/flash", "tkmm", "Logs");
 #else
     private static readonly string _logsFolder = Path.Combine(TKMM.BaseDirectory, "Logs");
 #endif
