@@ -99,9 +99,14 @@ public class App : Application
                 return;
             }
 
-            Toast(message, $"{exception?.GetType().Name.Humanize() ?? "Error"} ({eventId})",
-                NotificationType.Error,
-                action: () => PageManager.Shared.Focus(Page.Logs));
+            try {
+                Toast(message, $"{exception?.GetType().Name.Humanize() ?? "Error"} ({eventId})",
+                    NotificationType.Error,
+                    action: () => PageManager.Shared.Focus(Page.Logs));
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Error in EventLogger.OnLog");
+            }
         };
 
         ShellView shellView = new() {
@@ -199,17 +204,48 @@ public class App : Application
     public static void Toast(string message, string? title = null, NotificationType type = NotificationType.Information,
         TimeSpan? expiration = null, Action? action = null)
     {
-        Dispatcher.UIThread.Invoke(() => {
-            _notificationManager?.Show(
-                new Notification(title ??= Locale[TkLocale.NoticePopupMessage], message, type, expiration, action));
-        });
+        try {
+            Dispatcher.UIThread.Invoke(() => {
+                if (_notificationManager != null) {
+                    string safeTitle = title;
+                    try {
+                        if (safeTitle == null) {
+                            safeTitle = Locale[TkLocale.NoticePopupMessage];
+                        }
+                    }
+                    catch {
+                        safeTitle = "Notice";
+                    }
+                    
+                    _notificationManager.Show(
+                        new Notification(safeTitle, message, type, expiration, action));
+                }
+            });
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Error in Toast method");
+        }
     }
 
     public static void ToastError(Exception ex)
     {
-        Dispatcher.UIThread.Invoke(() => {
-            _notificationManager?.Show(new Notification(
-                ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => { PageManager.Shared.Focus(Page.Logs); }));
-        });
+        try {
+            Dispatcher.UIThread.Invoke(() => {
+                if (_notificationManager != null) {
+                    _notificationManager.Show(new Notification(
+                        ex.GetType().Name, ex.Message, NotificationType.Error, onClick: () => { 
+                            try {
+                                PageManager.Shared.Focus(Page.Logs); 
+                            }
+                            catch {
+                                // Ignore errors in the onClick handler
+                            }
+                        }));
+                }
+            });
+        }
+        catch (Exception err) {
+            TkLog.Instance.LogError(err, "Error in ToastError method");
+        }
     }
 }

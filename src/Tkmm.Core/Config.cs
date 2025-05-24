@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
@@ -42,6 +43,46 @@ public sealed partial class Config : ConfigModule<Config>
         Shared.Save();
     }
 
+    private static string GetSystemLanguage()
+    {
+        string currentCulture = CultureInfo.CurrentUICulture.Name.Replace('-', '_');
+        
+        if (currentCulture.Contains('_')) {
+            string langCode = currentCulture.Split('_')[0];
+            string countryCode = currentCulture.Split('_')[1];
+            
+            return langCode.ToLowerInvariant() switch
+            {
+                "en" => countryCode.Equals("US", StringComparison.OrdinalIgnoreCase) ? "en_US" : "en_GB",
+                "ja" => "ja_JP",
+                "fr" => countryCode.Equals("CA", StringComparison.OrdinalIgnoreCase) ? "fr_CA" : "fr_FR",
+                "es" => countryCode.Equals("MX", StringComparison.OrdinalIgnoreCase) ? "es_MX" : "es_ES",
+                "de" => "de_DE",
+                "nl" => "nl_NL",
+                "it" => "it_IT",
+                "ru" => "ru_RU", 
+                "ko" => "ko_KR",
+                "zh" => countryCode.Equals("TW", StringComparison.OrdinalIgnoreCase) ? "zh_TW" : "zh_CN",
+                _ => "en_US"  // Default to English if no matching language
+            };
+        }
+        
+        return currentCulture.ToLowerInvariant() switch
+        {
+            "en" => "en_US",
+            "ja" => "ja_JP",
+            "fr" => "fr_FR",
+            "es" => "es_ES",
+            "de" => "de_DE",
+            "nl" => "nl_NL",
+            "it" => "it_IT",
+            "ru" => "ru_RU",
+            "ko" => "ko_KR",
+            "zh" => "zh_CN",
+            _ => "en_US"
+        };
+    }
+
     public Config()
     {
         FileInfo configFileInfo = new(LocalPath);
@@ -50,6 +91,9 @@ public sealed partial class Config : ConfigModule<Config>
         }
 
         _gameLanguage = GameLanguages[0];
+        if (!File.Exists(LocalPath)) {
+            _cultureName = GetSystemLanguage();
+        }
     }
 
     [ObservableProperty]
