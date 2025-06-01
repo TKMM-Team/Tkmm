@@ -8,9 +8,6 @@ namespace Tkmm.Wizard.Pages;
 public sealed partial class MergeOutputSetupPageContext : ObservableObject
 {
     [ObservableProperty]
-    private bool _enableMergeOutput;
-
-    [ObservableProperty]
     private string _mergeOutputPath = string.Empty;
 
     [RelayCommand]
