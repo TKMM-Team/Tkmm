@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
 namespace Tkmm.Wizard.Pages;
 
@@ -7,7 +6,7 @@ public partial class BaseGameSplitTypePage : UserControl
 {
     public BaseGameSplitTypePage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
