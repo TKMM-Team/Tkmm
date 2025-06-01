@@ -173,6 +173,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
         
     SelectDumpType:
+        romfsType = false;
         if (!initialHasBaseGameCheck) {
             TkConfig.Shared.GameDumpFolderPaths?.Clear();
             
