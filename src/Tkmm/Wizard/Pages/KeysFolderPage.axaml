@@ -8,8 +8,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Tkmm.Wizard.Pages.KeysFolderPage"
              x:DataType="pages:KeysFolderPageContext">
-    <StackPanel Spacing="16">
-        <TextBlock Text="{markup:Locale SetupWizard_KeysFolder_Description}" />
+    <StackPanel>
+        <TextBlock Text="{markup:Locale SetupWizard_KeysFolder_Description}" Margin="0,0,0,10"/>
         <Grid ColumnDefinitions="*,Auto">
             <TextBox Name="KeysFolderPathField" Text="{Binding KeysFolderPath}" IsReadOnly="True" />
             <Button Grid.Column="1" Content="..." Command="{Binding BrowseCommand}" CommandParameter="{Binding #KeysFolderPathField}" />

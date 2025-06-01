@@ -11,22 +11,20 @@
              x:DataType="pages:GameLanguageSelectionPage"
              d:DataContext="{d:DesignInstance Type=pages:GameLanguageSelectionPageContext}">
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" VerticalAlignment="Stretch">
-        <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,7">
+        <TextBlock Grid.Row="0" Margin="0,0,0,7">
             <Run Text="{ext:Locale WizPageFinal_Message1}" />
         </TextBlock>
         
-        <ComboBox Grid.Row="1" 
+        <ComboBox Grid.Row="1"  Margin="0,0,0,15"
                   ItemsSource="{Binding GameLanguages, Source={x:Static core:Config.Shared}}"
                   DisplayMemberBinding="{Binding DisplayName}"
                   SelectedItem="{Binding GameLanguage, Source={x:Static core:Config.Shared}}" />
         
         <TextBlock Grid.Row="2">
-            <Run Text="{ext:Locale WizPageFinal_Message2}" />
+            <Run Text="{ext:Locale WizPageFinal_Message2}" FontWeight="Bold"/>
         </TextBlock>
         
-        <!-- Why won't this align to the bottom?? >:( -->
-        <!-- Arch please help! :holybananas: -->
-        <TextBlock Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <TextBlock Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10">
             <Run Text="{ext:Locale WizPageFinal_Message3}" />
             <Run Text="{Binding GameVersion}" FontWeight="Bold" Foreground="{DynamicResource SystemAccentColorLight2}"/>
         </TextBlock>

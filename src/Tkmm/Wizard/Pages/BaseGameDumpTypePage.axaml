@@ -8,9 +8,9 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:BaseGameDumpTypePageContext"
              x:Class="Tkmm.Wizard.Pages.BaseGameDumpTypePage">
-    <StackPanel Spacing="15">
+    <StackPanel>
         <TextBlock Text="{ext:Locale SetupWizard_DumpType_Description}"
-                   TextWrapping="Wrap" />
+                    Margin="0,0,0,10"/>
         <RadioButton Content="{ext:Locale SetupWizard_DumpType_XciNsp}"
                      IsChecked="{Binding IsXciNspSelected}" />
         <RadioButton Content="{ext:Locale SetupWizard_DumpType_Romfs}"

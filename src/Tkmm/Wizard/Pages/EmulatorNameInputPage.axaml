@@ -8,9 +8,9 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:EmulatorNameInputPageContext"
              x:Class="Tkmm.Wizard.Pages.EmulatorNameInputPage">
-    <StackPanel Spacing="15">
+    <StackPanel>
         <TextBlock Text="{ext:Locale SetupWizard_EmulatorNameInput_Description}"
-                   TextWrapping="Wrap" />
+                   Margin="0,0,0,10" />
         <TextBox Text="{Binding EmulatorName}"
                  Watermark="{ext:Locale SetupWizard_EmulatorNameInput_Watermark}" />
     </StackPanel>

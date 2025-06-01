@@ -8,13 +8,13 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:MergeOutputSetupPageContext"
              x:Class="Tkmm.Wizard.Pages.MergeOutputSetupPage">
-    <StackPanel Spacing="15">
+    <StackPanel>
         <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Description}"
-                   TextWrapping="Wrap" />
+                   Margin="0,0,0,10" />
         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
             <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Path}"
                        Margin="5,0,0,5" />
-            <TextBox Grid.Row="1"
+            <TextBox Grid.Row="1" Grid.Column="0"
                      Name="MergeOutputPathField"
                      Text="{Binding MergeOutputPath}"
                      TextWrapping="NoWrap" />

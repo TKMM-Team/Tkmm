@@ -8,9 +8,9 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:UpdateDumpTypePageContext"
              x:Class="Tkmm.Wizard.Pages.UpdateDumpTypePage">
-    <StackPanel Spacing="15">
+    <StackPanel>
         <TextBlock Text="{ext:Locale SetupWizard_UpdateDumpType_Description}"
-                   TextWrapping="Wrap" />
+                   Margin="0,0,0,10" />
         <RadioButton Content="{ext:Locale SetupWizard_DumpType_Nsp}"
                      IsChecked="{Binding IsNspSelected}" />
         <RadioButton Content="{ext:Locale SetupWizard_DumpType_SdCard}"

@@ -8,8 +8,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Tkmm.Wizard.Pages.BaseGameSplitTypePage"
              x:DataType="pages:BaseGameSplitTypePageContext">
-    <StackPanel Spacing="16">
-        <TextBlock Text="{markup:Locale SetupWizard_BaseGameSplit_Content}" />
+    <StackPanel>
+        <TextBlock Text="{markup:Locale SetupWizard_BaseGameSplit_Content}" Margin="0,0,0,10" />
         <RadioButton Content="{markup:Locale SetupWizard_BaseGameSplit_SingleFile}" IsChecked="{Binding IsSingleFile}" />
         <RadioButton Content="{markup:Locale SetupWizard_BaseGameSplit_SplitFolder}" IsChecked="{Binding IsSplitFile}" />
     </StackPanel>
