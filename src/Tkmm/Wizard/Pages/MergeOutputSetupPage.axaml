@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:vm="using:Tkmm.Wizard.Pages"
+             x:DataType="vm:MergeOutputSetupPageContext"
+             x:Class="Tkmm.Wizard.Pages.MergeOutputSetupPage">
+    <StackPanel Spacing="15">
+        <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Description}"
+                   TextWrapping="Wrap" />
+        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
+            <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Path}"
+                       Margin="5,0,0,5" />
+            <TextBox Grid.Row="1"
+                     Name="MergeOutputPathField"
+                     Text="{Binding MergeOutputPath}"
+                     TextWrapping="NoWrap" />
+            <Button Grid.Column="1" Grid.Row="1"
+                    Margin="5,0,0,0"
+                    Content="..."
+                    Command="{Binding BrowseCommand}"
+                    CommandParameter="{Binding #MergeOutputPathField}" />
+        </Grid>
+    </StackPanel>
+</UserControl> 

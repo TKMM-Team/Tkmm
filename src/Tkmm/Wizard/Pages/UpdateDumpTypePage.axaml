@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:vm="using:Tkmm.Wizard.Pages"
+             x:DataType="vm:UpdateDumpTypePageContext"
+             x:Class="Tkmm.Wizard.Pages.UpdateDumpTypePage">
+    <StackPanel Spacing="15">
+        <TextBlock Text="{ext:Locale SetupWizard_UpdateDumpType_Description}"
+                   TextWrapping="Wrap" />
+        <RadioButton Content="{ext:Locale SetupWizard_DumpType_Nsp}"
+                     IsChecked="{Binding IsNspSelected}" />
+        <RadioButton Content="{ext:Locale SetupWizard_DumpType_SdCard}"
+                     IsChecked="{Binding IsSdCardSelected}" />
+        <RadioButton Content="{ext:Locale SetupWizard_DumpType_Nand}"
+                     IsChecked="{Binding IsNandSelected}" />
+    </StackPanel>
+</UserControl> 
