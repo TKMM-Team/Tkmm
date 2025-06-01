@@ -92,7 +92,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 goto Retry;
             }
 
-            await ManualSetup(new EmulatorSelectionPageContext());
+            await ManualSetup(new EmulatorSelectionPageContext(), "ryujinx");
             return;
         }
 
@@ -101,6 +101,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
 
     private async ValueTask SetupEmulatorPage()
     {
+    Retry:
         var emulatorFilePath = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = "Select emulator executable",
             AllowMultiple = false,
@@ -117,34 +118,29 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             return;
         }
 
-        try {
-            if (TkEmulatorHelper.UseEmulator(emulatorFilePath, out _).Case is string error) {
-                object errorResult = await ErrorDialog.ShowAsync(new Exception(error),
-                    TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
+        if (TkEmulatorHelper.UseEmulator(emulatorFilePath, out _).Case is string error) {
+            var errorResult = await ErrorDialog.ShowAsync(new Exception(error),
+                TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
 
-                if (errorResult is TaskDialogStandardResult.Retry) {
-                    await ManualSetup(new EmulatorSelectionPageContext());
-                }
-
-                return;
+            if (errorResult is TaskDialogStandardResult.Retry) {
+                goto Retry;
             }
         }
-        catch (Exception ex) {
-            await ErrorDialog.ShowAsync(ex);
-            await ManualSetup(new EmulatorSelectionPageContext());
+
+        if (TKMM.TryGetTkRom(out _) is null) {
+            await ManualSetup(new EmulatorSelectionPageContext(), emulatorFilePath);
             return;
         }
 
         await EnsureConfigurationPage(warnInvalid: true);
     }
 
-    private async ValueTask ManualSetup(EmulatorSelectionPageContext context)
+    private async ValueTask ManualSetup(EmulatorSelectionPageContext context, string? emulatorPath = null)
     {
-        var romfsType = false;
-        
         Start:
         if (context.GetSelection() != EmulatorSelection.Switch) {
             EmulatorNameInputPageContext nameContext = new();
+            nameContext.EmulatorName = emulatorPath ?? string.Empty;
             var nameResult = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_EmulatorNameInput_Title)
                 .WithContent<EmulatorNameInputPage>(nameContext)
@@ -173,7 +169,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
         
     SelectDumpType:
-        romfsType = false;
+        var romfsType = false;
         if (!initialHasBaseGameCheck) {
             TkConfig.Shared.GameDumpFolderPaths?.Clear();
             
@@ -272,7 +268,6 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
 
             if (error is not null) {
                 await MessageDialog.Show(error, TkLocale.TkExtensibleRomProvider_InvalidGameDump);
-                romfsType = false;
                 goto SelectDumpType;
             }
         }
@@ -280,7 +275,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     MergeOutputSetup:
         if (string.IsNullOrEmpty(Config.Shared.MergeOutput) && context.GetSelection() != EmulatorSelection.Switch) {
             MergeOutputSetupPageContext mergeContext = new();
-            bool mergeOutput = await NextPage()
+            var mergeOutput = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_MergeOutputSetup_Title)
                 .WithContent<MergeOutputSetupPage>(mergeContext)
                 .Show();
@@ -298,7 +293,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     }
 
     private async ValueTask<bool> SetupKeysIfNeeded()
-    { 
+    {
         Retry:
         if (TkConfig.Shared.KeysFolderPath is not null &&
             TkKeyUtils.GetKeysFromFolder(TkConfig.Shared.KeysFolderPath) is not null) {
@@ -323,7 +318,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
 
         if (TkKeyUtils.GetKeysFromFolder(keysContext.KeysFolderPath) is not null) {
             return true;
-        } 
+        }
     MessageDialog:
         await MessageDialog.Show(
             TkLocale.SetupWizard_ManualSetup_MissingKeys_Content,

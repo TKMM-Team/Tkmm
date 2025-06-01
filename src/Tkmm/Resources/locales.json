@@ -2160,7 +2160,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Please enter the name of your emulator (this will be used to locate its configuration files):",
+      "en_US": "Please enter the name of your emulator (or executable path). This will be used to locate its configuration files.",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
