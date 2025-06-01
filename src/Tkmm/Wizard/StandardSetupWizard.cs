@@ -139,8 +139,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     {
         Start:
         if (context.GetSelection() != EmulatorSelection.Switch) {
-            EmulatorNameInputPageContext nameContext = new();
-            nameContext.EmulatorName = emulatorPath ?? string.Empty;
+            EmulatorNameInputPageContext nameContext = new() { EmulatorName = emulatorPath ?? string.Empty };
             var nameResult = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_EmulatorNameInput_Title)
                 .WithContent<EmulatorNameInputPage>(nameContext)
