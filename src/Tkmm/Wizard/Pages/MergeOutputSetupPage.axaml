@@ -10,7 +10,7 @@
              x:Class="Tkmm.Wizard.Pages.MergeOutputSetupPage">
     <StackPanel>
         <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Description}"
-                   Margin="0,0,0,10" />
+                   Margin="0,0,0,20" />
         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,*">
             <TextBlock Text="{ext:Locale SetupWizard_MergeOutputSetup_Path}"
                        Margin="5,0,0,5" />
