@@ -58,7 +58,7 @@ namespace Tkmm.Wizard
         LangPage:
             bool langResult = await NextPage()
                 .WithTitle(TkLocale.WizPageFinal_Title)
-                .WithContent<GameLanguageSelectionPage>()
+                .WithContent<GameLanguageSelectionPage>(new GameLanguageSelectionPageContext())
                 .WithActionContent(TkLocale.WizPageFinal_Action_Finish)
                 .Show();
 
