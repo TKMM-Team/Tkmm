@@ -288,9 +288,11 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 goto SelectDumpType;
             }
 
-            if (mergeContext.EnableMergeOutput) {
-                Config.Shared.MergeOutput = mergeContext.MergeOutputPath;
+            if (Path.GetFileNameWithoutExtension(mergeContext.MergeOutputPath).Equals("0100f2c0115b6000", StringComparison.InvariantCultureIgnoreCase)) {
+                mergeContext.MergeOutputPath = Path.Combine(mergeContext.MergeOutputPath, "TKMM");
             }
+            
+            Config.Shared.MergeOutput = mergeContext.MergeOutputPath;
         }
     }
 
