@@ -7,6 +7,6 @@ public partial class KeysFolderPage : UserControl
 {
     public KeysFolderPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

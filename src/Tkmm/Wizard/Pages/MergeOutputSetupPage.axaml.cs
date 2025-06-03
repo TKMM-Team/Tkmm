@@ -7,6 +7,6 @@ public partial class MergeOutputSetupPage : UserControl
 {
     public MergeOutputSetupPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 } 
