@@ -7,6 +7,6 @@ public partial class UpdateDumpTypePage : UserControl
 {
     public UpdateDumpTypePage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 } 

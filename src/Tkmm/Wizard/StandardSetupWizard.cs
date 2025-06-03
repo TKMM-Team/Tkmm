@@ -35,6 +35,9 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         if (!result) {
             goto Return;
         }
+
+        TkConfig.Shared.Save();
+        Config.Shared.Save();
     }
 
     private async ValueTask EmulatorSelectionPage()
@@ -42,7 +45,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         EmulatorSelectionPageContext context = new();
         
     Retry:
-        bool result = await NextPage()
+        var result = await NextPage()
             .WithTitle(TkLocale.SetupWizard_EmulatorSelection_Title)
             .WithContent<EmulatorSelectionPage>(context)
             .Show();
@@ -288,6 +291,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             }
             
             Config.Shared.MergeOutput = mergeContext.MergeOutputPath;
+            Config.Shared.Save();
         }
     }
 
@@ -307,23 +311,20 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         if (!result) {
             return false;
         }
-            
-        TkConfig.Shared.KeysFolderPath = keysContext.KeysFolderPath;
-        TkConfig.Shared.Save();
 
         if (!Directory.Exists(keysContext.KeysFolderPath)) {
             goto MessageDialog;
         }
 
         if (TkKeyUtils.GetKeysFromFolder(keysContext.KeysFolderPath) is not null) {
+            TkConfig.Shared.KeysFolderPath = keysContext.KeysFolderPath;
+            TkConfig.Shared.Save();
             return true;
         }
     MessageDialog:
         await MessageDialog.Show(
             TkLocale.SetupWizard_ManualSetup_MissingKeys_Content,
             TkLocale.SetupWizard_MissingKeys_Title);
-        TkConfig.Shared.KeysFolderPath = null;
-        TkConfig.Shared.Save();
         goto Retry;
     }
 
