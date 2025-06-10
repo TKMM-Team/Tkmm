@@ -16,17 +16,9 @@
             <TextBlock Text="{ext:Locale TotkOptimizerPageTitle}"
                        FontSize="32"
                        FontFamily="{StaticResource HyliaGlyph}" />
-            <ToggleButton Grid.Column="1" Margin="5,0,0,0"
-                          IsChecked="{Binding Context.IsEnabled}">
-                <ToggleButton.Styles>
-                    <Style Selector="ToggleButton">
-                        <Setter Property="Content" Value="{ext:Locale Tip_Disabled}" />
-                    </Style>
-                    <Style Selector="ToggleButton:checked">
-                        <Setter Property="Content" Value="{ext:Locale Tip_Enabled}" />
-                    </Style>
-                </ToggleButton.Styles>
-            </ToggleButton>
+            <StackPanel Grid.Column="1" Margin="15,-3,0,0" Orientation="Horizontal" Spacing="8">
+                <ToggleSwitch IsChecked="{Binding Context.IsEnabled}" />
+            </StackPanel>
             <TextBlock Text="{ext:Locale TotkOptimizerPageCredits}"
                        FontSize="26"
                        VerticalAlignment="Center"
