@@ -27,6 +27,7 @@ public sealed partial class Config : ConfigModule<Config>
         new("USfr", "Français canadien"),
         new("USes", "Español (América)"),
         new("EUes", "Español (Europa)"),
+        new("USpt", "Português Brasileiro"),
         new("EUde", "Deutsch"),
         new("EUnl", "Nederlands"),
         new("EUit", "Italiano"),
