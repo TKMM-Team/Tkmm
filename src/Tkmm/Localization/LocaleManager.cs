@@ -29,7 +29,13 @@ public sealed class LocaleManager : ObservableObject
     {
         Languages = json.Languages;
         _entries = json.Locales;
-        _currentCulture = Config.Shared.CultureName.Value.Replace('-', '_');
+        // get the system language from CultureInfo.CurrentUICulture
+        if (!Config.Shared.ConfigExists()) {
+            string systemLang = GetSystemDefaultLanguage();
+            _currentCulture = systemLang.Replace('-', '_');
+        } else {
+            _currentCulture = Config.Shared.CultureName.Value.Replace('-', '_');
+        }
 
         Config.Shared.PropertyChanged += (s, e) => {
             if (e.PropertyName == nameof(Config.Shared.CultureName)) {
@@ -38,6 +44,35 @@ public sealed class LocaleManager : ObservableObject
                 OnPropertyChanged("Translation");
             }
         };
+    }
+
+    private static string GetSystemDefaultLanguage()
+    {
+        try {
+            // Get the current culture and map it to a supported language
+            string currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+            string langCode = currentCulture.Split('-')[0].ToLowerInvariant();
+            string countryCode = currentCulture.Contains("-") ? currentCulture.Split('-')[1].ToUpperInvariant() : "";
+            
+            return langCode switch
+            {
+                "en" => countryCode == "GB" ? "en_GB" : "en_US",
+                "ja" => "ja_JP",
+                "fr" => countryCode == "CA" ? "fr_CA" : "fr_FR",
+                "es" => countryCode == "MX" ? "es_MX" : "es_ES",
+                "de" => "de_DE",
+                "nl" => "nl_NL",
+                "it" => "it_IT",
+                "ru" => "ru_RU",
+                "ko" => "ko_KR",
+                "zh" => countryCode == "TW" ? "zh_TW" : "zh_CN",
+                _ => "en_US"  // Default to English if no matching language
+            };
+        }
+        catch {
+            // If anything goes wrong, default to English
+            return "en_US";
+        }
     }
 
     public string this[TkLocale key] => this[Enum.GetName(key)!];
