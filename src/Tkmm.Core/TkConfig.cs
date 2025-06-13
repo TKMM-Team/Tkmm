@@ -34,7 +34,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Header = "Preferred Game Version",
         Description = "The game version to look for when reading the configured SD card if multiple versions are found.",
         Group = "Game Dump")]
-    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
+    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.1", "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
     private string _preferredGameVersion = DEFAULT_GAME_VERSION;
 
     [ObservableProperty]
