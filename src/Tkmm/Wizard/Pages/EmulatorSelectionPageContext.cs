@@ -7,7 +7,8 @@ public enum EmulatorSelection
 {
     Ryujinx = 1,
     Switch = 2,
-    Other = 3
+    Other = 3,
+    Manual = 4
 }
 
 public sealed partial class EmulatorSelectionPageContext : ObservableObject
@@ -24,7 +25,10 @@ public sealed partial class EmulatorSelectionPageContext : ObservableObject
     [ObservableProperty]
     private bool _isOtherEmulator;
 
-    public bool IsValid => IsRyujinx || IsSwitch || IsOtherEmulator;
+    [ObservableProperty]
+    private bool _isManual;
+
+    public bool IsValid => IsRyujinx || IsSwitch || IsOtherEmulator || IsManual;
 
     public EmulatorSelection GetSelection()
     {
@@ -36,10 +40,6 @@ public sealed partial class EmulatorSelectionPageContext : ObservableObject
             return EmulatorSelection.Other;
         }
         
-        if (IsSwitch) {
-            return EmulatorSelection.Switch;
-        }
-
-        return 0;
+        return IsSwitch ? EmulatorSelection.Switch : EmulatorSelection.Manual;
     }
 }

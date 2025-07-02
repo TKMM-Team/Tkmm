@@ -12,29 +12,41 @@ using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Core.Helpers;
 
-public class TkRyujinxHelper
+public static class TkRyujinxHelper
 {
     /// <summary>
     /// Attempts to use the running Ryujinx instance to configure <see cref="TkConfig"/>.
     /// </summary>
     /// <param name="hasUpdate"></param>
+    /// <param name="manualSetup"></param>
     /// <returns></returns>
-    public static Either<bool, string> UseRyujinx(out bool hasUpdate)
+    public static Either<bool, string> UseRyujinx(out bool hasUpdate, bool manualSetup = false)
     {
-        bool result = false;
+        var result = false;
         hasUpdate = false;
 
-        if (GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath) is not string ryujinxDataFolder) {
-            return Locale["RyujinxDataFolderNotFound"];
+
+        if (GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath) is not { } dataFolder) {
+            if (manualSetup) {
+                if (GetRyujinxDataFolder("ryujinx") is not { } manualDataFolder) {
+                    return Locale["RyujinxDataFolderNotFound"];
+                }
+                dataFolder = manualDataFolder;
+                ryujinxExeFilePath = "ryujinx";
+            }
+            else {
+                return Locale["RyujinxDataFolderNotFound"];
+            }
         }
-
+        
+        var ryujinxDataFolder = dataFolder;
         Config.Shared.EmulatorPath = ryujinxExeFilePath;
-
-        if (GetRyujinxConfig(ryujinxDataFolder) is not RyujinxConfig config) {
+        
+        if (GetRyujinxConfig(ryujinxDataFolder) is not { } config) {
             return Locale["RyujinxConfigNotFound"];
         }
 
-        if (GetRyujinxKeys(ryujinxDataFolder, out string systemFolderPath) is not KeySet keys) {
+        if (GetRyujinxKeys(ryujinxDataFolder, out string systemFolderPath) is not { } keys) {
             return Locale["RyujinxKeysNotFound"];
         }
 
@@ -64,7 +76,7 @@ public class TkRyujinxHelper
 
     private static RyujinxConfig? GetRyujinxConfig(string ryujinxDataFolder)
     {
-        string path = Path.Combine(ryujinxDataFolder, "Config.json");
+        var path = Path.Combine(ryujinxDataFolder, "Config.json");
 
         if (!File.Exists(path)) {
             TkLog.Instance.LogError("Ryujinx config file could not be found.");
@@ -88,7 +100,7 @@ public class TkRyujinxHelper
 
     private static string GetRyujinxDataFolder(string ryujinxExeFilePath)
     {
-        if (Path.GetDirectoryName(ryujinxExeFilePath) is not string ryujinxFolder) {
+        if (Path.GetDirectoryName(ryujinxExeFilePath) is not { } ryujinxFolder) {
             goto UseAppDataInstall;
         }
 

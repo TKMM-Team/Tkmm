@@ -18,5 +18,8 @@
         <RadioButton GroupName="selection"
                      IsChecked="{Binding IsSwitch}"
                      Content="{ext:Locale SetupWizard_EmulatorSelection_SwitchOption}" />
+        <RadioButton GroupName="selection"
+                     IsChecked="{Binding IsManual}"
+                     Content="{ext:Locale SetupWizard_EmulatorSelection_ManualOption}" />
     </StackPanel>
 </UserControl>
