@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Tkmm.Wizard.Pages;
 
-public partial class GameDumpConfigPage : UserControl
+public partial class KeysFolderPage : UserControl
 {
-    public GameDumpConfigPage()
+    public KeysFolderPage()
     {
         InitializeComponent();
     }

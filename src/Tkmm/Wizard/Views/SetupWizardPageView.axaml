@@ -11,22 +11,28 @@
              x:Class="Tkmm.Wizard.Views.SetupWizardPageView">
     <Grid RowDefinitions="*,Auto" Margin="60">
         <ScrollViewer>
-            <StackPanel Spacing="20">
-                <TextBlock TextWrapping="WrapWithOverflow"
+            <Grid RowDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Row="0" 
+                           TextWrapping="WrapWithOverflow"
                            FontFamily="{StaticResource HyliaGlyph}"
                            FontSize="46"
                            Text="{Binding Title}" />
-                <ContentPresenter Content="{Binding}"
+
+                <ContentPresenter Grid.Row="1" 
+                                  Content="{Binding}"
                                   IsVisible="{Binding !#InfoToggle.IsChecked}"
-                                  TextWrapping="WrapWithOverflow">
+                                  TextWrapping="WrapWithOverflow"
+                                  Margin="0,15,0,0">
                     <ContentPresenter.DataTemplates>
                         <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
-                            <ContentControl Content="{Binding Content}" />
+                            <ContentControl Content="{Binding Content}" VerticalAlignment="Stretch"/>
                         </DataTemplate>
                     </ContentPresenter.DataTemplates>
                 </ContentPresenter>
                 
-                <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding #InfoToggle.IsChecked}">
+                <Grid Grid.Row="2" 
+                      ColumnDefinitions="Auto,*" 
+                      IsVisible="{Binding #InfoToggle.IsChecked}">
                     <StackPanel Spacing="5" VerticalAlignment="Top">
                         <Border BorderBrush="Black"
                                 BorderThickness="1"
@@ -47,7 +53,7 @@
                         </ContentPresenter.DataTemplates>
                     </ContentPresenter>
                 </Grid>
-            </StackPanel>
+            </Grid>
         </ScrollViewer>
 
         <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1">

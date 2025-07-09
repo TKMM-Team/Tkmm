@@ -5,18 +5,24 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Tkmm.Wizard.Pages;
 
-public sealed partial class GameDumpConfigPageContext : ObservableObject
+public sealed partial class KeysFolderPageContext : ObservableObject
 {
+    [ObservableProperty]
+    private string? _keysFolderPath;
+
     [RelayCommand]
     private static async Task Browse(TextBox tb)
     {
         string? result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            Title = "Select keys folder",
             AllowMultiple = false
         }) switch {
-            [IStorageFolder target] => target.TryGetLocalPath(),
+            [var target] => target.TryGetLocalPath(),
             _ => null
         };
 
-        tb.Text = result;
+        if (result is not null) {
+            tb.Text = result;
+        }
     }
-}
+} 
