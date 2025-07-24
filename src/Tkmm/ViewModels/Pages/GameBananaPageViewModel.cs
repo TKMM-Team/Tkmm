@@ -41,7 +41,7 @@ public partial class GameBananaPageViewModel : ObservableObject
     private double? _downloadSpeed;
 
     [ObservableProperty]
-    private GameBananaFeed? _suggestedModsFeed = GetSuggestedFeed();
+    private GameBananaFeed? _suggestedModsFeed = InternetHelper.HasInternet ? GetSuggestedFeed() : null;
 
     public GameBananaFeed? Feed => IsShowingSuggested ? SuggestedModsFeed : Source.Feed;
 
@@ -98,6 +98,11 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     public async Task Refresh(ScrollViewer? modsViewer = null)
     {
+        if (!InternetHelper.HasInternet) {
+            IsLoadSuccess = false;
+            return;
+        }
+        
         await ReloadPage();
         modsViewer?.ScrollToHome();
     }

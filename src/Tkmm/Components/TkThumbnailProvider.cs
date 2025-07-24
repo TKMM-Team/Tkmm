@@ -5,6 +5,7 @@ using Tkmm.Core.Providers;
 using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
+using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Components;
 
@@ -60,6 +61,10 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         }
         
     TryUseUrl:
+        if (!InternetHelper.HasInternet) {
+            goto UseDefault;
+        }
+        
         if (!Uri.TryCreate(thumbnail.ThumbnailPath, UriKind.Absolute, out Uri? uri)) {
             goto UseDefault;
         }
