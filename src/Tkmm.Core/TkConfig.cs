@@ -8,6 +8,7 @@ using Tkmm.Core.Attributes;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 using TkSharp.Core;
+using TkSharp.Core.IO.Caching;
 using TkSharp.Data.Embedded;
 using TkSharp.Extensions.LibHac;
 using TkSharp.Extensions.LibHac.Util;
@@ -115,13 +116,16 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _nandFolderPaths = [];
 #endif
-    
+
     public TkExtensibleRomProvider CreateRomProvider()
     {
         using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
+        using Stream packFileLookup = TkEmbeddedDataSource.GetPackFileLookup();
 
 #if !SWITCH
-        TkExtensibleRomProviderBuilder builder = TkExtensibleRomProviderBuilder.Create(checksums)
+        TkExtensibleRomProviderBuilder builder = TkExtensibleRomProviderBuilder.Create(
+                TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup)
+            )
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPaths)
@@ -131,9 +135,9 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         if (string.IsNullOrWhiteSpace(emulatorFilePath) || !PreferredGameVersion.Equals(DEFAULT_GAME_VERSION)) {
             goto Configured;
         }
-        
+
         string exeName = Path.GetFileName(emulatorFilePath);
-        
+
         if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
             try {
                 if (TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is { } updateFilePath) {
@@ -143,6 +147,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                         .WithNand(() => null)
                         .Build();
                 }
+
                 throw new Exception("No update is selected in Ryujinx. Right click the game in the emulator, go to 'Manage Title Updates' and select one.");
             }
             catch (Exception ex) {
