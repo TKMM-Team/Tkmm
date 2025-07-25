@@ -8,10 +8,16 @@
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:EmulatorNameInputPageContext"
              x:Class="Tkmm.Wizard.Pages.EmulatorNameInputPage">
-    <StackPanel>
-        <TextBlock Text="{ext:Locale SetupWizard_EmulatorNameInput_Description}"
+    <Grid RowDefinitions="Auto,Auto,*,Auto" VerticalAlignment="Stretch">
+        <TextBlock Grid.Row="0" Text="{ext:Locale SetupWizard_EmulatorNameInput_Description}"
                    Margin="0,0,0,10" />
-        <TextBox Text="{Binding EmulatorName}"
-                 Watermark="{ext:Locale SetupWizard_EmulatorNameInput_Watermark}" />
-    </StackPanel>
+        <TextBox Grid.Row="1" Text="{Binding EmulatorName}"
+                 Watermark="{ext:Locale SetupWizard_EmulatorNameInput_Watermark}"
+                 Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="3" Text="{ext:Locale SetupWizard_EmulatorNameInput_Warning}"
+                   HorizontalAlignment="Center"
+                   FontStyle="Italic"
+                   FontWeight="Bold"
+                   Margin="0,0,0,10" />
+    </Grid>
 </UserControl> 
