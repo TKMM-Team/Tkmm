@@ -12,7 +12,11 @@
         <TextBlock Text="{markup:Locale SetupWizard_KeysFolder_Description}" Margin="0,0,0,10"/>
         <Grid ColumnDefinitions="*,Auto">
             <TextBox Name="KeysFolderPathField" Text="{Binding KeysFolderPath}" IsReadOnly="True" />
-            <Button Grid.Column="1" Content="..." Command="{Binding BrowseCommand}" CommandParameter="{Binding #KeysFolderPathField}" />
+            <Button Grid.Column="1"
+                    Content="..."
+                    Command="{Binding BrowseCommand}"
+                    CommandParameter="{Binding #KeysFolderPathField}" 
+                    Margin="5,0,0,0" />
         </Grid>
     </StackPanel>
 </UserControl> 
