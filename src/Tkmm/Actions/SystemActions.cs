@@ -8,6 +8,7 @@ using Humanizer;
 using Microsoft.Extensions.Logging;
 using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
 using TkSharp.Core;
 
@@ -59,7 +60,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             await AppUpdater.CheckForUpdates(isUserInvoked, ct);
         }
         catch (HttpRequestException ex) {
-            var truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
+            string truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
             TkLog.Instance.LogWarning("An error occured while checking for updates: {truncatedEx}", truncatedEx);
         }
         catch (Exception ex) {
@@ -86,6 +87,26 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while trying to cleanup the temp folder.");
+            await ErrorDialog.ShowAsync(ex);
+        }
+    }
+    
+    [RelayCommand]
+    public async Task OpenLogsFolder()
+    {
+        await CanActionRun(showError: false);
+
+        try {
+            ProcessStartInfo info = new() {
+                FileName = DesktopLogger.LogsFolder,
+                UseShellExecute = true,
+                Verb = "open"
+            };
+
+            Process.Start(info);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "An error occured while opening the logs folder.");
             await ErrorDialog.ShowAsync(ex);
         }
     }

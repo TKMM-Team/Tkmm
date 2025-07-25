@@ -11,7 +11,11 @@ public class DesktopLogger : ILogger
 #else
     private static readonly string _logsFolder = Path.Combine(TKMM.BaseDirectory, "Logs");
 #endif
-    private static readonly string _targetLogFile = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
+    
+    // ReSharper disable once ConvertToAutoPropertyWhenPossible
+    public static string LogsFolder => _logsFolder;
+    
+    public static string CurrentLogFile { get; } = Path.Combine(_logsFolder, $"{DateTime.UtcNow:yy-MM-dd-HH-mm-ss}.log");
 
     private readonly string _group;
     private readonly StreamWriter _writer;
@@ -26,7 +30,7 @@ public class DesktopLogger : ILogger
         
         _group = group;
 
-        FileStream fs = File.OpenWrite(_targetLogFile);
+        FileStream fs = File.OpenWrite(CurrentLogFile);
         fs.Seek(0, SeekOrigin.End);
         
         _writer = new StreamWriter(fs);
