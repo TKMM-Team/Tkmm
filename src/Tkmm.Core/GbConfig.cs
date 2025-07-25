@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Microsoft.Extensions.Logging;
+using TkSharp.Core;
 using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core;
@@ -43,6 +45,17 @@ public sealed class GbConfig : ConfigModule<GbConfig>
             OnPropertyChanging();
             DownloadHelper.Config.MaxRetries = value;
             OnPropertyChanged();
+        }
+    }
+
+    public override void Load(ref GbConfig module)
+    {
+        try {
+            base.Load(ref module);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(GbConfig));
+            module = new GbConfig();
         }
     }
 }

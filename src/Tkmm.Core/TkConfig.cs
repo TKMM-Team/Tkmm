@@ -197,4 +197,15 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             .Build();
 #endif
     }
+
+    public override void Load(ref TkConfig module)
+    {
+        try {
+           base.Load(ref module);
+        }
+        catch (Exception ex) {
+            module = new TkConfig();
+            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(TkConfig));
+        }
+    }
 }

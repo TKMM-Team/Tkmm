@@ -2,8 +2,10 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
+using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
+using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
 namespace Tkmm.Core;
@@ -193,4 +195,15 @@ public sealed partial class Config : ConfigModule<Config>
         }
     }
 #endif
+    
+    public override void Load(ref Config module)
+    {
+        try {
+            base.Load(ref module);
+        }
+        catch (Exception ex) {
+            module = new Config();
+            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(Config));
+        }
+    }
 }
