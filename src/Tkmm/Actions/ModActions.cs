@@ -148,9 +148,17 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     {
         await CanActionRun(showError: false);
 
-        if (TKMM.ModManager.CurrentProfile?.Selected is TkProfileMod target) {
-            target.IsEditingOptions = !target.IsEditingOptions;
+        if (TKMM.ModManager.CurrentProfile?.Selected is not TkProfileMod target) {
+            return;
+            
         }
+        
+        if (target.Mod.OptionGroups.Sum(x => x.Options.Count) == 0) {
+            await MessageDialog.Show(TkLocale.NoModOptions_Content, TkLocale.NoModOptions_Title);
+            return;
+        }
+        
+        target.IsEditingOptions = !target.IsEditingOptions;
     }
 
     public async Task RemoveModFromProfile()

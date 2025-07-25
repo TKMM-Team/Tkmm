@@ -144,6 +144,8 @@ public static class TKMM
 
     static TKMM()
     {
+        TkChangelogBuilder.Init(RomProvider);
+        
         string legacyDataFolder = Path.Combine(BaseDirectory, ".data");
         string dataFolder = Path.Combine(BaseDirectory, ".data2");
         
