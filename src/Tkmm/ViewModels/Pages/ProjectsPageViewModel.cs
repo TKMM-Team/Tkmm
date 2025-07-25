@@ -78,6 +78,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenProjectFromRecent(TkProject project)
+    {
+        Project = TkProjectManager.OpenProject(project.FolderPath);
+    }
+
+    [RelayCommand]
     private void Exit()
     {
         Project = null;

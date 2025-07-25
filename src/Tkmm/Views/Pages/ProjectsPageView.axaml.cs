@@ -12,15 +12,4 @@ public partial class ProjectsPageView : UserControl
     {
         InitializeComponent();
     }
-
-    private void InputElement_OnDoubleTapped(object? sender, TappedEventArgs e)
-    {
-        if (DataContext is not ProjectsPageViewModel vm) {
-            return;
-        }
-        
-        if (e.Source is ContentPresenter { Content: TkProject project }) {
-            vm.Project = TkProjectManager.OpenProject(project.FolderPath);
-        }
-    }
 }

@@ -81,20 +81,53 @@
             <TextBlock Grid.Row="1" Text="Recent Projects" Margin="0,25,0,0"
                        FontWeight="Bold" FontSize="16" />
 
-            <ListBox ItemsSource="{x:Static tk:TkProjectManager.RecentProjects}"
-                     Margin="0,15,0,0"
-                     DoubleTapped="InputElement_OnDoubleTapped"
-                     Grid.Row="2">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="{x:Type tk:TkProject}">
-                        <Grid ColumnDefinitions="Auto,Auto,*" IsHitTestVisible="False">
-                            <TextBlock Text="{Binding Mod.Name}" />
-                            <TextBlock IsVisible="{Binding Mod.Version.Length}" Grid.Column="1"
-                                       Text="{Binding Mod.Version, StringFormat='{}[v{0}]'}" Margin="5,0,0,0" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{x:Static tk:TkProjectManager.RecentProjects}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type tk:TkProject}">
+                            <Border CornerRadius="{DynamicResource ControlCornerRadius}"
+                                    BorderThickness="{DynamicResource ButtonBorderThemeThickness}"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    Padding="10,5"
+                                    Margin="0,10,0,0"
+                                    BorderBrush="{DynamicResource ButtonBorderBrush}">
+                                <Border.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuItem Header="Open"
+                                                  Command="{Binding $parent[UserControl].((pages:ProjectsPageViewModel)DataContext).OpenProjectFromRecentCommand}"
+                                                  CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <fa:Icon Value="fa-solid fa-pen-to-square" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Remove from Recents"
+                                                  Command="{Binding RemoveFromRecentCommand, Source={x:Static tk:TkProjectManager.Shared}}"
+                                                  CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <fa:Icon Value="fa-solid fa-trash-can-xmark" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </MenuFlyout>
+                                </Border.ContextFlyout>
+                                <Grid ColumnDefinitions="Auto,Auto,*,Auto"
+                                      ToolTip.Tip="{Binding FolderPath}">
+
+                                    <TextBlock Text="{Binding Mod.Name}" VerticalAlignment="Center" />
+                                    <TextBlock IsVisible="{Binding Mod.Version.Length}" Grid.Column="1"
+                                               Text="{Binding Mod.Version, StringFormat='{}[v{0}]'}" Margin="5,0,0,0"
+                                               VerticalAlignment="Center" />
+
+                                    <HyperlinkButton Grid.Column="3"
+                                                     Content="Open Project"
+                                                     Command="{Binding $parent[UserControl].((pages:ProjectsPageViewModel)DataContext).OpenProjectFromRecentCommand}"
+                                                     CommandParameter="{Binding}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
 
         <Grid RowDefinitions="Auto,*"
