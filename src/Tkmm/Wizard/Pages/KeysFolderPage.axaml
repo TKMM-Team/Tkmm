@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="using:Tkmm.Wizard.Pages"
+             xmlns:markup="clr-namespace:Tkmm.Markup"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Tkmm.Wizard.Pages.KeysFolderPage"
+             x:DataType="pages:KeysFolderPageContext">
+    <StackPanel>
+        <TextBlock Text="{markup:Locale SetupWizard_KeysFolder_Description}" Margin="0,0,0,10"/>
+        <Grid ColumnDefinitions="*,Auto">
+            <TextBox Name="KeysFolderPathField" Text="{Binding KeysFolderPath}" IsReadOnly="True" />
+            <Button Grid.Column="1"
+                    Content="..."
+                    Command="{Binding BrowseCommand}"
+                    CommandParameter="{Binding #KeysFolderPathField}" 
+                    Margin="5,0,0,0" />
+        </Grid>
+    </StackPanel>
+</UserControl> 

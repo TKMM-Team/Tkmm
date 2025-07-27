@@ -2,7 +2,6 @@
 
 using LanguageExt;
 using LibHac.Common.Keys;
-using LibHac.Tools.Fs;
 using Tkmm.Core.Models;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -57,27 +56,30 @@ public static class TkEmulatorHelper
         bool result = false;
         hasUpdate = false;
 
-        if (!File.Exists(emulatorFilePath)) {
-            return Locale["EmulatorFilePathNotFound", emulatorFilePath];
+        // Only check file existence if the path contains directory separators
+        if (emulatorFilePath.Contains(Path.DirectorySeparatorChar) || emulatorFilePath.Contains(Path.AltDirectorySeparatorChar)) {
+            if (!File.Exists(emulatorFilePath)) {
+                return Locale["EmulatorFilePathNotFound", emulatorFilePath];
+            }
         }
 
         Config.Shared.EmulatorPath = emulatorFilePath;
 
-        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out string emulatorName)
-            is not string emulatorConfigFilePath) {
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out var emulatorName)
+            is not { } emulatorConfigFilePath) {
             return Locale["EmulatorConfigFileNotFound", emulatorName];
         }
 
-        if (GetKeys(emulatorDataFolderPath, out string keysFolderPath) is not KeySet keys) {
+        if (GetKeys(emulatorDataFolderPath, out var keysFolderPath) is not { } keys) {
             return Locale["EmulatorKeysNotFound", emulatorName];
         }
 
         TkConfig.Shared.KeysFolderPath = keysFolderPath;
 
-        string nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
+        var nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
         TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
 
-        string modFolderPath = GetModFolder(emulatorDataFolderPath);
+        var modFolderPath = GetModFolder(emulatorDataFolderPath);
 
         if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
@@ -101,7 +103,7 @@ public static class TkEmulatorHelper
 
     public static bool CheckConfiguredGamePaths(ref bool result, ref bool hasUpdate, IEnumerable<string> configuredGamePaths, KeySet keys)
     {
-        foreach ((Application totk, string filePath) in TkGameRomUtils.ScanFolders(configuredGamePaths, keys)) {
+        foreach (var (totk, filePath) in TkGameRomUtils.ScanFolders(configuredGamePaths, keys)) {
             if (totk.Main is not null) {
                 result = true;
                 TkConfig.Shared.PackagedBaseGamePaths.New(filePath);
@@ -124,7 +126,7 @@ public static class TkEmulatorHelper
                     ? Path.GetFileNameWithoutExtension(emulatorFilePath).ToLower()
                     : Path.GetFileName(emulatorFilePath).ToLower();
 
-        if (Path.GetDirectoryName(emulatorFilePath) is string exeFolder
+        if (Path.GetDirectoryName(emulatorFilePath) is { } exeFolder
             && Path.Combine(exeFolder, "user") is var portableDataFolderPath
             && Directory.Exists(portableDataFolderPath)) {
             emulatorDataFolderPath = portableDataFolderPath;
@@ -137,27 +139,27 @@ public static class TkEmulatorHelper
             emulatorDataFolderPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), emulatorName);
     
-            string emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
+            var emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
             return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
         }
         else
         {
-            string xdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")
-                                   ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
-            string xdgDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME")
-                                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share");
+            var xdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")
+                                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
+            var xdgDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME")
+                              ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share");
 
-            string configPath = Path.Combine(xdgConfigHome, emulatorName);
+            var configPath = Path.Combine(xdgConfigHome, emulatorName);
             emulatorDataFolderPath = Path.Combine(xdgDataHome, emulatorName);
 
-            string emulatorConfigFilePath = Path.Combine(configPath, "qt-config.ini");
+            var emulatorConfigFilePath = Path.Combine(configPath, "qt-config.ini");
             return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
         }
     }
 
     private static string? CheckConfig(string emulatorDataFolderPath)
     {
-        string emulatorConfigFilePath = OperatingSystem.IsWindows()
+        var emulatorConfigFilePath = OperatingSystem.IsWindows()
             ? Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini")
             : Path.Combine(emulatorDataFolderPath, "qt-config.ini");
         return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
@@ -171,17 +173,17 @@ public static class TkEmulatorHelper
 
     private static List<string> GetGameFolderPaths(string qtConfigFilePath)
     {
-        using FileStream fs = File.OpenRead(qtConfigFilePath);
+        using var fs = File.OpenRead(qtConfigFilePath);
         using StreamReader reader = new(fs);
 
         List<string> results = [];
 
         Span<Range> ranges = stackalloc Range[2];
-        ref Range itemKey = ref ranges[0];
-        ref Range itemValue = ref ranges[1];
+        ref var itemKey = ref ranges[0];
+        ref var itemValue = ref ranges[1];
 
-        while (reader.ReadLine() is string line) {
-            ReadOnlySpan<char> item = line.AsSpan();
+        while (reader.ReadLine() is { } line) {
+            var item = line.AsSpan();
 
             if (item.Length < 24 || item[..15] is not @"Paths\gamedirs\") {
                 continue;
@@ -191,7 +193,7 @@ public static class TkEmulatorHelper
                 continue;
             }
 
-            string romFolderPath = line[itemValue];
+            var romFolderPath = line[itemValue];
 
             if (!Directory.Exists(romFolderPath)) {
                 continue;
