@@ -22,7 +22,7 @@ public static class TkEmulatorHelper
             return null;
         }
         
-        return GetModFolder(emulatorDataFolderPath);
+        return GetModFolder(GetEmulatorConfigPath(emulatorDataFolderPath));
     }
 
     public static string? GetSdPath(string emulatorFilePath)
@@ -38,7 +38,7 @@ public static class TkEmulatorHelper
             return null;
         }
         
-        return Path.Combine(emulatorDataFolderPath, "sdmc");
+        return GetDirectoryFromConfig(GetEmulatorConfigPath(emulatorDataFolderPath), "sdmc_directory");
     }
     
     public static string? GetNandPath(string emulatorFilePath)
@@ -48,7 +48,7 @@ public static class TkEmulatorHelper
             return null;
         }
         
-        return Path.Combine(emulatorDataFolderPath, "nand");
+        return GetDirectoryFromConfig(GetEmulatorConfigPath(emulatorDataFolderPath), "nand_directory");
     }
     
     public static Either<bool, string> UseEmulator(string emulatorFilePath, out bool hasUpdate)
@@ -76,10 +76,13 @@ public static class TkEmulatorHelper
 
         TkConfig.Shared.KeysFolderPath = keysFolderPath;
 
-        var nandFolderPath = Path.Combine(emulatorDataFolderPath, "nand");
-        TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
+        var nandFolderPath = GetDirectoryFromConfig(emulatorConfigFilePath, "nand_directory");
+        
+        if (Directory.Exists(nandFolderPath)) {
+            TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
+        }
 
-        var modFolderPath = GetModFolder(emulatorDataFolderPath);
+        var modFolderPath = GetModFolder(emulatorConfigFilePath);
 
         if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
             Directory.CreateDirectory(modFolderPath);
@@ -130,8 +133,9 @@ public static class TkEmulatorHelper
             && Path.Combine(exeFolder, "user") is var portableDataFolderPath
             && Directory.Exists(portableDataFolderPath)) {
             emulatorDataFolderPath = portableDataFolderPath;
-            if (CheckConfig(emulatorDataFolderPath) is var result) {
-                return result;
+            var configPath = GetEmulatorConfigPath(emulatorDataFolderPath);
+            if (File.Exists(configPath)) {
+                return configPath;
             }
         }
 
@@ -139,30 +143,17 @@ public static class TkEmulatorHelper
             emulatorDataFolderPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), emulatorName);
     
-            var emulatorConfigFilePath = Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
+            var emulatorConfigFilePath = GetConfigFilePath(emulatorName, emulatorDataFolderPath);
             return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
         }
-        else
-        {
-            var xdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")
-                                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
+        else {
             var xdgDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME")
                               ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share");
 
-            var configPath = Path.Combine(xdgConfigHome, emulatorName);
             emulatorDataFolderPath = Path.Combine(xdgDataHome, emulatorName);
-
-            var emulatorConfigFilePath = Path.Combine(configPath, "qt-config.ini");
+            var emulatorConfigFilePath = GetConfigFilePath(emulatorName, emulatorDataFolderPath);
             return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
         }
-    }
-
-    private static string? CheckConfig(string emulatorDataFolderPath)
-    {
-        var emulatorConfigFilePath = OperatingSystem.IsWindows()
-            ? Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini")
-            : Path.Combine(emulatorDataFolderPath, "qt-config.ini");
-        return File.Exists(emulatorConfigFilePath) ? emulatorConfigFilePath : null;
     }
 
     private static KeySet? GetKeys(string emulatorDataFolder, out string keysFolderPath)
@@ -205,8 +196,49 @@ public static class TkEmulatorHelper
         return results;
     }
     
-    private static string GetModFolder(string emulatorDataFolderPath)
-        => Path.Combine(emulatorDataFolderPath, "load", "0100F2C0115B6000", "TKMM");
+    private static string GetEmulatorConfigPath(string emulatorDataFolderPath) {
+        var emulatorName = Path.GetFileName(emulatorDataFolderPath);
+        return GetConfigFilePath(emulatorName, emulatorDataFolderPath);
+    }
+    
+    private static string GetModFolder(string emulatorConfigFilePath)
+        => GetDirectoryFromConfig(emulatorConfigFilePath, "load_directory") is { } loadDir 
+            ? Path.Combine(loadDir, "0100F2C0115B6000", "TKMM").Replace('\\', '/')
+            : "";
+
+    private static string? GetDirectoryFromConfig(string emulatorConfigFilePath, string configKey) {
+        if (!File.Exists(emulatorConfigFilePath)) {
+            return null;
+        }
+
+        using var fs = File.OpenRead(emulatorConfigFilePath);
+        using StreamReader reader = new(fs);
+
+        while (reader.ReadLine() is { } line) {
+            var trimmedLine = line.Trim();
+
+            if (trimmedLine.StartsWith($"{configKey}=", StringComparison.OrdinalIgnoreCase)) {
+                var directoryPath = trimmedLine.Substring($"{configKey}=".Length).Trim();
+                if (!string.IsNullOrEmpty(directoryPath) && Directory.Exists(directoryPath)) {
+                    return directoryPath;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static string GetConfigFilePath(string emulatorName, string emulatorDataFolderPath)
+    {
+        if (OperatingSystem.IsWindows()) {
+            return Path.Combine(emulatorDataFolderPath, "config", "qt-config.ini");
+        }
+        else {
+            var xdgConfigHome = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME")
+                                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
+            return Path.Combine(xdgConfigHome, emulatorName, "qt-config.ini");
+        }
+    }
 }
 
 #endif
