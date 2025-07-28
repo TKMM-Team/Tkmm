@@ -99,6 +99,9 @@ jobs:
           -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }} \
           -p:DebugType=embedded
 
+      - name: Remove JSON Files (temporary - step can be removed later)
+        run: find ${{ matrix.target.project }}-${{ matrix.config.runtime }} -name "*.json" -type f -delete
+
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
         with:
