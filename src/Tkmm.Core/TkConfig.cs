@@ -182,13 +182,13 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
 
     Configured:
-        return builder
+         return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
             .WithNand(() => NandFolderPaths)
             .Build();
 #else
-        return TkExtensibleRomProviderBuilder.Create(checksums)
+        return TkExtensibleRomProviderBuilder.Create(TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup))
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithSdCard(() => SdCardRootPath)
