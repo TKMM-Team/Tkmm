@@ -69,4 +69,43 @@ public static class OctokitHelper
         byte[] buffer = await DownloadHelper.DownloadAndVerify(asset.Url, expectedHash, ct);
         return new MemoryStream(buffer);
     }
+
+#if SWITCH
+    public static async Task<Stream?> DownloadSystemFile(CancellationToken ct = default)
+    {
+        Release latest = await GetLatestRelease("TKMM-Team", "TKMM-NX");
+        
+        ReleaseAsset? md5HashAsset = latest
+            .Assets
+            .FirstOrDefault(asset => asset.Name == "SYSTEM.checksum");
+        
+        ReleaseAsset? asset = latest
+            .Assets
+            .FirstOrDefault(asset => asset.Name == "SYSTEM");
+
+        if (md5HashAsset is null || asset is null) {
+            return null;
+        }
+
+        await using Stream checksumFile = await _client.GetStreamAsync(md5HashAsset.Url, ct);
+        using StreamReader reader = new(checksumFile);
+
+        string? md5 = null;
+        while (!reader.EndOfStream) {
+            string? line = await reader.ReadLineAsync(ct);
+            if (!string.IsNullOrWhiteSpace(line)) {
+                md5 = line.Trim();
+                break;
+            }
+        }
+
+        if (string.IsNullOrEmpty(md5)) {
+            return null;
+        }
+
+        byte[] expectedHash = Convert.FromHexString(md5);
+        byte[] buffer = await DownloadHelper.DownloadAndVerify(asset.Url, expectedHash, ct);
+        return new MemoryStream(buffer);
+    }
+#endif
 }

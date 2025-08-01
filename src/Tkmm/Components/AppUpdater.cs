@@ -99,6 +99,25 @@ public static class AppUpdater
 
     private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
     {
+#if SWITCH
+        await using Stream? systemStream = await OctokitHelper.DownloadSystemFile(ct);
+        if (systemStream is not null) {
+            string tmpDir = "/flash/tkmm/.tmp";
+            string systemPath = "/flash/tkmm/SYSTEM";
+            string tmpSystemPath = Path.Combine(tmpDir, "SYSTEM");
+            
+            Directory.CreateDirectory(tmpDir);
+            
+            await using FileStream tmpFile = File.Create(tmpSystemPath);
+            await systemStream.CopyToAsync(tmpFile, ct);
+            
+            if (File.Exists(systemPath)) {
+                File.Delete(systemPath);
+            }
+            File.Move(tmpSystemPath, systemPath);
+        }
+#endif
+
         await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, ct);
 
         if (stream is null) {
@@ -140,8 +159,14 @@ public static class AppUpdater
         };
 
         Process.Start(processStart);
-#endif
         Environment.Exit(0);
+#else
+        Process.Start(new ProcessStartInfo {
+            FileName = "sh",
+            Arguments = "/usr/bin/tkmm-reboot",
+            UseShellExecute = true,
+        });
+#endif
     }
 
     public static void CleanupUpdate()
