@@ -96,9 +96,7 @@ public partial class ShellView : AppWindow
                 Content = Locale[TkLocale.Menu_Nx_Description],
                 PrimaryButtonText = Locale[TkLocale.Menu_NxReboot],
                 SecondaryButtonText = Locale[TkLocale.Menu_NxShutdown],
-                CloseButtonText = Locale[TkLocale.Action_Cancel],
-                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                CloseButtonText = Locale[TkLocale.Action_Cancel]
             };
 
             var result = await dialog.ShowAsync();
