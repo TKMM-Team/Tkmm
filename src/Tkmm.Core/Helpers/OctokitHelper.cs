@@ -71,15 +71,13 @@ public static class OctokitHelper
     }
 
 #if SWITCH
-    public static async Task<Stream?> DownloadSystemFile(CancellationToken ct = default)
+    public static async Task<Stream?> DownloadSystemFile(Release release, CancellationToken ct = default)
     {
-        Release latest = await GetLatestRelease("TKMM-Team", "TKMM-NX");
-        
-        ReleaseAsset? md5HashAsset = latest
+        ReleaseAsset? md5HashAsset = release
             .Assets
             .FirstOrDefault(asset => asset.Name == "SYSTEM.checksum");
         
-        ReleaseAsset? asset = latest
+        ReleaseAsset? asset = release
             .Assets
             .FirstOrDefault(asset => asset.Name == "SYSTEM");
 

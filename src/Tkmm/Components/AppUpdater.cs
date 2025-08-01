@@ -100,22 +100,28 @@ public static class AppUpdater
     private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
     {
 #if SWITCH
-        await using Stream? systemStream = await OctokitHelper.DownloadSystemFile(ct);
-        if (systemStream is not null) {
-            string tmpDir = "/flash/tkmm/.tmp";
-            string systemPath = "/flash/tkmm/SYSTEM";
-            string tmpSystemPath = Path.Combine(tmpDir, "SYSTEM");
-            
-            Directory.CreateDirectory(tmpDir);
-            
-            await using FileStream tmpFile = File.Create(tmpSystemPath);
-            await systemStream.CopyToAsync(tmpFile, ct);
-            
-            if (File.Exists(systemPath)) {
-                File.Delete(systemPath);
-            }
-            File.Move(tmpSystemPath, systemPath);
+        Release nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        await using Stream? systemStream = await OctokitHelper.DownloadSystemFile(nxRelease, ct);
+
+        if (systemStream is null) {
+            throw new Exception(
+                $"Update failed: Could not locate and/or download system image from '{nxRelease.TagName}'.");
         }
+
+        string tmpDir = "/flash/tkmm/.tmp";
+        string systemPath = "/flash/tkmm/SYSTEM";
+        string tmpSystemPath = Path.Combine(tmpDir, "SYSTEM");
+        
+        Directory.CreateDirectory(tmpDir);
+        
+        await using FileStream tmpFile = File.Create(tmpSystemPath);
+        await systemStream.CopyToAsync(tmpFile, ct);
+        
+        if (File.Exists(systemPath)) {
+            File.Delete(systemPath);
+        }
+        File.Move(tmpSystemPath, systemPath);
+        Directory.Delete(tmpDir, true);
 #endif
 
         await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, ct);
