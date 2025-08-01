@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,13 @@ namespace Tkmm.Components;
 
 public static class AppUpdater
 {
+    private static readonly string _runtimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
+#if SWITCH
+    private static readonly string _assetName = $"Tkmm-{_runtimeId}-nx.zip";
+#else
+    private static readonly string _assetName = $"Tkmm-{_runtimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
+#endif
+
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
 #if NO_UPDATE
@@ -101,7 +109,7 @@ public static class AppUpdater
     {
 #if SWITCH
         Release nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
-        await using Stream? systemStream = await OctokitHelper.DownloadSystemFile(nxRelease, ct);
+        await using Stream? systemStream = await OctokitHelper.DownloadReleaseAsset(nxRelease, "SYSTEM", ct);
 
         if (systemStream is null) {
             throw new Exception(
@@ -124,7 +132,7 @@ public static class AppUpdater
         Directory.Delete(tmpDir, true);
 #endif
 
-        await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, ct);
+        await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, ct);
 
         if (stream is null) {
             throw new Exception(
