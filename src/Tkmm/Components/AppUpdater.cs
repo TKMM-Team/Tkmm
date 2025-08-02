@@ -233,7 +233,7 @@ public static class AppUpdater
 #else
         Process.Start(new ProcessStartInfo {
             FileName = "sh",
-            Arguments = "/usr/bin/tkmm-reboot",
+            Arguments = "echo \"self\" > /sys/devices/r2p/action && tkmm-reboot",
             UseShellExecute = true,
         });
 #endif
