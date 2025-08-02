@@ -88,9 +88,18 @@ public partial class ShellView : AppWindow
     }
 
 #if SWITCH
+    private static ContentDialog? _currentDialog;
+
     private static async void ShowRebootShutdownPopup()
     {
         try {
+            // If the dialog is already open, close it
+            if (_currentDialog != null) {
+                _currentDialog.Hide(ContentDialogResult.None);
+                _currentDialog = null;
+                return;
+            }
+
             var dialog = new ContentDialog {
                 Title = Locale[TkLocale.Menu_Nx],
                 Content = Locale[TkLocale.Menu_Nx_Description],
@@ -98,6 +107,8 @@ public partial class ShellView : AppWindow
                 SecondaryButtonText = Locale[TkLocale.Menu_NxShutdown],
                 CloseButtonText = Locale[TkLocale.Action_Cancel]
             };
+
+            _currentDialog = dialog;
 
             var result = await dialog.ShowAsync();
             
@@ -109,9 +120,12 @@ public partial class ShellView : AppWindow
                     NxMenuModel.Shutdown();
                     break;
             }
+
+            _currentDialog = null;
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "Error occured while showing the system reboot dialog.");
+            _currentDialog = null;
         }
     }
 #endif
