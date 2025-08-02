@@ -1,3 +1,6 @@
+#if !SWITCH
+using Avalonia.Controls;
+#endif
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
@@ -54,6 +57,7 @@ public static class AppUpdater
         }
 
     Retry:
+#if SWITCH
         TaskDialog taskDialog = new() {
             Header = Locale[TkLocale.System_Popup_Updater_Title],
             SubHeader = Locale[TkLocale.System_Popup_Updater],
@@ -97,6 +101,29 @@ public static class AppUpdater
                 Restart();
                 return;
         }
+#else
+        var progressBar = new ProgressBar();
+        var progressText = new TextBlock { Text = Locale[TkLocale.System_Popup_Updater] };
+        var progressStack = new StackPanel {
+            Children = { progressText, progressBar },
+            Spacing = 10
+        };
+
+        var contentDialog = new ContentDialog {
+            Title = Locale[TkLocale.System_Popup_Updater_Title],
+            Content = progressStack,
+            IsPrimaryButtonEnabled = false
+        };
+
+        _ = PerformUpdateAsync(release, CancellationToken.None, progressBar, progressText, contentDialog);
+
+        var dialogResult = await contentDialog.ShowAsync();
+        
+        if (dialogResult == ContentDialogResult.Primary && contentDialog.PrimaryButtonText == "Retry") {
+            goto Retry;
+        }
+        Restart();
+#endif
     }
 
     private static async ValueTask<Release?> HasAvailableUpdates()
@@ -152,6 +179,35 @@ public static class AppUpdater
 
         Restart();
     }
+
+#if !SWITCH
+    private static async Task PerformUpdateAsync(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
+    {
+        var progressReporter = new Progress<double>(progress => {
+            progressBar.Value = progress * 100.0;
+            progressText.Text = $"{Locale[TkLocale.System_Popup_Updater]} ({(int)(progress * 100)}%)";
+        });
+
+        DownloadHelper.Reporters.Push(new DownloadReporter {
+            ProgressReporter = progressReporter,
+            SpeedReporter = new Progress<double>(_ => { })
+        });
+
+        try {
+            await PerformUpdate(release, ct);
+            contentDialog.Hide(ContentDialogResult.None);
+        }
+        catch (OperationCanceledException) {
+            contentDialog.Hide(ContentDialogResult.None);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Update failed");
+        }
+        finally {
+            DownloadHelper.Reporters.Pop();
+        }
+    }
+#endif
 
     private static void Restart()
     {
