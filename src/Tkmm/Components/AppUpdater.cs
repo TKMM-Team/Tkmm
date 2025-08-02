@@ -1,4 +1,4 @@
-#if !SWITCH
+#if SWITCH
 using Avalonia.Controls;
 #endif
 using System.Diagnostics;
@@ -57,7 +57,7 @@ public static class AppUpdater
         }
 
     Retry:
-#if SWITCH
+#if !SWITCH
         TaskDialog taskDialog = new() {
             Header = Locale[TkLocale.System_Popup_Updater_Title],
             SubHeader = Locale[TkLocale.System_Popup_Updater],
@@ -180,7 +180,7 @@ public static class AppUpdater
         Restart();
     }
 
-#if !SWITCH
+#if SWITCH
     private static async Task PerformUpdateAsync(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
     {
         var progressReporter = new Progress<double>(progress => {
