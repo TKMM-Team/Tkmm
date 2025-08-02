@@ -52,6 +52,12 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 return;
             }
 #endif
+            string? drive = Path.GetPathRoot(TKMM.MergedOutputFolder);
+            if (!string.IsNullOrEmpty(drive) && !Directory.Exists(drive)) {
+                throw new DirectoryNotFoundException(
+                    $"The path {TKMM.MergedOutputFolder} could not be used because its root {drive} does not exist."
+                );
+            }
 
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
