@@ -11,7 +11,7 @@ using Tkmm.Wizard;
 using TkSharp.Core;
 #if SWITCH
 using FluentAvalonia.UI.Controls;
-using Tkmm.Models.MenuModels;
+using Tkmm.Views.Pages;
 #endif
 
 namespace Tkmm.Views;
@@ -93,38 +93,30 @@ public partial class ShellView : AppWindow
     private static async void ShowRebootShutdownPopup()
     {
         try {
-            // If the dialog is already open, close it
             if (_currentDialog != null) {
                 _currentDialog.Hide(ContentDialogResult.None);
                 _currentDialog = null;
                 return;
             }
 
+            var rebootOptionsView = new RebootOptionsPageView();
+
             var dialog = new ContentDialog {
                 Title = Locale[TkLocale.Menu_Nx],
-                Content = Locale[TkLocale.Menu_Nx_Description],
-                PrimaryButtonText = Locale[TkLocale.Menu_NxReboot],
-                SecondaryButtonText = Locale[TkLocale.Menu_NxShutdown],
-                CloseButtonText = Locale[TkLocale.Action_Cancel]
+                Content = rebootOptionsView,
+                CloseButtonText = Locale[TkLocale.Action_Cancel],
+                CornerRadius = new CornerRadius(12),
+                DefaultButton = ContentDialogButton.Close
             };
 
             _currentDialog = dialog;
 
-            var result = await dialog.ShowAsync();
-            
-            switch (result) {
-                case ContentDialogResult.Primary:
-                    NxMenuModel.Reboot();
-                    break;
-                case ContentDialogResult.Secondary:
-                    NxMenuModel.Shutdown();
-                    break;
-            }
+            await dialog.ShowAsync();
 
             _currentDialog = null;
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Error occured while showing the system reboot dialog.");
+            TkLog.Instance.LogError(ex, "Error occurred while showing the reboot options dialog.");
             _currentDialog = null;
         }
     }
