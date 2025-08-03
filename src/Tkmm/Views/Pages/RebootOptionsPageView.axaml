@@ -18,6 +18,9 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,20"/>
                 
+                <!-- ReSharper disable Xaml.PossibleNullReferenceException -->
+                <!-- Visibility binding Selected will cause this section of the control to not display at all when SelectedGuild is null, no fallback is required. -->
+                
                 <!-- Launch Section -->
                 <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
@@ -36,7 +39,7 @@
                                 <DataTemplate>
                                     <Button Margin="5" 
                                             Width="99" Height="99"
-                                            Command="{Binding $parent[UserControl].DataContext.SelectLaunchOptionCommand}"
+                                            Command="{Binding $parent[UserControl].((pages:RebootOptionsPageViewModel)DataContext).SelectLaunchOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" 
@@ -91,7 +94,7 @@
                                 <DataTemplate>
                                     <Button Margin="5" 
                                             Width="99" Height="99"
-                                            Command="{Binding $parent[UserControl].DataContext.SelectConfigOptionCommand}"
+                                            Command="{Binding $parent[UserControl].((pages:RebootOptionsPageViewModel)DataContext).SelectConfigOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" 
@@ -146,7 +149,7 @@
                                 <DataTemplate>
                                     <Button Margin="5" 
                                             Width="99" Height="99"
-                                            Command="{Binding $parent[UserControl].DataContext.SelectUmsOptionCommand}"
+                                            Command="{Binding $parent[UserControl].((pages:RebootOptionsPageViewModel)DataContext).SelectUmsOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" 
