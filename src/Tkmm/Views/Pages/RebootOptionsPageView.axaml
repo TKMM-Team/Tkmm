@@ -205,8 +205,8 @@
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding NormalRebootCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <avalonia:Icon Value="fa-solid fa-power-off" Margin="0,0,10,0"/>
-                                <TextBlock Text="Normal Reboot" VerticalAlignment="Center"/>
+                                <avalonia:Icon Value="fa-solid fa-rotate" Margin="0,0,10,0"/>
+                                <TextBlock Text="Reboot" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Margin="5,2" 
@@ -214,7 +214,7 @@
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding ShutdownCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <avalonia:Icon Value="fa-solid fa-stop" Margin="0,0,10,0"/>
+                                <avalonia:Icon Value="fa-solid fa-power-off" Margin="0,0,10,0"/>
                                 <TextBlock Text="Shutdown" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>

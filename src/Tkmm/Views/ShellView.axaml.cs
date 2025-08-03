@@ -10,7 +10,6 @@ using Tkmm.ViewModels;
 using Tkmm.Wizard;
 using TkSharp.Core;
 #if SWITCH
-using FluentAvalonia.UI.Controls;
 using Tkmm.Views.Pages;
 #endif
 
@@ -82,43 +81,8 @@ public partial class ShellView : AppWindow
 
 #if SWITCH
         if (e.Key is Key.LWin or Key.RWin) {
-            ShowRebootShutdownPopup();
+            RebootOptionsPageViewModel.ShowReboot2ConfigPopup();
         }
 #endif
     }
-
-#if SWITCH
-    private static ContentDialog? _currentDialog;
-
-    private static async void ShowRebootShutdownPopup()
-    {
-        try {
-            if (_currentDialog != null) {
-                _currentDialog.Hide(ContentDialogResult.None);
-                _currentDialog = null;
-                return;
-            }
-
-            var rebootOptionsView = new RebootOptionsPageView();
-
-            var dialog = new ContentDialog {
-                Title = Locale[TkLocale.Menu_Nx],
-                Content = rebootOptionsView,
-                CloseButtonText = Locale[TkLocale.Action_Cancel],
-                CornerRadius = new CornerRadius(12),
-                DefaultButton = ContentDialogButton.Close
-            };
-
-            _currentDialog = dialog;
-
-            await dialog.ShowAsync();
-
-            _currentDialog = null;
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Error occurred while showing the reboot options dialog.");
-            _currentDialog = null;
-        }
-    }
-#endif
 }

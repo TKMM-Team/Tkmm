@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using Tkmm.Attributes;
+using Tkmm.Views.Pages;
 
 namespace Tkmm.Models.MenuModels;
 
@@ -17,6 +18,12 @@ public class NxMenuModel
     public static void Shutdown()
     {
         ExecuteCommand("/usr/bin/tkmm-shutdown");
+    }
+    
+    [TkMenu(TkLocale.Menu_NxReboot2Config, TkLocale.Menu_Nx, Icon = "fa-solid fa-rocket")]
+    public static void RebootMenu()
+    {
+        RebootOptionsPageViewModel.ShowReboot2ConfigPopup();
     }
 
     private static void ExecuteCommand(string command)

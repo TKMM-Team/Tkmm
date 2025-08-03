@@ -1,9 +1,11 @@
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Avalonia;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Avalonia.Media.Imaging;
+using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 #if SWITCH
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -232,6 +234,39 @@ public partial class RebootOptionsPageViewModel : ObservableObject
         catch (Exception _)
         {
             TkLog.Instance.LogError(_, "Failed to execute R2C command");
+        }
+    }
+
+    private static ContentDialog? _currentDialog;
+
+    public static async void ShowReboot2ConfigPopup()
+    {
+        try {
+            if (_currentDialog != null) {
+                _currentDialog.Hide(ContentDialogResult.None);
+                _currentDialog = null;
+                return;
+            }
+
+            var rebootOptionsView = new RebootOptionsPageView();
+
+            var dialog = new ContentDialog {
+                Title = Locale[TkLocale.Menu_Nx],
+                Content = rebootOptionsView,
+                CloseButtonText = Locale[TkLocale.Action_Cancel],
+                CornerRadius = new CornerRadius(12),
+                DefaultButton = ContentDialogButton.Close
+            };
+
+            _currentDialog = dialog;
+
+            await dialog.ShowAsync();
+
+            _currentDialog = null;
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Error occurred while showing the reboot options dialog.");
+            _currentDialog = null;
         }
     }
 }
