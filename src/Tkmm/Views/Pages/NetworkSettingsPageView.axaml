@@ -141,6 +141,7 @@
                 <StackPanel Spacing="5" Grid.Column="1" Grid.Row="1">
                     <TextBlock Classes="Property Value" Text="{Binding MacAddress}" Margin="0,0,0,10" />
                     <StackPanel IsVisible="{Binding Connected, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <!-- ReSharper disable Xaml.PossibleNullReferenceException -->
                         <TextBlock Classes="Property Value" Text="{Binding Connected.IpAddress}" />
                         <TextBlock Classes="Property Value" Text="{Binding Connected.SubnetMask}" />
                         <TextBlock Classes="Property Value" Text="{Binding Connected.Gateway}" />

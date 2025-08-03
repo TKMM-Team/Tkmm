@@ -71,24 +71,32 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     private void LoadConfigOptions()
     {
         ConfigOptions.Clear();
-        var iniDirectory = Path.Combine(BOOT_DISK_PATH, "bootloader", "ini");;
+        var iniDirectory = Path.Combine(BOOT_DISK_PATH, "bootloader", "ini");
         
         if (Directory.Exists(iniDirectory)) {
-            var iniFiles = Directory.GetFiles(iniDirectory, "*.ini");
-            int globalIndex = 1;
+            var iniFiles = Directory.GetFiles(iniDirectory, "*.ini")
+                                   .OrderBy(f => Path.GetFileName(f), StringComparer.Ordinal)
+                                   .ToArray();
+            
+            var allSections = new List<(string Name, string? IconPath, string FileName)>();
             
             foreach (var iniFile in iniFiles) {
                 var sections = ParseIniSections(iniFile);
                 foreach (var section in sections) {
-                    var icon = ConvertBmpToBitmap(section.IconPath) ?? _fallbackIcon;
-                    ConfigOptions.Add(new RebootOption {
-                        Name = section.Name,
-                        Type = RebootType.Config,
-                        Index = globalIndex,
-                        Icon = icon
-                    });
-                    globalIndex++;
+                    allSections.Add((section.Name, section.IconPath, Path.GetFileName(iniFile)));
                 }
+            }
+            
+            int globalIndex = 1;
+            foreach (var section in allSections) {
+                var icon = ConvertBmpToBitmap(section.IconPath) ?? _fallbackIcon;
+                ConfigOptions.Add(new RebootOption {
+                    Name = section.Name,
+                    Type = RebootType.Config,
+                    Index = globalIndex,
+                    Icon = icon
+                });
+                globalIndex++;
             }
         }
     }
@@ -135,7 +143,7 @@ public partial class RebootOptionsPageViewModel : ObservableObject
                     currentSection = trimmedLine.Substring(1, trimmedLine.Length - 2);
                     currentIcon = null;
                 }
-                else if (currentSection != null && trimmedLine.StartsWith("icon=", StringComparison.OrdinalIgnoreCase)) {
+                else if (currentSection != null && currentSection != "config" && trimmedLine.StartsWith("icon=", StringComparison.OrdinalIgnoreCase)) {
                     currentIcon = trimmedLine.Substring(5).Trim();
                 }
             }
