@@ -40,7 +40,7 @@
                 <!-- ReSharper disable Xaml.PossibleNullReferenceException -->
                 
                 <!-- Launch Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
+                <Border Background="#3A3A3A" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Launch" 
                                    FontSize="18" 
@@ -95,7 +95,7 @@
                 </Border>
                 
                 <!-- More Configs Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
+                <Border Background="#3A3A3A" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="More Configs" 
                                    FontSize="18" 
@@ -150,7 +150,7 @@
                 </Border>
                 
                 <!-- UMS Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
+                <Border Background="#3A3A3A" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="UMS (USB Mass Storage)" 
                                    FontSize="18" 
@@ -205,7 +205,7 @@
                 </Border>
                 
                 <!-- System Options -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+                <Border Background="#3A3A3A" CornerRadius="8" Padding="15" Margin="0,0,0,10">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="System Options" 
                                    FontSize="18" 
