@@ -9,6 +9,25 @@
              x:Class="Tkmm.Views.Pages.RebootOptionsPageView"
              x:DataType="pages:RebootOptionsPageViewModel"
              Width="500">
+    
+    <UserControl.Styles>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#3E3E3E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="BorderBrush" Value="#4A4A4A"/>
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="Background" Value="#151515"/>
+            <Setter Property="BorderBrush" Value="#5A5A5A"/>
+        </Style>
+    </UserControl.Styles>
+    
     <Grid>
         <ScrollViewer>
             <StackPanel Margin="20" Spacing="10">
