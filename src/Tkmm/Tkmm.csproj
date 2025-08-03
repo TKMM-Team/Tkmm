@@ -44,7 +44,7 @@
     <PackageReference Include="MenuFactory" Version="1.1.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.2" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.2" TreatAsUsed="True" />
-    <PackageReference Condition="'$(IsSwitch)' == 'true'" Include="SixLabors.ImageSharp" Version="2.1.7" />
+    <PackageReference Condition="'$(IsSwitch)' == 'true'" Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
 
   <ItemGroup>
