@@ -9,9 +9,9 @@
              x:Class="Tkmm.Views.Pages.RebootOptionsPageView"
              x:DataType="pages:RebootOptionsPageViewModel"
              Width="500">
-    <Grid HorizontalAlignment="Stretch" Width="500">
-        <ScrollViewer HorizontalAlignment="Stretch" Width="500">
-            <StackPanel Margin="20" Spacing="10" HorizontalAlignment="Stretch" Width="500">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="20" Spacing="10">
                 <TextBlock Text="{markup:Locale Nx_Popup_Description}"
                            FontSize="24" 
                            FontWeight="Bold" 
@@ -19,7 +19,7 @@
                            Margin="0,0,0,20"/>
                 
                 <!-- Launch Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="Launch" 
                                    FontSize="18" 
@@ -35,7 +35,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Margin="5" 
-                                            Width="100" Height="100"
+                                            Width="99" Height="99"
                                             Command="{Binding $parent[UserControl].DataContext.SelectLaunchOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -51,7 +51,7 @@
                                                       HorizontalAlignment="Center"
                                                       TextWrapping="Wrap"
                                                       FontSize="12"
-                                                      MaxWidth="90"/>
+                                                      MaxWidth="97"/>
                                         </StackPanel>
                                     </Button>
                                 </DataTemplate>
@@ -74,7 +74,7 @@
                 </Border>
                 
                 <!-- More Configs Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="More Configs" 
                                    FontSize="18" 
@@ -90,7 +90,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Margin="5" 
-                                            Width="100" Height="100"
+                                            Width="99" Height="99"
                                             Command="{Binding $parent[UserControl].DataContext.SelectConfigOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -106,7 +106,7 @@
                                                       HorizontalAlignment="Center"
                                                       TextWrapping="Wrap"
                                                       FontSize="12"
-                                                      MaxWidth="90"/>
+                                                      MaxWidth="97"/>
                                         </StackPanel>
                                     </Button>
                                 </DataTemplate>
@@ -129,7 +129,7 @@
                 </Border>
                 
                 <!-- UMS Section -->
-                <Border Background="#2D2D30" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+                <Border Background="#2D2D30" CornerRadius="8" Padding="10" Margin="0,0,0,5">
                     <StackPanel HorizontalAlignment="Stretch">
                         <TextBlock Text="UMS (USB Mass Storage)" 
                                    FontSize="18" 
@@ -145,7 +145,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Margin="5" 
-                                            Width="100" Height="100"
+                                            Width="99" Height="99"
                                             Command="{Binding $parent[UserControl].DataContext.SelectUmsOptionCommand}"
                                             CommandParameter="{Binding}">
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
@@ -161,7 +161,7 @@
                                                       HorizontalAlignment="Center"
                                                       TextWrapping="Wrap"
                                                       FontSize="12"
-                                                      MaxWidth="90"/>
+                                                      MaxWidth="97"/>
                                         </StackPanel>
                                     </Button>
                                 </DataTemplate>
