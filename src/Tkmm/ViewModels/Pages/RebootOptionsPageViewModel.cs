@@ -46,16 +46,18 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     {
         LaunchOptions.Clear();
         var hekateIplPath = Path.Combine(_bootDiskPath, "bootloader", "hekate_ipl.ini");
+        var fallbackIcon = ConvertBmpToBitmap("bootloader/res/icon_switch.bmp");
         
         if (File.Exists(hekateIplPath)) {
             var sections = ParseIniSections(hekateIplPath);
             int index = 1;
             foreach (var section in sections) {
+                var icon = ConvertBmpToBitmap(section.IconPath) ?? fallbackIcon;
                 LaunchOptions.Add(new RebootOption {
                     Name = section.Name,
                     Type = RebootType.Launch,
                     Index = index,
-                    Icon = ConvertBmpToBitmap(section.IconPath)
+                    Icon = icon
                 });
                 index++;
             }
@@ -66,6 +68,7 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     {
         ConfigOptions.Clear();
         var iniDirectory = Path.Combine(_bootDiskPath, "bootloader", "ini");;
+        var fallbackIcon = ConvertBmpToBitmap("bootloader/res/icon_payload.bmp");
         
         if (Directory.Exists(iniDirectory)) {
             var iniFiles = Directory.GetFiles(iniDirectory, "*.ini");
@@ -74,11 +77,12 @@ public partial class RebootOptionsPageViewModel : ObservableObject
             foreach (var iniFile in iniFiles) {
                 var sections = ParseIniSections(iniFile);
                 foreach (var section in sections) {
+                    var icon = ConvertBmpToBitmap(section.IconPath) ?? fallbackIcon;
                     ConfigOptions.Add(new RebootOption {
                         Name = section.Name,
                         Type = RebootType.Config,
                         Index = globalIndex,
-                        Icon = ConvertBmpToBitmap(section.IconPath)
+                        Icon = icon
                     });
                     globalIndex++;
                 }
