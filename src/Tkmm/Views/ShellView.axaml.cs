@@ -10,7 +10,7 @@ using Tkmm.ViewModels;
 using Tkmm.Wizard;
 using TkSharp.Core;
 #if SWITCH
-using Tkmm.Views.Pages;
+using Tkmm.ViewModels.Pages;
 #endif
 
 namespace Tkmm.Views;

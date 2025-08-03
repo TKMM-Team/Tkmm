@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 using Tkmm.Attributes;
-using Tkmm.Views.Pages;
+using Tkmm.ViewModels.Pages;
 
 namespace Tkmm.Models.MenuModels;
 

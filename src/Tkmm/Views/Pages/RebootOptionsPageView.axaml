@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
-             xmlns:pages="clr-namespace:Tkmm.Views.Pages"
+             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:markup="clr-namespace:Tkmm.Markup"
              mc:Ignorable="d" d:DesignWidth="500"
              x:Class="Tkmm.Views.Pages.RebootOptionsPageView"

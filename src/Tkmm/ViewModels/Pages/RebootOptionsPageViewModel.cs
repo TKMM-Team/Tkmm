@@ -1,19 +1,20 @@
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Tkmm.Views.Pages;
+using TkSharp.Core;
 #if SWITCH
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using Tkmm.Models.MenuModels;
 #endif
-using TkSharp.Core;
 
-namespace Tkmm.Views.Pages;
+namespace Tkmm.ViewModels.Pages;
 
 public partial class RebootOptionsPageViewModel : ObservableObject
 {
@@ -27,10 +28,12 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     private ObservableCollection<RebootOption> _umsOptions = new();
 
 #if DEBUG
-    private string _bootDiskPath = "V:\\";
+    private const string BOOT_DISK_PATH = "V:\\";
 #else
-    private string _bootDiskPath = "/flash/";
+    private const string BOOT_DISK_PATH = "/flash/";
 #endif
+    
+    private readonly Bitmap? _fallbackIcon = ConvertBmpToBitmap("bootloader/res/icon_switch.bmp");
 
     public RebootOptionsPageViewModel()
     {
@@ -47,14 +50,13 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     private void LoadLaunchOptions()
     {
         LaunchOptions.Clear();
-        var hekateIplPath = Path.Combine(_bootDiskPath, "bootloader", "hekate_ipl.ini");
-        var fallbackIcon = ConvertBmpToBitmap("bootloader/res/icon_switch.bmp");
+        var hekateIplPath = Path.Combine(BOOT_DISK_PATH, "bootloader", "hekate_ipl.ini");
         
         if (File.Exists(hekateIplPath)) {
             var sections = ParseIniSections(hekateIplPath);
             int index = 1;
             foreach (var section in sections) {
-                var icon = ConvertBmpToBitmap(section.IconPath) ?? fallbackIcon;
+                var icon = ConvertBmpToBitmap(section.IconPath) ?? _fallbackIcon;
                 LaunchOptions.Add(new RebootOption {
                     Name = section.Name,
                     Type = RebootType.Launch,
@@ -69,8 +71,7 @@ public partial class RebootOptionsPageViewModel : ObservableObject
     private void LoadConfigOptions()
     {
         ConfigOptions.Clear();
-        var iniDirectory = Path.Combine(_bootDiskPath, "bootloader", "ini");;
-        var fallbackIcon = ConvertBmpToBitmap("bootloader/res/icon_payload.bmp");
+        var iniDirectory = Path.Combine(BOOT_DISK_PATH, "bootloader", "ini");;
         
         if (Directory.Exists(iniDirectory)) {
             var iniFiles = Directory.GetFiles(iniDirectory, "*.ini");
@@ -79,7 +80,7 @@ public partial class RebootOptionsPageViewModel : ObservableObject
             foreach (var iniFile in iniFiles) {
                 var sections = ParseIniSections(iniFile);
                 foreach (var section in sections) {
-                    var icon = ConvertBmpToBitmap(section.IconPath) ?? fallbackIcon;
+                    var icon = ConvertBmpToBitmap(section.IconPath) ?? _fallbackIcon;
                     ConfigOptions.Add(new RebootOption {
                         Name = section.Name,
                         Type = RebootType.Config,
@@ -150,13 +151,13 @@ public partial class RebootOptionsPageViewModel : ObservableObject
         return sections;
     }
 
-    private Bitmap? ConvertBmpToBitmap(string? bmpPath)
+    private static Bitmap? ConvertBmpToBitmap(string? bmpPath)
     {
         if (string.IsNullOrEmpty(bmpPath)) {
             return null;
         }
         
-        var fullBmpPath = Path.Combine(_bootDiskPath, bmpPath);
+        var fullBmpPath = Path.Combine(BOOT_DISK_PATH, bmpPath);
         
         if (!File.Exists(fullBmpPath)) {
             return null;
