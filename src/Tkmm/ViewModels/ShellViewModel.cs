@@ -1,7 +1,7 @@
 ﻿#if SWITCH
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.Input;
 #endif
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Tkmm.Core;
 
@@ -30,6 +30,7 @@ public partial class ShellViewModel : ObservableObject
     {
         IsFirstTimeSetup = !Config.Shared.ConfigExists() || TKMM.TryGetTkRom() is null;
     }
+    
 #if SWITCH
     [RelayCommand]
     public void ShowR2CMenu()
@@ -37,20 +38,14 @@ public partial class ShellViewModel : ObservableObject
         IsVisibleR2CMenu = true;
         R2CMenuOpacity = 1.0;
     }
+#endif
 
     [RelayCommand]
-    public void HideR2CMenu()
+    public async Task HideR2CMenu()
     {
         R2CMenuOpacity = 0.0;
-        // hide after fade animation completes
-        var timer = new System.Timers.Timer(300);
-        timer.Elapsed += (_, _) => {
-            Dispatcher.UIThread.Post(() => {
-                IsVisibleR2CMenu = false;
-            });
-            timer.Dispose();
-        };
-        timer.Start();
+        // wait 300 ms to hide after fade animation
+        await Task.Delay(300);
+        IsVisibleR2CMenu = false;
     }
-#endif
 }

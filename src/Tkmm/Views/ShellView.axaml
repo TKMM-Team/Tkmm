@@ -121,18 +121,31 @@
         
         <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
 
-        <!-- This is a carousel from the R2CSharp library that displays all Hekate reboot options (TKMM-NX only) -->
-        <views:CarouselPageView x:Name="NxRebootCarousel"
-                                ZIndex="1000"
-                                Focusable="False"
-                                IsVisible="False"
-                                Background="#1E1E1E" >
-            <views:CarouselPageView.Transitions>
+        <!-- Page from the R2CSharp library that displays Hekate reboot options when pressing Home (TKMM-NX only) -->
+        <Grid Background="#1E1E1E"
+              IsVisible="{Binding IsVisibleR2CMenu}"
+              Opacity="{Binding R2CMenuOpacity}">
+            
+            <views:CarouselPageView x:Name="R2CMenu" ZIndex="1000" />
+            
+            <!-- Close button to exit the R2C menu --> 
+            <Button Command="{Binding HideR2CMenu}"
+                    Width="70" Height="70"
+                    Background="Transparent"
+                    Focusable="False"
+                    ZIndex="1001"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="5">
+                <TextBlock Text="✕"  Foreground="White" FontSize="30" TextAlignment="Center" />
+            </Button>
+            
+            <Grid.Transitions>
                 <Transitions>
                     <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
                 </Transitions>
-            </views:CarouselPageView.Transitions>
-        </views:CarouselPageView>
-        
+            </Grid.Transitions>
+            
+        </Grid>
     </Grid>
 </uiw:AppWindow>
