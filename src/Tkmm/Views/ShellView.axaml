@@ -11,6 +11,7 @@
                xmlns:viewModels="clr-namespace:Tkmm.ViewModels"
                xmlns:components1="clr-namespace:Tkmm.Components"
                xmlns:models="clr-namespace:Tkmm.Models"
+               xmlns:views="clr-namespace:R2CSharp.Lib.Views;assembly=R2CSharp.Lib"
                Title="{x:Static desktop:App.ShortTitle}"
                xmlns:tk="using:TkSharp.Core"
                xmlns:controls="clr-namespace:Tkmm.Controls"
@@ -119,5 +120,19 @@
         </Grid>
         
         <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
+
+        <!-- This is a carousel from the R2CSharp library that displays all Hekate reboot options (TKMM-NX only) -->
+        <views:CarouselPageView x:Name="NxRebootCarousel"
+                                ZIndex="1000"
+                                Focusable="False"
+                                IsVisible="False"
+                                Background="#1E1E1E" >
+            <views:CarouselPageView.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
+                </Transitions>
+            </views:CarouselPageView.Transitions>
+        </views:CarouselPageView>
+        
     </Grid>
 </uiw:AppWindow>

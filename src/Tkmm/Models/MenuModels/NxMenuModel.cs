@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 using Tkmm.Attributes;
-using Tkmm.ViewModels.Pages;
+using Tkmm.ViewModels;
 
 namespace Tkmm.Models.MenuModels;
 
@@ -23,7 +23,7 @@ public class NxMenuModel
     [TkMenu(TkLocale.Menu_NxReboot2Config, TkLocale.Menu_Nx, Icon = "fa-solid fa-rocket")]
     public static void RebootMenu()
     {
-        RebootOptionsPageViewModel.ShowReboot2ConfigPopup();
+        ShellViewModel.Shared.ShowR2CMenu();
     }
 
     private static void ExecuteCommand(string command)

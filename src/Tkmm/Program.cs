@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using R2CSharp.Lib.Extensions;
 using Tkmm.Actions;
 using Tkmm.Components;
 #if !SWITCH
@@ -89,6 +90,7 @@ internal abstract class Program
 #endif
 
         return AppBuilder.Configure<App>()
+            .UseR2CSharp()
             .UsePlatformDetect()
             .WithInterFont();
     }

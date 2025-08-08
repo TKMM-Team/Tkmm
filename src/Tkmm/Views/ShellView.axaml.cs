@@ -10,7 +10,7 @@ using Tkmm.ViewModels;
 using Tkmm.Wizard;
 using TkSharp.Core;
 #if SWITCH
-using Tkmm.ViewModels.Pages;
+using R2CSharp.Lib.ViewModels;
 #endif
 
 namespace Tkmm.Views;
@@ -33,8 +33,55 @@ public partial class ShellView : AppWindow
                 MainNavigation.Content = PageManager.Shared.Current?.Content;
             }
         };
+        
+#if SWITCH
+        DataContext = ShellViewModel.Shared;
+        
+        ShellViewModel.Shared.PropertyChanged += (_, e) => {
+            switch (e.PropertyName) {
+                case nameof(ShellViewModel.Shared.IsVisibleR2CMenu): {
+                    NxRebootCarousel.IsVisible = ShellViewModel.Shared.IsVisibleR2CMenu;
+                
+                    if (ShellViewModel.Shared.IsVisibleR2CMenu) {
+                        MainNavigation.IsEnabled = false;
+                        MainMenu.IsEnabled = false;
+                        PowerOptionsMenu.IsEnabled = false;
+                        NxBatteryStatusPanel.IsEnabled = false;
+                    } else {
+                        MainNavigation.IsEnabled = true;
+                        MainMenu.IsEnabled = true;
+                        PowerOptionsMenu.IsEnabled = true;
+                        NxBatteryStatusPanel.IsEnabled = true;
+                    }
+
+                    break;
+                }
+                case nameof(ShellViewModel.Shared.R2CMenuOpacity):
+                    NxRebootCarousel.Opacity = ShellViewModel.Shared.R2CMenuOpacity;
+                    break;
+            }
+        };
+
+        NxRebootCarousel.IsVisible = ShellViewModel.Shared.IsVisibleR2CMenu;
+        NxRebootCarousel.Opacity = ShellViewModel.Shared.R2CMenuOpacity;
+        
+        LoadReboot2Config();
+#endif
     }
 
+#if  SWITCH
+    private async void LoadReboot2Config()
+    {
+        try {
+            var viewModel = new CarouselPageViewModel();
+            await NxRebootCarousel.SetViewModelAsync(viewModel);
+        }
+        catch (Exception e) {
+            TkLog.Instance.LogError(e, "Reboot2Config menu initialization failed");
+        }
+    }
+#endif
+    
     /// <summary>
     /// Start the setup wizard if this the first setup.
     /// </summary>
@@ -80,8 +127,14 @@ public partial class ShellView : AppWindow
         }
 
 #if SWITCH
-        if (e.Key is Key.LWin or Key.RWin) {
-            RebootOptionsPageViewModel.ShowReboot2ConfigPopup();
+        if (e.Key is not (Key.LWin or Key.RWin)) {
+            return;
+        }
+        if (ShellViewModel.Shared.IsVisibleR2CMenu) {
+            ShellViewModel.Shared.HideR2CMenu();
+        }
+        else {
+            ShellViewModel.Shared.ShowR2CMenu();
         }
 #endif
     }
