@@ -59,7 +59,7 @@
         <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1">
             <ToggleButton Name="InfoToggle"
                           Padding="6">
-                <fa:Icon Value="fa-regular fa-info-circle" />
+                <fa:Icon Value="fa-regular fa-circle-info" />
             </ToggleButton>
             
             <Button IsVisible="{Binding !IsFirstPage}"
