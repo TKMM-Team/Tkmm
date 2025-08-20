@@ -40,19 +40,19 @@ public static class AppUpdater
 
         if (await HasAvailableUpdates() is not Release release) {
 #if SWITCH
-        release = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
-        var commit = release.TargetCommitish;
-        var currentCommit = await GetCurrentNxCommit();
-        if (commit != currentCommit) {
-            MessageDialogResult nxUpdate = await MessageDialog.Show(
-                TkLocale.System_Popup_NxUpdateAvailable,
-                TkLocale.System_Popup_NxUpdateAvailable_Title, MessageDialogButtons.YesNo);
+            release = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+            var commit = release.TargetCommitish;
+            var currentCommit = await GetCurrentNxCommit();
+            if (commit != currentCommit) {
+                MessageDialogResult nxUpdate = await MessageDialog.Show(
+                    TkLocale.System_Popup_NxUpdateAvailable,
+                    TkLocale.System_Popup_NxUpdateAvailable_Title, MessageDialogButtons.YesNo);
 
-            if (nxUpdate is not MessageDialogResult.Yes) {
-                return;
+                if (nxUpdate is not MessageDialogResult.Yes) {
+                    return;
+                }
+                goto Retry;
             }
-        goto Retry;
-        }
 #endif
             if (isUserInvoked) {
                 await MessageDialog.Show(
