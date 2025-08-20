@@ -132,6 +132,7 @@
             <Button Command="{Binding HideR2CMenu}"
                     Width="70" Height="70"
                     Background="Transparent"
+                    BorderBrush="Transparent"
                     Focusable="False"
                     ZIndex="1001"
                     HorizontalAlignment="Right"
