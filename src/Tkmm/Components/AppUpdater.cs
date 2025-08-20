@@ -39,9 +39,24 @@ public static class AppUpdater
 #endif
 
         if (await HasAvailableUpdates() is not Release release) {
+#if SWITCH
+        release = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        var commit = release.TargetCommitish;
+        var currentCommit = await GetCurrentNxCommit();
+        if (commit != currentCommit) {
+            MessageDialogResult nxUpdate = await MessageDialog.Show(
+                TkLocale.System_Popup_NxUpdateAvailable,
+                TkLocale.System_Popup_NxUpdateAvailable_Title, MessageDialogButtons.YesNo);
+
+            if (nxUpdate is not MessageDialogResult.Yes) {
+                return;
+            }
+        goto Retry;
+        }
+#endif
             if (isUserInvoked) {
                 await MessageDialog.Show(
-                    TkLocale.System_Popup_SoftwareUpToData,
+                    TkLocale.System_Popup_SoftwareUpToDate,
                     TkLocale.System_Popup_Updater_Title);
             }
 
@@ -77,7 +92,7 @@ public static class AppUpdater
             });
 
             try {
-                await PerformUpdate(release, ct);
+                await PerformUpdate(release, isNxUpdate: false, ct);
                 dialog.Hide(TaskDialogStandardResult.Yes);
             }
             catch (Exception ex) {
@@ -132,12 +147,17 @@ public static class AppUpdater
         return latest.TagName.Length < 1 || latest.TagName[1..] != App.Version ? latest : null;
     }
 
-    private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
+    private static async ValueTask PerformUpdate(Release release, bool isNxUpdate = false, CancellationToken ct = default)
     {
 #if SWITCH
-        Release nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        Release nxRelease = release;
+        
+        if (isNxUpdate == false) {
+            nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        }
+        
         await using Stream? systemStream = await OctokitHelper.DownloadReleaseAsset(nxRelease, "SYSTEM", ct);
-
+        
         if (systemStream is null) {
             throw new Exception(
                 $"Update failed: Could not locate and/or download system image from '{nxRelease.TagName}'.");
@@ -158,7 +178,11 @@ public static class AppUpdater
         File.Move(tmpSystemPath, systemPath);
         Directory.Delete(tmpDir, true);
 #endif
-
+        if (isNxUpdate) {
+            Restart();
+            return;
+        }
+        
         await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, ct);
 
         if (stream is null) {
@@ -183,6 +207,7 @@ public static class AppUpdater
 #if SWITCH
     private static async Task PerformUpdateAsync(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
     {
+        var isNx = release.Url.Contains("TKMM-NX");
         var progressReporter = new Progress<double>(progress => {
             progressBar.Value = progress * 100.0;
             progressText.Text = $"{Locale[TkLocale.System_Popup_Updater]} ({(int)(progress * 100)}%)";
@@ -194,7 +219,7 @@ public static class AppUpdater
         });
 
         try {
-            await PerformUpdate(release, ct);
+            await PerformUpdate(release, isNxUpdate: isNx, ct);
             contentDialog.Hide(ContentDialogResult.None);
         }
         catch (OperationCanceledException) {
@@ -206,6 +231,22 @@ public static class AppUpdater
         finally {
             DownloadHelper.Reporters.Pop();
         }
+    }
+#endif
+
+#if SWITCH
+    private static async Task<string> GetCurrentNxCommit()
+    {
+        if (!File.Exists("/etc/os-release")) return string.Empty;
+        var lines = await File.ReadAllLinesAsync("/etc/os-release");
+
+        foreach (var line in lines) {
+            if (line.StartsWith("BUILD_ID=")) {
+                return line["BUILD_ID=".Length..].Trim('"');
+            }
+        }
+
+        return string.Empty;
     }
 #endif
 
