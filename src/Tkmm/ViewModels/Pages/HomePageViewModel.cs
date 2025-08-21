@@ -1,4 +1,4 @@
-#if RELEASE
+﻿#if RELEASE
 using Avalonia.Threading;
 #endif
 using Avalonia.Controls;
@@ -70,32 +70,13 @@ public partial class HomePageViewModel : ObservableObject
     [RelayCommand]
     private static void MoveToTop()
     {
-        var profile = TKMM.ModManager.GetCurrentProfile();
-        var target = profile.Selected;
-        if (target is null) return;
-
-        var mods = profile.Mods;
-        int currentIndex = mods.IndexOf(target);
-        if (currentIndex <= 0) return;
-
-        mods.RemoveAt(currentIndex);
-        mods.Insert(0, target);
+        TKMM.ModManager.GetCurrentProfile().MoveToTop();
     }
 
     [RelayCommand]
     private static void MoveToBottom()
     {
-        var profile = TKMM.ModManager.GetCurrentProfile();
-        var target = profile.Selected;
-        if (target is null) return;
-
-        var mods = profile.Mods;
-        int currentIndex = mods.IndexOf(target);
-        int lastIndex = mods.Count - 1;
-        if (currentIndex < 0 || currentIndex >= lastIndex) return;
-
-        mods.RemoveAt(currentIndex);
-        mods.Add(target);
+        TKMM.ModManager.GetCurrentProfile().MoveToBottom();
     }
 
     [RelayCommand]
