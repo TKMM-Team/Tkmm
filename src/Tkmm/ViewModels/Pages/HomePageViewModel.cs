@@ -66,39 +66,39 @@ public partial class HomePageViewModel : ObservableObject
     {
         TKMM.ModManager.GetCurrentProfile().MoveDown();
     }
+    
+[RelayCommand]
+private static void MoveToTop()
+{
+	var profile = TKMM.ModManager.GetCurrentProfile();
+	var target = profile.Selected;
+	if (target is null) return;
 
-    [RelayCommand]
-    private static void MoveToTop()
-    {
-        var profile = TKMM.ModManager.GetCurrentProfile();
-        var target = profile.Selected;
-        if (target is null) return;
+	var mods = profile.Mods;
+	int currentIndex = mods.IndexOf(target);
+	if (currentIndex <= 0) return;
 
-        var mods = profile.Mods;
-        int currentIndex = mods.IndexOf(target);
-        if (currentIndex <= 0) return;
+	mods.RemoveAt(currentIndex);
+	mods.Insert(0, target);
+	profile.Selected = target;
+}
 
-        mods.RemoveAt(currentIndex);
-        mods.Insert(0, target);
-        profile.Selected = target;
-    }
+[RelayCommand]
+private static void MoveToBottom()
+{
+	var profile = TKMM.ModManager.GetCurrentProfile();
+	var target = profile.Selected;
+	if (target is null) return;
 
-    [RelayCommand]
-    private static void MoveToBottom()
-    {
-        var profile = TKMM.ModManager.GetCurrentProfile();
-        var target = profile.Selected;
-        if (target is null) return;
+	var mods = profile.Mods;
+	int currentIndex = mods.IndexOf(target);
+	int lastIndex = mods.Count - 1;
+	if (currentIndex < 0 || currentIndex >= lastIndex) return;
 
-        var mods = profile.Mods;
-        int currentIndex = mods.IndexOf(target);
-        int lastIndex = mods.Count - 1;
-        if (currentIndex < 0 || currentIndex >= lastIndex) return;
-
-        mods.RemoveAt(currentIndex);
-        mods.Add(target);
-        profile.Selected = target;
-    }
+	mods.RemoveAt(currentIndex);
+	mods.Add(target);
+	profile.Selected = target;
+}
 
     [RelayCommand]
     private static Task Remove()
