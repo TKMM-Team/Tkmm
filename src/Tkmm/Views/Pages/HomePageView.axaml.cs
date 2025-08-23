@@ -18,6 +18,15 @@ public partial class HomePageView : UserControl
         InitializeComponent();
 
         base.OnAttachedToVisualTree(e);
+
+        var listBox = this.FindControl<ListBox>("ModsList");
+        if (listBox is not null) {
+            listBox.PropertyChanged += (_, args) => {
+                if (args.Property.Name == nameof(ListBox.SelectedItem) && listBox.SelectedItem is not null) {
+                    listBox.ScrollIntoView(listBox.SelectedItem);
+                }
+            };
+        }
     }
 
     private void GridSplitter_DragCompleted(object? sender, Avalonia.Input.VectorEventArgs e)
