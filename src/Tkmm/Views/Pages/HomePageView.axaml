@@ -296,7 +296,7 @@
                     Background="{DynamicResource SystemAccentColor}" />
 
             <Grid Name="ModListGrid" Grid.Column="2">
-                <ListBox Classes="ModDragDropListBox"
+                <ListBox Name="ModsList"
                          DragDrop.AllowDrop="True"
                          ItemsSource="{Binding ModManager.CurrentProfile.Mods}"
                          SelectedItem="{Binding ModManager.CurrentProfile.Selected}"
