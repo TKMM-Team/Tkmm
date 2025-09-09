@@ -1,5 +1,5 @@
 // Copyright (c) Ryujinx Team and Contributors. MIT.
-// https://github.com/Ryubing/Ryujinx/blob/master/LICENSE.txt
+// https://git.ryujinx.app/ryubing/ryujinx/-/blob/master/LICENSE.txt
 // 
 // Modified by TKMM-Team
 
