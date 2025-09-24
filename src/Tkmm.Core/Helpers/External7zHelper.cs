@@ -29,7 +29,63 @@ public static class External7zHelper
 
     public static bool CanUseExternal()
     {
+        if (string.IsNullOrWhiteSpace(Config.Shared.SevenZipPath)) {
+            TryAutoSetSevenZipPath();
+        }
+
         return File.Exists(Config.Shared.SevenZipPath)
                && Process.Start(new ProcessStartInfo(Config.Shared.SevenZipPath)) is not null;
+    }
+    
+    private static void TryAutoSetSevenZipPath()
+    {
+        if (OperatingSystem.IsWindows()) {
+            foreach (var location in new[] { "ProgramFiles", "ProgramFiles(x86)" }) {
+                var candidate = Path.Combine(Environment.GetEnvironmentVariable(location)!, "7-Zip", "7z.exe");
+                
+                if (!File.Exists(candidate)) {
+                    continue;
+                }
+                
+                Config.Shared.SevenZipPath = candidate;
+                return;
+            }
+        }
+        else {
+            foreach (var binary in new[] { "7zz", "7z" }) {
+                var resolved = Which(binary);
+                
+                if (string.IsNullOrWhiteSpace(resolved) || !File.Exists(resolved)) {
+                    continue;
+                }
+                
+                Config.Shared.SevenZipPath = resolved;
+                return;
+            }
+        }
+    }
+
+    private static string? Which(string name)
+    {
+        try {
+            using var p = Process.Start(
+                new ProcessStartInfo("which", name) {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                }
+            );
+
+            if (p is null) {
+                return null;
+            }
+
+            p.WaitForExit();
+            var output = p.StandardOutput.ReadToEnd().Trim();
+            return string.IsNullOrWhiteSpace(output) ? null : output;
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogWarning("Failed to run 'which' command for {Name}: {Exception}", name, ex);
+            return null;
+        }
     }
 }
