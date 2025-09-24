@@ -297,6 +297,7 @@
 
             <Grid Name="ModListGrid" Grid.Column="2">
                 <ListBox Classes="ModDragDropListBox"
+                         AutoScrollToSelectedItem="True"
                          DragDrop.AllowDrop="True"
                          ItemsSource="{Binding ModManager.CurrentProfile.Mods}"
                          SelectedItem="{Binding ModManager.CurrentProfile.Selected}"
