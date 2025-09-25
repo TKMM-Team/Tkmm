@@ -50,7 +50,7 @@ public static class ModsEnabledMalsProvider
                 BuilderVersion = 100,
                 GameVersion = 121,
                 MalsFiles = { malsFile },
-                Source = new StreamSystemSource($"romfs/{malsFile}", sarcStream)
+                Source = new StreamSystemSource(sarcStream)
             };
         }
         catch {
@@ -58,17 +58,14 @@ public static class ModsEnabledMalsProvider
         }
     }
 
-    private sealed class StreamSystemSource(string path, Stream stream) : ITkSystemSource
+    private sealed class StreamSystemSource(Stream stream) : ITkSystemSource
     {
-        public Stream OpenRead(string path1) 
+        public Stream OpenRead(string path) 
         {
-            if (path1 != path) {
-                throw new FileNotFoundException();
-            }
             stream.Position = 0;
             return stream;
         }
-        public bool Exists(string path1) => path1 == path;
+        public bool Exists(string path) => true;
         public ITkSystemSource GetRelative(string _) => this;
     }
 }
