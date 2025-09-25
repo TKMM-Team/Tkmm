@@ -32,7 +32,7 @@ public static class ModsEnabledMalsProvider
         }
 
         try {
-            Msbt changelog = new() { ["0003"] = new MsbtEntry { Text = "TKMM ~ " + localizedText } };
+            Msbt changelog = new() { ["0003"] = new MsbtEntry { Text = "TKMM - " + localizedText } };
 
             using var msbtStream = new MemoryStream();
             changelog.WriteBinary(msbtStream);
