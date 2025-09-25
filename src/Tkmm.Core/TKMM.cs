@@ -90,12 +90,7 @@ public static class TKMM
     {
         mergeOutput ??= MergedOutputFolder;
         
-        DirectoryHelper.DeleteTargetsFromDirectory(mergeOutput, ["romfs", "exefs", "cheats"], recursive: true);
-
-        string metadataFilePath = Path.Combine(mergeOutput, "romfs_metadata.bin");
-        if (File.Exists(metadataFilePath)) {
-            File.Delete(metadataFilePath);
-        }
+        DirectoryHelper.DeleteTargetsFromDirectory(mergeOutput, ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"], recursive: true);
 
         FolderModWriter writer = new(mergeOutput);
 
@@ -112,6 +107,17 @@ public static class TKMM
 
         await merger.MergeAsync(GetMergeTargets(profile), ct);
         TkOptimizerService.Context.Apply(writer, profile);
+
+        var romfsPath = Path.Combine(mergeOutput, "romfs");
+
+        if (Config.Shared.UseRomfslite && Directory.Exists(romfsPath)) {
+            try {
+                Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
+            }
+        }
 
         TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);

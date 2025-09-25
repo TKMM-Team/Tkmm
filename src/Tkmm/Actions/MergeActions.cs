@@ -83,7 +83,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         return ExportToSdCard(TKMM.ModManager.GetCurrentProfile(), ct);
     }
 
-    public async Task ExportToSdCard(TkProfile profile, CancellationToken ct = default)
+    private async Task ExportToSdCard(TkProfile profile, CancellationToken ct = default)
     {
         if (!await CanActionRun()) {
             return;
@@ -105,7 +105,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         if (disks.Length is 0) {
             await ErrorDialog.ShowAsync(
-                new DriveNotFoundException("No suitable disks found. Please make sure you have an SD card inserted or connected virtually over USB and that atmosphere is installed on it.")
+                new DriveNotFoundException("No suitable disks found. Please make sure you have an SD card inserted or connected virtually over USB, and that atmosphere is installed on it.")
             );
 
             return;
@@ -140,7 +140,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 return;
             }
             
-            DirectoryHelper.DeleteTargetsFromDirectory(output, ["romfs", "exefs"], recursive: true);
+            DirectoryHelper.DeleteTargetsFromDirectory(output, ["romfs", "romfslite", "exefs", "romfs_metadata.bin"], recursive: true);
             DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
         }
         catch (Exception ex) {

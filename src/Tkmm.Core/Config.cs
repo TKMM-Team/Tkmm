@@ -154,6 +154,13 @@ public sealed partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
+        Header = "Use romfslite",
+        Description = "Write mods to romfslite instead of romfs (requires TotK Optimizer). This fixes issues introduced in firmware 20.0.0+.",
+        Group = "Merging")]
+    private bool _useRomfslite;
+
+    [ObservableProperty]
+    [property: Config(
         Header = "Merge Output Folder",
         Description = "The location to write the merged output to. (Default location is './Merged' next to the TKMM executable)",
         Group = "Merging")]
