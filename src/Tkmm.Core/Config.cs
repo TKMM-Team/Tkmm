@@ -5,6 +5,9 @@ using ConfigFactory.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
+#if SWITCH
+using Tkmm.Core.TkOptimizer;
+#endif
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -87,7 +90,11 @@ public sealed partial class Config : ConfigModule<Config>
 
 #if SWITCH
     // ReSharper disable once MemberCanBeMadeStatic.Global
+    [JsonIgnore]
     public string SevenZipPath => "/usr/bin/7zz";
+
+    [JsonIgnore]
+    public bool UseRomfslite => TkOptimizerStore.IsProfileEnabled();
 #else
     [ObservableProperty]
     [property: Config(
