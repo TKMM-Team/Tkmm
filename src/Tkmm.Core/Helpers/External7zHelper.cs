@@ -55,7 +55,7 @@ public static class External7zHelper
             foreach (var binary in new[] { "7zz", "7z" }) {
                 var resolved = Which(binary);
                 
-                if (string.IsNullOrWhiteSpace(resolved) || !File.Exists(resolved)) {
+                if (resolved is null || !File.Exists(resolved)) {
                     continue;
                 }
                 
@@ -75,17 +75,15 @@ public static class External7zHelper
                 }
             );
 
-            if (p is null) {
-                return null;
+            if (p is not null) {
+                p.WaitForExit();
+                var output = p.StandardOutput.ReadToEnd().Trim();
+                return string.IsNullOrWhiteSpace(output) ? null : output;
             }
-
-            p.WaitForExit();
-            var output = p.StandardOutput.ReadToEnd().Trim();
-            return string.IsNullOrWhiteSpace(output) ? null : output;
         }
         catch (Exception ex) {
             TkLog.Instance.LogWarning("Failed to run 'which' command for {Name}: {Exception}", name, ex);
-            return null;
         }
+        return null;
     }
 }
