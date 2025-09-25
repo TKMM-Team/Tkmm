@@ -204,8 +204,16 @@ public static class TKMM
     {
         profile ??= ModManager.GetCurrentProfile();
         Ulid optimizerId = TkOptimizerService.GetStaticId();
-        return TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
+        
+        var targets = TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
             .Append(TkOptimizerService.GetMod(profile));
+        
+        if (ModsEnabledMalsProvider.CreateDefaultMalsChangelog(Config.Shared.GameLanguage) is { } defaultMalsChangelog)
+        {
+            targets = targets.Prepend(defaultMalsChangelog);
+        }
+        
+        return targets;
     }
 
     public static async ValueTask ExportPackage(TkMod target, Stream output)
