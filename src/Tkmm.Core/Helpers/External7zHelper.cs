@@ -29,14 +29,16 @@ public static class External7zHelper
 
     public static bool CanUseExternal()
     {
+#if !SWITCH
         if (string.IsNullOrWhiteSpace(Config.Shared.SevenZipPath)) {
             TryAutoSetSevenZipPath();
         }
-
+#endif
         return File.Exists(Config.Shared.SevenZipPath)
                && Process.Start(new ProcessStartInfo(Config.Shared.SevenZipPath)) is not null;
     }
     
+#if !SWITCH
     private static void TryAutoSetSevenZipPath()
     {
         if (OperatingSystem.IsWindows()) {
@@ -86,4 +88,5 @@ public static class External7zHelper
         }
         return null;
     }
+#endif
 }
