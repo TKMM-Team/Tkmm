@@ -3,6 +3,8 @@ using Avalonia.Controls.Presenters;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
+using Tkmm.ViewModels.Pages;
+using Tkmm.Views.Pages;
 using Tkmm.Wizard.Pages;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -18,6 +20,17 @@ namespace Tkmm.Wizard
         FirstPage:
             await FirstPage();
             
+        WiFiPage:
+            var wifiResult = await NextPage()
+                .WithTitle("WiFi Setup")
+                .WithContent<NetworkSettingsPageView>(new NetworkSettingsPageViewModel())
+                .WithActionContent("Continue")
+                .Show();
+            
+            if (!wifiResult) {
+                goto FirstPage;
+            }
+            
             if (!TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out var keys))
             {
                 bool proceed = await NextPage()
@@ -27,7 +40,7 @@ namespace Tkmm.Wizard
                     .Show();
                 
                 if (!proceed) {
-                    goto FirstPage;
+                    goto WiFiPage;
                 }
                 NxMenuModel.Reboot();
                 await Task.Delay(-1);
@@ -49,7 +62,7 @@ namespace Tkmm.Wizard
                 .Show();
 
             if (!oopsie) {
-                goto FirstPage;
+                goto WiFiPage;
             }
 
             NxMenuModel.Reboot();
