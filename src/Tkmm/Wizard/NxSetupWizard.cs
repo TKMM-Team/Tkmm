@@ -13,6 +13,8 @@ namespace Tkmm.Wizard
 {
     public sealed class NxSetupWizard(ContentPresenter presenter) : SetupWizard(presenter)
     {
+        private readonly ContentPresenter _presenter = presenter;
+
         public override async ValueTask Start()
         {
             TkConfig.Shared.SdCardRootPath = "/flash";
@@ -23,7 +25,7 @@ namespace Tkmm.Wizard
             
         WiFiPage:
             var windowHeight = 720.0;
-            if (presenter.FindAncestorOfType<Avalonia.Controls.Window>() is { } window) {
+            if (_presenter.FindAncestorOfType<Avalonia.Controls.Window>() is { } window) {
                 windowHeight = window.Height;
             }
 
