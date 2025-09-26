@@ -2248,7 +2248,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "If your emulator is in portable mode, you should provide the full path to the\nexecutable, rather than just the name (e.g. D:\\Emulators\\Ryujinx\\Ryujinx.exe).",
+      "en_US": "Please ensure your emulator is running before proceeding, or provide the full path\nto the executable rather than just the name (e.g. D:\\Emulators\\Ryujinx\\Ryujinx.exe).",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",

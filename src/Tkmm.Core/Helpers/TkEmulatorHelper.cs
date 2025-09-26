@@ -1,5 +1,6 @@
 #if !SWITCH
 
+using System.Diagnostics;
 using LanguageExt;
 using LibHac.Common.Keys;
 using Tkmm.Core.Models;
@@ -53,13 +54,22 @@ public static class TkEmulatorHelper
     
     public static Either<bool, string> UseEmulator(string emulatorFilePath, out bool hasUpdate)
     {
-        bool result = false;
+        var result = false;
         hasUpdate = false;
 
         // Only check file existence if the path contains directory separators
         if (emulatorFilePath.Contains(Path.DirectorySeparatorChar) || emulatorFilePath.Contains(Path.AltDirectorySeparatorChar)) {
             if (!File.Exists(emulatorFilePath)) {
                 return Locale["EmulatorFilePathNotFound", emulatorFilePath];
+            }
+        }
+        else {
+            // if only the emulator name was provided, attempt to find it from running processes
+            var process = Process.GetProcesses()
+                .FirstOrDefault(x => x.ProcessName.Equals(emulatorFilePath, StringComparison.OrdinalIgnoreCase));
+            
+            if (process?.MainModule?.FileName is { } fullPath) {
+                emulatorFilePath = fullPath;
             }
         }
 
