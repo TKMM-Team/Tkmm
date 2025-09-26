@@ -91,6 +91,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         }
     }
     
+#if !SWITCH
     [RelayCommand]
     public async Task OpenLogsFolder()
     {
@@ -110,6 +111,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
             await ErrorDialog.ShowAsync(ex);
         }
     }
+#endif
 
     [RelayCommand]
     public static async Task SoftClose()

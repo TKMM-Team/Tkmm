@@ -21,11 +21,13 @@ public sealed class HelpMenuModel
         return SystemActions.CheckForUpdates(isUserInvoked: true);
     }
 
+#if !SWITCH
     [TkMenu(TkLocale.Menu_HelpOpenLogsFolder, TkLocale.Menu_Help, InputGesture = "Ctrl + Shift + L", Icon = TkIcons.LIST_CHECK)]
     public static Task OpenLogsFolder()
     {
         return SystemActions.Instance.OpenLogsFolder();
     }
+#endif
 
     [TkMenu(TkLocale.Menu_HelpAbout, TkLocale.Menu_Help, InputGesture = "F12", Icon = TkIcons.CIRCLE_INFO, IsSeparator = true)]
     public static Task About()
