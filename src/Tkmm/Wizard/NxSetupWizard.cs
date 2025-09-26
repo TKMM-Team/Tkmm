@@ -1,5 +1,6 @@
 #if SWITCH
 using Avalonia.Controls.Presenters;
+using Avalonia.VisualTree;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
@@ -21,9 +22,19 @@ namespace Tkmm.Wizard
             await FirstPage();
             
         WiFiPage:
+            var windowHeight = 720.0;
+            if (presenter.FindAncestorOfType<Avalonia.Controls.Window>() is { } window) {
+                windowHeight = window.Height;
+            }
+
+            var networkPage = new NetworkSettingsPageView {
+                MaxHeight = windowHeight * 0.62,
+                DataContext = new NetworkSettingsPageViewModel()
+            };
+
             var wifiResult = await NextPage()
                 .WithTitle("WiFi Setup")
-                .WithContent<NetworkSettingsPageView>(new NetworkSettingsPageViewModel())
+                .WithContent(networkPage)
                 .WithActionContent("Continue")
                 .Show();
             
@@ -78,7 +89,7 @@ namespace Tkmm.Wizard
             if (!langResult)
             {
                 if (TKMM.TryGetTkRom() is not null) {
-                    goto FirstPage;
+                    goto WiFiPage;
                 }
                 goto Verify;
             }
