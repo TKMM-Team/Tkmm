@@ -27,7 +27,7 @@ public class TkOptimizerService
         }
 
         return new TkChangelog {
-            BuilderVersion = 100,
+            BuilderVersion = 200,
             GameVersion = 0,
             CheatFiles = GetCheats(),
             ExeFiles = {
@@ -41,7 +41,7 @@ public class TkOptimizerService
         
     CheatsOnly:
         return new TkChangelog {
-            BuilderVersion = 100,
+            BuilderVersion = 200,
             GameVersion = 0,
             CheatFiles = GetCheats(),
             Source = source

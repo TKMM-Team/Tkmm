@@ -47,7 +47,7 @@ public static class ModsEnabledMalsProvider
             var malsFile = $"Mals/{locale}.Product.sarc";
             
             return new TkChangelog {
-                BuilderVersion = 100,
+                BuilderVersion = 200,
                 GameVersion = 121,
                 MalsFiles = { malsFile },
                 Source = new StreamSystemSource(sarcStream)
