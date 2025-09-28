@@ -274,7 +274,7 @@ public static class AppUpdater
 #else
         Process.Start(new ProcessStartInfo {
             FileName = "sh",
-            Arguments = "-c \"echo 'self' > /sys/devices/r2p/action && tkmm-reboot\"",
+            Arguments = "-c \"echo 'self' > /sys/devices/r2p/action && sh /usr/bin/tkmm-reboot\"",
             UseShellExecute = true,
         });
 #endif
