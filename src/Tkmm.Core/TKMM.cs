@@ -108,11 +108,13 @@ public static class TKMM
         await merger.MergeAsync(GetMergeTargets(profile), ct);
         TkOptimizerService.Context.Apply(writer, profile);
 
-        var romfsPath = Path.Combine(mergeOutput, "romfs");
-
-        if (Config.Shared.UseRomfslite && Directory.Exists(romfsPath)) {
+        // For atmosphere 20.0 support with TotK Optimizer
+        if (Config.Shared.UseRomfslite) {
             try {
-                Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
+                string romfsPath = Path.Combine(mergeOutput, "romfs");
+                if (Directory.Exists(romfsPath)) {
+                    Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
+                }
             }
             catch (Exception ex) {
                 TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
@@ -205,7 +207,7 @@ public static class TKMM
         profile ??= ModManager.GetCurrentProfile();
         Ulid optimizerId = TkOptimizerService.GetStaticId();
         
-        var targets = TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
+        IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
             .Append(TkOptimizerService.GetMod(profile));
         
         if (ModsEnabledMalsProvider.CreateDefaultMalsChangelog(Config.Shared.GameLanguage) is { } defaultMalsChangelog)
