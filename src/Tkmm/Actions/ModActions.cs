@@ -19,7 +19,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
     public Task<TkMod?> Install(object input, Stream? stream = null, TkModContext? context = null, CancellationToken ct = default)
         => Install(input, TKMM.ModManager.GetCurrentProfile(), stream, context, ct);
 
-    public async Task<TkMod?> Install(object input, TkProfile profile, Stream? stream = null, TkModContext? context = null, CancellationToken ct = default)
+    private async Task<TkMod?> Install(object input, TkProfile profile, Stream? stream = null, TkModContext? context = null, CancellationToken ct = default)
     {
         await CanActionRun(showError: false);
 
@@ -54,7 +54,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
 
         IStorageFile? result = await App.XamlRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
-            Title = "Export Mod",
+            Title = Locale[TkLocale.Menu_ModExportFile],
             DefaultExtension = ".tkcl",
             FileTypeChoices = [
                 ImportActions.TkclFormat
@@ -91,12 +91,12 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return;
         }
 
-        string? targetOutputFolder = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
-            Title = "Export Mod as ROMFS",
+        var targetOutputFolder = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            Title = Locale[TkLocale.Menu_ModExportFolder],
             AllowMultiple = false,
             SuggestedFileName = target.Mod.Name
         }) switch {
-            [var first, ..] when first.TryGetLocalPath() is string path => path,
+            [var first, ..] when first.TryGetLocalPath() is { } path => path,
             _ => null
         };
 
@@ -112,6 +112,43 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while exporting the mod '{ModName}' to '{TargetFolder}'.",
+                target.Mod.Name, targetOutputFolder);
+            await ErrorDialog.ShowAsync(ex);
+        }
+    }
+
+    [RelayCommand]
+    public async Task ExportModAsProject(CancellationToken ct = default)
+    {
+        await CanActionRun(showError: false);
+
+        if (TKMM.ModManager.CurrentProfile?.Selected is not TkProfileMod target) {
+            return;
+        }
+
+        var targetOutputFolder = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            Title = Locale[TkLocale.Menu_ModExportProject],
+            AllowMultiple = false,
+            SuggestedFileName = target.Mod.Name
+        }) switch {
+            [var first, ..] when first.TryGetLocalPath() is { } path => path,
+            _ => null
+        };
+
+        if (targetOutputFolder is null) {
+            return;
+        }
+
+        try {
+            TkStatus.Set(Locale[TkLocale.Status_ExportingMod, target.Mod.Name, targetOutputFolder], TkIcons.GEAR_FOLDER);
+
+            using var tkRom = TKMM.GetTkRom();
+            await TkProjectExporter.ExportAsync(target.Mod, TKMM.ModManager, tkRom, targetOutputFolder, ct);
+
+            TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyExported, target.Mod.Name], TkIcons.CIRCLE_CHECK);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "An error occured while exporting the Mod '{ModName}' as a Project to '{TargetFolder}'.",
                 target.Mod.Name, targetOutputFolder);
             await ErrorDialog.ShowAsync(ex);
         }

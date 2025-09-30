@@ -880,6 +880,28 @@
       "zh_CN": "导出模组为RomFS",
       "zh_TW": "匯出模組為RomFS"
     },
+    "Menu_ModExportProject": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Export Mod as Project",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
     "Menu_ModConfigureOptions": {
       "ar_SA": "",
       "de_DE": "",

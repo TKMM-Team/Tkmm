@@ -21,6 +21,12 @@ public class ModMenuModel
         return ModActions.Instance.ExportModRomfs();
     }
 
+    [TkMenu(TkLocale.Menu_ModExportProject, TkLocale.Menu_Mod, InputGesture = "Ctrl + Shift + P", Icon = "fa-solid fa-diagram-project")]
+    public static Task ExportModProject()
+    {
+        return ModActions.Instance.ExportModAsProject();
+    }
+
     [TkMenu(TkLocale.Menu_ModConfigureOptions, TkLocale.Menu_Mod, InputGesture = "F4", Icon = "fa-sliders")]
     public static Task ConfigureOptions()
     {
