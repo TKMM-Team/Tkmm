@@ -14,6 +14,7 @@ public static class TkProjectExporter
 {
 	private static readonly TkThumbnailProvider ThumbnailProvider = TkThumbnailProvider.Instance;
 	private static string? _modsFolderPath;
+	private static TkProject? _project;
 
 	public static async Task ExportAsync(TkMod mod, ITkSystemProvider systemProvider, ITkRom rom,
 		string outputProjectFolderPath, CancellationToken ct = default)
@@ -23,7 +24,7 @@ public static class TkProjectExporter
 		}
 		Directory.CreateDirectory(outputProjectFolderPath);
 
-		TkProject project = new(outputProjectFolderPath) {
+		_project = new TkProject(outputProjectFolderPath) {
 			Mod = new TkMod {
 				Id = mod.Id,
 				Name = mod.Name,
@@ -48,13 +49,12 @@ public static class TkProjectExporter
 			CopyExefsFolder(mod.Id.ToString(), baseExefs);
 		}
 
-		await RebuildOptionsAsync(mod, rom, outputProjectFolderPath, project, ct);
+		await RebuildOptionsAsync(mod, rom, outputProjectFolderPath, ct);
 		await RestoreThumbnailsAsync(mod, outputProjectFolderPath, ct);
 
 		DeleteEmptyDirectories(outputProjectFolderPath);
 
-		project.Refresh();
-		project.Save();
+		_project.Save();
 	}
 
 	private static async Task RebuildContentAsync(TkMod mod, ITkRom rom, string projectFolderPath, CancellationToken ct)
@@ -83,21 +83,33 @@ public static class TkProjectExporter
 		}
 	}
 
-	private static async Task RebuildOptionsAsync(TkMod mod, ITkRom rom, string projectFolderPath, TkProject project, CancellationToken ct)
+	private static async Task RebuildOptionsAsync(TkMod mod, ITkRom rom, string projectFolderPath, CancellationToken ct)
 	{
 		foreach (var group in mod.OptionGroups) {
 			var groupFolderName = SanitizeFolderName(group.Name);
 			var groupFolderPath = Path.Combine(projectFolderPath, "options", groupFolderName);
 			
 			Directory.CreateDirectory(groupFolderPath);
-			project.RegisterItem(group, groupFolderPath);
+
+			var clonedGroup = new TkModOptionGroup {
+				Name = group.Name,
+				Description = group.Description,
+				Thumbnail = group.Thumbnail,
+				Type = group.Type,
+				IconName = group.IconName,
+				Priority = group.Priority
+			};
+			_project!.RegisterItem(clonedGroup, groupFolderPath);
+			_project.Mod.OptionGroups.Add(clonedGroup);
 
 			foreach (var option in group.Options) {
 				var optionFolderName = SanitizeFolderName(option.Name);
 				var optionFolderPath = Path.Combine(groupFolderPath, optionFolderName);
 
 				Directory.CreateDirectory(optionFolderPath);
-				project.RegisterItem(option, optionFolderPath);
+
+				_project!.RegisterItem(option, optionFolderPath);
+				clonedGroup.Options.Add(option);
 
 				FolderModWriter writer = new(projectFolderPath);
 				writer.SetRelativeFolder(Path.Combine("options", groupFolderName, optionFolderName));
