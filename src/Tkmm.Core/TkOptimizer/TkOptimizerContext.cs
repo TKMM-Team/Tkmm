@@ -123,8 +123,8 @@ public sealed class TkOptimizerContext : ObservableObject
     
     public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
-
-        string outputFileName = Path.Combine("romfs", "UltraCam",
+        string romfsFolder = Config.Shared.UseRomfslite ? "romfslite" : "romfs";
+        string outputFileName = Path.Combine(romfsFolder, "UltraCam",
             // ReSharper disable twice StringLiteralTypo
             "maxlastbreath.ini");
         
