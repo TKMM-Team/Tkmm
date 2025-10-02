@@ -123,16 +123,18 @@ public sealed class TkOptimizerContext : ObservableObject
     
     public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
-        string romfsFolder = Config.Shared.UseRomfslite ? "romfslite" : "romfs";
-        string outputFileName = Path.Combine(romfsFolder, "UltraCam",
+        var romfslitePath = Path.Combine(TKMM.MergedOutputFolder, "romfslite");
+        var romfsFolder = Directory.Exists(romfslitePath) && Config.Shared.UseRomfslite ? "romfslite" : "romfs";
+
+        var outputFileName = Path.Combine(romfsFolder, "UltraCam",
             // ReSharper disable twice StringLiteralTypo
             "maxlastbreath.ini");
         
-        string outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config",
+        var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config",
             "maxlastbreath.ini");
         
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
-            string deleteFilePath = Path.Combine(TKMM.MergedOutputFolder, outputFileName);
+            var deleteFilePath = Path.Combine(TKMM.MergedOutputFolder, outputFileName);
             if (File.Exists(deleteFilePath)) {
                 try {    
                     File.Delete(deleteFilePath);
