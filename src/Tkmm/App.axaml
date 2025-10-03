@@ -19,12 +19,14 @@
                     <Color x:Key="SystemChromeLowColor">Transparent</Color>
                     <Color x:Key="SystemChromeMediumColor">#FFF2F2F2</Color>
                     <Color x:Key="SystemChromeMediumLowColor">#FFE6E6E6</Color>
+                    <Color x:Key="SystemChromeAltLowColor">#FFE0E0E0</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <Color x:Key="SystemChromeHighColor">#FF737373</Color>
                     <Color x:Key="SystemChromeLowColor">Transparent</Color>
                     <Color x:Key="SystemChromeMediumColor">#FF2B2B2B</Color>
                     <Color x:Key="SystemChromeMediumLowColor">#FF1F1F1F</Color>
+                    <Color x:Key="SystemChromeAltLowColor">#FF353535</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>

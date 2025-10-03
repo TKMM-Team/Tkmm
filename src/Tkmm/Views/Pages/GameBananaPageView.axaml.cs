@@ -14,7 +14,7 @@ public partial class GameBananaPageView : UserControl
     private async void TextBox_KeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && DataContext is GameBananaPageViewModel vm) {
-            await vm.Search(ModsViewer);
+            await vm.Browser.Search(ModsViewer);
         }
     }
 }

@@ -1,0 +1,380 @@
+<UserControl x:Class="Tkmm.Views.Pages.GameBananaModPageView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:gb="using:TkSharp.Extensions.GameBanana"
+             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
+             xmlns:avaMark="clr-namespace:AvaMark;assembly=AvaMark"
+             xmlns:controls="clr-namespace:Tkmm.Controls"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="False"
+             x:DataType="pages:GameBananaModPageViewModel"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <pages:GameBananaModPageViewModel />
+    </UserControl.DataContext>
+    
+    <Grid Margin="15" RowDefinitions="Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource SystemAccentColor}">
+            <Grid Margin="15,10" ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0"
+                        Width="40"
+                        Height="40"
+                        Margin="0,0,15,0"
+                        Command="{Binding Path=DataContext.BackToMainCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                        ToolTip.Tip="Back to mod browser">
+                    <pi:Icon Value="fa-solid fa-arrow-left" />
+                </Button>
+                <StackPanel Grid.Column="1" 
+                            VerticalAlignment="Center">
+                    <TextBlock FontSize="16" 
+                               FontWeight="SemiBold" 
+                               Text="{Binding SelectedMod.Name}" />
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock FontSize="12"
+                                   FontStyle="Italic"
+                                   Foreground="{DynamicResource SystemChromeHighColor}"
+                                   Text="Uploaded by " />
+                        <HyperlinkButton FontSize="12"
+                                         FontStyle="Italic"
+                                         Foreground="{DynamicResource SystemAccentColor}"
+                                         NavigateUri="{Binding SelectedMod.Submitter.Url}"
+                                         Content="{Binding SelectedMod.Submitter.Name}"
+                                         Padding="0"
+                                         Margin="0" />
+                        <TextBlock FontSize="12"
+                                   FontStyle="Italic"
+                                   Foreground="{DynamicResource SystemChromeHighColor}"
+                                   Text="{Binding FormattedDateAdded, StringFormat=' on {0}'}" />
+                    </StackPanel>
+                </StackPanel>
+                <HyperlinkButton Grid.Column="2"
+                                 Height="32"
+                                 Padding="8,6"
+                                 BorderThickness="1"
+                                 CornerRadius="4"
+                                 BorderBrush="{DynamicResource SystemChromeHighColor}"
+                                 NavigateUri="{Binding ModUrl}"
+                                 ToolTip.Tip="Open in GameBanana">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Image Width="20" 
+                               Height="20" 
+                               Source="{Binding BananaIcon}" 
+                               Stretch="Uniform" />
+                        <TextBlock Text="Open in GameBanana" 
+                                   FontSize="14" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource SystemChromeHighColor}"/>
+                    </StackPanel>
+                </HyperlinkButton>
+            </Grid>
+        </Border>
+        
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="20" ColumnDefinitions="3*,Auto,2*">
+                <!-- Left Column -->
+                <Border Grid.Column="0" 
+                        Margin="0,0,20,0"
+                        Background="{DynamicResource SystemChromeAltLowColor}"
+                        CornerRadius="8"
+                        Padding="15">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" 
+                                          Color="Black" 
+                                          Opacity="0.3" />
+                    </Border.Effect>
+                    <StackPanel Spacing="20">
+                        <!-- Image Gallery -->
+                        <Border CornerRadius="8" Padding="10">
+                        <Grid>
+                            <Border Name="ImageContainer"
+                                    MinHeight="200"
+                                    MaxHeight="350"
+                                    MaxWidth="650"
+                                    CornerRadius="8"
+                                    ClipToBounds="True"
+                                    IsVisible="{Binding HasImages}">
+                                <Image Name="MainImage"
+                                       Source="{Binding SelectedImage}"
+                                       Stretch="Uniform" />
+                            </Border>
+                            <TextBlock Text="No images available"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource SystemBaseMediumColor}"
+                                       IsVisible="{Binding ShowNoImagesMessage}" />
+                            
+                             <!-- Left/Right Navigation Buttons -->
+                             <Button HorizontalAlignment="Left"
+                                     VerticalAlignment="Center"
+                                     Width="35"
+                                     Height="35"
+                                     Margin="10,0,0,0"
+                                     Command="{Binding PreviousImageCommand}"
+                                     IsVisible="{Binding HasMultipleImages}"
+                                     Background="{DynamicResource SystemChromeHighColor}"
+                                     Opacity="0.8">
+                                 <Button.Styles>
+                                     <Style Selector="Button:pointerover">
+                                         <Setter Property="Opacity" Value="1.0" />
+                                     </Style>
+                                     <Style Selector="Button:pressed">
+                                         <Setter Property="Opacity" Value="1.0" />
+                                     </Style>
+                                 </Button.Styles>
+                                 <pi:Icon Value="fa-solid fa-chevron-left" />
+                             </Button>
+                             <Button HorizontalAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Width="35"
+                                     Height="35"
+                                     Margin="0,0,10,0"
+                                     Command="{Binding NextImageCommand}"
+                                     IsVisible="{Binding HasMultipleImages}"
+                                     Background="{DynamicResource SystemChromeHighColor}"
+                                     Opacity="0.8">
+                                 <Button.Styles>
+                                     <Style Selector="Button:pointerover">
+                                         <Setter Property="Opacity" Value="1.0" />
+                                     </Style>
+                                     <Style Selector="Button:pressed">
+                                         <Setter Property="Opacity" Value="1.0" />
+                                     </Style>
+                                 </Button.Styles>
+                                 <pi:Icon Value="fa-solid fa-chevron-right" />
+                             </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Image Thumbnails -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding Images}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="60"
+                                            Height="60"
+                                            Margin="5,0,5,20"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            CornerRadius="8"
+                                            Command="{Binding Path=DataContext.SelectImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Border Width="60"
+                                                        Height="60"
+                                                        CornerRadius="8"
+                                                        BorderThickness="2"
+                                                        BorderBrush="{DynamicResource SystemChromeHighColor}"
+                                                        ClipToBounds="True">
+                                                    <Image Source="{Binding}"
+                                                            Stretch="UniformToFill"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                        
+                        <!-- Description -->
+                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding SelectedMod}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Vertical Divider -->
+                <Border Grid.Column="1"
+                        Width="1"
+                        Margin="5,0"
+                        Background="{DynamicResource SystemAccentColor}" />
+
+                <!-- Right Column -->
+                <StackPanel Grid.Column="2" Margin="20,0,0,0" Spacing="20">
+                    <Grid RowDefinitions="*,*,*">
+                        <!-- Stats -->
+                        <StackPanel Grid.Row="0">
+                            <Grid ColumnDefinitions="*,*,*" Margin="0,2">
+                                <Grid Grid.Column="0" ColumnDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                                    <pi:Icon Grid.Column="0" Value="fa-solid fa-heart" Margin="0,0,5,0" Foreground="HotPink"  FontSize="20" />
+                                    <TextBlock Grid.Column="1" 
+                                               FontSize="20" 
+                                               Text="{Binding SelectedMod.LikeCount}" 
+                                               Margin="0,0,2,0" />
+                                </Grid>
+                                
+                                <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                                    <pi:Icon Grid.Column="0" Value="fa-solid fa-download" Margin="0,0,5,0" Foreground="YellowGreen" FontSize="20" />
+                                    <TextBlock Grid.Column="1" 
+                                               FontSize="20" 
+                                               Text="{Binding SelectedMod.DownloadCount}" 
+                                               Margin="0,0,2,0" />
+                                </Grid>
+                                
+                                <Grid Grid.Column="2" ColumnDefinitions="Auto,Auto" HorizontalAlignment="Center">
+                                    <pi:Icon Grid.Column="0" Value="fa-solid fa-eye" Margin="0,0,5,0" Foreground="Gold" FontSize="20" />
+                                    <TextBlock Grid.Column="1" 
+                                               FontSize="20" 
+                                               Text="{Binding SelectedMod.ViewCount}" 
+                                               Margin="0,0,2,0" />
+                                </Grid>
+                            </Grid>
+                            
+                        </StackPanel>
+                        <!-- Credits -->
+                        <Border Grid.Row="1" 
+                                Margin="0,15,0,0"
+                                Background="{DynamicResource SystemChromeAltLowColor}"
+                                CornerRadius="8"
+                                Padding="15">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" 
+                                                  Color="Black" 
+                                                  Opacity="0.3" />
+                            </Border.Effect>
+                            <StackPanel>
+                                <TextBlock FontSize="16" 
+                                           FontWeight="Bold" 
+                                           Text="Credits" 
+                                           Margin="0,0,0,10" />
+                            <ItemsControl ItemsSource="{Binding SelectedMod.Credits}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type gb:GameBananaCreditGroup}">
+                                        <StackPanel Margin="0,0,0,15">
+                                            <TextBlock FontWeight="Bold" 
+                                                       Text="{Binding Name}" 
+                                                       TextWrapping="Wrap" 
+                                                       Margin="0,0,0,5" />
+                                            <ItemsControl ItemsSource="{Binding Authors}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type gb:GameBananaAuthor}">
+                                                        <Grid Margin="0,2" ColumnDefinitions="Auto,*,Auto">
+                                                            <Image Grid.Column="0"
+                                                                   Width="24"
+                                                                   Height="24"
+                                                                   Margin="0,0,8,0"
+                                                                   Source="{Binding LoadedAvatar}"
+                                                                   Stretch="Uniform" />
+                                                            <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                                                <TextBlock Text="{Binding Name}" 
+                                                                           FontWeight="Medium"
+                                                                           TextTrimming="CharacterEllipsis" />
+                                                                <TextBlock Text="{Binding Role}" 
+                                                                           FontSize="12"
+                                                                           FontStyle="Italic"
+                                                                           Foreground="Gray"
+                                                                           TextWrapping="Wrap"
+                                                                           TextTrimming="CharacterEllipsis" />
+                                                            </StackPanel>
+                                                            <HyperlinkButton Grid.Column="2"
+                                                                             Width="20"
+                                                                             Height="20"
+                                                                             Padding="2"
+                                                                             NavigateUri="{Binding ProfileUrl}"
+                                                                             ToolTip.Tip="View Profile"
+                                                                             IsVisible="{Binding ProfileUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                                                <pi:Icon Value="fa-solid fa-external-link-alt" />
+                                                            </HyperlinkButton>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                        <!-- Version and Date -->
+                        <StackPanel Grid.Row="2" Margin="0,15,0,0" Spacing="5">
+                            <TextBlock Text="{Binding SelectedMod.Version, StringFormat='Version {0}'}" 
+                                       IsVisible="{Binding SelectedMod.Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                       FontWeight="Medium"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding FormattedDateUpdated, StringFormat='Last updated on {0}'}" 
+                                       FontSize="12"
+                                       IsVisible="{Binding FormattedDateUpdated, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource SystemBaseMediumColor}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Bottom Half: Files -->
+                    <Border Margin="0,5,0,0"
+                            Background="{DynamicResource SystemChromeAltLowColor}"
+                            CornerRadius="8"
+                            Padding="15">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" 
+                                              Color="Black" 
+                                              Opacity="0.3" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock FontSize="16" 
+                                       FontWeight="Bold" 
+                                       Text="Downloads" 
+                                       Margin="0,0,0,10" />
+                        <ItemsControl ItemsSource="{Binding SelectedMod.Files}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type gb:GameBananaFile}">
+                                    <Border CornerRadius="6"
+                                            Padding="10"
+                                            Margin="0,4"
+                                            Background="{DynamicResource SystemChromeLowColor}">
+                                        <Grid ColumnDefinitions="*,Auto" Margin="0,0,8,0">
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="{Binding Name}" 
+                                                           FontWeight="Medium"
+                                                           Margin="0,0,0,5"
+                                                           TextWrapping="Wrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip.Tip="{Binding Name}" />
+                                                <TextBlock Text="{Binding Description}" 
+                                                           FontSize="12"
+                                                           FontStyle="Italic"
+                                                           Foreground="Gray"
+                                                           TextWrapping="Wrap"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           IsVisible="{Binding Description.Length}"
+                                                           ToolTip.Tip="{Binding Description}" />
+                                            </StackPanel>
+                                            
+                                            <Button Grid.Column="1"
+                                                    Width="32"
+                                                    Height="32"
+                                                    Padding="4"
+                                                    Command="{Binding Path=DataContext.InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="Install mod">
+                                                <pi:Icon Value="fa-solid fa-download" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
