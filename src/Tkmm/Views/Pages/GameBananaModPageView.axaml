@@ -97,16 +97,22 @@
                         <Grid>
                             <Border Name="ImageContainer"
                                     MinHeight="200"
-                                    MaxHeight="350"
+                                    MaxHeight="300"
                                     MaxWidth="650"
                                     CornerRadius="8"
                                     ClipToBounds="True"
                                     IsVisible="{Binding HasImages}">
                                 <Image Name="MainImage"
                                        Source="{Binding SelectedImage}"
-                                       Stretch="Uniform" />
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center">
+                                    <Image.RenderTransform>
+                                        <TranslateTransform />
+                                    </Image.RenderTransform>
+                                </Image>
                             </Border>
-                            <TextBlock Text="No images available"
+                            <TextBlock Text="Loading images..."
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="16"
