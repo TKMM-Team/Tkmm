@@ -31,8 +31,7 @@ internal abstract class Program
                 return;
             }
 
-            // Will lock until the old
-            // files can be deleted
+            // Will lock until the old files can be deleted
             AppUpdater.CleanupUpdate();
 
             const string logCategoryName = nameof(TKMM);
@@ -50,33 +49,20 @@ internal abstract class Program
             _ = Task.Run(async () => {
                 while (true)
                 {
-                    if (TkConsoleApp.TryGetPendingModViewerRequest(out var modId))
-                    {
-                        Console.WriteLine($"Processing mod viewer request for mod ID: {modId}");
-                        
-                        await Task.Delay(3000);
-                        
+                    if (TkConsoleApp.TryGetPendingModViewerRequest(out var modId)) {
                         await Dispatcher.UIThread.InvokeAsync(async () => {
-                            try
-                            {
-                                Console.WriteLine("Navigating to GameBanana page...");
+                            try {
                                 PageManager.Shared.Focus(Page.GbMods);
-                                
-                                Console.WriteLine("Getting GameBanana page view model...");
                                 var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
-                                
-                                Console.WriteLine($"Opening mod {modId} in viewer...");
                                 await gameBananaPage.OpenModInViewerAsync(modId);
-                                Console.WriteLine("Mod opened successfully!");
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine($"Error opening mod: {ex.Message}");
+                                TkLog.Instance.LogError(ex, "Error opening mod: {Message}", ex.Message);
                             }
                         });
                     }
-                    else
-                    {
+                    else {
                         await Task.Delay(1000);
                     }
                 }
