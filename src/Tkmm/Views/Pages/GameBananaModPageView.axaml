@@ -126,7 +126,7 @@
                                      Height="35"
                                      Margin="10,0,0,0"
                                      Command="{Binding PreviousImageCommand}"
-                                     IsVisible="{Binding HasMultipleImages}"
+                                     IsVisible="{Binding CanGoToPreviousImage}"
                                      Background="{DynamicResource SystemChromeHighColor}"
                                      Opacity="0.8">
                                  <Button.Styles>
@@ -145,7 +145,7 @@
                                      Height="35"
                                      Margin="0,0,10,0"
                                      Command="{Binding NextImageCommand}"
-                                     IsVisible="{Binding HasMultipleImages}"
+                                     IsVisible="{Binding CanGoToNextImage}"
                                      Background="{DynamicResource SystemChromeHighColor}"
                                      Opacity="0.8">
                                  <Button.Styles>

@@ -28,6 +28,8 @@ public partial class GameBananaModPageViewModel : ObservableObject
     partial void OnSelectedImageIndexChanged(int value)
     {
         OnPropertyChanged(nameof(SelectedImage));
+        OnPropertyChanged(nameof(CanGoToPreviousImage));
+        OnPropertyChanged(nameof(CanGoToNextImage));
     }
     
     public string FormattedDateAdded => SelectedMod?.DateAdded > 0 
@@ -40,11 +42,13 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public bool HasImages => Images.Count > 0;
 
-    public bool HasMultipleImages => Images.Count > 1;
-
     public bool ShowNoImagesMessage => Images.Count == 0;
 
     public bool ShowNoThumbnailMessage => Images.Count == 0;
+
+    public bool CanGoToPreviousImage => Images.Count > 1 && SelectedImageIndex > 0;
+
+    public bool CanGoToNextImage => Images.Count > 1 && SelectedImageIndex < Images.Count - 1;
 
     public object? SelectedImage => Images.Count > 0 && SelectedImageIndex >= 0 && SelectedImageIndex < Images.Count 
         ? Images[SelectedImageIndex] 
@@ -135,8 +139,8 @@ public partial class GameBananaModPageViewModel : ObservableObject
     private async Task LoadBananaIconAsync()
     {
         var bitmap = await LoadImageFromUrlAsync("https://images.gamebanana.com/static/img/banana.png", "banana icon");
-        if (bitmap != null)
-        {
+        
+        if (bitmap != null) {
             await Dispatcher.UIThread.InvokeAsync(() => {
                 BananaIcon = bitmap;
             });
@@ -145,14 +149,9 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     private async Task LoadAvatarsAsync()
     {
-        if (SelectedMod?.Credits is not null)
-        {
-            foreach (var creditGroup in SelectedMod.Credits)
-            {
-                foreach (var author in creditGroup.Authors)
-                {
-                    await LoadSingleAvatarAsync(author);
-                }
+        if (SelectedMod?.Credits is not null) {
+            foreach (var author in SelectedMod.Credits.SelectMany(creditGroup => creditGroup.Authors)) {
+                await LoadSingleAvatarAsync(author);
             }
         }
     }
@@ -174,12 +173,11 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     private async Task LoadImagesAsync()
     {
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => {
+        await Dispatcher.UIThread.InvokeAsync(() => {
             Images.Clear();
             SelectedImageIndex = 0;
             OnPropertyChanged(nameof(SelectedImageIndex));
             OnPropertyChanged(nameof(HasImages));
-            OnPropertyChanged(nameof(HasMultipleImages));
             OnPropertyChanged(nameof(ShowNoImagesMessage));
             OnPropertyChanged(nameof(ShowNoThumbnailMessage));
         });
@@ -191,14 +189,14 @@ public partial class GameBananaModPageViewModel : ObservableObject
                 var bitmap = await LoadImageFromUrlAsync($"{image.BaseUrl}/{image.File}", "mod image");
                 if (bitmap != null)
                 {
-                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => {
+                    await Dispatcher.UIThread.InvokeAsync(() => {
                         Images.Add(bitmap);
                         OnPropertyChanged(nameof(HasImages));
-                        OnPropertyChanged(nameof(HasMultipleImages));
                         OnPropertyChanged(nameof(ShowNoImagesMessage));
                         OnPropertyChanged(nameof(ShowNoThumbnailMessage));
+                        OnPropertyChanged(nameof(CanGoToNextImage));
+                        OnPropertyChanged(nameof(CanGoToPreviousImage));
                         
-                        // If this is the first image, make sure it's selected
                         if (Images.Count == 1) {
                             OnPropertyChanged(nameof(SelectedImageIndex));
                             OnPropertyChanged(nameof(SelectedImage));
