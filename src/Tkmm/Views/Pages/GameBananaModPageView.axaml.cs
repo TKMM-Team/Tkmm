@@ -9,10 +9,12 @@ namespace Tkmm.Views.Pages;
 
 public partial class GameBananaModPageView : UserControl
 {
+#if !SWITCH
     private Image? _mainImage;
     private TranslateTransform? _imageTransform;
     private int _previousImageIndex = -1;
     private CancellationTokenSource? _animationCancellation;
+#endif
 
     public GameBananaModPageView()
     {
