@@ -27,9 +27,17 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     partial void OnSelectedImageIndexChanged(int value)
     {
+        NotifyImagePropertiesChanged();
+    }
+
+    private void NotifyImagePropertiesChanged()
+    {
         OnPropertyChanged(nameof(SelectedImage));
         OnPropertyChanged(nameof(CanGoToPreviousImage));
         OnPropertyChanged(nameof(CanGoToNextImage));
+        OnPropertyChanged(nameof(HasImages));
+        OnPropertyChanged(nameof(ShowNoImagesMessage));
+        OnPropertyChanged(nameof(ShowNoThumbnailMessage));
     }
     
     public string FormattedDateAdded => SelectedMod?.DateAdded > 0 
@@ -101,7 +109,6 @@ public partial class GameBananaModPageViewModel : ObservableObject
         if (Images.Count > 1)
         {
             SelectedImageIndex = (SelectedImageIndex + 1) % Images.Count;
-            OnPropertyChanged(nameof(SelectedImage));
         }
     }
 
@@ -111,7 +118,6 @@ public partial class GameBananaModPageViewModel : ObservableObject
         if (Images.Count > 1)
         {
             SelectedImageIndex = SelectedImageIndex == 0 ? Images.Count - 1 : SelectedImageIndex - 1;
-            OnPropertyChanged(nameof(SelectedImage));
         }
     }
 
@@ -122,7 +128,6 @@ public partial class GameBananaModPageViewModel : ObservableObject
             return;
         }
         SelectedImageIndex = Images.IndexOf(image);
-        OnPropertyChanged(nameof(SelectedImage));
     }
 
     [RelayCommand]
@@ -176,10 +181,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
         await Dispatcher.UIThread.InvokeAsync(() => {
             Images.Clear();
             SelectedImageIndex = 0;
-            OnPropertyChanged(nameof(SelectedImageIndex));
-            OnPropertyChanged(nameof(HasImages));
-            OnPropertyChanged(nameof(ShowNoImagesMessage));
-            OnPropertyChanged(nameof(ShowNoThumbnailMessage));
+            NotifyImagePropertiesChanged();
         });
         
         if (SelectedMod?.Media?.Images is not null)
@@ -191,16 +193,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
                 {
                     await Dispatcher.UIThread.InvokeAsync(() => {
                         Images.Add(bitmap);
-                        OnPropertyChanged(nameof(HasImages));
-                        OnPropertyChanged(nameof(ShowNoImagesMessage));
-                        OnPropertyChanged(nameof(ShowNoThumbnailMessage));
-                        OnPropertyChanged(nameof(CanGoToNextImage));
-                        OnPropertyChanged(nameof(CanGoToPreviousImage));
-                        
-                        if (Images.Count == 1) {
-                            OnPropertyChanged(nameof(SelectedImageIndex));
-                            OnPropertyChanged(nameof(SelectedImage));
-                        }
+                        NotifyImagePropertiesChanged();
                     });
                 }
             }
