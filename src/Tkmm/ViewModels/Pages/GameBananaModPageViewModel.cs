@@ -66,8 +66,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
     {
-        var viewer = new GameBananaModPageViewModel();
-        viewer._browser = browser;
+        var viewer = new GameBananaModPageViewModel { _browser = browser };
         viewer.LoadMod(mod);
         return viewer;
     }

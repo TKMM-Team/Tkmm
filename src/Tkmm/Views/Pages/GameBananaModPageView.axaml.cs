@@ -15,21 +15,22 @@ public partial class GameBananaModPageView : UserControl
     private int _previousImageIndex = -1;
     private CancellationTokenSource? _animationCancellation;
 #endif
+    private ScrollViewer? _scrollViewer;
 
     public GameBananaModPageView()
     {
         InitializeComponent();
-#if !SWITCH
+        _scrollViewer = this.FindControl<ScrollViewer>("ModScrollViewer");
         DataContextChanged += OnDataContextChanged;
-#endif
     }
-#if !SWITCH
+
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
         if (DataContext is not GameBananaModPageViewModel viewModel) {
             return;
         }
-        
+        _scrollViewer?.ScrollToHome();
+#if !SWITCH
         _mainImage = this.FindControl<Image>("MainImage");
         
         if (_mainImage?.RenderTransform is TranslateTransform transform) {
@@ -37,8 +38,10 @@ public partial class GameBananaModPageView : UserControl
         }
         
         viewModel.PropertyChanged += OnViewModelPropertyChanged;
+#endif
     }
 
+#if !SWITCH
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(GameBananaModPageViewModel.SelectedImageIndex) ||

@@ -76,7 +76,8 @@
             </Grid>
         </Border>
         
-        <ScrollViewer Grid.Row="1" 
+        <ScrollViewer x:Name="ModScrollViewer"
+                      Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="20" ColumnDefinitions="3*,Auto,2*">
