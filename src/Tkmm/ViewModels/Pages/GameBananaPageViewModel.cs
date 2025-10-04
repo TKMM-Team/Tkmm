@@ -59,7 +59,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
 
         Viewer?.Dispose();
-        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full);
+        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full, Browser);
         OnPropertyChanged(nameof(Viewer));
         IsShowingDetail = true;
         ViewerOpacity = 1.0;

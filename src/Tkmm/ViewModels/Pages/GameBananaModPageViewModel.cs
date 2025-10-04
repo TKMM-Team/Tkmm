@@ -64,16 +64,23 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public string ModUrl => SelectedMod != null ? $"https://gamebanana.com/mods/{SelectedMod.Id}" : string.Empty;
 
-    public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod)
+    public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
     {
         var viewer = new GameBananaModPageViewModel();
+        viewer._browser = browser;
         viewer.LoadMod(mod);
         return viewer;
     }
 
+    private GameBananaModBrowserViewModel? _browser;
+
     private void LoadMod(GameBananaMod mod)
     {
         SelectedMod = mod;
+        
+        if (_browser != null) {
+            _browser.IsLoading = true;
+        }
         
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
@@ -81,10 +88,21 @@ public partial class GameBananaModPageViewModel : ObservableObject
         OnPropertyChanged(nameof(FormattedDateUpdated));
         
         _ = Task.Run(async () => {
-            await Task.Delay(100);
-            await LoadBananaIconAsync();
-            await LoadAvatarsAsync();
-            await LoadImagesAsync();
+            try
+            {
+                await Task.Delay(100);
+                await LoadBananaIconAsync();
+                await LoadAvatarsAsync();
+                await LoadImagesAsync();
+            }
+            finally
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => {
+                    if (_browser != null) {
+                        _browser.IsLoading = false;
+                    }
+                });
+            }
         });
     }
 
@@ -184,7 +202,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
             NotifyImagePropertiesChanged();
         });
         
-        if (SelectedMod?.Media?.Images is not null)
+        if (SelectedMod?.Media.Images is not null)
         {
             foreach (var image in SelectedMod.Media.Images)
             {
