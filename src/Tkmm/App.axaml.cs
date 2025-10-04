@@ -191,8 +191,9 @@ public class App : Application
         if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null) {
             return;
         }
-
+#if !SWITCH
         desktop.MainWindow.WindowState = WindowState.Normal;
+#endif
         desktop.MainWindow.Activate();
     }
 
