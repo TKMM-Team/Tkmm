@@ -20,11 +20,16 @@ public partial class GameBananaModPageViewModel : ObservableObject
     private int _selectedImageIndex;
 
     [ObservableProperty]
-    private ObservableCollection<object> _images = new();
+    private ObservableCollection<object> _images = [];
 
     [ObservableProperty]
     private object? _bananaIcon;
 
+    partial void OnSelectedImageIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(SelectedImage));
+    }
+    
     public string FormattedDateAdded => SelectedMod?.DateAdded > 0 
         ? DateTimeOffset.FromUnixTimeSeconds(SelectedMod.DateAdded).ToString("MMM d, yyyy")
         : string.Empty;
