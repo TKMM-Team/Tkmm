@@ -6,9 +6,7 @@ using Projektanker.Icons.Avalonia.FontAwesome;
 using R2CSharp.Lib.Extensions;
 using Tkmm.Actions;
 using Tkmm.Components;
-#if !SWITCH
 using Tkmm.CLI;
-#endif
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
@@ -28,12 +26,10 @@ internal abstract class Program
                 return;
             }
 
-#if !SWITCH
             if (TkConsoleApp.IsComplexRequest(args)) {
                 TkConsoleApp.StartCli(args);
                 return;
             }
-#endif
 
             // Will lock until the old
             // files can be deleted
@@ -99,7 +95,6 @@ internal abstract class Program
 
     public static void Attach(string[] args)
     {
-#if !SWITCH
         if (!TkConsoleApp.IsComplexRequest(args)) {
             Dispatcher.UIThread.Invoke(App.Focus);
             _ = Task.Run(
@@ -109,7 +104,6 @@ internal abstract class Program
         }
 
         TkConsoleApp.StartCli(args);
-#endif
     }
 
     public static AppBuilder BuildAvaloniaApp()
