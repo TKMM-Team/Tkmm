@@ -17,9 +17,11 @@ public partial class GameBananaModPageView : UserControl
     public GameBananaModPageView()
     {
         InitializeComponent();
+#if !SWITCH
         DataContextChanged += OnDataContextChanged;
+#endif
     }
-
+#if !SWITCH
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
         if (DataContext is not GameBananaModPageViewModel viewModel) {
@@ -71,4 +73,5 @@ public partial class GameBananaModPageView : UserControl
             
         _previousImageIndex = viewModel.SelectedImageIndex;
     }
+#endif
 }
