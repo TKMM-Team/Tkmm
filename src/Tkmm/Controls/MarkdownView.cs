@@ -2,13 +2,14 @@ using Avalonia;
 using Avalonia.Data;
 using AvaMark;
 using ReverseMarkdown;
+using System.Text.RegularExpressions;
 using Tkmm.Components;
 using TkSharp.Core.Models;
 using TkSharp.Extensions.GameBanana;
 
 namespace Tkmm.Controls;
 
-public abstract class MarkdownView : AvaloniaObject
+public abstract partial class MarkdownView : AvaloniaObject
 {
     static MarkdownView()
     {
@@ -48,10 +49,49 @@ public abstract class MarkdownView : AvaloniaObject
                 ListBulletChar = '*',
                 UnknownTags = Config.UnknownTagsOption.Bypass
             }).Convert(mod.Text)
-            : mod.Description ?? string.Empty;
+            : mod.Description;
+            
+        markdownContent = ReplaceGameBananaUrls(markdownContent);
             
         viewer.Markdown = markdownContent;
+        
     }
+    
+    
+    private static string ReplaceGameBananaUrls(string markdownContent)
+    {
+        return GbUrlRegex().Replace(markdownContent, match =>
+        {
+            var linkText = match.Groups[1].Value;
+            var modId = match.Groups[3].Value;
+            
+            return IsModForTotk(modId) ? $"[{linkText}](tkmm://mod/{modId})" : match.Value;
+        });
+    }
+    
+    private static bool IsModForTotk(string modId)
+    {
+        try {
+            var apiUrl = $"https://gamebanana.com/apiv11/Mod/{modId}/ProfilePage";
+            using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(5);
+            
+            var response = client.GetStringAsync(apiUrl).GetAwaiter().GetResult();
+            var json = System.Text.Json.JsonDocument.Parse(response);
+            
+            if (json.RootElement.TryGetProperty("_aGame", out var gameElement) && 
+            gameElement.TryGetProperty("_idRow", out var gameIdElement) &&
+            gameIdElement.GetInt32() == 7617) {
+                return true;
+            }
+        }
+        catch {
+            return false;
+        }
+        
+        return false;
+    }
+    
     
     public static void SetMod(AvaloniaObject element, TkMod mod)
         => element.SetValue(ModProperty, mod);
@@ -64,4 +104,7 @@ public abstract class MarkdownView : AvaloniaObject
 
     public static GameBananaMod? GetGameBananaMod(AvaloniaObject element)
         => element.GetValue(GameBananaModProperty);
+    
+    [GeneratedRegex(@"\[([^\]]+)\]\((https?://gamebanana\.com/mod(?:s)?/(\d+))\)")]
+    private static partial Regex GbUrlRegex();
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Views.Common;
 using TkSharp.Core;
@@ -76,6 +77,38 @@ public partial class GameBananaPageViewModel : ObservableObject
                 IsShowingDetail = false;
             });
         });
+    }
+
+    public async Task OpenModInViewerAsync(long modId)
+    {
+        try {
+            TkStatus.Set("Loading mod", TkIcons.GEAR_FOLDER, StatusType.Working);
+            
+            var modRecord = new GameBananaModRecord { Id = (int)modId };
+            await modRecord.DownloadFullMod();
+            
+            if (modRecord.Full == null) {
+                TkStatus.SetTemporary("Failed to load mod", TkIcons.ERROR);
+                return;
+            }
+
+            if (modRecord.Full.Game.Id != 7617) {
+                TkStatus.SetTemporary("This mod is not for TOTK", TkIcons.ERROR);
+                return;
+            }
+
+            Viewer?.Dispose();
+            Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
+            OnPropertyChanged(nameof(Viewer));
+            IsShowingDetail = true;
+            ViewerOpacity = 1.0;
+            
+            TkStatus.SetTemporary("Mod loaded successfully", TkIcons.CIRCLE_CHECK);
+        }
+        catch (Exception ex) {
+            TkStatus.SetTemporary("Error loading mod", TkIcons.ERROR);
+            TkLog.Instance.LogError(ex, "An error occurred while loading mod {ModId}.", modId);
+        }
     }
 
     [RelayCommand]

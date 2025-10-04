@@ -12,6 +12,7 @@ using Tkmm.CLI;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
+using Tkmm.ViewModels.Pages;
 using TkSharp.Core;
 using TkSharp.Core.Common;
 
@@ -46,11 +47,44 @@ internal abstract class Program
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
             TkLocalizationInterface.GetCultureName = culture => Locale["Language", failSoftly: false, culture];
 
-#if !SWITCH
             _ = Task.Run(
                 () => TkConsoleApp.ProcessBasicArgs(args, (arg, stream) => ModActions.Instance.Install(arg, stream))
             );
-#endif
+            
+            _ = Task.Run(async () => {
+                while (true)
+                {
+                    if (TkConsoleApp.TryGetPendingModViewerRequest(out var modId))
+                    {
+                        Console.WriteLine($"Processing mod viewer request for mod ID: {modId}");
+                        
+                        await Task.Delay(3000);
+                        
+                        await Dispatcher.UIThread.InvokeAsync(async () => {
+                            try
+                            {
+                                Console.WriteLine("Navigating to GameBanana page...");
+                                PageManager.Shared.Focus(Page.GbMods);
+                                
+                                Console.WriteLine("Getting GameBanana page view model...");
+                                var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
+                                
+                                Console.WriteLine($"Opening mod {modId} in viewer...");
+                                await gameBananaPage.OpenModInViewerAsync(modId);
+                                Console.WriteLine("Mod opened successfully!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error opening mod: {ex.Message}");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        await Task.Delay(1000);
+                    }
+                }
+            });
 
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
