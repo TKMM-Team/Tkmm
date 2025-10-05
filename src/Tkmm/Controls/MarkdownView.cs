@@ -31,7 +31,7 @@ public abstract partial class MarkdownView : AvaloniaObject
         
         viewer.ImageResolver = TkImageResolver.Instance;
         viewer.ImageResolverState = mod.Id;
-        viewer.Markdown = mod.Description;
+        viewer.Markdown = ReplaceGameBananaUrls(mod.Description);
     }
     
     private static void HandleGameBananaModChanged(MarkdownViewer viewer, AvaloniaPropertyChangedEventArgs args)
@@ -43,7 +43,7 @@ public abstract partial class MarkdownView : AvaloniaObject
         viewer.ImageResolver = TkImageResolver.Instance;
         viewer.ImageResolverState = mod.Id;
         
-        string markdownContent = !string.IsNullOrEmpty(mod.Text) 
+        var markdownContent = !string.IsNullOrEmpty(mod.Text) 
             ? new Converter(new Config {
                 GithubFlavored = true,
                 ListBulletChar = '*',
@@ -51,9 +51,7 @@ public abstract partial class MarkdownView : AvaloniaObject
             }).Convert(mod.Text)
             : mod.Description;
             
-        markdownContent = ReplaceGameBananaUrls(markdownContent);
-            
-        viewer.Markdown = markdownContent;
+        viewer.Markdown = ReplaceGameBananaUrls(markdownContent);
         
     }
     
