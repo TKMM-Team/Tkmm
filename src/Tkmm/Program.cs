@@ -42,31 +42,7 @@ internal abstract class Program
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
             TkLocalizationInterface.GetCultureName = culture => Locale["Language", failSoftly: false, culture];
 
-            _ = Task.Run(
-                () => TkConsoleApp.ProcessBasicArgs(args, (arg, stream) => ModActions.Instance.Install(arg, stream))
-            );
-            
-            _ = Task.Run(async () => {
-                while (true)
-                {
-                    if (TkConsoleApp.TryGetPendingModViewerRequest(out var modId)) {
-                        await Dispatcher.UIThread.InvokeAsync(async () => {
-                            try {
-                                PageManager.Shared.Focus(Page.GbMods);
-                                var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
-                                await gameBananaPage.OpenModInViewerAsync(modId);
-                            }
-                            catch (Exception ex)
-                            {
-                                TkLog.Instance.LogError(ex, "Error opening mod: {Message}", ex.Message);
-                            }
-                        });
-                    }
-                    else {
-                        await Task.Delay(1000);
-                    }
-                }
-            });
+            HandleArgs(args);
 
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
@@ -79,20 +55,18 @@ internal abstract class Program
         }
     }
 
-    public static void Attach(string[] args)
+    private static void Attach(string[] args)
     {
         if (!TkConsoleApp.IsComplexRequest(args)) {
             Dispatcher.UIThread.Invoke(App.Focus);
-            _ = Task.Run(
-                () => TkConsoleApp.ProcessBasicArgs(args, (arg, stream) => ModActions.Instance.Install(arg, stream))
-            );
+            HandleArgs(args);
             return;
         }
 
         TkConsoleApp.StartCli(args);
     }
 
-    public static AppBuilder BuildAvaloniaApp()
+    private static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current
             .Register(new FontAwesomeIconProvider(FontAwesomeJsonStreamProvider.Instance));
@@ -107,5 +81,26 @@ internal abstract class Program
             .UseR2CSharp()
             .UsePlatformDetect()
             .WithInterFont();
+    }
+
+    private static bool _eventsWired;
+    private static void HandleArgs(string[] args)
+    {
+        if (!_eventsWired) {
+            TkConsoleApp.InstallRequested += async (arg, stream) => await ModActions.Instance.Install(arg, stream);
+            TkConsoleApp.OpenModRequested += async (modId) => await Dispatcher.UIThread.InvokeAsync(async () => {
+                try {
+                    PageManager.Shared.Focus(Page.GbMods);
+                    var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
+                    await gameBananaPage.OpenModInViewerAsync(modId);
+                }
+                catch (Exception ex) {
+                    TkLog.Instance.LogError(ex, "Error opening mod: {Message}", ex.Message);
+                }
+            });
+            _eventsWired = true;
+        }
+
+        TkConsoleApp.ProcessBasicArgs(args);
     }
 }

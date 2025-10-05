@@ -5,7 +5,8 @@ namespace Tkmm.CLI;
 
 public static class TkConsoleApp
 {
-    private static readonly ConcurrentQueue<long> PendingModViewerRequests = new();
+    public static event Func<string, Stream?, Task>? InstallRequested;
+    public static event Func<long, Task>? OpenModRequested;
 
     /// <summary>
     /// Checks if the arguments form a complex request.
@@ -20,32 +21,40 @@ public static class TkConsoleApp
     /// <summary>
     /// Processes basic input arguments and returns the number of complex arguments. 
     /// </summary>
-    /// <param name="args"></param>
-    /// <param name="install"></param>
-    /// <returns></returns>
-    public static void ProcessBasicArgs(string[] args, Func<string, Stream?, Task> install)
+    /// <param name="args">Command-line arguments</param>
+    public static void ProcessBasicArgs(string[] args)
     {
-        foreach (string arg in args.Select(x => x.Trim('"')).Where(x => Path.Exists(x) || (x.Length > 5 && x.AsSpan()[..5] is "tkmm:"))) {
+        foreach (var raw in args) {
+            var arg = raw.Trim('"');
+            if (!(Path.Exists(arg) || (arg.Length > 5 && arg.AsSpan()[..5] is "tkmm:"))) {
+                continue;
+            }
+
             if (arg.StartsWith("tkmm://mod/")) {
-                var modId = arg.Substring("tkmm://mod/".Length);
-                if (long.TryParse(modId, out var id)) {
-                    PendingModViewerRequests.Enqueue(id);
+                var modIdStr = arg.Substring("tkmm://mod/".Length);
+                if (!long.TryParse(modIdStr, out var id)) {
+                    continue;
+                }
+                if (OpenModRequested is not null) {
+                    _ = OpenModRequested.Invoke(id);
                 }
             }
             else {
-                _ = Task.Run(async () => await install(arg, File.Exists(arg) ? File.OpenRead(arg) : null));
+                Stream? stream = null;
+                if (File.Exists(arg)) {
+                    stream = File.OpenRead(arg);
+                }
+                if (InstallRequested is not null) {
+                    _ = InstallRequested.Invoke(arg, stream);
+                }
             }
         }
     }
 
     public static void StartCli(string[] args)
     {
-        ConsoleApp.ConsoleAppBuilder app = ConsoleApp.Create();
+        var app = ConsoleApp.Create();
+        ProcessBasicArgs(args);
         app.Run(args);
-    }
-
-    public static bool TryGetPendingModViewerRequest(out long modId)
-    {
-        return PendingModViewerRequests.TryDequeue(out modId);
     }
 }
