@@ -105,7 +105,17 @@ public partial class GameBananaPageViewModel : ObservableObject
             }
 
             if (modRecord.Full.Game.Id != 7617) {
-                TkStatus.SetTemporary("This mod is not for TOTK", TkIcons.ERROR);
+                try {
+                    var url = $"https://gamebanana.com/mods/{modId}";
+                    _ = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                    TkStatus.SetTemporary("Not a TotK mod, link opened in web browser", TkIcons.CIRCLE_INFO);
+                }
+                catch {
+                    TkStatus.SetTemporary("Failed to open mod in external browser", TkIcons.ERROR);
+                }
                 return;
             }
 
