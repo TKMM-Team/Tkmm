@@ -25,6 +25,9 @@ public partial class GameBananaModPageViewModel : ObservableObject
     [ObservableProperty]
     private object? _bananaIcon;
 
+    [ObservableProperty]
+    private bool _isLoading;
+
     partial void OnSelectedImageIndexChanged(int value)
     {
         NotifyImagePropertiesChanged();
@@ -66,20 +69,15 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
     {
-        var viewer = new GameBananaModPageViewModel { _browser = browser };
+        var viewer = new GameBananaModPageViewModel();
         viewer.LoadMod(mod);
         return viewer;
     }
 
-    private GameBananaModBrowserViewModel? _browser;
-
     private void LoadMod(GameBananaMod mod)
     {
         SelectedMod = mod;
-        
-        if (_browser != null) {
-            _browser.IsLoading = true;
-        }
+        IsLoading = true;
         
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
@@ -97,9 +95,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
             finally
             {
                 await Dispatcher.UIThread.InvokeAsync(() => {
-                    if (_browser != null) {
-                        _browser.IsLoading = false;
-                    }
+                    IsLoading = false;
                 });
             }
         });

@@ -35,7 +35,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         Browser.PropertyChanged += (_, e) => {
             switch (e.PropertyName) {
                 case nameof(Browser.IsLoading):
-                    IsLoading = Browser.IsLoading;
+                    UpdateCombinedLoading();
                     break;
                 case nameof(Browser.LoadProgress):
                     LoadProgress = Browser.LoadProgress;
@@ -45,6 +45,11 @@ public partial class GameBananaPageViewModel : ObservableObject
                     break;
             }
         };
+    }
+
+    private void UpdateCombinedLoading()
+    {
+        IsLoading = Browser.IsLoading || (Viewer?.IsLoading ?? false);
     }
 
     [RelayCommand]
@@ -59,7 +64,13 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
 
         Viewer?.Dispose();
-        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full, Browser);
+        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full);
+        Viewer.PropertyChanged += (_, e) => {
+            if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
+                UpdateCombinedLoading();
+            }
+        };
+        UpdateCombinedLoading();
         OnPropertyChanged(nameof(Viewer));
         IsShowingDetail = true;
         ViewerOpacity = 1.0;
@@ -75,6 +86,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                 Viewer = null;
                 OnPropertyChanged(nameof(Viewer));
                 IsShowingDetail = false;
+                UpdateCombinedLoading();
             });
         });
     }
@@ -99,6 +111,12 @@ public partial class GameBananaPageViewModel : ObservableObject
 
             Viewer?.Dispose();
             Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
+            Viewer.PropertyChanged += (_, e) => {
+                if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
+                    UpdateCombinedLoading();
+                }
+            };
+            UpdateCombinedLoading();
             OnPropertyChanged(nameof(Viewer));
             IsShowingDetail = true;
             ViewerOpacity = 1.0;
@@ -118,32 +136,10 @@ public partial class GameBananaPageViewModel : ObservableObject
             await mod.DownloadFullMod();
         }
 
-        GameBananaInstallPreview preview = new() {
-            DataContext = mod
-        };
-
-        GameBananaFile? target = mod.Full?.Files
+        var target = mod.Full?.Files
             .FirstOrDefault(file => file.IsSelected);
 
-        ContentDialog dialog = new() {
-            Title = $"Install {mod.Name}",
-            Content = preview,
-            SecondaryButtonText = "Cancel",
-            PrimaryButtonText = "Install",
-            DefaultButton = ContentDialogButton.Primary,
-            IsPrimaryButtonEnabled = target is not null,
-        };
-
-        foreach (GameBananaFile file in mod.Full!.Files) {
-            file.PropertyChanged += (_, eventArgs) => {
-                if (eventArgs.PropertyName == nameof(file.IsSelected)) {
-                    target = file;
-                    dialog.IsPrimaryButtonEnabled = true;
-                }
-            };
-        }
-
-        if (await dialog.ShowAsync() is not ContentDialogResult.Primary || target is null) {
+        if (target is null) {
             return;
         }
 
