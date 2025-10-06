@@ -15,6 +15,11 @@
              d:DesignWidth="800"
              x:DataType="pages:HomePageViewModel"
              mc:Ignorable="d">
+    <UserControl.Styles>
+        <Style Selector="avaMark|MarkdownViewer Image.image">
+            <Setter Property="MaxWidth" Value="{Binding $parent[avaMark:MarkdownViewer].Bounds.Width}" />
+        </Style>
+    </UserControl.Styles>
     <Grid>
         <Viewbox Name="WelcomePage"
                  MaxWidth="800"

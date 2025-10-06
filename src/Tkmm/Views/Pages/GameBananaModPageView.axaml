@@ -13,6 +13,11 @@
              x:CompileBindings="False"
              x:DataType="pages:GameBananaModPageViewModel"
              mc:Ignorable="d">
+    <UserControl.Styles>
+        <Style Selector="avaMark|MarkdownViewer Image.image">
+            <Setter Property="MaxWidth" Value="{Binding $parent[avaMark:MarkdownViewer].Bounds.Width}" />
+        </Style>
+    </UserControl.Styles>
     <UserControl.DataContext>
         <pages:GameBananaModPageViewModel />
     </UserControl.DataContext>
