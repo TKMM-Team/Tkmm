@@ -19,7 +19,7 @@ public static class RegistryHelper
         using RegistryKey shell = root.CreateSubKey("shell");
         using RegistryKey open = shell.CreateSubKey("open");
         using RegistryKey command = open.CreateSubKey("command");
-        command.SetValue(null, $"\"{appPath}\" %1", RegistryValueKind.String);
+        command.SetValue(null, $"\"{appPath}\" \"%1\"", RegistryValueKind.String);
     }
 
     public static void CreateFileAssociations(string name, string extension, string appPath)
@@ -37,7 +37,7 @@ public static class RegistryHelper
         using RegistryKey shell = root.CreateSubKey("shell");
         using RegistryKey open = shell.CreateSubKey("open");
         using RegistryKey command = open.CreateSubKey("command");
-        command.SetValue(null, $"\"{appPath}\" %1", RegistryValueKind.String);
+        command.SetValue(null, $"\"{appPath}\" \"%1\"", RegistryValueKind.String);
 
         using RegistryKey fileAssociation = classes.CreateSubKey(extension);
         fileAssociation.SetValue(null, name, RegistryValueKind.String);
