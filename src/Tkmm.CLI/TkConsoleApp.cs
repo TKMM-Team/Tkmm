@@ -8,6 +8,7 @@ public static class TkConsoleApp
     public static event Func<long, long?, Task>? OpenModRequested;
     public static event Action<string>? PageRequested;
     public static event Action<string>? SettingsFocusRequested;
+    public static event Action<string>? ErrorOccurred;
 
     /// <summary>
     /// Checks if the arguments form a complex request.
@@ -36,22 +37,24 @@ public static class TkConsoleApp
                 if (TryHandleTkmmUri(arg)) {
                     continue;
                 }
-                throw new ArgumentException($"Invalid tkmm argument: {arg}");
+                ShowError($"Invalid input: {arg}");
             }
 
             // Local file/folder install
-            if (Path.Exists(arg)) {
-                Stream? stream = null;
-                if (File.Exists(arg)) {
-                    stream = File.OpenRead(arg);
+            if (File.Exists(arg)) {
+                try {
+                    Stream stream = File.OpenRead(arg);
+                    if (InstallRequested is not null) {
+                        _ = InstallRequested.Invoke(arg, stream);
+                    }
                 }
-                if (InstallRequested is not null) {
-                    _ = InstallRequested.Invoke(arg, stream);
+                catch (Exception ex) {
+                    ShowError($"Error while installing file: {ex.Message}");
                 }
-                continue;
             }
-
-            throw new ArgumentException($"Invalid argument: {arg}");
+            else {
+                ShowError($"Invalid input: {arg}");
+            }
         }
     }
 
@@ -101,6 +104,11 @@ public static class TkConsoleApp
         }
         
         return true;
+    }
+
+    private static void ShowError(string message)
+    {
+        ErrorOccurred?.Invoke(message);
     }
 
     public static void StartCli(string[] args)

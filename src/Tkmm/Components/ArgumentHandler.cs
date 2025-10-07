@@ -86,6 +86,12 @@ internal static class ArgumentHandler
             }
         };
 
+        TkConsoleApp.ErrorOccurred += message => {
+            Dispatcher.UIThread.Post(() => {
+                App.ToastError(new ArgumentException(message));
+            });
+        };
+
         _wired = true;
     }
 }
