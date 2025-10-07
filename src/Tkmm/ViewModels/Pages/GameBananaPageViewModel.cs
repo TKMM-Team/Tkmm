@@ -91,11 +91,9 @@ public partial class GameBananaPageViewModel : ObservableObject
         });
     }
 
-    public async Task OpenModInViewerAsync(long modId)
+    public async Task OpenModInViewerAsync(long modId, long? fileId = null)
     {
         try {
-            TkStatus.Set("Loading mod", TkIcons.GEAR_FOLDER, StatusType.Working);
-            
             var modRecord = new GameBananaModRecord { Id = (int)modId };
             await modRecord.DownloadFullMod();
             
@@ -131,7 +129,15 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsShowingDetail = true;
             ViewerOpacity = 1.0;
             
-            TkStatus.SetTemporary("Mod loaded successfully", TkIcons.CIRCLE_CHECK);
+            if (fileId is long desiredFileId) {
+                var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
+                if (target is null) {
+                    TkStatus.SetTemporary("No matching file for this mod", TkIcons.ERROR);
+                }
+                else {
+                    Viewer?.InstallModCommand.Execute(target);
+                }
+            }
         }
         catch (Exception ex) {
             TkStatus.SetTemporary("Error loading mod", TkIcons.ERROR);
