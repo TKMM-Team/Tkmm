@@ -192,7 +192,9 @@ public class App : Application
             return;
         }
 #if !SWITCH
-        desktop.MainWindow.WindowState = WindowState.Normal;
+        if (desktop.MainWindow.WindowState == WindowState.Minimized) {
+            desktop.MainWindow.WindowState = WindowState.Normal;
+        }
 #endif
         desktop.MainWindow.Activate();
     }
