@@ -29,7 +29,7 @@ public class TkOptimizerStore(Ulid id)
     public static bool IsProfileEnabled(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
-        return !_store.TryGetValue(profile.Id, out TkOptimizerProfile? optimizerProfile) || optimizerProfile.IsEnabled;
+        return !_store.TryGetValue(profile.Id, out var optimizerProfile) || optimizerProfile.IsEnabled;
     }
 
     public bool IsEnabled {
@@ -51,7 +51,7 @@ public class TkOptimizerStore(Ulid id)
 
     public void SetCheat(TkOptimizerCheatGroup cheat, string key, bool isEnabled)
     {
-        HashSet<string> cheatProfileGroup = GetCheatGroup(cheat.Version);
+        var cheatProfileGroup = GetCheatGroup(cheat.Version);
         switch (isEnabled) {
             case true:
                 cheatProfileGroup.Add(key);
@@ -83,7 +83,7 @@ public class TkOptimizerStore(Ulid id)
 
     public bool TryGet<T>(string key, out T value) where T : unmanaged
     {
-        if (!GetProfile().Values.TryGetValue(key, out JsonElement json)) {
+        if (!GetProfile().Values.TryGetValue(key, out var json)) {
             value = default;
             return false;
         }
@@ -94,7 +94,7 @@ public class TkOptimizerStore(Ulid id)
 
     private TkOptimizerProfile GetProfile()
     {   
-        ref TkOptimizerProfile? profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out bool exists);
+        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out bool exists);
         if (!exists || profile is null) profile = new TkOptimizerProfile();
 
         return profile;
@@ -102,9 +102,9 @@ public class TkOptimizerStore(Ulid id)
 
     private HashSet<string> GetCheatGroup(string version)
     {
-        TkOptimizerProfile profile = GetProfile();
+        var profile = GetProfile();
         
-        ref HashSet<string>? group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out bool exists);
+        ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out bool exists);
         if (!exists || group is null) group = [];
 
         return group;
@@ -116,7 +116,7 @@ public class TkOptimizerStore(Ulid id)
             return [];
         }
 
-        using FileStream fs = File.OpenRead(_storeFilePath);
+        using var fs = File.OpenRead(_storeFilePath);
         return JsonSerializer.Deserialize<TkOptimizerConfigJson>(fs)?
             .ToDictionary(x => Ulid.Parse(x.Key), x => x.Value) ?? [];
     }
@@ -127,7 +127,7 @@ public class TkOptimizerStore(Ulid id)
             Directory.CreateDirectory(folder);
         }
 
-        using FileStream fs = File.Create(_storeFilePath);
+        using var fs = File.Create(_storeFilePath);
         JsonSerializer.Serialize(fs,
             _store.ToDictionary(x => x.Key.ToString(), x => x.Value)
         );

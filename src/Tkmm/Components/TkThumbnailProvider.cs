@@ -17,7 +17,7 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
 
     static TkThumbnailProvider()
     {
-        using Stream defaultThumbnailBitmapStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
+        using var defaultThumbnailBitmapStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/DefaultThumbnail.jpg"));
         Bitmap defaultThumbnailBitmap = new(defaultThumbnailBitmapStream);
         Instance = new TkThumbnailProvider(defaultThumbnailBitmap);
     }
@@ -26,17 +26,17 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
 
     public async Task ResolveThumbnail(TkMod mod, CancellationToken ct = default)
     {
-        ITkSystemSource? src = mod.Changelog.Source;
+        var src = mod.Changelog.Source;
         await ResolveThumbnail(mod, src, useDefault: true, ct);
 
         if (src is null) {
             return;
         }
 
-        foreach (TkModOptionGroup group in mod.OptionGroups) {
+        foreach (var group in mod.OptionGroups) {
             await ResolveThumbnail(group, src, useDefault: false, ct);
 
-            foreach (TkModOption option in group.Options) {
+            foreach (var option in group.Options) {
                 await ResolveThumbnail(option, src, useDefault: false, ct);
             }
         }
@@ -44,7 +44,7 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
     
     public async Task ResolveThumbnail(TkItem item, ITkSystemSource? src, bool useDefault = false, CancellationToken ct = default)
     {
-        TkThumbnail? thumbnail = item.Thumbnail;
+        var thumbnail = item.Thumbnail;
         
         if (thumbnail is null || src is null) {
             goto UseDefault;
@@ -55,7 +55,7 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         }
 
         // ReSharper disable once ConvertToUsingDeclaration
-        await using (Stream imageStream = src.OpenRead(thumbnail.ThumbnailPath)) {
+        await using (var imageStream = src.OpenRead(thumbnail.ThumbnailPath)) {
             thumbnail.Bitmap = new Bitmap(imageStream);
             return;
         }
@@ -65,12 +65,12 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
             goto UseDefault;
         }
         
-        if (!Uri.TryCreate(thumbnail.ThumbnailPath, UriKind.Absolute, out Uri? uri)) {
+        if (!Uri.TryCreate(thumbnail.ThumbnailPath, UriKind.Absolute, out var uri)) {
             goto UseDefault;
         }
 
         try {
-            await using Stream imageStream = await _client.GetStreamAsync(uri, ct)
+            await using var imageStream = await _client.GetStreamAsync(uri, ct)
                 .ConfigureAwait(false);
             
             using MemoryStream ms = new();

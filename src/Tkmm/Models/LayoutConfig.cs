@@ -34,8 +34,8 @@ public partial class LayoutConfig : ObservableObject
             };
         }
 
-        using FileStream fs = File.OpenRead(file);
-        LayoutConfig result = JsonSerializer.Deserialize(fs, LayoutConfigJsonContext.Default.LayoutConfig) ?? new LayoutConfig();
+        using var fs = File.OpenRead(file);
+        var result = JsonSerializer.Deserialize(fs, LayoutConfigJsonContext.Default.LayoutConfig) ?? new LayoutConfig();
 
         result.Name = name;
         result.TopPanel = new GridLength(result.TopPanelValue, result.TopPanelGridUnitType);
@@ -46,7 +46,7 @@ public partial class LayoutConfig : ObservableObject
 
     public void Save()
     {
-        using FileStream fs = File.Create(GetPath(Name));
+        using var fs = File.Create(GetPath(Name));
         JsonSerializer.Serialize(fs, this);
     }
 

@@ -33,7 +33,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             return false;
         }
 
-        IReadOnlyList<IStorageFile> results = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+        var results = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = "Import from File",
             AllowMultiple = true,
             FileTypeFilter = [
@@ -47,10 +47,10 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             return false;
         }
 
-        foreach (IStorageFile targetFile in results) {
+        foreach (var targetFile in results) {
             try {
                 TkStatus.Set(Locale[TkLocale.Status_Importing, targetFile.Name], TkIcons.PROGRESS);
-                await using Stream stream = await targetFile.OpenReadAsync();
+                await using var stream = await targetFile.OpenReadAsync();
                 if (await TKMM.Install(targetFile.Name, stream, context, ct: ct) is TkMod result) {
                     TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
                     return true;
@@ -75,7 +75,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             return false;
         }
 
-        IReadOnlyList<IStorageFolder> results = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+        var results = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
             Title = "Import from Folder",
             AllowMultiple = true
         });
@@ -84,7 +84,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             return false;
         }
 
-        foreach (IStorageFolder targetFolder in results) {
+        foreach (var targetFolder in results) {
             try {
                 if (targetFolder.TryGetLocalPath() is not string folder) {
                     continue;

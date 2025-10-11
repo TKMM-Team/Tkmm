@@ -21,7 +21,7 @@ public static class ExportLocationsHelper
             return true;
         }
 
-        MessageDialogResult result = await MessageDialog.Show(
+        var result = await MessageDialog.Show(
             TkLocale.System_Popup_CreateExportLocation,
             TkLocale.System_Popup_CreateExportLocation_Title,
             MessageDialogButtons.YesNoCancel,
@@ -39,7 +39,7 @@ public static class ExportLocationsHelper
             AllowMultiple = false
         };
 
-        IReadOnlyList<IStorageFolder> browseResult = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(options);
+        var browseResult = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(options);
 
         if (browseResult is not [IStorageFolder target] || target.TryGetLocalPath() is not string path) {
             goto RequestNext;

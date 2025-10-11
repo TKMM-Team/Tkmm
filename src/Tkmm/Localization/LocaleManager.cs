@@ -18,10 +18,10 @@ public sealed class LocaleManager : ObservableObject
 
     public static LocaleManager Load()
     {
-        using Stream embeddedStream = typeof(LocaleManager).Assembly
+        using var embeddedStream = typeof(LocaleManager).Assembly
             .GetManifestResourceStream("Tkmm.Resources.locales.json") ?? throw new NullReferenceException("Locale is not embedded.");
 
-        LocalesJson json = JsonSerializer.Deserialize(embeddedStream, LocalesJsonContext.Default.LocalesJson);
+        var json = JsonSerializer.Deserialize(embeddedStream, LocalesJsonContext.Default.LocalesJson);
         return new LocaleManager(json);
     }
 
@@ -50,7 +50,7 @@ public sealed class LocaleManager : ObservableObject
 
     public string this[string key, bool failSoftly, string? culture] {
         get {
-            if (!_entries.TryGetValue(key, out LocalesEntry? entry)) {
+            if (!_entries.TryGetValue(key, out var entry)) {
                 if (failSoftly) {
                     return key;
                 }

@@ -63,7 +63,7 @@ public static class AppUpdater
             return;
         }
 
-        MessageDialogResult result = await MessageDialog.Show(
+        var result = await MessageDialog.Show(
             TkLocale.System_Popup_UpdateAvailable,
             TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
 
@@ -143,7 +143,7 @@ public static class AppUpdater
 
     private static async ValueTask<Release?> HasAvailableUpdates()
     {
-        Release latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "Tkmm");
+        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "Tkmm");
         return latest.TagName.Length < 1 || latest.TagName[1..] != App.Version ? latest : null;
     }
 
@@ -183,7 +183,7 @@ public static class AppUpdater
             return;
         }
         
-        await using Stream? stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, ct);
+        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, ct);
 
         if (stream is null) {
             throw new Exception(
@@ -194,7 +194,7 @@ public static class AppUpdater
         TKMM.ModManager.Save();
 
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
-        foreach (ZipArchiveEntry entry in archive.Entries) {
+        foreach (var entry in archive.Entries) {
             string target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
             if (File.Exists(target)) File.Move(target, $"{target}.moldy");
         }

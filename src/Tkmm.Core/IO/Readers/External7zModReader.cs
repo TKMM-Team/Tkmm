@@ -36,7 +36,7 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
 
         try {
             if (!File.Exists(tmpInput)) {
-                await using FileStream fs = File.Create(tmpInput);
+                await using var fs = File.Create(tmpInput);
                 await context.Stream.CopyToAsync(fs, ct);
             }
             
@@ -49,13 +49,13 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             }
             
             FolderModSource source = new(root);
-            ITkModWriter writer = _systemProvider.GetSystemWriter(context);
+            var writer = _systemProvider.GetSystemWriter(context);
 
-            using ITkRom rom = _romProvider.GetRom();
+            using var rom = _romProvider.GetRom();
             TkChangelogBuilder builder = new(source, writer, _romProvider.GetRom(),
                 _systemProvider.GetSystemSource(context.Id.ToString())
             );
-            TkChangelog changelog = await builder.BuildAsync(ct);
+            var changelog = await builder.BuildAsync(ct);
 
             return new TkMod {
                 Id = context.Id,
@@ -86,7 +86,7 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
                 continue;
             }
 
-            ReadOnlySpan<char> normalized = directory[^1] is '\\' or '/' ? path[..^1] : path;
+            var normalized = directory[^1] is '\\' or '/' ? path[..^1] : path;
             ReadOnlySpan<char> normalizedLowercase = normalized
                 .ToString()
                 .ToLowerInvariant();

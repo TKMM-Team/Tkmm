@@ -21,7 +21,7 @@ public class TkOptimizerService
 
         Context.Store = TkOptimizerStore.CreateStore(profile);
 
-        Ulid id = GetStaticId();
+        var id = GetStaticId();
         if (profile.Mods.FirstOrDefault(x => x.Mod.Id == id) is TkProfileMod uc) {
             source = uc.Mod.Changelog.Source;
         }

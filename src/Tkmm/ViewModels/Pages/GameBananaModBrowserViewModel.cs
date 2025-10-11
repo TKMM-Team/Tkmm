@@ -149,7 +149,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             DataContext = mod
         };
 
-        GameBananaFile? target = mod.Full?.Files
+        var target = mod.Full?.Files
             .FirstOrDefault(file => file.IsSelected);
 
         ContentDialog dialog = new() {
@@ -161,7 +161,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             IsPrimaryButtonEnabled = target is not null,
         };
 
-        foreach (GameBananaFile file in mod.Full!.Files) {
+        foreach (var file in mod.Full!.Files) {
             file.PropertyChanged += (_, eventArgs) => {
                 if (eventArgs.PropertyName == nameof(file.IsSelected)) {
                     target = file;
@@ -208,8 +208,8 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     private static GameBananaFeed? GetSuggestedFeed()
     {
         try {
-            using Stream stream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/GameBanana/Suggested.json"));
-            GameBananaFeed feed = JsonSerializer.Deserialize(stream, GameBananaFeedJsonContext.Default.GameBananaFeed)!;
+            using var stream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/GameBanana/Suggested.json"));
+            var feed = JsonSerializer.Deserialize(stream, GameBananaFeedJsonContext.Default.GameBananaFeed)!;
             
             _ = Task.Run(() => Parallel.ForEachAsync(
                 feed.Records, static (record, ct) => record.DownloadThumbnail(ct)

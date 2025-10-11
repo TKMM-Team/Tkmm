@@ -8,7 +8,7 @@ public sealed class ConsoleLogger : ILogger
 {
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        AnsiStyle style = logLevel switch {
+        var style = logLevel switch {
             LogLevel.Information => Chalk.Rgb(46, 95, 201),
             LogLevel.Debug => Chalk.Rgb(148, 119, 237),
             LogLevel.Warning => Chalk.Rgb(0xC9, 0x96, 0x2E),

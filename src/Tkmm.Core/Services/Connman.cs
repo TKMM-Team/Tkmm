@@ -39,10 +39,10 @@ public static class Connman
     
     public static async IAsyncEnumerable<NxNetwork> GetNetworks([EnumeratorCancellation] CancellationToken ct = default)
     {
-        using StreamReader services = NxProcessHelper.ReadCommand(GET_SERVICES_COMMAND);
+        using var services = NxProcessHelper.ReadCommand(GET_SERVICES_COMMAND);
 
         while (await services.ReadLineAsync(ct) is string service) {
-            ReadOnlySpan<char> line = service.AsSpan();
+            var line = service.AsSpan();
 
             if (line.Length < 10) {
                 continue;
@@ -72,10 +72,10 @@ public static class Connman
 
     public static async ValueTask LoadNetworkProperties(NxNetwork network)
     {
-        using StreamReader properties = NxProcessHelper.ReadCommand(string.Format(GET_SERVICE_COMMAND, network.Id));
+        using var properties = NxProcessHelper.ReadCommand(string.Format(GET_SERVICE_COMMAND, network.Id));
 
         while (await properties.ReadLineAsync() is string property) {
-            ReadOnlySpan<char> line = property.AsSpan();
+            var line = property.AsSpan();
 
             if (line.Length < 2 || line[0] is not ' ' || line[1] is not ' ') {
                 continue;
@@ -105,7 +105,7 @@ public static class Connman
 
         Directory.CreateDirectory(settingsFolderPath);
         
-        await using (StreamWriter writer = File.CreateText(settingsFilePath)) {
+        await using (var writer = File.CreateText(settingsFilePath)) {
             await writer.WriteLineAsync($"[{network.Id}]");
             await writer.WriteLineAsync($"Name={network.Ssid}");
             await writer.WriteLineAsync($"SSID={Convert.ToHexStringLower(Encoding.UTF8.GetBytes(network.Ssid))}");
@@ -143,9 +143,9 @@ public static class Connman
     {
         bool isFound = false;
         
-        using StreamReader technologies = NxProcessHelper.ReadCommand(GET_TECHNOLOGIES_COMMAND);
+        using var technologies = NxProcessHelper.ReadCommand(GET_TECHNOLOGIES_COMMAND);
         while (technologies.ReadLine() is string technology) {
-            ReadOnlySpan<char> line = technology.AsSpan();
+            var line = technology.AsSpan();
 
             switch (isFound) {
                 case true:
@@ -172,7 +172,7 @@ public static class Connman
     
     public static string? GetMacAddress()
     {
-        PhysicalAddress? address = NetworkInterface.GetAllNetworkInterfaces()
+        var address = NetworkInterface.GetAllNetworkInterfaces()
             .FirstOrDefault(x => x is { OperationalStatus: OperationalStatus.Up, NetworkInterfaceType: NetworkInterfaceType.Ethernet })?
             .GetPhysicalAddress();
 

@@ -16,12 +16,12 @@ public class LocaleGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<AdditionalText> localeFile = context.AdditionalTextsProvider.Where(static x => x.Path.EndsWith("locales.json"));
+        var localeFile = context.AdditionalTextsProvider.Where(static x => x.Path.EndsWith("locales.json"));
 
-        IncrementalValuesProvider<string> contents = localeFile.Select((text, cancellationToken) => text.GetText(cancellationToken)!.ToString());
+        var contents = localeFile.Select((text, cancellationToken) => text.GetText(cancellationToken)!.ToString());
 
         context.RegisterSourceOutput(contents, (spc, content) => {
-            IEnumerable<string> lines = content
+            var lines = content
                 .Split('\n')
                 .Where(line => IsKey(line.AsSpan()))
                 .Select(GetKey);

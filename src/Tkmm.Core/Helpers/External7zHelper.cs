@@ -19,8 +19,8 @@ public static class External7zHelper
             RedirectStandardOutput = true,
         };
 
-        using Process process = Process.Start(info)
-            ?? throw new InvalidOperationException($"Failed to start 7z from '{Config.Shared.SevenZipPath}'");
+        using var process = Process.Start(info)
+                            ?? throw new InvalidOperationException($"Failed to start 7z from '{Config.Shared.SevenZipPath}'");
         await process.WaitForExitAsync(ct);
         
         string stdout = await process.StandardOutput.ReadToEndAsync(ct);

@@ -52,12 +52,12 @@ public sealed class TkOptimizerContext : ObservableObject
     {
         TkOptimizerContext context = new();
         
-        using Stream optionsJsonStream = GetOptionsJsonStream();
+        using var optionsJsonStream = GetOptionsJsonStream();
         if (JsonSerializer.Deserialize<TkOptimizerJson>(optionsJsonStream, TkOptimizerJsonContext.Default.TkOptimizerJson) is { } optionsJson) {
             LoadOptions(context, optionsJson);
         }
         
-        using Stream cheatsJsonStream = GetCheatsJsonStream();
+        using var cheatsJsonStream = GetCheatsJsonStream();
         if (JsonSerializer.Deserialize<TkOptimizerCheatsJson>(cheatsJsonStream, TkOptimizerCheatsJsonContext.Default.TkOptimizerCheatsJson) is { } cheatsJson) {
             LoadCheats(context, cheatsJson);
         }
@@ -67,9 +67,9 @@ public sealed class TkOptimizerContext : ObservableObject
     
     private static void LoadOptions(TkOptimizerContext context, TkOptimizerJson json)
     {
-        foreach (IGrouping<string, KeyValuePair<string, TkOptimizerJson.Option>> section in json.Options.GroupBy(x => x.Value.Section)) {
+        foreach (var section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
-            foreach ((string key, TkOptimizerJson.Option option) in section) {
+            foreach ((string key, var option) in section) {
                 group.Options.Add(TkOptimizerOption.FromJson(context, key, option));
             }
             
@@ -79,7 +79,7 @@ public sealed class TkOptimizerContext : ObservableObject
     
     private static void LoadCheats(TkOptimizerContext context, TkOptimizerCheatsJson json)
     {
-        foreach (TkOptimizerCheatsJson.Cheat cheat in json) {
+        foreach (var cheat in json) {
             TkOptimizerCheatGroup group = new(cheat.DisplayVersion);
             foreach ((string name, string value) in cheat.Cheats) {
                 using MemoryStream ms = new(Encoding.UTF8.GetBytes(value));
@@ -94,7 +94,7 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static Stream GetOptionsJsonStream()
     {
-        Ulid id = TkOptimizerService.GetStaticId();
+        var id = TkOptimizerService.GetStaticId();
 
         Stream? result = null;
 
@@ -157,7 +157,7 @@ public sealed class TkOptimizerContext : ObservableObject
         
         memoryStream.Position = 0;
 
-        using (Stream output = mergeOutputWriter.OpenWrite(outputFileName))
+        using (var output = mergeOutputWriter.OpenWrite(outputFileName))
         {
             memoryStream.CopyTo(output);
         }
@@ -172,7 +172,7 @@ public sealed class TkOptimizerContext : ObservableObject
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
                 
                 memoryStream.Position = 0;
-                using FileStream emulatorOutput = File.Create(fullPath);
+                using var emulatorOutput = File.Create(fullPath);
                 memoryStream.CopyTo(emulatorOutput);
             }
         }
@@ -184,7 +184,7 @@ public sealed class TkOptimizerContext : ObservableObject
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
             
             memoryStream.Position = 0;
-            using FileStream sdOutput = File.Create(fullPath);
+            using var sdOutput = File.Create(fullPath);
             memoryStream.CopyTo(sdOutput);
         }
 
@@ -193,12 +193,12 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private void WriteConfigContent(StreamWriter writer)
     {
-        foreach (IGrouping<string, TkOptimizerOption> options in Groups.SelectMany(x => x.Options).GroupBy(x => x.ConfigClass[0])) {
+        foreach (var options in Groups.SelectMany(x => x.Options).GroupBy(x => x.ConfigClass[0])) {
             writer.Write("[");
             writer.Write(options.Key);
             writer.WriteLine("]");
 
-            foreach (TkOptimizerOption option in options) {
+            foreach (var option in options) {
                 if (option.Value is TkOptimizerEnumValue enumValue) {
                     WriteEnumValue(writer, option, enumValue);
                     continue;
@@ -227,8 +227,8 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)
     {
-        JsonElement choice = enumValue.Values[enumValue.Value].Value;
-        Span<string> properties = option.ConfigClass.AsSpan()[1..];
+        var choice = enumValue.Values[enumValue.Value].Value;
+        var properties = option.ConfigClass.AsSpan()[1..];
 
         if (choice.ValueKind is JsonValueKind.Number && choice.TryGetInt32(out int s32)) {
             writer.Write(properties[0]);

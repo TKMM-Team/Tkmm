@@ -31,14 +31,14 @@ public class TkImageResolver : IImageResolver
 
             Directory.CreateDirectory(tmpFolderPath);
 
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode) {
                 return;
             }
 
-            await using FileStream fs = File.Create(tmpFileName);
-            await using Stream src = await response.Content.ReadAsStreamAsync();
+            await using var fs = File.Create(tmpFileName);
+            await using var src = await response.Content.ReadAsStreamAsync();
             await src.CopyToAsync(fs);
 
             fs.Seek(0, SeekOrigin.Begin);
@@ -54,7 +54,7 @@ public class TkImageResolver : IImageResolver
         Span<Range> parts = stackalloc Range[2];
         url.Split(parts, ':');
         
-        Range path = parts[1];
+        var path = parts[1];
 
         int len = path.End.Value - path.Start.Value;
         return string.Create(len, url[path], static (result, path) => {

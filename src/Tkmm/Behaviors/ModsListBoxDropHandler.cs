@@ -16,7 +16,7 @@ public class ModsListBoxDropHandler : DropHandlerBase
             return false;
         }
 
-        Type? listBoxType = GetListBoxType(listBox);
+        var listBoxType = GetListBoxType(listBox);
         if (control.DataContext?.GetType() != listBoxType) {
             goto DefaultCheck;
         }
@@ -42,7 +42,7 @@ public class ModsListBoxDropHandler : DropHandlerBase
             return false;
         }
 
-        Type? targetType = GetListBoxType(listBox);
+        var targetType = GetListBoxType(listBox);
 
         if (sourceContext is TkMod mod && targetType == typeof(TkProfileMod) && mod.GetProfileMod() is TkProfileMod newProfileMod && !list.Contains(newProfileMod)) {
             list.Add(newProfileMod);
@@ -60,13 +60,13 @@ public class ModsListBoxDropHandler : DropHandlerBase
 
     private static Type? GetListBoxType(ListBox sender)
     {
-        IEnumerable? src = sender.ItemsSource;
+        var src = sender.ItemsSource;
 
         if (src is null) {
             return null;
         }
 
-        Type srcType = src.GetType();
+        var srcType = src.GetType();
         return src.GetType().IsGenericType ? srcType.GetGenericArguments().FirstOrDefault() : null;
     }
 }

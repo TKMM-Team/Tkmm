@@ -41,7 +41,7 @@ public partial class ProfilesPageViewModel : ObservableObject
     [RelayCommand]
     private static void Duplicate()
     {
-        TkProfile source = TKMM.ModManager.GetCurrentProfile();
+        var source = TKMM.ModManager.GetCurrentProfile();
         
         TkProfile newProfile = new() {
             Name = $"{source.Name} ({Locale[TkLocale.Word_Copy]})",
@@ -61,8 +61,8 @@ public partial class ProfilesPageViewModel : ObservableObject
     [RelayCommand]
     private static void AddToProfile(TkMod mod)
     {
-        TkProfileMod target = mod.GetProfileMod();
-        ObservableCollection<TkProfileMod> mods = TKMM.ModManager.GetCurrentProfile().Mods;
+        var target = mod.GetProfileMod();
+        var mods = TKMM.ModManager.GetCurrentProfile().Mods;
 
         if (mods.Contains(target)) {
             return;

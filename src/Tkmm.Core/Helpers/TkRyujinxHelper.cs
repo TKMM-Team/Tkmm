@@ -83,13 +83,13 @@ public static class TkRyujinxHelper
             return null;
         }
 
-        using FileStream fs = File.OpenRead(path);
+        using var fs = File.OpenRead(path);
         return JsonSerializer.Deserialize<RyujinxConfig>(fs);
     }
 
     private static string? GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath)
     {
-        Process? ryujinx = Process
+        var ryujinx = Process
             .GetProcesses()
             .FirstOrDefault(x => x.ProcessName.Contains("Ryujinx", StringComparison.OrdinalIgnoreCase));
 

@@ -29,11 +29,11 @@ public static class OctokitHelper
     
     public static async Task<Stream?> DownloadReleaseAsset(Release release, string assetName, CancellationToken ct = default)
     {
-        ReleaseAsset? md5HashAsset = release
+        var md5HashAsset = release
             .Assets
             .FirstOrDefault(asset => asset.Name == assetName + ".checksum");
         
-        ReleaseAsset? asset = release
+        var asset = release
             .Assets
             .FirstOrDefault(asset => asset.Name == assetName);
 
@@ -41,7 +41,7 @@ public static class OctokitHelper
             return null;
         }
 
-        await using Stream checksumFile = await _client.GetStreamAsync(md5HashAsset.Url, ct);
+        await using var checksumFile = await _client.GetStreamAsync(md5HashAsset.Url, ct);
         using StreamReader reader = new(checksumFile);
 
         string? md5 = null;

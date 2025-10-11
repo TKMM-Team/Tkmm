@@ -31,7 +31,7 @@ public sealed partial class ExportLocations : ObservableCollection<ExportLocatio
         HashSet<string> seenPaths = new(StringComparer.OrdinalIgnoreCase);
         var toRemove = new List<ExportLocation>();
 
-        foreach (ExportLocation location in this.Where(x => x.IsEnabled)) {
+        foreach (var location in this.Where(x => x.IsEnabled)) {
             string path = location.SymlinkPath;
 
             if (string.Equals(path, TKMM.MergedOutputFolder, StringComparison.OrdinalIgnoreCase) || !seenPaths.Add(path)) {

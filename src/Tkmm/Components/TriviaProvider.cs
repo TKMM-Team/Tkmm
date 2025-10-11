@@ -32,7 +32,7 @@ public sealed partial class TriviaProvider : ObservableObject
 
     private static string[] GetSource()
     {
-        using Stream? stream = typeof(TriviaProvider).Assembly.GetManifestResourceStream("Tkmm.Resources.Trivia.trivia.txt");
+        using var stream = typeof(TriviaProvider).Assembly.GetManifestResourceStream("Tkmm.Resources.Trivia.trivia.txt");
         if (stream is null) {
             return [];
         }

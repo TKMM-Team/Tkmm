@@ -60,7 +60,7 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
         }
         
         for (int i = 1; i < Count; i++) {
-            PathCollectionItem item = this[i];
+            var item = this[i];
             if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Count(x => Equals(x, item)) > 1) {
                 RemoveAt(i);
                 i--;
@@ -91,7 +91,7 @@ public sealed class PathCollectionJsonSerializer : JsonConverter<PathCollection>
         HashSet<string> tracking = [];
         
         writer.WriteStartArray();
-        foreach (PathCollectionItem item in value) {
+        foreach (var item in value) {
             if (tracking.Add(item.Target) && !string.IsNullOrWhiteSpace(item.Target)) {
                 writer.WriteStringValue(item.Target);
             }

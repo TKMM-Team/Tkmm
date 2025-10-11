@@ -21,7 +21,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     [RelayCommand]
     public static async Task ShowAboutDialog()
     {
-        await using Stream aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
+        await using var aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
         string contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
 
         contents = contents.Replace("@@version@@", App.Version);

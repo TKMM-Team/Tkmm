@@ -75,7 +75,7 @@ public static class MessageDialog
             dialog.Classes.Add("optional");
         }
         
-        MessageDialogResult result = (await dialog.ShowAsync(), buttons) switch {
+        var result = (await dialog.ShowAsync(), buttons) switch {
             (ContentDialogResult.Primary, MessageDialogButtons.Ok or MessageDialogButtons.OkCancel) => MessageDialogResult.Ok,
             (ContentDialogResult.Primary, MessageDialogButtons.YesNo or MessageDialogButtons.YesNoCancel) => MessageDialogResult.Yes,
             (ContentDialogResult.Secondary, MessageDialogButtons.YesNoCancel) => MessageDialogResult.No,
@@ -99,7 +99,7 @@ public static class MessageDialog
             return [];
         }
 
-        using FileStream fs = File.OpenRead(_dialogsStorePath);
+        using var fs = File.OpenRead(_dialogsStorePath);
         return JsonSerializer.Deserialize<HashSet<MessageDialogs>>(fs) ?? [];
     }
     
@@ -111,7 +111,7 @@ public static class MessageDialog
             Directory.CreateDirectory(folder);
         }
 
-        using FileStream fs = File.Create(_dialogsStorePath);
+        using var fs = File.Create(_dialogsStorePath);
         JsonSerializer.Serialize(fs, _hiddenDialogs);
     }
 }

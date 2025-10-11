@@ -53,7 +53,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return;
         }
 
-        IStorageFile? result = await App.XamlRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
+        var result = await App.XamlRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
             Title = Locale[TkLocale.Menu_ModExportFile],
             DefaultExtension = ".tkcl",
             FileTypeChoices = [
@@ -70,7 +70,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         try {
             TkStatus.Set(Locale[TkLocale.Status_ExportingMod, target.Mod.Name, result.Name], TkIcons.LIST_CHECK);
             
-            await using (Stream output = await result.OpenWriteAsync()) {
+            await using (var output = await result.OpenWriteAsync()) {
                 await TKMM.ExportPackage(target.Mod, output);
             }
             TkStatus.SetTemporaryShort(Locale[TkLocale.Status_ModSuccessfullyExported, target.Mod.Name], TkIcons.CIRCLE_CHECK);

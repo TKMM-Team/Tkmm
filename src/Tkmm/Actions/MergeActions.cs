@@ -89,7 +89,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             return;
         }
 
-        DisplayDisk[] disks = DriveInfo.GetDrives()
+        var disks = DriveInfo.GetDrives()
             .Where(static driveInfo => {
                 try {
                     return driveInfo is {
@@ -133,7 +133,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         await Merge(profile, ipsOutputPath, ct);
 
         try {
-            MessageDialogResult canDeleteResult = await MessageDialog.Show(
+            var canDeleteResult = await MessageDialog.Show(
                 "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
             
             if (canDeleteResult is not MessageDialogResult.Yes) {

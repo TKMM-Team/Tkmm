@@ -119,11 +119,11 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
     public TkExtensibleRomProvider CreateRomProvider()
     {
-        using Stream checksums = TkEmbeddedDataSource.GetChecksumsBin();
-        using Stream packFileLookup = TkEmbeddedDataSource.GetPackFileLookup();
+        using var checksums = TkEmbeddedDataSource.GetChecksumsBin();
+        using var packFileLookup = TkEmbeddedDataSource.GetPackFileLookup();
 
 #if !SWITCH
-        TkExtensibleRomProviderBuilder builder = TkExtensibleRomProviderBuilder.Create(
+        var builder = TkExtensibleRomProviderBuilder.Create(
                 TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup)
             )
             .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
@@ -158,7 +158,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
         try {
             if (TkEmulatorHelper.GetNandPath(emulatorFilePath) is { } emulatorNandPath && Directory.Exists(emulatorNandPath)) {
-                KeySet? keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath!);
+                var keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath!);
                 if (keys == null) {
                     throw new Exception("Keys not found");
                 }

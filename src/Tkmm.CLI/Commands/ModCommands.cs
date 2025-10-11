@@ -25,9 +25,9 @@ public class ModCommands
     {
         Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
 
-        TkProject project = TkProjectManager.OpenProject(sourcePath);
+        var project = TkProjectManager.OpenProject(sourcePath);
 
-        await using FileStream output = File.Create(outputPath);
+        await using var output = File.Create(outputPath);
         await project.Package(output, TKMM.GetTkRom());
     }
 
@@ -37,9 +37,9 @@ public class ModCommands
     {
         Console.WriteLine($"Packaging project from {sourcePath} to {outputPath}");
 
-        TkProject project = TkProjectManager.OpenProject(sourcePath);
+        var project = TkProjectManager.OpenProject(sourcePath);
 
-        await using FileStream output = File.Create(outputPath);
+        await using var output = File.Create(outputPath);
         await project.PackageOptimizer(output);
     }
 }

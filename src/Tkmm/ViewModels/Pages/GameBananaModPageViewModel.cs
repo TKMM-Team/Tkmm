@@ -217,7 +217,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
     {
         try
         {
-            await using Stream imageStream = await DownloadHelper.Client.GetStreamAsync(url);
+            await using var imageStream = await DownloadHelper.Client.GetStreamAsync(url);
             await using MemoryStream ms = new();
             await imageStream.CopyToAsync(ms);
             ms.Seek(0, SeekOrigin.Begin);

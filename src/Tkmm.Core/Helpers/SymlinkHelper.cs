@@ -58,7 +58,7 @@ public class SymlinkHelper
     [SupportedOSPlatform("windows")]
     private static bool IsDeveloperModeEnabled()
     {
-        RegistryKey? key = Registry.LocalMachine.OpenSubKey(
+        var key = Registry.LocalMachine.OpenSubKey(
             @"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock", writable: false);
         return key?.GetValue("AllowDevelopmentWithoutDevLicense", 0) as int? == 1;
     }

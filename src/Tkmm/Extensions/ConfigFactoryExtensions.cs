@@ -10,7 +10,7 @@ public static class ConfigFactoryExtensions
 {
     public static void AppendAndValidate<T>(this ConfigPageModel settingsModel, ref bool isValid) where T : ConfigModule<T>, new()
     {
-        isValid = ConfigModule<T>.Shared.Validate(out string? _, out ConfigProperty? target);
+        isValid = ConfigModule<T>.Shared.Validate(out string? _, out var target);
         
         if (!isValid && target?.Attribute is not null) {
             settingsModel.SelectedGroup = settingsModel.Categories

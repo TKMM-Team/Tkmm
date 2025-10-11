@@ -100,7 +100,7 @@ public static class TKMM
         ipsOutputPath ??= Path.Combine("..", "..", "exefs_patches", "TKMM");
 #endif
 
-        using ITkRom tkRom = GetTkRom();
+        using var tkRom = GetTkRom();
         TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
 
         long startTime = Stopwatch.GetTimestamp();
@@ -121,7 +121,7 @@ public static class TKMM
             }
         }
 
-        TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
+        var delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
     }
 
@@ -139,14 +139,14 @@ public static class TKMM
 
         long startTime = Stopwatch.GetTimestamp();
 
-        TkChangelog[] targets = GetMergeTargets(profile)
+        var targets = GetMergeTargets(profile)
             .ToArray();
 
         TkMerger.MergeCheats(writer, targets);
         TkMerger.MergeExeFs(writer, targets);
         TkMerger.MergeSubSdk(writer, targets);
 
-        TimeSpan delta = Stopwatch.GetElapsedTime(startTime);
+        var delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
     }
 
@@ -205,9 +205,9 @@ public static class TKMM
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
     {
         profile ??= ModManager.GetCurrentProfile();
-        Ulid optimizerId = TkOptimizerService.GetStaticId();
+        var optimizerId = TkOptimizerService.GetStaticId();
         
-        IEnumerable<TkChangelog> targets = TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
+        var targets = TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)
             .Append(TkOptimizerService.GetMod(profile));
         
         if (ModsEnabledMalsProvider.CreateDefaultMalsChangelog(Config.Shared.GameLanguage) is { } defaultMalsChangelog)

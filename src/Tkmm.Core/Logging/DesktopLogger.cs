@@ -30,7 +30,7 @@ public class DesktopLogger : ILogger
         
         _group = group;
 
-        FileStream fs = File.OpenWrite(CurrentLogFile);
+        var fs = File.OpenWrite(CurrentLogFile);
         fs.Seek(0, SeekOrigin.End);
         
         _writer = new StreamWriter(fs);

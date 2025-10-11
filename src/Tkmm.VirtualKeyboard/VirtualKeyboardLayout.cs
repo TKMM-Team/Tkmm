@@ -38,7 +38,7 @@ public partial class VirtualKeyboardLayout : TemplatedControl
 
     private void UpdateKeyContents(bool isEnabled)
     {
-        foreach (VirtualKey key in _registered) {
+        foreach (var key in _registered) {
             key.Content = isEnabled ? key.ShiftKey : key.Key;
         }
     }

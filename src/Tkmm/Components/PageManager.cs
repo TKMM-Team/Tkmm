@@ -48,7 +48,7 @@ public partial class PageManager : ObservableObject
 
     public void Register<T>(Page page, TkLocale title, T? content, Symbol icon, TkLocale description, bool isDefault = false, bool isFooter = false, Action<T?>? onPageFocused = null) where T : class
     {
-        ObservableCollection<PageModel> source = isFooter ? FooterPages : Pages;
+        var source = isFooter ? FooterPages : Pages;
         _lookup[page] = (source.Count, isFooter);
 
         source.Add(new PageModel {
