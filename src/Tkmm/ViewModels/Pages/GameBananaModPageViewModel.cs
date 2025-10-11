@@ -28,6 +28,13 @@ public partial class GameBananaModPageViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading;
 
+    public static bool ShowGameBananaLink => 
+#if SWITCH
+        false;
+#else
+        true;
+#endif
+
     partial void OnSelectedImageIndexChanged(int value)
     {
         NotifyImagePropertiesChanged();
