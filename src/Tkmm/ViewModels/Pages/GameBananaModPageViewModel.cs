@@ -181,7 +181,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
         }
     }
 
-    private async Task LoadSingleAvatarAsync(GameBananaAuthor author)
+    private static async Task LoadSingleAvatarAsync(GameBananaAuthor author)
     {
         var avatarUrl = !string.IsNullOrEmpty(author.AvatarUrl) 
             ? author.AvatarUrl 
@@ -220,7 +220,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
         }
     }
 
-    private async Task<object?> LoadImageFromUrlAsync(string url, string description)
+    private static async Task<object?> LoadImageFromUrlAsync(string url, string description)
     {
         try
         {
