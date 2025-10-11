@@ -17,6 +17,9 @@
         <Style Selector="avaMark|MarkdownViewer Image.image">
             <Setter Property="MaxWidth" Value="{Binding $parent[avaMark:MarkdownViewer].Bounds.Width}" />
         </Style>
+        <Style Selector="HyperlinkButton[Name=GameBananaLink] TextBlock">
+            <Setter Property="TextDecorations" Value="" />
+        </Style>
     </UserControl.Styles>
     <UserControl.DataContext>
         <pages:GameBananaModPageViewModel />
@@ -59,7 +62,8 @@
                                    Text="{Binding FormattedDateAdded, StringFormat=' on {0}'}" />
                     </StackPanel>
                 </StackPanel>
-                <HyperlinkButton Grid.Column="2"
+                <HyperlinkButton x:Name="GameBananaLink"
+                                 Grid.Column="2"
                                  Height="32"
                                  Padding="8,6"
                                  BorderThickness="1"
