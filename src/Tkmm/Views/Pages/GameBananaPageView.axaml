@@ -113,14 +113,6 @@
                                                                    Text="{Binding Name}"
                                                                    TextTrimming="CharacterEllipsis" />
                                                     </Button>
-                                                    <HyperlinkButton Grid.Column="1"
-                                                                     Width="30"
-                                                                     Height="30"
-                                                                     Padding="0"
-                                                                     NavigateUri="{Binding Url}"
-                                                                     ToolTip.Tip="{Binding Name}">
-                                                        <pi:Icon Value="fa-solid fa-link" />
-                                                    </HyperlinkButton>
                                                 </Grid>
                                                 <Border Height="1"
                                                         Margin="0,10"
