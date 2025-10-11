@@ -1,10 +1,9 @@
-﻿using Avalonia.Threading;
+﻿using System.Diagnostics;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
-using Tkmm.Views.Common;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -13,7 +12,7 @@ namespace Tkmm.ViewModels.Pages;
 public partial class GameBananaPageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private bool _isShowingDetail;
+    public partial bool IsShowingDetail { get; set; }
 
     [ObservableProperty]
     private double _viewerOpacity;
@@ -63,7 +62,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             return;
         }
 
-        Viewer?.Dispose();
+        Viewer?.Reset();
         Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full);
         Viewer.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
@@ -82,7 +81,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         ViewerOpacity = 0.0;
         Task.Delay(300).ContinueWith(_ => {
             Dispatcher.UIThread.Post(() => {
-                Viewer?.Dispose();
+                Viewer?.Reset();
                 Viewer = null;
                 OnPropertyChanged(nameof(Viewer));
                 IsShowingDetail = false;
@@ -105,7 +104,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             if (modRecord.Full.Game.Id != 7617) {
                 try {
                     var url = $"https://gamebanana.com/mods/{modId}";
-                    _ = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+                    _ = Process.Start(new ProcessStartInfo {
                         FileName = url,
                         UseShellExecute = true
                     });
@@ -117,7 +116,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                 return;
             }
 
-            Viewer?.Dispose();
+            Viewer?.Reset();
             Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
             Viewer.PropertyChanged += (_, e) => {
                 if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {

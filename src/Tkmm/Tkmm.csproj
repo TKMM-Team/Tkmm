@@ -11,6 +11,7 @@
     <Version Condition="'$(Configuration)' == 'Debug'">0.0.999-dev</Version>
     <NoWarn>CS0657,CA1822</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
