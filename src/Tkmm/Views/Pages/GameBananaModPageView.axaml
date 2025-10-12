@@ -17,9 +17,6 @@
         <Style Selector="avaMark|MarkdownViewer Image.image">
             <Setter Property="MaxWidth" Value="{Binding $parent[avaMark:MarkdownViewer].Bounds.Width}" />
         </Style>
-        <Style Selector="HyperlinkButton[Name=GameBananaLink] TextBlock">
-            <Setter Property="TextDecorations" Value="" />
-        </Style>
     </UserControl.Styles>
 
     <UserControl.DataContext>
