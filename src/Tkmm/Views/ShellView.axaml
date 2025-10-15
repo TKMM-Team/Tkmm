@@ -126,7 +126,10 @@
               IsVisible="{Binding IsVisibleR2CMenu}"
               Opacity="{Binding R2CMenuOpacity}">
             
-            <views:CarouselPageView x:Name="R2CMenu" ZIndex="1000" />
+            <views:CarouselPageView x:Name="R2CMenu"
+                                     ZIndex="1000"
+                                     IsEnabled="{Binding IsVisibleR2CMenu}"
+                                     IsHitTestVisible="{Binding IsVisibleR2CMenu}" />
             
             <!-- Close button to exit the R2C menu --> 
             <Button Command="{Binding HideR2CMenu}"
