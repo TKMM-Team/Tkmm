@@ -179,10 +179,10 @@ public class App : Application
         
         base.OnFrameworkInitializationCompleted();
         
-        Dispatcher.UIThread.Post(async () => {
-            await Task.Delay(1000);
+        Dispatcher.UIThread.Post(() => {
+            Task.Delay(1000).Wait();
             Program.ProcessStartupArgs();
-        }, DispatcherPriority.Loaded);
+        });
     }
 
     private void OnThemeChanged(string theme)
