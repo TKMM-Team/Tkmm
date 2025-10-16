@@ -124,12 +124,11 @@
         <!-- Page from the R2CSharp library that displays Hekate reboot options when pressing Home (TKMM-NX only) -->
         <Grid Background="#1E1E1E"
               IsVisible="{Binding IsVisibleR2CMenu}"
-              Opacity="{Binding R2CMenuOpacity}">
+              Opacity="{Binding R2CMenuOpacity}"
+              IsEnabled="{Binding IsVisibleR2CMenu}"
+              IsHitTestVisible="{Binding IsVisibleR2CMenu}">
             
-            <views:CarouselPageView x:Name="R2CMenu"
-                                     ZIndex="1000"
-                                     IsEnabled="{Binding IsVisibleR2CMenu}"
-                                     IsHitTestVisible="{Binding IsVisibleR2CMenu}" />
+            <views:CarouselPageView x:Name="R2CMenu" ZIndex="1000" />
             
             <!-- Close button to exit the R2C menu --> 
             <Button Command="{Binding HideR2CMenu}"
