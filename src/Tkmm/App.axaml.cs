@@ -175,7 +175,14 @@ public class App : Application
 
         OnThemeChanged(Config.Shared.Theme);
 
+        ArgumentHandler.EnsureWired();
+        
         base.OnFrameworkInitializationCompleted();
+        
+        Dispatcher.UIThread.Post(async () => {
+            await Task.Delay(1000);
+            Program.ProcessStartupArgs();
+        }, DispatcherPriority.Loaded);
     }
 
     private void OnThemeChanged(string theme)

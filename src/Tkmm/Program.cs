@@ -16,6 +16,8 @@ namespace Tkmm;
 
 internal abstract class Program
 {
+    private static string[]? _startupArgs;
+
     [STAThread]
     public static void Main(string[] args)
     {
@@ -40,10 +42,10 @@ internal abstract class Program
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
             TkLocalizationInterface.GetCultureName = culture => Locale["Language", failSoftly: false, culture];
 
+            _startupArgs = args;
+
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
-
-            HandleArgs(args);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An unhandled exception of type '{ErrorType}' occured.", ex.GetType());
@@ -85,5 +87,13 @@ internal abstract class Program
     {
         ArgumentHandler.EnsureWired();
         TkConsoleApp.ProcessBasicArgs(args);
+    }
+
+    public static void ProcessStartupArgs()
+    {
+        if (_startupArgs != null) {
+            HandleArgs(_startupArgs);
+            _startupArgs = null;
+        }
     }
 }
