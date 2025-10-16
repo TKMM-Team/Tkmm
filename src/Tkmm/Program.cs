@@ -40,10 +40,10 @@ internal abstract class Program
             TkLocalizationInterface.GetLocale = (key, failSoftly) => Locale[key, failSoftly];
             TkLocalizationInterface.GetCultureName = culture => Locale["Language", failSoftly: false, culture];
 
-            HandleArgs(args);
-
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
+
+            HandleArgs(args);
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An unhandled exception of type '{ErrorType}' occured.", ex.GetType());
