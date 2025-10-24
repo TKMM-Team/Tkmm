@@ -36,7 +36,7 @@ public static class TKMM
 #if SWITCH
     public static readonly string MergedOutputFolder = "/flash/atmosphere/contents/0100F2C0115B6000";
 #else
-    public static string MergedOutputFolder => string.IsNullOrEmpty(Config.Shared.MergeOutput)
+    public static string MergedOutputFolder => string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)
         ? Path.Combine(BaseDirectory, "Merged") : Config.Shared.MergeOutput;
 #endif
 
