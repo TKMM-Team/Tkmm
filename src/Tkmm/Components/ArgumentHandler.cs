@@ -4,7 +4,6 @@ using ConfigFactory.Models;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.CLI;
-using Tkmm.Localization;
 using Tkmm.ViewModels.Pages;
 using TkSharp.Core;
 
