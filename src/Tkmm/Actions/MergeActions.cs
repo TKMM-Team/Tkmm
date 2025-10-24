@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
-using Tkmm.Helpers;
 using Tkmm.Models;
 using Tkmm.Views.Common;
 using TkSharp.Core;
@@ -56,14 +55,13 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
             await TKMM.Merge(profile, ipsOutputPath, ct: ct);
-            App.Toast($"The profile '{profile.Name}' was merged successfully.",
-                "Merge Successful!", NotificationType.Success, TimeSpan.FromDays(5));
+            App.Toast(string.Format(Locale["MergeActions_MergeSuccessful"], profile.Name),
+                Locale["MergeActions_MergeSuccessfulTitle"], NotificationType.Success, TimeSpan.FromDays(5));
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");
         }
         catch (Exception ex) {
             TkStatus.SetTemporary("Merge failed", "fa-circle-exclamation");
-            TkLog.Instance.LogError(ex, "An error occured when merging the selected profile '{Profile}'.",
-                profile.Name);
+            TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorMergingProfile"], profile.Name));
             await ErrorDialog.ShowAsync(ex);
         }
         finally {
@@ -99,26 +97,26 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         if (disks.Length is 0) {
             await ErrorDialog.ShowAsync(
-                new DriveNotFoundException("No suitable disks found. Please make sure you have an SD card inserted or connected virtually over USB, and that atmosphere is installed on it.")
+                new DriveNotFoundException(Locale["MergeActions_NoSuitableDisks"])
             );
 
             return;
         }
 
         ContentDialog dialog = new() {
-            Title = "Select an SD card",
+            Title = Locale["MergeActions_SelectSdCard"],
             Content = new ComboBox {
                 ItemsSource = disks,
                 SelectedIndex = 0,
                 DisplayMemberBinding = new Binding("DisplayName")
             },
-            PrimaryButtonText = "Merge and export",
-            SecondaryButtonText = "Cancel"
+            PrimaryButtonText = Locale["MergeActions_MergeAndExport"],
+            SecondaryButtonText = Locale["Action_Cancel"]
         };
 
         if (await dialog.ShowAsync() is not ContentDialogResult.Primary || dialog.Content is not ComboBox {
                 SelectedItem: DisplayDisk {
-                    Drive: DriveInfo drive
+                    Drive: { } drive
                 }
             }) return;
         
@@ -128,7 +126,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
         try {
             var canDeleteResult = await MessageDialog.Show(
-                "Are you sure you would like to delete the existing atmosphere contents?", "Warning", MessageDialogButtons.YesNoCancel);
+                Locale["MergeActions_DeleteAtmosphereContents"], Locale["Action_Warning"], MessageDialogButtons.YesNoCancel);
             
             if (canDeleteResult is not MessageDialogResult.Yes) {
                 return;
@@ -138,8 +136,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "An error occured when exporting the profile '{Profile}' to the external drive " +
-                                     "'{TargetDrive}'.", profile.Name, drive.Name);
+            TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, drive.Name));
             await ErrorDialog.ShowAsync(ex);
         }
     }
@@ -159,7 +156,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             Process.Start(info);
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "An error occured while opening the merged output folder.");
+            TkLog.Instance.LogError(ex, Locale["MergeActions_ErrorOpeningFolder"]);
             await ErrorDialog.ShowAsync(ex);
         }
     }
