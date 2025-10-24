@@ -60,9 +60,9 @@ public sealed partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Theme",
+        Header = "Config_Theme",
         Description = "",
-        Group = "Application")]
+        Group = "ConfigSection_Application")]
     [property: DropdownConfig("Dark", "Light")]
     private string _theme = "Dark";
 
@@ -73,9 +73,9 @@ public sealed partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
-        Header = "System Language",
-        Description = "The language to use in the user interface (restart required)",
-        Group = "Application")]
+        Header = "Config_SystemLanguage",
+        Description = "Config_SystemLanguageDescription",
+        Group = "ConfigSection_Application")]
     [property: DropdownConfig(
         DisplayMemberPath = nameof(SystemLanguage.DisplayName),
         RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
@@ -83,9 +83,9 @@ public sealed partial class Config : ConfigModule<Config>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Auto Save Settings",
-        Description = "Automatically save the settings when a change is made and there are no errors.",
-        Group = "Application")]
+        Header = "Config_AutoSaveSettings",
+        Description = "Config_AutoSaveSettingsDescription",
+        Group = "ConfigSection_Application")]
     private bool _autoSaveSettings = true;
 
 #if SWITCH
@@ -98,22 +98,22 @@ public sealed partial class Config : ConfigModule<Config>
 #else
     [ObservableProperty]
     [property: Config(
-        Header = "7z Path",
-        Description = "The absolute path to the 7-zip executable used for faster 7z extraction.",
-        Group = "Application")]
+        Header = "Config_SevenZipPath",
+        Description = "Config_SevenZipPathDescription",
+        Group = "ConfigSection_Application")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
         InstanceBrowserKey = "7z-path",
         Filter = "7z:*7z*",
-        Title = "7z Location")]
+        Title = "Config_SelectSevenZipLocation")]
     private string? _sevenZipPath;
 #endif
 
 #if !SWITCH
     [property: Config(
-        Header = "Emulator Executable Path",
-        Description = "The absolute path to your emulator's executable.",
-        Group = "Application")]
+        Header = "Config_EmulatorExecutablePath",
+        Description = "Config_EmulatorExecutablePathDescription",
+        Group = "ConfigSection_Application")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
         InstanceBrowserKey = "emulator-path",
@@ -122,30 +122,30 @@ public sealed partial class Config : ConfigModule<Config>
 #else
         Filter = "Executable:*",
 #endif
-        Title = "Select emulator executable")]
+        Title = "Config_SelectEmulatorExecutable")]
     [ObservableProperty]
     private string? _emulatorPath;
 #endif
 
     [ObservableProperty]
     [property: Config(
-        Header = "Show Trivia Popup",
-        Description = "Show the trivia popup when merging.",
-        Group = "Application")]
+        Header = "Config_ShowTriviaPopup",
+        Description = "Config_ShowTriviaPopupDescription",
+        Group = "ConfigSection_Application")]
     private bool _showTriviaPopup = true;
 
     [ObservableProperty]
     [property: Config(
-        Header = "Default Author",
-        Description = "The default author used when packaging TKCL mods.",
-        Group = "Packaging")]
+        Header = "Config_DefaultAuthor",
+        Description = "Config_DefaultAuthorDescription",
+        Group = "ConfigSection_Packaging")]
     private string _defaultAuthor = string.Empty;
 
     [ObservableProperty]
     [property: Config(
-        Header = "Target Language",
-        Description = "The target language that MalsMerger should create an archive for.",
-        Group = "Merging")]
+        Header = "Config_TargetLanguage",
+        Description = "Config_TargetLanguageDescription",
+        Group = "ConfigSection_Merging")]
     [property: DropdownConfig(
         DisplayMemberPath = "DisplayName",
         RuntimeItemsSourceMethodName = nameof(GetGameLanguages))]
@@ -154,23 +154,23 @@ public sealed partial class Config : ConfigModule<Config>
 #if !SWITCH
     [ObservableProperty]
     [property: Config(
-        Header = "Export Locations",
-        Description = "Define custom locations to export the merged mod to.",
-        Group = "Merging")]
+        Header = "Config_ExportLocations",
+        Description = "Config_ExportLocationsDescription",
+        Group = "ConfigSection_Merging")]
     private ExportLocations _exportLocations = [];
 
     [ObservableProperty]
     [property: Config(
-        Header = "Use romfslite",
-        Description = "Write mods to romfslite instead of romfs (requires TotK Optimizer). This fixes issues introduced in firmware 20.0.0+.",
-        Group = "Merging")]
+        Header = "Config_UseRomfslite",
+        Description = "Config_UseRomfsliteDescription",
+        Group = "ConfigSection_Merging")]
     private bool _useRomfslite;
 
     [ObservableProperty]
     [property: Config(
-        Header = "Merge Output Folder",
-        Description = "The location to write the merged output to. (Default location is './Merged' next to the TKMM executable)",
-        Group = "Merging")]
+        Header = "Config_MergeOutputFolder",
+        Description = "Config_MergeOutputFolderDescription",
+        Group = "ConfigSection_Merging")]
     private string? _mergeOutput;
 #endif
 
@@ -219,5 +219,10 @@ public sealed partial class Config : ConfigModule<Config>
             module = new Config();
             TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(Config));
         }
+    }
+
+    public override string Translate(string input)
+    {
+        return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
     }
 }

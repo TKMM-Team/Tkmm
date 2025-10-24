@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
-using LibHac.Common.Keys;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Attributes;
 using Tkmm.Core.Helpers;
@@ -17,7 +16,7 @@ namespace Tkmm.Core;
 
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
-    public const string DEFAULT_GAME_VERSION = "Auto";
+    private const string DEFAULT_GAME_VERSION = "Auto";
 
     [JsonIgnore]
     public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.Shared.Name, "TkConfig.json");
@@ -32,58 +31,58 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
     [ObservableProperty]
     [property: Config(
-        Header = "Preferred Game Version",
-        Description = "The game version to look for when reading the configured SD card if multiple versions are found.",
-        Group = "Game Dump")]
+        Header = "TkConfig_PreferredGameVersion",
+        Description = "TkConfig_PreferredGameVersionDescription",
+        Group = "ConfigSection_GameDump")]
     [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.2", "1.4.1", "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
     private string _preferredGameVersion = DEFAULT_GAME_VERSION;
 
     [ObservableProperty]
     [property: Config(
-        Header = "Keys Folder Path",
-        Description = "The absolute path to the folder containing your dumped Switch keys.",
-        Group = "Game Dump")]
+        Header = "TkConfig_KeysFolderPath",
+        Description = "TkConfig_KeysFolderPathDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "keys-folder-path",
-        Title = "Select prod/title keys folder")]
+        Title = "TkConfig_SelectKeysFolder")]
     private string? _keysFolderPath;
 
     [ObservableProperty]
     [property: Config(
-        Header = "Packaged Base Game Path(s)",
-        Description = "The absolute path to your dumped base game file (.xci or .nsp) or split folder.",
-        Group = "Game Dump")]
+        Header = "TkConfig_PackagedBaseGamePaths",
+        Description = "TkConfig_PackagedBaseGamePathsDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
         Filter = "XCI/NSP:*.nsp;*.xci|All files:*.*",
         InstanceBrowserKey = "base-game-file-path",
-        Title = "Select base game XCI/NSP")]
+        Title = "TkConfig_SelectBaseGame")]
     [property: PathCollectionOptions(PathType.FileOrFolder)]
     private PathCollection _packagedBaseGamePaths = [];
 
     [ObservableProperty]
     [property: Config(
-        Header = "Game Update File Path(s)",
-        Description = "The absolute path to your dumped game update file (.nsp).",
-        Group = "Game Dump")]
+        Header = "TkConfig_GameUpdateFilePaths",
+        Description = "TkConfig_GameUpdateFilePathsDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFile,
         Filter = "NSP:*.nsp|All files:*.*",
         InstanceBrowserKey = "game-update-file-path",
-        Title = "Select game update NSP")]
+        Title = "TkConfig_SelectGameUpdate")]
     [property: PathCollectionOptions(PathType.File)]
     private PathCollection _packagedUpdatePaths = [];
 
     [ObservableProperty]
     [property: Config(
-        Header = "SD Card Root Path",
-        Description = "The path to the root of your SD card or emuMMC (must contain a Nintendo/Contents folder with the base game or update installed).",
-        Group = "Game Dump")]
+        Header = "TkConfig_SdCardRootPath",
+        Description = "TkConfig_SdCardRootPathDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "sd-card-root-path",
-        Title = "Select SD card root folder")]
+        Title = "TkConfig_SelectSdCardRoot")]
     private string? _sdCardRootPath;
 
 #if SWITCH
@@ -94,25 +93,25 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 #else
     [ObservableProperty]
     [property: Config(
-        Header = "Game Dump Folder Path(s)",
-        Description = "The absolute path to your dumped RomFS folder.",
-        Group = "Game Dump")]
+        Header = "TkConfig_GameDumpFolderPaths",
+        Description = "TkConfig_GameDumpFolderPathsDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "game-dump-folder-path",
-        Title = "Select game dump folder path (with update 1.1.0 or later)")]
+        Title = "TkConfig_SelectGameDumpFolder")]
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _gameDumpFolderPaths = [];
 
     [ObservableProperty]
     [property: Config(
-        Header = "NAND Folder Path(s)",
-        Description = "The absolute path to your virtual NAND folder.",
-        Group = "Game Dump")]
+        Header = "TkConfig_NandFolderPaths",
+        Description = "TkConfig_NandFolderPathsDescription",
+        Group = "ConfigSection_GameDump")]
     [property: BrowserConfig(
         BrowserMode = BrowserMode.OpenFolder,
         InstanceBrowserKey = "nand-folder-path",
-        Title = "Select virtual NAND folder path")]
+        Title = "TkConfig_SelectNandFolder")]
     [property: PathCollectionOptions(PathType.Folder)]
     private PathCollection _nandFolderPaths = [];
 #endif
@@ -207,5 +206,10 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             module = new TkConfig();
             TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(TkConfig));
         }
+    }
+
+    public override string Translate(string input)
+    {
+        return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
     }
 }

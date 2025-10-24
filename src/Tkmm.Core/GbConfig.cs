@@ -10,9 +10,9 @@ namespace Tkmm.Core;
 public sealed class GbConfig : ConfigModule<GbConfig>
 {
     [Config(
-        Header = "Use Threaded Downloads",
-        Description = "Use multi-threaded downloads for potentially faster downloads. Disable this if you experience network issues.",
-        Group = "GameBanana Client")]
+        Header = "GbConfig_UseThreadedDownloads",
+        Description = "GbConfig_UseThreadedDownloadsDescription",
+        Group = "ConfigSection_GameBananaClient")]
     public bool UseThreadedDownloads {
         get => DownloadHelper.Config.UseThreadedDownloads;
         set {
@@ -23,9 +23,9 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     }
 
     [Config(
-        Header = "Download Timeout Seconds",
-        Description = "The maximum amount of seconds to wait for a response before failing.",
-        Group = "GameBanana Client")]
+        Header = "GbConfig_DownloadTimeoutSeconds",
+        Description = "GbConfig_DownloadTimeoutSecondsDescription",
+        Group = "ConfigSection_GameBananaClient")]
     public int GameBananaTimeoutSeconds {
         get => DownloadHelper.Config.TimeoutSeconds;
         set {
@@ -36,9 +36,9 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     }
 
     [Config(
-        Header = "GameBanana Download Max Retries",
-        Description = "The maximum amount of times to retry a download before failing.",
-        Group = "GameBanana Client")]
+        Header = "GbConfig_GameBananaDownloadMaxRetries",
+        Description = "GbConfig_GameBananaDownloadMaxRetriesDescription",
+        Group = "ConfigSection_GameBananaClient")]
     public int GameBananaMaxRetries {
         get => DownloadHelper.Config.MaxRetries;
         set {
@@ -57,5 +57,10 @@ public sealed class GbConfig : ConfigModule<GbConfig>
             TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(GbConfig));
             module = new GbConfig();
         }
+    }
+
+    public override string Translate(string input)
+    {
+        return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
     }
 }
