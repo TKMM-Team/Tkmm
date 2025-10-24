@@ -4,6 +4,7 @@ using ConfigFactory.Models;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.CLI;
+using Tkmm.Localization;
 using Tkmm.ViewModels.Pages;
 using TkSharp.Core;
 
@@ -62,11 +63,11 @@ internal static class ArgumentHandler
                     var content = PageManager.Shared[Page.Settings].Content;
                     if (content is UserControl { DataContext: ConfigPageModel m }) {
                         var normalizedHeader = section switch {
-                            "application" => "Application",
-                            "packaging" => "Packaging",
-                            "merging" => "Merging",
-                            "gamebanana" or "gamebanana-client" or "gamebanana_client" => "GameBanana Client",
-                            "dump" or "game-dump" or "game_dump" => "Game Dump",
+                            "application" => Locale["ConfigSection_Application"],
+                            "packaging" => Locale["ConfigSection_Packaging"],
+                            "merging" => Locale["ConfigSection_Merging"],
+                            "gamebanana" or "gamebanana-client" or "gamebanana_client" => Locale["ConfigSection_GameBananaClient"],
+                            "dump" or "game-dump" or "game_dump" => Locale["ConfigSection_GameDump"],
                             _ => section
                         };
 
