@@ -217,7 +217,7 @@ public sealed partial class Config : ConfigModule<Config>
         }
         catch (Exception ex) {
             module = new Config();
-            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(Config));
+            TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(Config)));
         }
     }
 

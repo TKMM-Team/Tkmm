@@ -54,7 +54,7 @@ public sealed class GbConfig : ConfigModule<GbConfig>
             base.Load(ref module);
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(GbConfig));
+            TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(GbConfig)));
             module = new GbConfig();
         }
     }

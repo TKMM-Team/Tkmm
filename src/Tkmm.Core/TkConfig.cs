@@ -147,10 +147,10 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                         .Build();
                 }
 
-                throw new Exception("No update is selected in Ryujinx. Right click the game in the emulator, go to 'Manage Title Updates' and select one.");
+                throw new Exception(Locale["TkConfig_ErrorNoUpdateSelected"]);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Failed to detect a TotK update");
+                TkLog.Instance.LogError(ex, Locale["TkConfig_ErrorFailedToDetectUpdate"]);
                 goto Configured;
             }
         }
@@ -159,13 +159,13 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             if (TkEmulatorHelper.GetNandPath(emulatorFilePath) is { } emulatorNandPath && Directory.Exists(emulatorNandPath)) {
                 var keys = TkKeyUtils.GetKeysFromFolder(KeysFolderPath!);
                 if (keys == null) {
-                    throw new Exception("Keys not found");
+                    throw new Exception(Locale["TkConfig_ErrorKeysNotFound"]);
                 }
 
                 TkNandUtils.IsValid(keys, emulatorNandPath, out bool hasUpdate);
 
                 if (!hasUpdate) {
-                    throw new Exception("No update on NAND");
+                    throw new Exception(Locale["TkConfig_ErrorNoUpdateOnNand"]);
                 }
 
                 return builder
@@ -176,8 +176,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             }
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Ensure your keys and a TotK update are installed on your emulator's " +
-                                        "NAND. Alternatively, select a Preferred Game Version in the dump settings.");
+            TkLog.Instance.LogError(ex, Locale["TkConfig_ErrorEnsureKeysAndUpdate"]);
         }
 
     Configured:
@@ -204,7 +203,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
         catch (Exception ex) {
             module = new TkConfig();
-            TkLog.Instance.LogError(ex, "Failed to load config: '{ConfigName}'", nameof(TkConfig));
+            TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(TkConfig)));
         }
     }
 
