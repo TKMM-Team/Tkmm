@@ -24,6 +24,8 @@ public static class TKMM
 {
 #if READONLY_FS
     public static readonly string BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
+#elseif SWITCH
+    public static readonly string BaseDirectory = "/storage/.tkmm";
 #else
     public static readonly string BaseDirectory = AppContext.BaseDirectory;
 #endif
