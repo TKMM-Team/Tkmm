@@ -25,6 +25,14 @@ public sealed class FileMenuModel
         return ImportActions.Instance.ImportFromArgument();
     }
 
+#if !SWITCH
+    [TkMenu(TkLocale.Menu_HelpOpenLogsFolder, TkLocale.Menu_Help, InputGesture = "Ctrl + Shift + L", Icon = TkIcons.LIST_CHECK)]
+    public static Task OpenLogsFolder()
+    {
+        return SystemActions.Instance.OpenLogsFolder();
+    }
+#endif
+
     [TkMenu(TkLocale.Menu_FileClearTempFiles, TkLocale.Menu_File, InputGesture = "Ctrl + Shift + F6", Icon = "fa-solid fa-broom-wide", IsSeparator = true)]
     public static Task ClearTempFolder()
     {
