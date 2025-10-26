@@ -57,7 +57,11 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public static async Task CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
         try {
+#if SWITCH
+            await NxUpdater.CheckForUpdates(isUserInvoked, ct);
+#else
             await AppUpdater.CheckForUpdates(isUserInvoked, ct);
+#endif
         }
         catch (HttpRequestException ex) {
             string truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
@@ -66,7 +70,6 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         catch (Exception ex) {
             TkLog.Instance.LogWarning("An error occured while checking for updates: {ex}", ex);
         }
-
     }
 
     [RelayCommand]
