@@ -30,7 +30,7 @@ public static class TKMM
     public static readonly string BaseDirectory = AppContext.BaseDirectory;
 #endif
     
-    private static readonly TkModReaderProvider _readerProvider;
+    private static readonly TkModReaderProvider ReaderProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
     private static TkExtensibleRomProvider RomProvider => TkConfig.Shared.CreateRomProvider();
@@ -71,17 +71,17 @@ public static class TKMM
 
     public static async ValueTask<TkMod?> Install(object input, Stream? stream = null, TkModContext? context = null, TkProfile? profile = null, CancellationToken ct = default)
     {
-        if (_readerProvider.GetReader(input) is not ITkModReader reader) {
+        if (ReaderProvider.GetReader(input) is not { } reader) {
             TkLog.Instance.LogError("Could not locate mod reader for input: '{Input}'", input);
             return null;
         }
 
-        if (await reader.ReadMod(input, stream, context, ct) is not TkMod mod) {
+        if (await reader.ReadMod(input, stream, context, ct) is not { } mod) {
             TkLog.Instance.LogError("Failed to parse mod from input: '{Input}'", input);
             return null;
         }
 
-        if (_thumbnailProvider?.ResolveThumbnail(mod, ct) is Task resolveThumbnail) {
+        if (_thumbnailProvider?.ResolveThumbnail(mod, ct) is { } resolveThumbnail) {
             await resolveThumbnail;
         }
 
@@ -106,7 +106,7 @@ public static class TKMM
         using var tkRom = GetTkRom();
         TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
 
-        long startTime = Stopwatch.GetTimestamp();
+        var startTime = Stopwatch.GetTimestamp();
 
         await merger.MergeAsync(GetMergeTargets(profile), ct);
         TkOptimizerService.Context.Apply(writer, profile);
@@ -114,7 +114,7 @@ public static class TKMM
         // For atmosphere 20.0 support with TotK Optimizer
         if (Config.Shared.UseRomfslite) {
             try {
-                string romfsPath = Path.Combine(mergeOutput, "romfs");
+                var romfsPath = Path.Combine(mergeOutput, "romfs");
                 if (Directory.Exists(romfsPath)) {
                     Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
                 }
@@ -140,7 +140,7 @@ public static class TKMM
 
         ITkModWriter writer = new FolderModWriter(MergedOutputFolder);
 
-        long startTime = Stopwatch.GetTimestamp();
+        var startTime = Stopwatch.GetTimestamp();
 
         var targets = GetMergeTargets(profile)
             .ToArray();
@@ -157,8 +157,8 @@ public static class TKMM
     {
         TkChangelogBuilder.Init(RomProvider);
         
-        string legacyDataFolder = Path.Combine(BaseDirectory, ".data");
-        string dataFolder = Path.Combine(BaseDirectory, ".data2");
+        var legacyDataFolder = Path.Combine(BaseDirectory, ".data");
+        var dataFolder = Path.Combine(BaseDirectory, ".data2");
         
         if (Directory.Exists(legacyDataFolder)) {
             try {
@@ -182,16 +182,16 @@ public static class TKMM
         ModManager = TkModManager.Create(dataFolder);
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
-        ModManager.PropertyChanged += static (s, e) => {
+        ModManager.PropertyChanged += static (_, e) => {
             if (e.PropertyName == nameof(TkModManager.CurrentProfile)) {
                 MergeBasic();
                 TkOptimizerService.Context.ApplyToMergedOutput();
             }
         };
 
-        _readerProvider = new TkModReaderProvider(ModManager, RomProvider);
-        _readerProvider.Register(new GameBananaModReader(_readerProvider));
-        _readerProvider.Register(new External7zModReader(ModManager, RomProvider));
+        ReaderProvider = new TkModReaderProvider(ModManager, RomProvider);
+        ReaderProvider.Register(new GameBananaModReader(ReaderProvider));
+        ReaderProvider.Register(new External7zModReader(ModManager, RomProvider));
 
         Span<string> hiddenSystemFolders = [".data", ".data2", ".layout"];
         DirectoryHelper.HideTargetsInDirectory(BaseDirectory, hiddenSystemFolders);
@@ -224,7 +224,7 @@ public static class TKMM
     public static async ValueTask ExportPackage(TkMod target, Stream output)
     {
         await Task.Run(() => {
-            string modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
+            var modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
             using MemoryStream contentArchiveOutput = new();
             ZipFile.CreateFromDirectory(modPath, contentArchiveOutput);
             TkPackWriter.Write(output, target, contentArchiveOutput.GetSpan());
