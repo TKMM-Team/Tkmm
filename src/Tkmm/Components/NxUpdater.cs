@@ -48,7 +48,7 @@ public static class NxUpdater
             IsPrimaryButtonEnabled = false
         };
 
-        _ = PerformUpdateAsync(release, CancellationToken.None, progressBar, progressText, contentDialog);
+        _ = PerformUpdate(release, CancellationToken.None, progressBar, progressText, contentDialog);
 
         var dialogResult = await contentDialog.ShowAsync();
         
@@ -66,7 +66,50 @@ public static class NxUpdater
         return latestCommit != currentCommit ? latest : null;
     }
 
-    private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
+    private static async Task<string> GetCurrentNxCommit()
+    {
+        if (!File.Exists("/etc/os-release")) {
+            return string.Empty;
+        }
+        
+        var lines = await File.ReadAllLinesAsync("/etc/os-release");
+
+        foreach (var line in lines) {
+            if (line.StartsWith("BUILD_ID=")) {
+                return line["BUILD_ID=".Length..].Trim('"');
+            }
+        }
+        return string.Empty;
+    }
+
+    private static async Task PerformUpdate(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
+    {
+        var progressReporter = new Progress<double>(progress => {
+            progressBar.Value = progress * 100.0;
+            progressText.Text = $"{Locale[TkLocale.System_Popup_Updater]} ({(int)(progress * 100)}%)";
+        });
+
+        DownloadHelper.Reporters.Push(new DownloadReporter {
+            ProgressReporter = progressReporter,
+            SpeedReporter = new Progress<double>(_ => { })
+        });
+
+        try {
+            await DownloadUpdate(release, ct);
+            contentDialog.Hide(ContentDialogResult.None);
+        }
+        catch (OperationCanceledException) {
+            contentDialog.Hide(ContentDialogResult.None);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Update failed");
+        }
+        finally {
+            DownloadHelper.Reporters.Pop();
+        }
+    }
+
+    private static async ValueTask DownloadUpdate(Release release, CancellationToken ct = default)
     {
         await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", "TKMM-NX", ct);
         
@@ -82,49 +125,6 @@ public static class NxUpdater
         
         await using var updateFile = File.Create(updatePath);
         await systemStream.CopyToAsync(updateFile, ct);
-    }
-
-    private static async Task PerformUpdateAsync(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
-    {
-        var progressReporter = new Progress<double>(progress => {
-            progressBar.Value = progress * 100.0;
-            progressText.Text = $"{Locale[TkLocale.System_Popup_Updater]} ({(int)(progress * 100)}%)";
-        });
-
-        DownloadHelper.Reporters.Push(new DownloadReporter {
-            ProgressReporter = progressReporter,
-            SpeedReporter = new Progress<double>(_ => { })
-        });
-
-        try {
-            await PerformUpdate(release, ct);
-            contentDialog.Hide(ContentDialogResult.None);
-        }
-        catch (OperationCanceledException) {
-            contentDialog.Hide(ContentDialogResult.None);
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Update failed");
-        }
-        finally {
-            DownloadHelper.Reporters.Pop();
-        }
-    }
-
-    private static async Task<string> GetCurrentNxCommit()
-    {
-        if (!File.Exists("/etc/os-release")) {
-            return string.Empty;
-        }
-        
-        var lines = await File.ReadAllLinesAsync("/etc/os-release");
-
-        foreach (var line in lines) {
-            if (line.StartsWith("BUILD_ID=")) {
-                return line["BUILD_ID=".Length..].Trim('"');
-            }
-        }
-        return string.Empty;
     }
 
     private static void Restart()
