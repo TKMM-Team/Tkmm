@@ -112,7 +112,7 @@ public static class TKMM
         TkOptimizerService.Context.Apply(writer, profile);
 
         // For atmosphere 20.0 support with TotK Optimizer
-        if (Config.Shared.UseRomfslite) {
+        if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
             try {
                 var romfsPath = Path.Combine(mergeOutput, "romfs");
                 if (Directory.Exists(romfsPath)) {
