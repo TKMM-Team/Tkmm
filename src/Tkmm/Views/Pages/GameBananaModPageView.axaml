@@ -44,7 +44,7 @@
                         <TextBlock FontSize="12"
                                    FontStyle="Italic"
                                    Foreground="{DynamicResource SystemChromeHighColor}"
-                                   Text="{markup:Locale GameBanana_UploadedBy}" />
+                                   Text="Uploaded by " />
                         <HyperlinkButton FontSize="12"
                                          FontStyle="Italic"
                                          Foreground="{DynamicResource SystemAccentColor}"
