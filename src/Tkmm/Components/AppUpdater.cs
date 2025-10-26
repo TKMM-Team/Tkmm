@@ -156,7 +156,7 @@ public static class AppUpdater
             nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
         }
         
-        await using Stream? systemStream = await OctokitHelper.DownloadReleaseAsset(nxRelease, "SYSTEM", ct);
+        await using Stream? systemStream = await OctokitHelper.DownloadReleaseAsset(nxRelease, "SYSTEM", "TKMM-NX", ct);
         
         if (systemStream is null) {
             throw new Exception(
@@ -183,7 +183,7 @@ public static class AppUpdater
             return;
         }
         
-        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, ct);
+        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, "Tkmm", ct);
 
         if (stream is null) {
             throw new Exception(
