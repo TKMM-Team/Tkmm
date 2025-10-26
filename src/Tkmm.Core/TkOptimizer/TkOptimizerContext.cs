@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
@@ -98,7 +99,7 @@ public sealed class TkOptimizerContext : ObservableObject
 
         Stream? result = null;
 
-        if (TKMM.ModManager.Mods.FirstOrDefault(x => x.Id == id) is { Changelog.Source: ITkSystemSource optimizerSource }) {
+        if (TKMM.ModManager.Mods.FirstOrDefault(x => x.Id == id) is { Changelog.Source: { } optimizerSource }) {
             const string target = "extras/Options.json";
             if (optimizerSource.Exists(target)) {
                 result = optimizerSource.OpenRead(target);
@@ -124,8 +125,19 @@ public sealed class TkOptimizerContext : ObservableObject
     public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
     {
         var romfslitePath = Path.Combine(TKMM.MergedOutputFolder, "romfslite");
+        var romfsPath = Path.Combine(TKMM.MergedOutputFolder, "romfs");
         var romfsFolder = Directory.Exists(romfslitePath) && Config.Shared.UseRomfslite ? "romfslite" : "romfs";
 
+        if (TkOptimizerStore.IsProfileEnabled(profile) && Config.Shared.UseRomfslite && Directory.Exists(romfsPath)) {
+            try {
+                Directory.Move(romfsPath, romfslitePath);
+                romfsFolder = "romfslite";
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
+            }
+        }
+        
         var outputFileName = Path.Combine(romfsFolder, "UltraCam",
             // ReSharper disable twice StringLiteralTypo
             "maxlastbreath.ini");
@@ -141,6 +153,15 @@ public sealed class TkOptimizerContext : ObservableObject
                 }
                 catch {
                     // ignored
+                }
+            }
+            
+            if (Directory.Exists(romfslitePath)) {
+                try {
+                    Directory.Move(romfslitePath, romfsPath);
+                }
+                catch (Exception ex) {
+                    TkLog.Instance.LogError(ex, "Failed to rename romfslite to romfs");
                 }
             }
             
