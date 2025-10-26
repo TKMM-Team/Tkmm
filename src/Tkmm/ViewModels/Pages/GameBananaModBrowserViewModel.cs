@@ -3,11 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
-using Tkmm.Actions;
 using Tkmm.Core;
-using Tkmm.Views.Common;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 using TkSharp.Extensions.GameBanana.Helpers;
@@ -134,46 +131,6 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     {
         Source.CurrentPage--;
         await Refresh(modsViewer);
-    }
-
-    [RelayCommand]
-    public static async Task InstallMod(GameBananaModRecord mod)
-    {
-        if (mod.Full is null) {
-            await mod.DownloadFullMod();
-        }
-
-        GameBananaInstallPreview preview = new() {
-            DataContext = mod
-        };
-
-        var target = mod.Full?.Files
-            .FirstOrDefault(file => file.IsSelected);
-
-        ContentDialog dialog = new() {
-            Title = $"Install {mod.Name}",
-            Content = preview,
-            SecondaryButtonText = "Cancel",
-            PrimaryButtonText = "Install",
-            DefaultButton = ContentDialogButton.Primary,
-            IsPrimaryButtonEnabled = target is not null,
-        };
-
-        foreach (var file in mod.Full!.Files) {
-            file.PropertyChanged += (_, eventArgs) => {
-                if (eventArgs.PropertyName == nameof(file.IsSelected)) {
-                    target = file;
-                    dialog.IsPrimaryButtonEnabled = true;
-                }
-            };
-        }
-
-        if (await dialog.ShowAsync() is not ContentDialogResult.Primary || target is null) {
-            return;
-        }
-
-        TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
-        await ModActions.Instance.Install((mod.Full, target));
     }
 
     private async Task ReloadPage()
