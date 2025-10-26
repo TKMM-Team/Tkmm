@@ -17,6 +17,7 @@
              mc:Ignorable="d">
     <UserControl.Styles>
         <Style Selector="avaMark|MarkdownViewer Image.image">
+            <Setter Property="StretchDirection" Value="DownOnly" />
             <Setter Property="MaxWidth" Value="{Binding $parent[avaMark:MarkdownViewer].Bounds.Width}" />
         </Style>
     </UserControl.Styles>
