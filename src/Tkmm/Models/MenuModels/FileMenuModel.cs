@@ -26,7 +26,7 @@ public sealed class FileMenuModel
     }
 
 #if !SWITCH
-    [TkMenu(TkLocale.Menu_HelpOpenLogsFolder, TkLocale.Menu_Help, InputGesture = "Ctrl + Shift + L", Icon = TkIcons.LIST_CHECK)]
+    [TkMenu(TkLocale.Menu_FileOpenLogsFolder, TkLocale.Menu_File, InputGesture = "Ctrl + Shift + L", Icon = TkIcons.LIST_CHECK)]
     public static Task OpenLogsFolder()
     {
         return SystemActions.Instance.OpenLogsFolder();
