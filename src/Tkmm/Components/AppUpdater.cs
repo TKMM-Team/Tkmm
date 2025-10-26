@@ -1,14 +1,15 @@
 #if SWITCH
 using Avalonia.Controls;
+#else
+using System.IO.Compression;
+using Humanizer;
+using Tkmm.Core;
 #endif
 using System.Diagnostics;
-using System.IO.Compression;
 using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
-using Humanizer;
 using Microsoft.Extensions.Logging;
 using Octokit;
-using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
 using TkSharp.Core;
@@ -19,11 +20,9 @@ namespace Tkmm.Components;
 
 public static class AppUpdater
 {
-    private static readonly string _runtimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
-#if SWITCH
-    private static readonly string _assetName = $"Tkmm-{_runtimeId}-nx.zip";
-#else
-    private static readonly string _assetName = $"Tkmm-{_runtimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
+#if !SWITCH
+    private static readonly string RuntimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
+    private static readonly string AssetName = $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
 #endif
 
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
@@ -38,22 +37,7 @@ public static class AppUpdater
         return;
 #endif
 
-        if (await HasAvailableUpdates() is not Release release) {
-#if SWITCH
-            release = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
-            var commit = release.TargetCommitish;
-            var currentCommit = await GetCurrentNxCommit();
-            if (commit != currentCommit) {
-                MessageDialogResult nxUpdate = await MessageDialog.Show(
-                    TkLocale.System_Popup_NxUpdateAvailable,
-                    TkLocale.System_Popup_NxUpdateAvailable_Title, MessageDialogButtons.YesNo);
-
-                if (nxUpdate is not MessageDialogResult.Yes) {
-                    return;
-                }
-                goto Retry;
-            }
-#endif
+        if (await HasAvailableUpdates() is not { } release) {
             if (isUserInvoked) {
                 await MessageDialog.Show(
                     TkLocale.System_Popup_SoftwareUpToDate,
@@ -63,16 +47,21 @@ public static class AppUpdater
             return;
         }
 
+#if !SWITCH
         var result = await MessageDialog.Show(
             TkLocale.System_Popup_UpdateAvailable,
             TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
-
+#else
+        var result = await MessageDialog.Show(
+            TkLocale.System_Popup_NxUpdateAvailable,
+            TkLocale.System_Popup_UpdateAvailable_Title, MessageDialogButtons.YesNo);
+#endif
         if (result is not MessageDialogResult.Yes) {
             return;
         }
 
-    Retry:
 #if !SWITCH
+    Retry:
         TaskDialog taskDialog = new() {
             Header = Locale[TkLocale.System_Popup_Updater_Title],
             SubHeader = Locale[TkLocale.System_Popup_Updater],
@@ -83,7 +72,7 @@ public static class AppUpdater
             XamlRoot = App.XamlRoot,
         };
 
-        taskDialog.Opened += async (dialog, e) => {
+        taskDialog.Opened += async (dialog, _) => {
             DownloadHelper.Reporters.Push(new DownloadReporter {
                 ProgressReporter = new Progress<double>(
                     progress => dialog.SetProgressBarState(progress * 100.0, TaskDialogProgressState.Normal)
@@ -92,7 +81,7 @@ public static class AppUpdater
             });
 
             try {
-                await PerformUpdate(release, isNxUpdate: false, ct);
+                await PerformUpdate(release, ct);
                 dialog.Hide(TaskDialogStandardResult.Yes);
             }
             catch (Exception ex) {
@@ -117,6 +106,7 @@ public static class AppUpdater
                 return;
         }
 #else
+    Retry:
         var progressBar = new ProgressBar();
         var progressText = new TextBlock { Text = Locale[TkLocale.System_Popup_Updater] };
         var progressStack = new StackPanel {
@@ -137,53 +127,41 @@ public static class AppUpdater
         if (dialogResult == ContentDialogResult.Primary && contentDialog.PrimaryButtonText == "Retry") {
             goto Retry;
         }
-        Restart();
 #endif
     }
 
     private static async ValueTask<Release?> HasAvailableUpdates()
     {
+#if SWITCH
+        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        var latestCommit = latest.TargetCommitish;
+        var currentCommit = await GetCurrentNxCommit();
+        return latestCommit != currentCommit ? latest : null;
+#else
         var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "Tkmm");
         return latest.TagName.Length < 1 || latest.TagName[1..] != App.Version ? latest : null;
+#endif
     }
 
-    private static async ValueTask PerformUpdate(Release release, bool isNxUpdate = false, CancellationToken ct = default)
+    private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
     {
 #if SWITCH
-        Release nxRelease = release;
-        
-        if (isNxUpdate == false) {
-            nxRelease = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
-        }
-        
-        await using Stream? systemStream = await OctokitHelper.DownloadReleaseAsset(nxRelease, "SYSTEM", "TKMM-NX", ct);
+        await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", "TKMM-NX", ct);
         
         if (systemStream is null) {
             throw new Exception(
-                $"Update failed: Could not locate and/or download system image from '{nxRelease.TagName}'.");
+                $"Update failed: Could not locate and/or download update from '{release.TagName}'.");
         }
 
-        string tmpDir = "/flash/tkmm/.tmp";
-        string systemPath = "/flash/tkmm/SYSTEM";
-        string tmpSystemPath = Path.Combine(tmpDir, "SYSTEM");
+        var updateDir = "/storage/.update";
+        var updatePath = Path.Combine(updateDir, "update.tar");
         
-        Directory.CreateDirectory(tmpDir);
+        Directory.CreateDirectory(updateDir);
         
-        await using FileStream tmpFile = File.Create(tmpSystemPath);
-        await systemStream.CopyToAsync(tmpFile, ct);
-        
-        if (File.Exists(systemPath)) {
-            File.Delete(systemPath);
-        }
-        File.Move(tmpSystemPath, systemPath);
-        Directory.Delete(tmpDir, true);
-#endif
-        if (isNxUpdate) {
-            Restart();
-            return;
-        }
-        
-        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, _assetName, "Tkmm", ct);
+        await using var updateFile = File.Create(updatePath);
+        await systemStream.CopyToAsync(updateFile, ct);
+#else
+        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, AssetName, "Tkmm", ct);
 
         if (stream is null) {
             throw new Exception(
@@ -200,6 +178,7 @@ public static class AppUpdater
         }
 
         archive.ExtractToDirectory(AppContext.BaseDirectory);
+#endif
 
         Restart();
     }
@@ -207,7 +186,6 @@ public static class AppUpdater
 #if SWITCH
     private static async Task PerformUpdateAsync(Release release, CancellationToken ct, ProgressBar progressBar, TextBlock progressText, ContentDialog contentDialog)
     {
-        var isNx = release.Url.Contains("TKMM-NX");
         var progressReporter = new Progress<double>(progress => {
             progressBar.Value = progress * 100.0;
             progressText.Text = $"{Locale[TkLocale.System_Popup_Updater]} ({(int)(progress * 100)}%)";
@@ -219,7 +197,7 @@ public static class AppUpdater
         });
 
         try {
-            await PerformUpdate(release, isNxUpdate: isNx, ct);
+            await PerformUpdate(release, ct);
             contentDialog.Hide(ContentDialogResult.None);
         }
         catch (OperationCanceledException) {
@@ -253,7 +231,7 @@ public static class AppUpdater
     private static void Restart()
     {
 #if !SWITCH
-        string processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
+        var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 
         switch (processName.Length) {
             case >= 6 when Path.GetExtension(processName.AsSpan()) is ".moldy":
@@ -282,7 +260,7 @@ public static class AppUpdater
 
     public static void CleanupUpdate()
     {
-        foreach (string oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
+        foreach (var oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
         Retry:
             try {
                 File.Delete(oldFile);
