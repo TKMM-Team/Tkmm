@@ -1,4 +1,3 @@
-#if !SWITCH
 using System.IO.Compression;
 using Humanizer;
 using Tkmm.Core;
@@ -17,6 +16,7 @@ namespace Tkmm.Components;
 
 public static class AppUpdater
 {
+#if !SWITCH
     private static readonly string RuntimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
     private static readonly string AssetName = $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
 
@@ -146,6 +146,7 @@ public static class AppUpdater
         Environment.Exit(0);
     }
 
+#endif
     public static void CleanupUpdate()
     {
         foreach (var oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
@@ -159,4 +160,3 @@ public static class AppUpdater
         }
     }
 }
-#endif
