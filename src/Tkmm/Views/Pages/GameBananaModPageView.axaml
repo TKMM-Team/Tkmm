@@ -10,6 +10,7 @@
              xmlns:controls="using:Tkmm.Controls"
              xmlns:views="using:Tkmm.Views.Pages"
              xmlns:markup="clr-namespace:Tkmm.Markup"
+             xmlns:converters="using:Tkmm.Converters"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:GameBananaModPageViewModel"
@@ -23,6 +24,10 @@
     <UserControl.DataContext>
         <pages:GameBananaModPageViewModel />
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <converters:GameBananaFileSorter x:Key="FileSorter" />
+    </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*"
           RowSpacing="15">
@@ -334,7 +339,7 @@
                             <TextBlock FontSize="18"
                                        Text="{markup:Locale GameBanana_Downloads}" />
                             
-                            <ItemsControl ItemsSource="{Binding SelectedMod.Files}">
+                            <ItemsControl ItemsSource="{Binding SelectedMod.Files, Converter={StaticResource FileSorter}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type gb:GameBananaFile}">
                                         <Border Padding="10"
@@ -345,6 +350,13 @@
                                                 BorderThickness="{DynamicResource ButtonBorderThemeThickness}">
                                             <Grid ColumnDefinitions="*,Auto">
                                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                    <TextBlock FontSize="11"
+                                                               FontWeight="Medium"
+                                                               Foreground="{DynamicResource SystemAccentColorLight3}"
+                                                               IsVisible="{Binding IsTkcl}"
+                                                               Text="{markup:Locale GameBanana_RecommendedFile}"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,0,0,3" />
                                                     <TextBlock Text="{Binding Name}"
                                                                FontWeight="Medium"
                                                                Margin="0,0,0,5"
