@@ -22,13 +22,13 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public static async Task ShowAboutDialog()
     {
         await using var aboutFileStream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/About.md"));
-        string contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
+        var contents = await new StreamReader(aboutFileStream).ReadToEndAsync();
 
         contents = contents.Replace("@@version@@", App.Version);
 
         TaskDialog dialog = new() {
             XamlRoot = App.XamlRoot,
-            Title = "About",
+            Title = Locale["Dialog_About"],
             Content = new MarkdownViewer {
                 Markdown = contents
             },
@@ -64,7 +64,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 #endif
         }
         catch (HttpRequestException ex) {
-            string truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
+            var truncatedEx = ex.ToString().Split(Environment.NewLine)[0];
             TkLog.Instance.LogWarning("An error occured while checking for updates: {truncatedEx}", truncatedEx);
         }
         catch (Exception ex) {
@@ -76,7 +76,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
     public static async Task CleanupTempFolder()
     {
         try {
-            string tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
+            var tempFolder = Path.Combine(Path.GetTempPath(), "tkmm");
 
             if (!Directory.Exists(tempFolder)) {
                 return;
@@ -127,7 +127,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "An error occured while attempting to close the application.");
 
-            object errorReportResult = await ErrorDialog.ShowAsync(ex,
+            var errorReportResult = await ErrorDialog.ShowAsync(ex,
                 TaskDialogStandardResult.Close, TaskDialogStandardResult.Cancel);
             if (errorReportResult is TaskDialogStandardResult.Close) {
                 Environment.Exit(-1);

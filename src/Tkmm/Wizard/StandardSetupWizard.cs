@@ -13,7 +13,7 @@ namespace Tkmm.Wizard;
 
 public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizard(presenter)
 {
-    private static readonly FilePickerFileType _executableFilePattern = new("Executable") {
+    private static readonly FilePickerFileType ExecutableFilePattern = new("Executable") {
         Patterns = [
             OperatingSystem.IsWindows() ? "*.exe" : "*"
         ]
@@ -26,7 +26,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     Return:
         await EmulatorSelectionPage();
         
-        bool result = await NextPage()
+        var result = await NextPage()
             .WithTitle(TkLocale.WizPageFinal_Title)
             .WithContent<GameLanguageSelectionPage>(new GameLanguageSelectionPageContext())
             .WithActionContent(TkLocale.WizPageFinal_Action_Finish)
@@ -106,10 +106,10 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     {
     Retry:
         var emulatorFilePath = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = "Select emulator executable",
+            Title = Locale["SetupWizard_SelectEmulatorExecutable"],
             AllowMultiple = false,
             FileTypeFilter = [
-                _executableFilePattern
+                ExecutableFilePattern
             ]
         }) switch {
             [var target] => target.TryGetLocalPath(),
@@ -254,7 +254,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                     break;
             }
             
-            if (TKMM.TryGetTkRom(out _, out bool hasUpdate, out _) is null && !hasUpdate) {
+            if (TKMM.TryGetTkRom(out _, out var hasUpdate, out _) is null && !hasUpdate) {
                 await MessageDialog.Show(
                     Locale[TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration],
                     TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration_Title);
@@ -264,7 +264,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
         else
         {
-            if (TKMM.TryGetTkRom(out string? error) is not null) {
+            if (TKMM.TryGetTkRom(out var error) is not null) {
                 goto MergeOutputSetup;
             }
 
@@ -505,7 +505,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
 
     private async ValueTask EnsureConfigurationPage(bool warnInvalid = false)
     {
-        if (TKMM.TryGetTkRom(out string? error) is not null) {
+        if (TKMM.TryGetTkRom(out var error) is not null) {
             return;
         }
 

@@ -57,10 +57,10 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             await TKMM.Merge(profile, ipsOutputPath, ct: modalCancelTokenSource.Token);
             App.Toast(string.Format(Locale["MergeActions_MergeSuccessful"], profile.Name),
                 Locale["MergeActions_MergeSuccessfulTitle"], NotificationType.Success, TimeSpan.FromDays(5));
-            TkStatus.SetTemporary("Merge completed", "fa-circle-check");
+            TkStatus.SetTemporary(Locale["Status_MergeCompleted"], "fa-circle-check");
         }
         catch (Exception ex) {
-            TkStatus.SetTemporary("Merge failed", "fa-circle-exclamation");
+            TkStatus.SetTemporary(Locale["Status_MergeFailed"], "fa-circle-exclamation");
             TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorMergingProfile"], profile.Name));
             await ErrorDialog.ShowAsync(ex);
         }

@@ -58,7 +58,7 @@
                                        Padding="15"
                                        FontStyle="Italic"
                                        Foreground="{DynamicResource SystemChromeHighColor}"
-                                       Text="Drag and Drop a mod folder or TKCL file to import"
+                                       Text="{ext:Locale HomePage_DragAndDropImport}"
                                        TextAlignment="Center" />
                         </StackPanel>
                     </Border>
@@ -116,7 +116,7 @@
                                    Text=" and " />
                         <HyperlinkButton Padding="1"
                                          Command="{Binding ShowContributorsCommand}"
-                                         Content="Contributors"
+                                         Content="{ext:Locale HomePage_Contributors}"
                                          FontSize="12"
                                          IsVisible="{Binding ModManager.CurrentProfile.Selected.Mod.Contributors.Count}" />
                     </StackPanel>

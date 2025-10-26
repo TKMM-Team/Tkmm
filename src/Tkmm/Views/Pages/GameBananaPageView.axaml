@@ -8,6 +8,7 @@
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:views="clr-namespace:Tkmm.Views.Pages"
+             xmlns:ext="clr-namespace:Tkmm.Markup"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:GameBananaPageViewModel"
@@ -58,7 +59,7 @@
                                   Padding="0"
                                   IsChecked="{Binding Browser.IsShowingSuggested}">
                         <StackPanel Margin="7,0" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,7,0" Text="Suggested Mods" />
+                            <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_SuggestedMods}" />
                             <pi:Icon Value="fa-solid fa-gift" />
                         </StackPanel>
                     </ToggleButton>

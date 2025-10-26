@@ -13,8 +13,8 @@ public sealed partial class KeysFolderPageContext : ObservableObject
     [RelayCommand]
     private static async Task Browse(TextBox tb)
     {
-        string? result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
-            Title = "Select keys folder",
+        var result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+            Title = Locale["SetupWizard_SelectKeysFolder"],
             AllowMultiple = false
         }) switch {
             [var target] => target.TryGetLocalPath(),

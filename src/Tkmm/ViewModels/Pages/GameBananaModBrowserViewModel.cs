@@ -1,6 +1,4 @@
 using System.Text.Json;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -98,7 +96,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task Refresh(ScrollViewer? modsViewer = null)
+    private async Task Refresh(ScrollViewer? modsViewer = null)
     {
         if (!InternetHelper.HasInternet) {
             IsLoadSuccess = false;
@@ -117,7 +115,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task ResetSearch(ScrollViewer modsViewer)
+    private async Task ResetSearch(ScrollViewer modsViewer)
     {
         Source.CurrentPage = 0;
         SearchArgument = string.Empty;
@@ -125,14 +123,14 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task NextPage(ScrollViewer modsViewer)
+    private async Task NextPage(ScrollViewer modsViewer)
     {
         Source.CurrentPage++;
         await Refresh(modsViewer);
     }
 
     [RelayCommand]
-    public async Task PrevPage(ScrollViewer modsViewer)
+    private async Task PrevPage(ScrollViewer modsViewer)
     {
         Source.CurrentPage--;
         await Refresh(modsViewer);

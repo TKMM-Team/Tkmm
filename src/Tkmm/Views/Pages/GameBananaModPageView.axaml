@@ -9,6 +9,7 @@
              xmlns:avaMark="using:AvaMark"
              xmlns:controls="using:Tkmm.Controls"
              xmlns:views="using:Tkmm.Views.Pages"
+             xmlns:markup="clr-namespace:Tkmm.Markup"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="pages:GameBananaModPageViewModel"
@@ -32,7 +33,7 @@
                 <Button Width="40"
                         Height="40"
                         Command="{Binding ((pages:GameBananaPageViewModel)DataContext).BackToMainCommand, RelativeSource={RelativeSource AncestorType=views:GameBananaPageView}}"
-                        ToolTip.Tip="Back to mod browser">
+                        ToolTip.Tip="{markup:Locale Tooltip_BackToModBrowser}">
                     <pi:Icon Value="fa-solid fa-arrow-left" />
                 </Button>
                 <StackPanel Grid.Column="1">
@@ -43,7 +44,7 @@
                         <TextBlock FontSize="12"
                                    FontStyle="Italic"
                                    Foreground="{DynamicResource SystemChromeHighColor}"
-                                   Text="Uploaded by " />
+                                   Text="{markup:Locale GameBanana_UploadedBy}" />
                         <HyperlinkButton FontSize="12"
                                          FontStyle="Italic"
                                          Foreground="{DynamicResource SystemAccentColor}"
@@ -67,7 +68,7 @@
                                Height="20"
                                Source="{Binding BananaIcon}"
                                Stretch="Uniform" />
-                        <TextBlock Text="Open in GameBanana"
+                        <TextBlock Text="{markup:Locale GameBanana_OpenInGameBanana}"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
                     </StackPanel>
@@ -108,7 +109,7 @@
                                 </Image>
                             </Border>
 
-                            <TextBlock Text="Loading images..."
+                            <TextBlock Text="{markup:Locale GameBanana_LoadingImages}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="16"
@@ -245,7 +246,7 @@
                         <StackPanel>
                             <TextBlock FontSize="18"
                                        Margin="0,0,0,4"
-                                       Text="Credits" />
+                                       Text="{markup:Locale GameBanana_Credits}" />
                             
                             <ItemsControl ItemsSource="{Binding SelectedMod.Credits}">
                                 <ItemsControl.ItemsPanel>
@@ -331,7 +332,7 @@
                             Padding="15">
                         <StackPanel Spacing="10">
                             <TextBlock FontSize="18"
-                                       Text="Downloads" />
+                                       Text="{markup:Locale GameBanana_Downloads}" />
                             
                             <ItemsControl ItemsSource="{Binding SelectedMod.Files}">
                                 <ItemsControl.ItemTemplate>
@@ -367,7 +368,7 @@
                                                         VerticalAlignment="Top"
                                                         Command="{Binding ((pages:GameBananaModPageViewModel)DataContext).InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
-                                                        ToolTip.Tip="Install mod">
+                                                        ToolTip.Tip="{markup:Locale Tooltip_InstallMod}">
                                                     <pi:Icon Value="fa-solid fa-down-from-bracket" />
                                                 </Button>
                                             </Grid>

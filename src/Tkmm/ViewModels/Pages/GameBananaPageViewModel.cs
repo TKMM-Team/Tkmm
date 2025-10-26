@@ -97,7 +97,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             await modRecord.DownloadFullMod();
             
             if (modRecord.Full == null) {
-                TkStatus.SetTemporary("Failed to load mod", TkIcons.ERROR);
+                TkStatus.SetTemporary(Locale["GameBanana_FailedToLoadMod"], TkIcons.ERROR);
                 return;
             }
 
@@ -111,7 +111,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                     TkStatus.SetTemporary("Not a TotK mod, link opened in web browser", TkIcons.CIRCLE_INFO);
                 }
                 catch {
-                    TkStatus.SetTemporary("Failed to open mod in external browser", TkIcons.ERROR);
+                    TkStatus.SetTemporary(Locale["GameBanana_FailedToOpenBrowser"], TkIcons.ERROR);
                 }
                 return;
             }
@@ -131,7 +131,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             if (fileId is long desiredFileId) {
                 var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
                 if (target is null) {
-                    TkStatus.SetTemporary("No matching file for this mod", TkIcons.ERROR);
+                    TkStatus.SetTemporary(Locale["GameBanana_NoMatchingFile"], TkIcons.ERROR);
                 }
                 else {
                     Viewer?.InstallModCommand.Execute(target);
@@ -139,7 +139,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             }
         }
         catch (Exception ex) {
-            TkStatus.SetTemporary("Error loading mod", TkIcons.ERROR);
+            TkStatus.SetTemporary(Locale["GameBanana_ErrorLoadingMod"], TkIcons.ERROR);
             TkLog.Instance.LogError(ex, "An error occurred while loading mod {ModId}.", modId);
         }
     }

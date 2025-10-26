@@ -13,22 +13,18 @@ public sealed class ProfileActions : GuardedActionGroup<ProfileActions>
     public Task DeleteProfile()
         => DeleteProfile(TKMM.ModManager.GetCurrentProfile());
     
-    public async Task DeleteProfile(TkProfile profile)
+    private async Task DeleteProfile(TkProfile profile)
     {
         await CanActionRun(showError: false);
         
         if (TKMM.ModManager.Profiles.Count is 1) {
-            App.Toast("One profile must always exist.", "Cannot delete profile", NotificationType.Warning);
+            App.Toast(Locale["Profile_OneProfileMustExist"], Locale["Profile_CannotDeleteProfile"], NotificationType.Warning);
             return;
         }
         
         ContentDialog dialog = new() {
-            Title = "Permanently delete profile",
-            Content = $"""
-                WARNING: THIS CANNOT BE UNDONE
-                
-                Are you sure you would like to permanently delete the profile '{profile.Name}'?
-                """,
+            Title = Locale["Profile_PermanentlyDeleteProfileTitle"],
+            Content = string.Format(Locale["Profile_PermanentlyDeleteProfileDescription"], profile.Name),
             PrimaryButtonText = "Delete",
             SecondaryButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Secondary,
@@ -38,7 +34,7 @@ public sealed class ProfileActions : GuardedActionGroup<ProfileActions>
             return;
         }
         
-        int removeIndex = TKMM.ModManager.Profiles.IndexOf(profile);
+        var removeIndex = TKMM.ModManager.Profiles.IndexOf(profile);
         TKMM.ModManager.Profiles.RemoveAt(removeIndex);
         
         while (removeIndex >= TKMM.ModManager.Profiles.Count) {

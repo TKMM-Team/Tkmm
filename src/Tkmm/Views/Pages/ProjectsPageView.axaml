@@ -198,7 +198,7 @@
                                 Command="{Binding RefreshCommand}"
                                 Content="Refresh"
                                 FontSize="12"
-                                ToolTip.Tip="Reload the source folder and all configurations" />
+                                ToolTip.Tip="{markup:Locale Tooltip_ReloadSourceFolder}" />
                     </StackPanel>
 
                     <ItemsControl ItemsSource="{Binding Project.Mod.OptionGroups}">
