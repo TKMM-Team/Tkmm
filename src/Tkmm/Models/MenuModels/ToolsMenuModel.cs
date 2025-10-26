@@ -1,5 +1,6 @@
 using Tkmm.Actions;
 using Tkmm.Attributes;
+using Tkmm.Core;
 
 // ReSharper disable UnusedMember.Global
 
@@ -20,4 +21,10 @@ public sealed class ToolsMenuModel
         return MergeActions.Instance.OpenMergedOutput();
     }
 #endif
+    
+    [TkMenu(TkLocale.Menu_ToolsEmptyMergeOutput, TkLocale.Menu_Tools, InputGesture = "Alt + Delete", Icon = "fa-solid fa-trash-xmark")]
+    public static void EmptyMergeOutput()
+    {
+        TKMM.EmptyMergeOutput(TKMM.MergedOutputFolder);
+    }
 }

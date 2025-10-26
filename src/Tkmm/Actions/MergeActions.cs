@@ -45,7 +45,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         CancellationTokenSource modalCancelTokenSource = new();
 
         try {
-            string? drive = Path.GetPathRoot(TKMM.MergedOutputFolder);
+            var drive = Path.GetPathRoot(TKMM.MergedOutputFolder);
             if (!string.IsNullOrEmpty(drive) && !Directory.Exists(drive)) {
                 throw new DirectoryNotFoundException(
                     $"The path {TKMM.MergedOutputFolder} could not be used because its root {drive} does not exist."
@@ -54,7 +54,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
             TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
             MergingModal.ShowModal(modalCancelTokenSource.Token);
-            await TKMM.Merge(profile, ipsOutputPath, ct: ct);
+            await TKMM.Merge(profile, ipsOutputPath, ct: modalCancelTokenSource.Token);
             App.Toast(string.Format(Locale["MergeActions_MergeSuccessful"], profile.Name),
                 Locale["MergeActions_MergeSuccessfulTitle"], NotificationType.Success, TimeSpan.FromDays(5));
             TkStatus.SetTemporary("Merge completed", "fa-circle-check");
@@ -120,8 +120,8 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 }
             }) return;
         
-        string output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
-        string ipsOutputPath = Path.Combine(drive.Name, "atmosphere", "exefs_patches", "TKMM");
+        var output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
+        var ipsOutputPath = Path.Combine(drive.Name, "atmosphere", "exefs_patches", "TKMM");
         await Merge(profile, ipsOutputPath, ct);
 
         try {
@@ -132,7 +132,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 return;
             }
             
-            DirectoryHelper.DeleteTargetsFromDirectory(output, ["romfs", "romfslite", "exefs", "romfs_metadata.bin"], recursive: true);
+            TKMM.EmptyMergeOutput(output);
             DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
         }
         catch (Exception ex) {

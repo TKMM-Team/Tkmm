@@ -1166,6 +1166,28 @@
       "zh_CN": "导出到SD卡",
       "zh_TW": "匯出到SD卡"
     },
+    "Menu_ToolsEmptyMergeOutput": {
+      "ar_SA": "",
+      "de_DE": "",
+      "el_GR": "",
+      "en_US": "Empty Merge Output",
+      "es_ES": "",
+      "fr_FR": "",
+      "he_IL": "",
+      "it_IT": "",
+      "ja_JP": "",
+      "ko_KR": "",
+      "no_NO": "",
+      "pl_PL": "",
+      "pt_BR": "",
+      "ru_RU": "",
+      "sv_SE": "",
+      "th_TH": "",
+      "tr_TR": "",
+      "uk_UA": "",
+      "zh_CN": "",
+      "zh_TW": ""
+    },
     "DefaultProfileName": {
       "ar_SA": "",
       "de_DE": "",

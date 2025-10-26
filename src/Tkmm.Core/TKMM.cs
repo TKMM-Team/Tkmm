@@ -93,7 +93,7 @@ public static class TKMM
     {
         mergeOutput ??= MergedOutputFolder;
         
-        DirectoryHelper.DeleteTargetsFromDirectory(mergeOutput, ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"], recursive: true);
+        EmptyMergeOutput(mergeOutput);
 
         FolderModWriter writer = new(mergeOutput);
 
@@ -151,6 +151,11 @@ public static class TKMM
 
         var delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+    }
+
+    public static void EmptyMergeOutput(string outputPath)
+    {
+        DirectoryHelper.DeleteTargetsFromDirectory(outputPath, ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"], recursive: true);
     }
 
     static TKMM()
