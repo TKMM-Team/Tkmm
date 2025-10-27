@@ -47,7 +47,7 @@ public partial class VirtualKey : ContentControl
             return;
         }
 
-        bool isShiftEnabled = false;
+        var isShiftEnabled = false;
         
         if (this.FindAncestorOfType<VirtualKeyboardLayout>() is { } layout) {
             isShiftEnabled = layout.IsShiftEnabled;

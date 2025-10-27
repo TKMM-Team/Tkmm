@@ -150,7 +150,7 @@ public class App : Application
         Config.Shared.ThemeChanged += OnThemeChanged;
 
         ConfigPage settingsPage = new();
-        bool isValid = false;
+        var isValid = false;
 
         if (settingsPage.DataContext is ConfigPageModel settingsModel) {
             settingsModel.SecondaryButtonIsEnabled = false;

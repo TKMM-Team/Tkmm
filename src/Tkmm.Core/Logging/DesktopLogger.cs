@@ -39,10 +39,10 @@ public class DesktopLogger : ILogger
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        string log = $"""
-            [{eventId.Id,2}: {logLevel,-12}] [{DateTime.UtcNow:s}] [{_group}]
-                 {formatter(state, exception).HideUsername()}
-            """;
+        var log = $"""
+                   [{eventId.Id,2}: {logLevel,-12}] [{DateTime.UtcNow:s}] [{_group}]
+                        {formatter(state, exception).HideUsername()}
+                   """;
 
 #if DEBUG
         Debug.WriteLine(log);

@@ -48,18 +48,18 @@ public static class Connman
                 continue;
             }
 
-            int lastSpaceIndex = line.LastIndexOf(' ') + 1;
+            var lastSpaceIndex = line.LastIndexOf(' ') + 1;
             if (line[lastSpaceIndex..(lastSpaceIndex + 5)] is not "wifi_") {
                 continue;
             }
 
-            string id = service[lastSpaceIndex..];
+            var id = service[lastSpaceIndex..];
 
             if (id.Contains("hidden_managed")) {
                 continue;
             }
             
-            string ssid = service[3..(lastSpaceIndex - 1)].Trim();
+            var ssid = service[3..(lastSpaceIndex - 1)].Trim();
             
             NxNetwork network = new(id, ssid) {
                 IsConnected = line[2] is 'R' or 'O', // Roaming or Offline
@@ -81,7 +81,7 @@ public static class Connman
                 continue;
             }
 
-            int keyEndIndex = line.IndexOf('=') - 1;
+            var keyEndIndex = line.IndexOf('=') - 1;
 
             switch (property[2..keyEndIndex]) {
                 case "IPv4":
@@ -96,8 +96,8 @@ public static class Connman
     
     public static async ValueTask Connect(NxNetwork network, CancellationToken ct = default)
     {
-        string settingsFolderPath = Path.Combine(CONNMAN_DIR, network.Id);
-        string settingsFilePath = Path.Combine(settingsFolderPath, "settings");
+        var settingsFolderPath = Path.Combine(CONNMAN_DIR, network.Id);
+        var settingsFilePath = Path.Combine(settingsFolderPath, "settings");
 
         if (network.IsKnown) {
             goto Connect;
@@ -141,7 +141,7 @@ public static class Connman
 
     public static bool IsTechnologyEnabled(string name)
     {
-        bool isFound = false;
+        var isFound = false;
         
         using var technologies = NxProcessHelper.ReadCommand(GET_TECHNOLOGIES_COMMAND);
         while (technologies.ReadLine() is { } technology) {
@@ -181,11 +181,11 @@ public static class Connman
         }
 
         Span<byte> addressBytes = address.GetAddressBytes();
-        int formattedStringLength = addressBytes.Length * 2 + addressBytes.Length - 1;
+        var formattedStringLength = addressBytes.Length * 2 + addressBytes.Length - 1;
 
         return string.Create(formattedStringLength, addressBytes, static (result, address) => {
-            int offset = -1;
-            for (int i = 0; i < address.Length;) {
+            var offset = -1;
+            for (var i = 0; i < address.Length;) {
                 result[++offset] = (char)HexAlphabetBytes[address[i] >> 4];
                 result[++offset] = (char)HexAlphabetBytes[address[i] & 0xF];
 
@@ -199,8 +199,8 @@ public static class Connman
     private static string FindPropertyValue(string property, ReadOnlySpan<char> line, ReadOnlySpan<char> key)
     {
         try {
-            int index = line.IndexOf(key, StringComparison.OrdinalIgnoreCase);
-            int breakIndex = index + line[index..].IndexOfAny(_propertyBreakSearchValues);
+            var index = line.IndexOf(key, StringComparison.OrdinalIgnoreCase);
+            var breakIndex = index + line[index..].IndexOfAny(_propertyBreakSearchValues);
 
             while (line[breakIndex] is ' ') {
                 breakIndex--;

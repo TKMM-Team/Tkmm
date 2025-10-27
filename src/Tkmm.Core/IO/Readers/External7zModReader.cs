@@ -28,11 +28,11 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
         // Use a random ID instead of the
         // mod ID to avoid possible issues
         // if installing the same mod twice  
-        string tmp = Path.Combine(Path.GetTempPath(), "tkmm", "7z", Ulid.NewUlid().ToString());
+        var tmp = Path.Combine(Path.GetTempPath(), "tkmm", "7z", Ulid.NewUlid().ToString());
         Directory.CreateDirectory(tmp);
         
-        string tmpInput = File.Exists(fileName) ? fileName : Path.Combine(tmp, "input");
-        string tmpOutput = Path.Combine(tmp, "output");
+        var tmpInput = File.Exists(fileName) ? fileName : Path.Combine(tmp, "input");
+        var tmpOutput = Path.Combine(tmp, "output");
 
         try {
             if (!File.Exists(tmpInput)) {
@@ -42,7 +42,7 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             
             await External7zHelper.ExtractToFolder(tmpInput, tmpOutput, ct);
 
-            if (!TryGetRoot(tmpOutput, out string? root)) {
+            if (!TryGetRoot(tmpOutput, out var root)) {
                 TkLog.Instance.LogWarning(
                     "[External 7z] Root folder could not be found when installing '{Input}'", context.Input);
                 return null;
@@ -79,7 +79,7 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
 
     private static bool TryGetRoot(string tmp, [MaybeNullWhen(false)] out string root)
     {
-        foreach (string directory in Directory.EnumerateDirectories(tmp, "*", SearchOption.AllDirectories)) {
+        foreach (var directory in Directory.EnumerateDirectories(tmp, "*", SearchOption.AllDirectories)) {
             ReadOnlySpan<char> path = directory;
             
             if (path.Length <= 0) {

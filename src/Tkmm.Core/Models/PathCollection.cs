@@ -27,7 +27,7 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
 
     public void New(string target)
     {
-        string normalizedPath = NormalizePath(target);
+        var normalizedPath = NormalizePath(target);
         if (!Items.Any(x => x.Target.Equals(normalizedPath, StringComparison.OrdinalIgnoreCase)))
         {
             Add(new PathCollectionItem(this) {
@@ -59,7 +59,7 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
             New();
         }
         
-        for (int i = 1; i < Count; i++) {
+        for (var i = 1; i < Count; i++) {
             var item = this[i];
             if (string.IsNullOrWhiteSpace(this[i].Target) || Items.Count(x => Equals(x, item)) > 1) {
                 RemoveAt(i);
@@ -79,7 +79,7 @@ public sealed class PathCollectionJsonSerializer : JsonConverter<PathCollection>
     {
         PathCollection result = [];
         while (reader.Read() && reader.TokenType is not JsonTokenType.EndArray) {
-            string value = reader.GetString() ?? string.Empty;
+            var value = reader.GetString() ?? string.Empty;
             result.New(value);
         }
 

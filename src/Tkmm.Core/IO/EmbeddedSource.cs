@@ -23,14 +23,14 @@ public class EmbeddedSource(string root, Assembly assembly) : ITkSystemSource
     public string GetAbsolute(string relativeFilePath)
     {
         return string.Create(root.Length + 1 + relativeFilePath.Length, relativeFilePath, (span, chars) => {
-            int pos = -1;
-            foreach (char @char in root) {
+            var pos = -1;
+            foreach (var @char in root) {
                 span[++pos] = @char;
             }
 
             span[++pos] = '.';
 
-            foreach (char @char in chars) {
+            foreach (var @char in chars) {
                 span[++pos] = @char switch {
                     '\\' or '/' => '.',
                     _ => @char

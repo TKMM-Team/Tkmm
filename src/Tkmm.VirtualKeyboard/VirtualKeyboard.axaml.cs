@@ -23,7 +23,7 @@ public partial class VirtualKeyboard : TemplatedControl
         }
 
         _last = src;
-        string? original = src.Text;
+        var original = src.Text;
 
         VirtualKeyboard keyboard = new() {
             Source = src,

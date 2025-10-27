@@ -220,7 +220,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     [RelayCommand]
     private void RemoveOptionGroup(TkModOptionGroup group)
     {
-        if (Project is null || !Project.TryGetPath(group, out string? groupFolderPath)) {
+        if (Project is null || !Project.TryGetPath(group, out var groupFolderPath)) {
             return;
         }
 
@@ -248,8 +248,8 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
-        string name = Path.GetFileName(localFolderPath);
-        string output = Path.Combine(Project.FolderPath, "options", name);
+        var name = Path.GetFileName(localFolderPath);
+        var output = Path.Combine(Project.FolderPath, "options", name);
 
         try {
             if (Directory.Exists(output)) {
@@ -267,7 +267,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
                 Directory.Delete(output, recursive: true);
 
-                if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out string? optionGroupFolderPath) && optionGroupFolderPath == output) is { } target) {
+                if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out var optionGroupFolderPath) && optionGroupFolderPath == output) is { } target) {
                     Project.Mod.OptionGroups.Remove(target);
                 }
             }
@@ -284,7 +284,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     private void RemoveOption(TkModOption option)
     {
         if (Project?.Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(option)) is not { } group
-            || !Project.TryGetPath(option, out string? optionFolderPath)) {
+            || !Project.TryGetPath(option, out var optionFolderPath)) {
             return;
         }
 
@@ -296,7 +296,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ImportOption(TkModOptionGroup group)
     {
-        if (Project is null || !Project.TryGetPath(group, out string? groupFolderPath)) {
+        if (Project is null || !Project.TryGetPath(group, out var groupFolderPath)) {
             return;
         }
 
@@ -312,8 +312,8 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
-        string name = Path.GetFileName(localFolderPath);
-        string output = Path.Combine(groupFolderPath, name);
+        var name = Path.GetFileName(localFolderPath);
+        var output = Path.Combine(groupFolderPath, name);
 
         try {
             if (Directory.Exists(output)) {
@@ -331,7 +331,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
                 Directory.Delete(output, recursive: true);
 
-                if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out string? optionFolderPath) && optionFolderPath == output) is { } target) {
+                if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out var optionFolderPath) && optionFolderPath == output) is { } target) {
                     group.Options.Remove(target);
                 }
             }
@@ -346,7 +346,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
     private void ApplyDeletions()
     {
-        foreach (string path in _deletions.Where(Directory.Exists)) {
+        foreach (var path in _deletions.Where(Directory.Exists)) {
             Directory.Delete(path, true);
         }
 

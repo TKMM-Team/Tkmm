@@ -124,7 +124,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
             foundNetworks.Add(network.Id);
         }
 
-        for (int i = 0; i < Networks.Count; i++) {
+        for (var i = 0; i < Networks.Count; i++) {
             if (foundNetworks.Contains(Networks[i].Id)) {
                 continue;
             }

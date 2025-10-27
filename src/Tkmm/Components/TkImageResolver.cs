@@ -21,8 +21,8 @@ public class TkImageResolver : IImageResolver
         }
         
         try {
-            string tmpFolderPath = GetTempFolderPath(state?.ToString() ?? "detached");
-            string tmpFileName = Path.Combine(tmpFolderPath, GetFileName(url));
+            var tmpFolderPath = GetTempFolderPath(state?.ToString() ?? "detached");
+            var tmpFileName = Path.Combine(tmpFolderPath, GetFileName(url));
 
             if (File.Exists(tmpFileName)) {
                 context.Source = new Bitmap(tmpFileName);
@@ -56,10 +56,10 @@ public class TkImageResolver : IImageResolver
         
         var path = parts[1];
 
-        int len = path.End.Value - path.Start.Value;
+        var len = path.End.Value - path.Start.Value;
         return string.Create(len, url[path], static (result, path) => {
-            for (int i = 0; i < path.Length; i++) {
-                char @char = path[i];
+            for (var i = 0; i < path.Length; i++) {
+                var @char = path[i];
                 result[i] = @char switch {
                     '/' or '\\' => '-',
                     _ => @char
@@ -75,7 +75,7 @@ public class TkImageResolver : IImageResolver
 
     public static void CleanTarget(string target)
     {
-        string tmpFolderPath = GetTempFolderPath(target);
+        var tmpFolderPath = GetTempFolderPath(target);
         
         try {
             if (!Directory.Exists(tmpFolderPath)) {

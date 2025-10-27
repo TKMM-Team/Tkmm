@@ -41,7 +41,7 @@ public partial class PageManager : ObservableObject
 
     public PageModel this[Page page] {
         get {
-            (int index, bool isFooter) = _lookup[page];
+            (var index, var isFooter) = _lookup[page];
             return (isFooter ? FooterPages : Pages)[index];
         }
     }
@@ -77,7 +77,7 @@ public partial class PageManager : ObservableObject
     
     public T Get<T>(Page page) where T : ObservableObject
     {
-        (int index, bool isFooter) = _lookup[page];
+        (var index, var isFooter) = _lookup[page];
         if ((isFooter ? FooterPages : Pages)[index].Content is UserControl { DataContext: T value }) {
             return value;
         }

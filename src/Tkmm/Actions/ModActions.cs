@@ -163,7 +163,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return;
         }
 
-        string outputModFolder = Path.Combine(TKMM.ModManager.ModsFolderPath, target.Mod.Id.ToString());
+        var outputModFolder = Path.Combine(TKMM.ModManager.ModsFolderPath, target.Mod.Id.ToString());
 
         try {
             ProcessStartInfo info = new() {
@@ -206,7 +206,7 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
             return;
         }
 
-        int removeIndex = TKMM.ModManager.CurrentProfile.Mods.IndexOf(target);
+        var removeIndex = TKMM.ModManager.CurrentProfile.Mods.IndexOf(target);
         TKMM.ModManager.CurrentProfile.Mods.RemoveAt(removeIndex);
 
         if (TKMM.ModManager.CurrentProfile.Mods.Count is 0) {

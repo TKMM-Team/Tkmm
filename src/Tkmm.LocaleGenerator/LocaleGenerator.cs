@@ -31,7 +31,7 @@ public class LocaleGenerator : IIncrementalGenerator
             enumSourceBuilder.AppendLine("public enum TkLocale");
             enumSourceBuilder.AppendLine("{");
             
-            foreach (string? line in lines) {
+            foreach (var line in lines) {
                 enumSourceBuilder.AppendLine($"    {line},");
             }
 
@@ -52,7 +52,7 @@ public class LocaleGenerator : IIncrementalGenerator
 
     private static string GetKey(string line)
     {
-        int keyEndIndex = line.AsSpan().IndexOf(':');
+        var keyEndIndex = line.AsSpan().IndexOf(':');
         return line.Substring(5, keyEndIndex - 6);
     }
 }

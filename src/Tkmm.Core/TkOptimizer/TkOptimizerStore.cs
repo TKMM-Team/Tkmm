@@ -94,7 +94,7 @@ public class TkOptimizerStore(Ulid id)
 
     private TkOptimizerProfile GetProfile()
     {   
-        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out bool exists);
+        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out var exists);
         if (!exists || profile is null) profile = new TkOptimizerProfile();
 
         return profile;
@@ -104,7 +104,7 @@ public class TkOptimizerStore(Ulid id)
     {
         var profile = GetProfile();
         
-        ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out bool exists);
+        ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out var exists);
         if (!exists || group is null) group = [];
 
         return group;

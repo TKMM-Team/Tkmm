@@ -21,8 +21,8 @@ public class ModsListBoxDropHandler : DropHandlerBase
             goto DefaultCheck;
         }
 
-        int currentIndex = list.IndexOf(sourceContext);
-        int targetIndex = list.IndexOf(control.DataContext);
+        var currentIndex = list.IndexOf(sourceContext);
+        var targetIndex = list.IndexOf(control.DataContext);
 
         if (currentIndex == -1 || targetIndex == -1 || currentIndex == targetIndex) {
             goto DefaultCheck;

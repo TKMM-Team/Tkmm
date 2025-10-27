@@ -7,7 +7,7 @@ using TkSharp.Core;
 
 namespace Tkmm.Core.Helpers;
 
-public class SymlinkHelper
+public abstract class SymlinkHelper
 {
     public static async ValueTask CreateMany(IEnumerable<string> targets, string linkToPath)
     {
@@ -21,7 +21,7 @@ public class SymlinkHelper
 
     private static void Create(IEnumerable<string> targets, string linkToPath)
     {
-        foreach (string path in targets) {
+        foreach (var path in targets) {
             if (CheckFolder(path)) {
                 Directory.CreateSymbolicLink(path, linkToPath);
             }
@@ -33,7 +33,7 @@ public class SymlinkHelper
     {
         StringBuilder arguments = new();
 
-        foreach (string path in targets) {
+        foreach (var path in targets) {
             if (CheckFolder(path)) {
                 arguments.Append($"""
                     MKLINK /D "{path}" "{linkToPath}" &&

@@ -23,7 +23,7 @@ public static class External7zHelper
                             ?? throw new InvalidOperationException($"Failed to start 7z from '{Config.Shared.SevenZipPath}'");
         await process.WaitForExitAsync(ct);
         
-        string stdout = await process.StandardOutput.ReadToEndAsync(ct);
+        var stdout = await process.StandardOutput.ReadToEndAsync(ct);
         TkLog.Instance.LogDebug("[External 7z Output] {StandardOutput}", stdout);
     }
 

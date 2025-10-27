@@ -13,7 +13,7 @@ public sealed partial class MergeOutputSetupPageContext : ObservableObject
     [RelayCommand]
     private static async Task Browse(TextBox tb)
     {
-        string? result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+        var result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
             AllowMultiple = false
         }) switch {
             [var target] => target.TryGetLocalPath(),

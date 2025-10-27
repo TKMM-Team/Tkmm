@@ -27,7 +27,7 @@ public partial class LayoutConfig : ObservableObject
 
     public static LayoutConfig Load(string name)
     {
-        string file = GetPath(name);
+        var file = GetPath(name);
         if (!File.Exists(file)) {
             return new LayoutConfig {
                 Name = name
@@ -52,7 +52,7 @@ public partial class LayoutConfig : ObservableObject
 
     private static string GetPath(string name)
     {
-        string folder = Path.Combine(TKMM.BaseDirectory, ".layout");
+        var folder = Path.Combine(TKMM.BaseDirectory, ".layout");
         Directory.CreateDirectory(folder);
         return Path.Combine(folder, $"{name}.json");
     }

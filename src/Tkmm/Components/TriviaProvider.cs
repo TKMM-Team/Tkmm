@@ -22,7 +22,7 @@ public sealed partial class TriviaProvider : ObservableObject
                 _current = [.. _source.Where(x => x != Message)];
             }
             
-            int index = Random.Shared.Next(0, _current.Count - 1);
+            var index = Random.Shared.Next(0, _current.Count - 1);
             Message = _current[index];
             _current.RemoveAt(index);
         });

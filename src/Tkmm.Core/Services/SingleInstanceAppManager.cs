@@ -25,7 +25,7 @@ public static class SingleInstanceAppManager
         using BinaryWriter writer = new(client, Encoding.UTF8);
 
         writer.Write(args.Length);
-        foreach (string arg in args) {
+        foreach (var arg in args) {
             writer.Write(arg);
         }
 
@@ -41,9 +41,9 @@ public static class SingleInstanceAppManager
         await server.WaitForConnectionAsync();
 
         using (var reader = new BinaryReader(server, Encoding.UTF8)) {
-            int argc = reader.ReadInt32();
-            string[] args = new string[argc];
-            for (int i = 0; i < argc; i++) {
+            var argc = reader.ReadInt32();
+            var args = new string[argc];
+            for (var i = 0; i < argc; i++) {
                 args[i] = reader.ReadString();
             }
 

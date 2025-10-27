@@ -6,8 +6,8 @@ public static class DirectoryHelper
 {
     public static void DeleteTargetsFromDirectory(string targetDirectory, string[] targets, bool recursive = false)
     {
-        foreach (string target in targets) {
-            string absolutePath = Path.Combine(targetDirectory, target);
+        foreach (var target in targets) {
+            var absolutePath = Path.Combine(targetDirectory, target);
             DeleteTarget(absolutePath, recursive);
         }
     }
@@ -26,8 +26,8 @@ public static class DirectoryHelper
     
     public static void DeleteTargetsFromDirectory(string targetDirectory, string[] targets, Func<string, bool> filter, bool recursive = false)
     {
-        foreach (string target in targets) {
-            string absolutePath = Path.Combine(targetDirectory, target);
+        foreach (var target in targets) {
+            var absolutePath = Path.Combine(targetDirectory, target);
             DeleteTarget(absolutePath, filter, recursive);
         }
     }
@@ -51,21 +51,21 @@ public static class DirectoryHelper
     /// </summary>
     private static bool DeleteTargetFolder(string target, Func<string, bool> filter, bool recursive = false)
     {
-        int deleted = 0;
-        string[] files = Directory.GetFiles(target);
+        var deleted = 0;
+        var files = Directory.GetFiles(target);
         
-        foreach (string file in files.Where(filter)) {
+        foreach (var file in files.Where(filter)) {
             deleted++;
             File.Delete(file);
         }
         
-        string[] folders = Directory.GetDirectories(target);
+        var folders = Directory.GetDirectories(target);
         
         if (!recursive) {
             return folders.Length + files.Length == deleted;
         }
 
-        foreach (string folder in folders.Where(folder => filter(folder) && DeleteTargetFolder(folder, filter, recursive))) {
+        foreach (var folder in folders.Where(folder => filter(folder) && DeleteTargetFolder(folder, filter, recursive))) {
             deleted++;
             Directory.Delete(folder);
         }
@@ -85,21 +85,21 @@ public static class DirectoryHelper
         
         Directory.CreateDirectory(output);
         
-        foreach (string sourceFile in Directory.EnumerateFiles(source)) {
-            string outputFile = Path.Combine(output, Path.GetFileName(sourceFile));
+        foreach (var sourceFile in Directory.EnumerateFiles(source)) {
+            var outputFile = Path.Combine(output, Path.GetFileName(sourceFile));
             File.Copy(sourceFile, outputFile, overwrite);
         }
 
-        foreach (string directory in Directory.EnumerateDirectories(source)) {
-            string outputDirectory = Path.Combine(output, Path.GetFileName(directory));
+        foreach (var directory in Directory.EnumerateDirectories(source)) {
+            var outputDirectory = Path.Combine(output, Path.GetFileName(directory));
             Copy(directory, outputDirectory, overwrite);
         }
     }
 
     public static void HideTargetsInDirectory(string directory, params Span<string> targets)
     {
-        foreach (string target in targets) {
-            string path = Path.Combine(directory, target);
+        foreach (var target in targets) {
+            var path = Path.Combine(directory, target);
             
             if (!Directory.Exists(path)) {
                 Directory.CreateDirectory(path);

@@ -25,7 +25,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
         
         LogInfo();
 
-        if (EnsureConfiguration(out string? reason)) {
+        if (EnsureConfiguration(out var reason)) {
             TkLog.Instance.LogInformation(
                 "Executing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
             

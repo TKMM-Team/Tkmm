@@ -14,9 +14,9 @@ public sealed class GameLanguageJsonConverter : JsonConverter<GameLanguage>
     public override GameLanguage Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         reader.Read();
-        string value = reader.GetString()!;
+        var value = reader.GetString()!;
         reader.Read();
-        string displayName = reader.GetString()!;
+        var displayName = reader.GetString()!;
         reader.Read();
         
         return new GameLanguage(value, displayName);

@@ -34,7 +34,7 @@ public static class TkEmulatorHelper
         }
         
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out _) is null) {
             return null;
         }
         
@@ -44,7 +44,7 @@ public static class TkEmulatorHelper
     public static string? GetNandPath(string emulatorFilePath)
     {
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out _) is null) {
             return null;
         }
         

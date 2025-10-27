@@ -8,11 +8,11 @@ public static class FileFilterHelper
     {
         if (filter != null) {
             try {
-                string[] groups = filter.Split('|');
+                var groups = filter.Split('|');
                 var types = new FilePickerFileType[groups.Length];
 
-                for (int i = 0; i < groups.Length; i++) {
-                    string[] pair = groups[i].Split(':');
+                for (var i = 0; i < groups.Length; i++) {
+                    var pair = groups[i].Split(':');
                     types[i] = new FilePickerFileType(pair[0]) {
                         Patterns = pair[1].Split(';')
                     };

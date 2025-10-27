@@ -130,12 +130,12 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths);
 
-        string? emulatorFilePath = Config.Shared.EmulatorPath;
+        var emulatorFilePath = Config.Shared.EmulatorPath;
         if (string.IsNullOrWhiteSpace(emulatorFilePath) || !PreferredGameVersion.Equals(DEFAULT_GAME_VERSION)) {
             goto Configured;
         }
 
-        string exeName = Path.GetFileName(emulatorFilePath);
+        var exeName = Path.GetFileName(emulatorFilePath);
 
         if (Path.GetFileNameWithoutExtension(exeName).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
             try {
@@ -162,7 +162,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                     throw new Exception(Locale["TkConfig_ErrorKeysNotFound"]);
                 }
 
-                TkNandUtils.IsValid(keys, emulatorNandPath, out bool hasUpdate);
+                TkNandUtils.IsValid(keys, emulatorNandPath, out var hasUpdate);
 
                 if (!hasUpdate) {
                     throw new Exception(Locale["TkConfig_ErrorNoUpdateOnNand"]);

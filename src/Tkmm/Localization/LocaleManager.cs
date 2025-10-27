@@ -60,7 +60,7 @@ public sealed class LocaleManager : ObservableObject
             }
 
             culture ??= _currentCulture;
-            if (!entry.TryGetValue(culture, out string? value)) {
+            if (!entry.TryGetValue(culture, out var value)) {
                 throw new ArgumentException(
                     $"The locale entry '{key}' is missing a translation entry for '{culture}'.");
             }

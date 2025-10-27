@@ -129,7 +129,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
         }
         
         if (dialog.Content is TextBox { Text: not null } textBox) {
-            string argument = textBox.Text;
+            var argument = textBox.Text;
             try {
                 TkStatus.Set(Locale[TkLocale.Status_Importing, argument], TkIcons.GEAR_FOLDER);
                 if (await TKMM.Install(argument, context: context, ct: ct) is { } result) {

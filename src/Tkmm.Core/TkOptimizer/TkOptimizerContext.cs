@@ -70,7 +70,7 @@ public sealed class TkOptimizerContext : ObservableObject
     {
         foreach (var section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
-            foreach ((string key, var option) in section) {
+            foreach ((var key, var option) in section) {
                 group.Options.Add(TkOptimizerOption.FromJson(context, key, option));
             }
             
@@ -82,7 +82,7 @@ public sealed class TkOptimizerContext : ObservableObject
     {
         foreach (var cheat in json) {
             TkOptimizerCheatGroup group = new(cheat.DisplayVersion);
-            foreach ((string name, string value) in cheat.Cheats) {
+            foreach ((var name, var value) in cheat.Cheats) {
                 using MemoryStream ms = new(Encoding.UTF8.GetBytes(value));
                 group.Cheats.Add(
                     new TkOptimizerCheat(context, group, name, TkCheat.FromText(ms, cheat.Version))
@@ -186,10 +186,10 @@ public sealed class TkOptimizerContext : ObservableObject
 #if !SWITCH
         if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath))
         {
-            string? emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
+            var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
             if (!string.IsNullOrWhiteSpace(emulatorSdPath))
             {
-                string fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
+                var fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
                 
                 memoryStream.Position = 0;
@@ -201,7 +201,7 @@ public sealed class TkOptimizerContext : ObservableObject
 
         if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath))
         {
-            string fullPath = Path.Combine(TkConfig.Shared.SdCardRootPath, outputSdFileName);
+            var fullPath = Path.Combine(TkConfig.Shared.SdCardRootPath, outputSdFileName);
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
             
             memoryStream.Position = 0;
@@ -225,8 +225,8 @@ public sealed class TkOptimizerContext : ObservableObject
                     continue;
                 }
                 
-                string key = option.ConfigClass[1];
-                string? value = option.Value switch {
+                var key = option.ConfigClass[1];
+                var value = option.Value switch {
                     TkOptimizerBoolValue boolean => boolean.Value ? "On" : "Off",
                     TkOptimizerFloatingPointRangeValue f32 => f32.Value.ToString(CultureInfo.InvariantCulture),
                     TkOptimizerRangeValue s32 => s32.Value.ToString(CultureInfo.InvariantCulture),
@@ -251,7 +251,7 @@ public sealed class TkOptimizerContext : ObservableObject
         var choice = enumValue.Values[enumValue.Value].Value;
         var properties = option.ConfigClass.AsSpan()[1..];
 
-        if (choice.ValueKind is JsonValueKind.Number && choice.TryGetInt32(out int s32)) {
+        if (choice.ValueKind is JsonValueKind.Number && choice.TryGetInt32(out var s32)) {
             writer.Write(properties[0]);
             writer.Write(" = ");
             writer.WriteLine(s32);
@@ -263,13 +263,13 @@ public sealed class TkOptimizerContext : ObservableObject
         }
 
         Span<Range> sections = new Range[properties.Length];
-        int sectionCount = value.AsSpan().Split(sections, 'x');
+        var sectionCount = value.AsSpan().Split(sections, 'x');
 
         if (sectionCount != sections.Length) {
             throw new ArgumentException($"Unexpected split in '{value}', expected {sections.Length} parts but found {sectionCount}.");
         }
 
-        for (int i = 0; i < properties.Length; i++) {
+        for (var i = 0; i < properties.Length; i++) {
             writer.Write(properties[i]);
             writer.Write(" = ");
             writer.WriteLine(value[sections[i]]);
