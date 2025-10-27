@@ -46,7 +46,7 @@ public class ModMenuModel
     }
 
 #if !SWITCH
-    [TkMenu(TkLocale.Menu_ModEditExportLocations, TkLocale.Menu_Mod, InputGesture = "Ctrl + L", Icon = "fa-regular fa-pen-to-square", IsSeparator = true)]
+    [TkMenu(TkLocale.EditExportLocations_Title, TkLocale.Menu_Mod, InputGesture = "Ctrl + L", Icon = "fa-regular fa-pen-to-square", IsSeparator = true)]
     public static async Task EditExportLocations()
     {
         await ExportLocationsHelper.OpenEditorDialog(TKMM.Config.ExportLocations);
