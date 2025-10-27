@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 using LanguageExt;
 using LibHac.Common.Keys;
 using Microsoft.Extensions.Logging;
-using Tkmm.Core.Models;
 using TkSharp.Core;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -26,7 +25,7 @@ public static class TkRyujinxHelper
         hasUpdate = false;
 
 
-        if (GetRyujinxDataFolderFromProcess(out string? ryujinxExeFilePath) is not { } dataFolder) {
+        if (GetRyujinxDataFolderFromProcess(out var ryujinxExeFilePath) is not { } dataFolder) {
             if (manualSetup) {
                 if (GetRyujinxDataFolder("ryujinx") is not { } manualDataFolder) {
                     return Locale["RyujinxDataFolderNotFound"];
@@ -46,23 +45,15 @@ public static class TkRyujinxHelper
             return Locale["RyujinxConfigNotFound"];
         }
 
-        if (GetRyujinxKeys(ryujinxDataFolder, out string systemFolderPath) is not { } keys) {
+        if (GetRyujinxKeys(ryujinxDataFolder, out var systemFolderPath) is not { } keys) {
             return Locale["RyujinxKeysNotFound"];
         }
 
         TkConfig.Shared.KeysFolderPath = systemFolderPath;
 
-        string modFolderPath = GetModFolder(ryujinxDataFolder);
-
-        if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
-            Directory.CreateDirectory(modFolderPath);
+        // ReSharper disable once InvertIf
+        if (GetModFolder(ryujinxDataFolder) is {} modFolderPath) {
             Config.Shared.MergeOutput = modFolderPath;
-        }
-        else {
-            Config.Shared.ExportLocations.Add(new ExportLocation {
-                SymlinkPath = modFolderPath,
-                IsEnabled = true
-            });
         }
 
         return TkEmulatorHelper.CheckConfiguredGamePaths(ref result, ref hasUpdate, config.GameDirs, keys);
@@ -104,7 +95,7 @@ public static class TkRyujinxHelper
             goto UseAppDataInstall;
         }
 
-        string portable = Path.Combine(ryujinxFolder, "portable");
+        var portable = Path.Combine(ryujinxFolder, "portable");
 
         if (Directory.Exists(portable)) {
             return portable;
@@ -116,31 +107,43 @@ public static class TkRyujinxHelper
 
     public static string? GetSelectedUpdatePath(string emulatorFilePath)
     {
-        string updatesJsonPath = Path.Combine(GetRyujinxDataFolder(emulatorFilePath), "games", "0100f2c0115b6000", "updates.json");
-        if (File.Exists(updatesJsonPath)) {
-            try {
-                string json = File.ReadAllText(updatesJsonPath);
-                var updates = JsonSerializer.Deserialize<RyujinxUpdates>(json);
-                if (updates != null && !string.IsNullOrWhiteSpace(updates.Selected)) {
-                    return updates.Selected;
-                }
+        var updatesJsonPath = Path.Combine(GetRyujinxDataFolder(emulatorFilePath), "games", "0100f2c0115b6000", "updates.json");
+        
+        if (!File.Exists(updatesJsonPath)) {
+            return null;
+        }
+        
+        try {
+            var json = File.ReadAllText(updatesJsonPath);
+            var updates = JsonSerializer.Deserialize<RyujinxUpdates>(json);
+            if (updates != null && !string.IsNullOrWhiteSpace(updates.Selected)) {
+                return updates.Selected;
             }
-            catch (Exception ex) {
-                TkLog.Instance.LogError("Failed to read updates.json: {Error}", ex.Message);
-            }
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError("Failed to read updates.json: {Error}", ex.Message);
         }
 
         return null;
     }
 
-    public static string GetModPath(string emulatorExecutablePath)
+    public static string? GetModPath(string emulatorExecutablePath)
         => GetModFolder(GetRyujinxDataFolder(emulatorExecutablePath));
 
     public static string GetSdPath(string emulatorExecutablePath)
         => Path.Combine(GetRyujinxDataFolder(emulatorExecutablePath), "sdcard");
 
-    private static string GetModFolder(string ryujinxDataFolder)
-        => Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM");
+    private static string? GetModFolder(string? ryujinxDataFolder)
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (ryujinxDataFolder is null || Config.Shared is null) {
+            return null;
+        }
+        
+        return Config.Shared.UseRomfslite
+            ? Path.Combine(ryujinxDataFolder, "sdcard", "atmosphere", "contents", "0100f2c0115b6000").Replace('\\', '/')
+            : Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM").Replace('\\', '/');
+    }
 }
 
 public record RyujinxConfig(

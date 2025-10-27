@@ -3,7 +3,6 @@
 using System.Diagnostics;
 using LanguageExt;
 using LibHac.Common.Keys;
-using Tkmm.Core.Models;
 using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Core.Helpers;
@@ -19,11 +18,11 @@ public static class TkEmulatorHelper
         }
         
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (TryGetEmulatorDataFolder(emulatorFilePath, out string emulatorDataFolderPath, out _) is null) {
+        if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out _) is null) {
             return null;
         }
         
-        return GetModFolder(GetEmulatorConfigPath(emulatorDataFolderPath));
+        return GetModFolder(GetEmulatorConfigPath(emulatorDataFolderPath), emulatorFilePath);
     }
 
     public static string? GetSdPath(string emulatorFilePath)
@@ -92,17 +91,8 @@ public static class TkEmulatorHelper
             TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
         }
 
-        var modFolderPath = GetModFolder(emulatorConfigFilePath);
-
-        if (string.IsNullOrWhiteSpace(Config.Shared.MergeOutput)) {
-            Directory.CreateDirectory(modFolderPath);
+        if (GetModFolder(emulatorConfigFilePath, emulatorFilePath) is {} modFolderPath) {
             Config.Shared.MergeOutput = modFolderPath;
-        }
-        else {
-            Config.Shared.ExportLocations.Add(new ExportLocation {
-                SymlinkPath = modFolderPath,
-                IsEnabled = true
-            });
         }
 
         if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
@@ -211,10 +201,20 @@ public static class TkEmulatorHelper
         return GetConfigFilePath(emulatorName, emulatorDataFolderPath);
     }
     
-    private static string GetModFolder(string emulatorConfigFilePath)
-        => GetDirectoryFromConfig(emulatorConfigFilePath, "load_directory") is { } loadDir 
-            ? Path.Combine(loadDir, "0100F2C0115B6000", "TKMM").Replace('\\', '/')
-            : "";
+    private static string? GetModFolder(string emulatorConfigFilePath, string emulatorFilePath)
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (Config.Shared is null) {
+            return null;
+        }
+        
+        if (Config.Shared.UseRomfslite && GetSdPath(emulatorFilePath) is {} sdCardPath) {
+            return Path.Combine(sdCardPath, "atmosphere", "contents", "0100F2C0115B6000").Replace('\\', '/');
+        }
+        
+        return GetDirectoryFromConfig(emulatorConfigFilePath, "load_directory") is not { } loadDir 
+            ? "" : Path.Combine(loadDir, "0100F2C0115B6000", "TKMM").Replace('\\', '/');
+    }
 
     private static string? GetDirectoryFromConfig(string emulatorConfigFilePath, string configKey) {
         if (!File.Exists(emulatorConfigFilePath)) {

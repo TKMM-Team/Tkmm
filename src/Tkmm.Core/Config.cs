@@ -5,9 +5,7 @@ using ConfigFactory.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
-#if SWITCH
 using Tkmm.Core.TkOptimizer;
-#endif
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -203,9 +201,57 @@ public sealed partial class Config : ConfigModule<Config>
             TkEmulatorHelper.UseEmulator(newValue, out _);
         }
         
-        string? oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
+        var oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
         if (MergeOutput == oldMergedModPath) {
             MergeOutput = TkEmulatorHelper.GetModPath(newValue);
+        }
+    }
+
+    partial void OnMergeOutputChanged(string? oldValue, string? newValue)
+    {
+        if (oldValue == null || newValue == null) {
+            return;
+        }
+
+        if (Directory.Exists(oldValue)) {
+            try {
+                if (Directory.Exists(newValue)) {
+                    Directory.Delete(newValue, true);
+                }
+
+                Directory.Move(oldValue, newValue);
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToMoveMergeOutput"], oldValue, newValue));
+            }
+        }
+
+        if (!Directory.Exists(newValue)) {
+            Directory.CreateDirectory(newValue);
+        }
+    }
+    
+    partial void OnUseRomfsliteChanged(bool value)
+    {
+        try {
+            var romfsPath = Path.Join(TKMM.MergedOutputFolder, "romfs");
+            var romfsLitePath = Path.Join(TKMM.MergedOutputFolder, "romfslite");
+            
+            switch (value) {
+                case true when Directory.Exists(romfsPath) && !Directory.Exists(romfsLitePath) && TkOptimizerStore.IsProfileEnabled():
+                    Directory.Move(romfsPath, romfsLitePath);
+                    break;
+                case false when Directory.Exists(romfsLitePath) && !Directory.Exists(romfsPath):
+                    Directory.Move(romfsLitePath, romfsPath);
+                    break;
+            }
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, Locale["Config_ErrorFailedToRenameRomfslite"]);
+        }
+        
+        if (EmulatorPath != null && TkEmulatorHelper.GetModPath(EmulatorPath) is {} modPath) {
+            MergeOutput = modPath;
         }
     }
 #endif
