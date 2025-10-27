@@ -18,7 +18,7 @@ public sealed class VirtualKeyContentConverter : IValueConverter
             return key.Content;
         }
 
-        if (key.FindAncestorOfType<VirtualKeyboardLayout>() is not VirtualKeyboardLayout layout) {
+        if (key.FindAncestorOfType<VirtualKeyboardLayout>() is not { } layout) {
             return key.Content = key.Key;
         }
 

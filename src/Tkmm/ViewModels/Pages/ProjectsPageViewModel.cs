@@ -30,12 +30,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task NewProject()
     {
-        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [IStorageFolder folder]) {
+        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [{ } folder]) {
             TkLog.Instance.LogInformation("Folder picker operation returned an invalid result or was cancelled.");
             return;
         }
 
-        if (folder.TryGetLocalPath() is not string localFolderPath) {
+        if (folder.TryGetLocalPath() is not { } localFolderPath) {
             TkLog.Instance.LogError(
                 "Storage folder {Folder} could not be converted into a local folder path.",
                 folder);
@@ -61,12 +61,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             ]
         };
 
-        if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [IStorageFile file]) {
+        if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [{ } file]) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
         }
 
-        if (file.TryGetLocalPath() is not string localFilePath || Path.GetDirectoryName(localFilePath) is not string localFolderPath) {
+        if (file.TryGetLocalPath() is not { } localFilePath || Path.GetDirectoryName(localFilePath) is not { } localFolderPath) {
             TkLog.Instance.LogError(
                 "Storage file {File} could not be converted into a local file path.",
                 file);
@@ -125,7 +125,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             ]
         };
 
-        if (await App.XamlRoot.StorageProvider.SaveFilePickerAsync(filePickerOptions) is not IStorageFile file) {
+        if (await App.XamlRoot.StorageProvider.SaveFilePickerAsync(filePickerOptions) is not { } file) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
         }
@@ -186,12 +186,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             ]
         };
 
-        if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [IStorageFile file]) {
+        if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions) is not [{ } file]) {
             TkLog.Instance.LogInformation("File picker operation returned an invalid result or was cancelled.");
             return;
         }
 
-        if (file.TryGetLocalPath() is not string localFilePath) {
+        if (file.TryGetLocalPath() is not { } localFilePath) {
             TkLog.Instance.LogError(
                 "Storage file {File} could not be converted into a local file path.", file);
             return;
@@ -236,12 +236,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
-        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [IStorageFolder folder]) {
+        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [{ } folder]) {
             TkLog.Instance.LogInformation("Folder picker operation returned an invalid result or was cancelled.");
             return;
         }
 
-        if (folder.TryGetLocalPath() is not string localFolderPath) {
+        if (folder.TryGetLocalPath() is not { } localFolderPath) {
             TkLog.Instance.LogError(
                 "Storage folder {Folder} could not be converted into a local folder path.",
                 folder);
@@ -267,7 +267,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
                 Directory.Delete(output, recursive: true);
 
-                if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out string? optionGroupFolderPath) && optionGroupFolderPath == output) is TkModOptionGroup target) {
+                if (Project.Mod.OptionGroups.FirstOrDefault(x => Project.TryGetPath(x, out string? optionGroupFolderPath) && optionGroupFolderPath == output) is { } target) {
                     Project.Mod.OptionGroups.Remove(target);
                 }
             }
@@ -283,7 +283,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     [RelayCommand]
     private void RemoveOption(TkModOption option)
     {
-        if (Project?.Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(option)) is not TkModOptionGroup group
+        if (Project?.Mod.OptionGroups.FirstOrDefault(x => x.Options.Contains(option)) is not { } group
             || !Project.TryGetPath(option, out string? optionFolderPath)) {
             return;
         }
@@ -300,12 +300,12 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
-        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [IStorageFolder folder]) {
+        if (await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Create a TotK mod project folder." }) is not [{ } folder]) {
             TkLog.Instance.LogInformation("Folder picker operation returned an invalid result or was cancelled.");
             return;
         }
 
-        if (folder.TryGetLocalPath() is not string localFolderPath) {
+        if (folder.TryGetLocalPath() is not { } localFolderPath) {
             TkLog.Instance.LogError(
                 "Storage folder {Folder} could not be converted into a local folder path.",
                 folder);
@@ -331,7 +331,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
                 Directory.Delete(output, recursive: true);
 
-                if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out string? optionFolderPath) && optionFolderPath == output) is TkModOption target) {
+                if (group.Options.FirstOrDefault(x => Project.TryGetPath(x, out string? optionFolderPath) && optionFolderPath == output) is { } target) {
                     group.Options.Remove(target);
                 }
             }

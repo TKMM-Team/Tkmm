@@ -107,7 +107,7 @@ public static class MessageDialog
     {
         _hiddenDialogs.Add(id);
         
-        if (Path.GetDirectoryName(_dialogsStorePath) is string folder) {
+        if (Path.GetDirectoryName(_dialogsStorePath) is { } folder) {
             Directory.CreateDirectory(folder);
         }
 

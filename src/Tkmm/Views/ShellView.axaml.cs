@@ -88,13 +88,13 @@ public partial class ShellView : AppWindow
     {
         // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (e.Key is Key.PageUp) {
-            if (PageManager.Shared.Current?.Id is Page page && (int)(page -= 1) > -1) {
+            if (PageManager.Shared.Current?.Id is { } page && (int)(page -= 1) > -1) {
                 PageManager.Shared.Focus(page);
             }
         }
         
         if (e.Key is Key.PageDown) {
-            if (PageManager.Shared.Current?.Id is not Page page) {
+            if (PageManager.Shared.Current?.Id is not { } page) {
                 return;
             }
 

@@ -227,11 +227,13 @@ public static class TkEmulatorHelper
         while (reader.ReadLine() is { } line) {
             var trimmedLine = line.Trim();
 
-            if (trimmedLine.StartsWith($"{configKey}=", StringComparison.OrdinalIgnoreCase)) {
-                var directoryPath = trimmedLine.Substring($"{configKey}=".Length).Trim();
-                if (!string.IsNullOrEmpty(directoryPath) && Directory.Exists(directoryPath)) {
-                    return directoryPath;
-                }
+            if (!trimmedLine.StartsWith($"{configKey}=", StringComparison.OrdinalIgnoreCase)) {
+                continue;
+            }
+            
+            var directoryPath = trimmedLine[$"{configKey}=".Length..].Trim();
+            if (!string.IsNullOrEmpty(directoryPath) && Directory.Exists(directoryPath)) {
+                return directoryPath;
             }
         }
 

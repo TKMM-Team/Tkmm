@@ -39,7 +39,7 @@ public sealed partial class TriviaProvider : ObservableObject
 
         List<string> lines = [];
         using StreamReader reader = new(stream);
-        while (reader.ReadLine() is string line) {
+        while (reader.ReadLine() is { } line) {
             lines.Add(line);
         }
         

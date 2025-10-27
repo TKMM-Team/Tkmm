@@ -128,7 +128,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             IsShowingDetail = true;
             ViewerOpacity = 1.0;
             
-            if (fileId is long desiredFileId) {
+            if (fileId is { } desiredFileId) {
                 var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
                 if (target is null) {
                     TkStatus.SetTemporary(Locale["GameBanana_NoMatchingFile"], TkIcons.ERROR);

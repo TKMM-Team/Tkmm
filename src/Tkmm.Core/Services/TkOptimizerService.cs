@@ -22,7 +22,7 @@ public class TkOptimizerService
         Context.Store = TkOptimizerStore.CreateStore(profile);
 
         var id = GetStaticId();
-        if (profile.Mods.FirstOrDefault(x => x.Mod.Id == id) is TkProfileMod uc) {
+        if (profile.Mods.FirstOrDefault(x => x.Mod.Id == id) is { } uc) {
             source = uc.Mod.Changelog.Source;
         }
 

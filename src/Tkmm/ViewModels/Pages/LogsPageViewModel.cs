@@ -36,7 +36,7 @@ public partial class LogsPageViewModel : ObservableObject
 
     private static void Copy(string text)
     {
-        if (App.XamlRoot.Clipboard is IClipboard clipboard) {
+        if (App.XamlRoot.Clipboard is { } clipboard) {
             clipboard.SetTextAsync(text);
         }
     }

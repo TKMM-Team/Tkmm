@@ -104,7 +104,7 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         HashSet<string> foundNetworks = [];
         
         await foreach (var network in Connman.GetNetworks(ct)) {
-            if (Networks.FirstOrDefault(net => net.Id == network.Id) is NxNetwork existing) {
+            if (Networks.FirstOrDefault(net => net.Id == network.Id) is { } existing) {
                 if (existing.IsConnected) {
                     await SetConnected(network);
                 }

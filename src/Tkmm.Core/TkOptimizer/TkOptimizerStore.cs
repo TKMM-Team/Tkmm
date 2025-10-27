@@ -123,7 +123,7 @@ public class TkOptimizerStore(Ulid id)
 
     private static void Save()
     {
-        if (Path.GetDirectoryName(_storeFilePath) is string folder) {
+        if (Path.GetDirectoryName(_storeFilePath) is { } folder) {
             Directory.CreateDirectory(folder);
         }
 

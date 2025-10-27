@@ -41,7 +41,7 @@ public static class Connman
     {
         using var services = NxProcessHelper.ReadCommand(GET_SERVICES_COMMAND);
 
-        while (await services.ReadLineAsync(ct) is string service) {
+        while (await services.ReadLineAsync(ct) is { } service) {
             var line = service.AsSpan();
 
             if (line.Length < 10) {
@@ -74,7 +74,7 @@ public static class Connman
     {
         using var properties = NxProcessHelper.ReadCommand(string.Format(GET_SERVICE_COMMAND, network.Id));
 
-        while (await properties.ReadLineAsync() is string property) {
+        while (await properties.ReadLineAsync() is { } property) {
             var line = property.AsSpan();
 
             if (line.Length < 2 || line[0] is not ' ' || line[1] is not ' ') {
@@ -144,7 +144,7 @@ public static class Connman
         bool isFound = false;
         
         using var technologies = NxProcessHelper.ReadCommand(GET_TECHNOLOGIES_COMMAND);
-        while (technologies.ReadLine() is string technology) {
+        while (technologies.ReadLine() is { } technology) {
             var line = technology.AsSpan();
 
             switch (isFound) {

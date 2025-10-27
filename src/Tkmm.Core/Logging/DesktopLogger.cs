@@ -24,7 +24,7 @@ public class DesktopLogger : ILogger
     {
         Directory.CreateDirectory(_logsFolder);
         
-        if (Directory.GetFiles(_logsFolder).Order().ToArray() is [string first, ..] logs && logs.Length > 10) {
+        if (Directory.GetFiles(_logsFolder).Order().ToArray() is [{ } first, ..] logs && logs.Length > 10) {
             File.Delete(first);
         }
         

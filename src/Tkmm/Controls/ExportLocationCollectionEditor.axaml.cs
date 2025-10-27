@@ -19,7 +19,7 @@ public partial class ExportLocationCollectionEditor : UserControl
     private static async Task Browse(ExportLocation? target)
     {
         BrowserDialog dialog = new(BrowserMode.OpenFolder, Locale[TkLocale.Tip_OpenModFolder]);
-        if (target is not null && await dialog.ShowDialog() is string selectedFolder) {
+        if (target is not null && await dialog.ShowDialog() is { } selectedFolder) {
             target.SymlinkPath = selectedFolder;
         }
     }

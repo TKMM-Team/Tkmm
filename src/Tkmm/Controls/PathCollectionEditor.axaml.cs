@@ -68,7 +68,7 @@ public partial class PathCollectionEditor : TemplatedControl
 
         var result = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(options);
 
-        if (result is not [IStorageFile target] || target.TryGetLocalPath() is not string path) {
+        if (result is not [{ } target] || target.TryGetLocalPath() is not { } path) {
             return;
         }
 
@@ -88,7 +88,7 @@ public partial class PathCollectionEditor : TemplatedControl
 
         var result = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(options);
 
-        if (result is not [IStorageFolder target] || target.TryGetLocalPath() is not string path) {
+        if (result is not [{ } target] || target.TryGetLocalPath() is not { } path) {
             return;
         }
 

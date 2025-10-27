@@ -17,7 +17,7 @@ public class InstallModDropHandler : DropHandlerBase
     public override async void Drop(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
     {
         try {
-            if (e.Data.GetFiles() is IEnumerable<IStorageItem> paths) {
+            if (e.Data.GetFiles() is { } paths) {
                 foreach (var item in paths) {
                     switch (item) {
                         case IStorageFile file:
@@ -25,13 +25,13 @@ public class InstallModDropHandler : DropHandlerBase
                                 await ModActions.Instance.Install(file.Name, input);
                             }
                             break;
-                        case IStorageFolder folder when folder.TryGetLocalPath() is string folderPath:
+                        case IStorageFolder folder when folder.TryGetLocalPath() is { } folderPath:
                             await ModActions.Instance.Install(folderPath);
                             break;
                     }
                 }
             }
-            else if (e.Data.GetText() is string arg) {
+            else if (e.Data.GetText() is { } arg) {
                 await ModActions.Instance.Install(arg);
             }
         }

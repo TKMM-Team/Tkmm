@@ -44,7 +44,7 @@ public class ModsListBoxDropHandler : DropHandlerBase
 
         var targetType = GetListBoxType(listBox);
 
-        if (sourceContext is TkMod mod && targetType == typeof(TkProfileMod) && mod.GetProfileMod() is TkProfileMod newProfileMod && !list.Contains(newProfileMod)) {
+        if (sourceContext is TkMod mod && targetType == typeof(TkProfileMod) && mod.GetProfileMod() is { } newProfileMod && !list.Contains(newProfileMod)) {
             list.Add(newProfileMod);
             return true;
         }

@@ -65,7 +65,7 @@ public class SymlinkHelper
 
     private static bool CheckFolder(string path)
     {
-        if (!Directory.Exists(path) && Path.GetDirectoryName(path) is string parent) {
+        if (!Directory.Exists(path) && Path.GetDirectoryName(path) is { } parent) {
             Directory.CreateDirectory(parent);
             return true;
         }
