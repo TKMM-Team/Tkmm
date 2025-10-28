@@ -105,9 +105,7 @@ public sealed partial class Config : ConfigModule<Config>
         Filter = "7z:*7z*",
         Title = "Config_SelectSevenZipLocation")]
     private string? _sevenZipPath;
-#endif
 
-#if !SWITCH
     [property: Config(
         Header = "Config_EmulatorExecutablePath",
         Description = "Config_EmulatorExecutablePathDescription",
@@ -131,6 +129,13 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Config_ShowTriviaPopupDescription",
         Group = "ConfigSection_Application")]
     private bool _showTriviaPopup = true;
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_ShowAdvancedSettings",
+        Description = "Config_ShowAdvancedSettingsDescription",
+        Group = "ConfigSection_Application")]
+    private bool _showAdvancedSettings;
 
     [ObservableProperty]
     [property: Config(

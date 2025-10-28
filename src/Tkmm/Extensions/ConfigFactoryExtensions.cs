@@ -1,7 +1,7 @@
 using ConfigFactory;
 using ConfigFactory.Core;
-using ConfigFactory.Core.Models;
 using ConfigFactory.Models;
+using Tkmm.Core;
 using TkSharp.Core;
 
 namespace Tkmm.Extensions;
@@ -22,5 +22,30 @@ public static class ConfigFactoryExtensions
         }
 
         settingsModel.Append<T>();
+
+        if (Config.Shared.ShowAdvancedSettings) {
+            return;
+        }
+        
+        var advancedHeaders = new[] {
+            Locale["Config_ExportLocations"],
+            Locale["TkConfig_KeysFolderPath"],
+            Locale["TkConfig_PackagedBaseGamePaths"],
+            Locale["TkConfig_GameUpdateFilePaths"],
+            Locale["TkConfig_SdCardRootPath"],
+            Locale["TkConfig_GameDumpFolderPaths"],
+            Locale["TkConfig_NandFolderPaths"]};
+             
+        foreach (var category in settingsModel.Categories) {
+            foreach (var group in category.Groups) {
+                var itemsToRemove = group.Items
+                    .Where(item => advancedHeaders.Contains(item.Header))
+                    .ToList();
+
+                foreach (var item in itemsToRemove) {
+                    group.Items.Remove(item);
+                }
+            }
+        }
     }
 }
