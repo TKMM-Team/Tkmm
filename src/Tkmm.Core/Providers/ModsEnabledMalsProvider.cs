@@ -22,7 +22,8 @@ public static class ModsEnabledMalsProvider
         ["TWzh"] = "模組已啟用",
         ["USen"] = "Mods Enabled",
         ["USes"] = "Mods Habilitados",
-        ["USfr"] = "Mods Activés"
+        ["USfr"] = "Mods Activés",
+        ["USpt"] = "Mods Ativados"
     };
     
     public static TkChangelog? CreateDefaultMalsChangelog(string locale)
