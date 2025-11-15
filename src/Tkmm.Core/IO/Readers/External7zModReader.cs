@@ -28,7 +28,9 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
         // Use a random ID instead of the
         // mod ID to avoid possible issues
         // if installing the same mod twice  
-        var tmp = Path.Combine(Path.GetTempPath(), "tkmm", "7z", Ulid.NewUlid().ToString());
+        var sevenZipTmp = Path.Combine(Path.GetTempPath(), "tkmm", "7z");
+        var tmp = Path.Combine(sevenZipTmp, Ulid.NewUlid().ToString());
+
         Directory.CreateDirectory(tmp);
         
         var tmpInput = File.Exists(fileName) ? fileName : Path.Combine(tmp, "input");
@@ -64,9 +66,25 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             };
         }
         finally {
-            if (Directory.Exists(tmp)) {
-                Directory.Delete(tmp, recursive: true);
+            if (Directory.Exists(sevenZipTmp)) {
+                try {
+                    ClearAttributes(sevenZipTmp);
+                    Directory.Delete(sevenZipTmp, recursive: true);
+                }
+                catch {
+                    TkLog.Instance.LogWarning("[External 7z] Failed to delete temp extract directory, try removing it manually: {Path}", tmp);
+                }
             }
+        }
+    }
+
+    private static void ClearAttributes(string path)
+    {
+        if (!OperatingSystem.IsWindows()) {
+            return;
+        }
+        foreach (var file in Directory.EnumerateFileSystemEntries(path, "*", SearchOption.AllDirectories)) {
+            File.SetAttributes(file, FileAttributes.Normal);
         }
     }
 
