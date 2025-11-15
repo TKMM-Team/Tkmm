@@ -686,7 +686,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Show options for advanced usage (requires application restart).\n\n[WARNING] Danger ahead! Making mistakes could break your configuration.",
+      "en_US": "Makes advanced options visible.\n\n[DANGER AHEAD] Making mistakes could break your configuration (restart required).",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
