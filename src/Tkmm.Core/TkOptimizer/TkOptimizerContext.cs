@@ -70,7 +70,7 @@ public sealed class TkOptimizerContext : ObservableObject
     {
         foreach (var section in json.Options.GroupBy(x => x.Value.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
-            foreach ((var key, var option) in section) {
+            foreach (var (key, option) in section) {
                 group.Options.Add(TkOptimizerOption.FromJson(context, key, option));
             }
             
@@ -82,7 +82,7 @@ public sealed class TkOptimizerContext : ObservableObject
     {
         foreach (var cheat in json) {
             TkOptimizerCheatGroup group = new(cheat.DisplayVersion);
-            foreach ((var name, var value) in cheat.Cheats) {
+            foreach (var (name, value) in cheat.Cheats) {
                 using MemoryStream ms = new(Encoding.UTF8.GetBytes(value));
                 group.Cheats.Add(
                     new TkOptimizerCheat(context, group, name, TkCheat.FromText(ms, cheat.Version))
@@ -138,12 +138,9 @@ public sealed class TkOptimizerContext : ObservableObject
             }
         }
         
-        var outputFileName = Path.Combine(romfsFolder, "UltraCam",
-            // ReSharper disable twice StringLiteralTypo
-            "maxlastbreath.ini");
-        
-        var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config",
-            "maxlastbreath.ini");
+        // ReSharper disable twice StringLiteralTypo
+        var outputFileName = Path.Combine(romfsFolder, "UltraCam", "maxlastbreath.ini");
+        var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config", "maxlastbreath.ini");
         
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
             var deleteFilePath = Path.Combine(TKMM.MergedOutputFolder, outputFileName);
@@ -169,26 +166,22 @@ public sealed class TkOptimizerContext : ObservableObject
         }
         
         Store = TkOptimizerStore.CreateStore(profile);
-
         using MemoryStream memoryStream = new();
-        using (StreamWriter writer = new(memoryStream, leaveOpen: true))
-        {
+        using (StreamWriter writer = new(memoryStream, leaveOpen: true)) {
             WriteConfigContent(writer);
         }
         
         memoryStream.Position = 0;
 
-        using (var output = mergeOutputWriter.OpenWrite(outputFileName))
-        {
+        using (var output = mergeOutputWriter.OpenWrite(outputFileName)) {
             memoryStream.CopyTo(output);
         }
 
 #if !SWITCH
-        if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath))
-        {
+        if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
             var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
-            if (!string.IsNullOrWhiteSpace(emulatorSdPath))
-            {
+            
+            if (!string.IsNullOrWhiteSpace(emulatorSdPath)) {
                 var fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
                 
@@ -199,8 +192,7 @@ public sealed class TkOptimizerContext : ObservableObject
         }
 #endif
 
-        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath))
-        {
+        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
             var fullPath = Path.Combine(TkConfig.Shared.SdCardRootPath, outputSdFileName);
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
             
