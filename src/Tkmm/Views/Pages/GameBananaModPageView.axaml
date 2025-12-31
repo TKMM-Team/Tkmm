@@ -208,8 +208,23 @@
 
                 <!-- Right Column -->
                 <StackPanel Grid.Column="2" Spacing="20">
-                    
-                    <!-- Stats -->
+					
+					<!-- Version and Date -->
+					<StackPanel Spacing="5">
+						<TextBlock Text="{Binding SelectedMod.Version, StringFormat='Version {0}'}"
+                                   IsVisible="{Binding SelectedMod.Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   FontWeight="Medium"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+						<TextBlock Text="{Binding FormattedDateUpdated, StringFormat='Last updated on {0}'}"
+                                   FontSize="12"
+                                   IsVisible="{Binding FormattedDateUpdated, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource SystemBaseMediumColor}" />
+					</StackPanel>
+
+					<!-- Stats -->
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="5"
                           VerticalAlignment="Center">
                         <Grid ColumnDefinitions="Auto,Auto"
@@ -243,128 +258,41 @@
                         </Grid>
                     </Grid>
 
-                    <!-- Credits -->
-                    <Border Background="{DynamicResource SystemChromeMediumColor}"
+					<!-- Bottom Half: Files -->
+					<Border Background="{DynamicResource SystemChromeMediumColor}"
                             CornerRadius="{DynamicResource ControlCornerRadius}"
                             BorderBrush="{DynamicResource ButtonBorderBrush}"
                             BorderThickness="{DynamicResource ButtonBorderThemeThickness}"
                             Padding="15">
-                        <StackPanel>
-                            <TextBlock FontSize="18"
-                                       Margin="0,0,0,4"
-                                       Text="{markup:Locale GameBanana_Credits}" />
-                            
-                            <ItemsControl ItemsSource="{Binding SelectedMod.Credits}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="15" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type gb:GameBananaCreditGroup}">
-                                        <StackPanel>
-                                            <TextBlock FontWeight="Bold"
-                                                       Text="{Binding Name}"
-                                                       TextWrapping="Wrap"
-                                                       Margin="0,0,0,5" />
-                                            <ItemsControl ItemsSource="{Binding Authors}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <StackPanel Spacing="5" />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type gb:GameBananaAuthor}">
-                                                        <Grid ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto">
-                                                            <Image Width="24"
-                                                                   Height="24"
-                                                                   Margin="0,5,0,0"
-                                                                   VerticalAlignment="Top"
-                                                                   Source="{Binding LoadedAvatar}"
-                                                                   Stretch="Uniform" />
-                                                            <StackPanel Grid.Column="1"
-                                                                        VerticalAlignment="Top">
-                                                                <TextBlock Text="{Binding Name}"
-                                                                           FontWeight="Medium"
-                                                                           TextTrimming="CharacterEllipsis" />
-                                                                <TextBlock Text="{Binding Role}"
-                                                                           FontSize="11"
-                                                                           FontStyle="Italic"
-                                                                           Foreground="Gray"
-                                                                           TextWrapping="Wrap"
-                                                                           TextTrimming="CharacterEllipsis" />
-                                                            </StackPanel>
-                                                            <HyperlinkButton Grid.Column="2"
-                                                                             Width="32"
-                                                                             Height="32"
-                                                                             Padding="4"
-                                                                             NavigateUri="{Binding ProfileUrl}"
-                                                                             ToolTip.Tip="View Profile"
-                                                                             VerticalAlignment="Top"
-                                                                             IsVisible="{Binding ProfileUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-                                                                <pi:Icon Value="fa-solid fa-external-link-alt" />
-                                                            </HyperlinkButton>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- Version and Date -->
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="{Binding SelectedMod.Version, StringFormat='Version {0}'}"
-                                   IsVisible="{Binding SelectedMod.Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   FontWeight="Medium"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding FormattedDateUpdated, StringFormat='Last updated on {0}'}"
-                                   FontSize="12"
-                                   IsVisible="{Binding FormattedDateUpdated, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource SystemBaseMediumColor}" />
-                    </StackPanel>
-
-                    <!-- Bottom Half: Files -->
-                    <Border Background="{DynamicResource SystemChromeMediumColor}"
-                            CornerRadius="{DynamicResource ControlCornerRadius}"
-                            BorderBrush="{DynamicResource ButtonBorderBrush}"
-                            BorderThickness="{DynamicResource ButtonBorderThemeThickness}"
-                            Padding="15">
-                        <StackPanel Spacing="10">
-                            <TextBlock FontSize="18"
+						<StackPanel Spacing="10">
+							<TextBlock FontSize="18"
                                        Text="{markup:Locale GameBanana_Downloads}" />
-                            
-                            <ItemsControl ItemsSource="{Binding SelectedMod.Files, Converter={StaticResource FileSorter}}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type gb:GameBananaFile}">
-                                        <Border Padding="10"
+
+							<ItemsControl ItemsSource="{Binding SelectedMod.Files, Converter={StaticResource FileSorter}}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate DataType="{x:Type gb:GameBananaFile}">
+										<Border Padding="10"
                                                 Margin="0,4"
                                                 Background="{DynamicResource SystemChromeLowColor}"
                                                 CornerRadius="{DynamicResource ControlCornerRadius}"
                                                 BorderBrush="{DynamicResource ButtonBorderBrush}"
                                                 BorderThickness="{DynamicResource ButtonBorderThemeThickness}">
-                                            <Grid ColumnDefinitions="*,Auto">
-                                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                                    <TextBlock FontSize="11"
+											<Grid ColumnDefinitions="*,Auto">
+												<StackPanel Grid.Column="0" Margin="0,0,8,0">
+													<TextBlock FontSize="11"
                                                                FontWeight="Medium"
                                                                Foreground="{DynamicResource SystemAccentColorLight3}"
                                                                IsVisible="{Binding IsTkcl}"
                                                                Text="{markup:Locale GameBanana_RecommendedFile}"
                                                                TextWrapping="Wrap"
                                                                Margin="0,0,0,3" />
-                                                    <TextBlock Text="{Binding Name}"
+													<TextBlock Text="{Binding Name}"
                                                                FontWeight="Medium"
                                                                Margin="0,0,0,5"
                                                                TextWrapping="Wrap"
                                                                TextTrimming="CharacterEllipsis"
                                                                ToolTip.Tip="{Binding Name}" />
-                                                    <TextBlock Text="{Binding Description}"
+													<TextBlock Text="{Binding Description}"
                                                                FontSize="12"
                                                                FontStyle="Italic"
                                                                Foreground="Gray"
@@ -372,9 +300,9 @@
                                                                TextTrimming="CharacterEllipsis"
                                                                IsVisible="{Binding Description.Length}"
                                                                ToolTip.Tip="{Binding Description}" />
-                                                </StackPanel>
+												</StackPanel>
 
-                                                <Button Grid.Column="1"
+												<Button Grid.Column="1"
                                                         Width="32"
                                                         Height="32"
                                                         Padding="4"
@@ -382,16 +310,89 @@
                                                         Command="{Binding ((pages:GameBananaModPageViewModel)DataContext).InstallModCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
                                                         ToolTip.Tip="{markup:Locale Tooltip_InstallMod}">
-                                                    <pi:Icon Value="fa-solid fa-down-from-bracket" />
-                                                </Button>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+													<pi:Icon Value="fa-solid fa-down-from-bracket" />
+												</Button>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+					</Border>
+
+					<!-- Credits -->
+					<Border Background="{DynamicResource SystemChromeMediumColor}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}"
+                            BorderBrush="{DynamicResource ButtonBorderBrush}"
+                            BorderThickness="{DynamicResource ButtonBorderThemeThickness}"
+                            Padding="15">
+						<StackPanel>
+							<TextBlock FontSize="18"
+                                       Margin="0,0,0,4"
+                                       Text="{markup:Locale GameBanana_Credits}" />
+
+							<ItemsControl ItemsSource="{Binding SelectedMod.Credits}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Spacing="15" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate DataType="{x:Type gb:GameBananaCreditGroup}">
+										<StackPanel>
+											<TextBlock FontWeight="Bold"
+                                                       Text="{Binding Name}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,5" />
+											<ItemsControl ItemsSource="{Binding Authors}">
+												<ItemsControl.ItemsPanel>
+													<ItemsPanelTemplate>
+														<StackPanel Spacing="5" />
+													</ItemsPanelTemplate>
+												</ItemsControl.ItemsPanel>
+												<ItemsControl.ItemTemplate>
+													<DataTemplate DataType="{x:Type gb:GameBananaAuthor}">
+														<Grid ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto">
+															<Image Width="24"
+                                                                   Height="24"
+                                                                   Margin="0,5,0,0"
+                                                                   VerticalAlignment="Top"
+                                                                   Source="{Binding LoadedAvatar}"
+                                                                   Stretch="Uniform" />
+															<StackPanel Grid.Column="1"
+                                                                        VerticalAlignment="Top">
+																<TextBlock Text="{Binding Name}"
+                                                                           FontWeight="Medium"
+                                                                           TextTrimming="CharacterEllipsis" />
+																<TextBlock Text="{Binding Role}"
+                                                                           FontSize="11"
+                                                                           FontStyle="Italic"
+                                                                           Foreground="Gray"
+                                                                           TextWrapping="Wrap"
+                                                                           TextTrimming="CharacterEllipsis" />
+															</StackPanel>
+															<HyperlinkButton Grid.Column="2"
+                                                                             Width="32"
+                                                                             Height="32"
+                                                                             Padding="4"
+                                                                             NavigateUri="{Binding ProfileUrl}"
+                                                                             ToolTip.Tip="View Profile"
+                                                                             VerticalAlignment="Top"
+                                                                             IsVisible="{Binding ProfileUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+																<pi:Icon Value="fa-solid fa-external-link-alt" />
+															</HyperlinkButton>
+														</Grid>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</StackPanel>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+					</Border>
+
+				</StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>
