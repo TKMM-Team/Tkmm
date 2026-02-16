@@ -19,11 +19,20 @@ public sealed partial class ExportLocations : ObservableCollection<ExportLocatio
     {
         Remove(target);
     }
+    
+    public void Reset(string mergeOutputFolder)
+    {
+        foreach (var target in GetValidTargets(this).Where(path => new DirectoryInfo(path).LinkTarget is not null)) {
+            Directory.Delete(target);
+        }
+        
+        SymlinkHelper.CreateMany(GetValidTargets(this), mergeOutputFolder);
+    }
 
-    public async ValueTask Create()
+    public void Create()
     {
         RemoveDuplicatesAndInvalid();
-        await SymlinkHelper.CreateMany(GetValidTargets(this), TKMM.MergedOutputFolder);
+        SymlinkHelper.CreateMany(GetValidTargets(this), TKMM.MergedOutputFolder);
     }
 
     private void RemoveDuplicatesAndInvalid()
@@ -45,6 +54,8 @@ public sealed partial class ExportLocations : ObservableCollection<ExportLocatio
                     "Export location '{ExportLocationPath}' was omitted and disabled because the folder contained contents.",
                     path);
             }
+
+            location.SymlinkPath = path.TrimEnd('\\', '/');
         }
 
         foreach (var location in toRemove) {

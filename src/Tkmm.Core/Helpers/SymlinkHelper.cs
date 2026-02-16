@@ -9,10 +9,10 @@ namespace Tkmm.Core.Helpers;
 
 public abstract class SymlinkHelper
 {
-    public static async ValueTask CreateMany(IEnumerable<string> targets, string linkToPath)
+    public static void CreateMany(IEnumerable<string> targets, string linkToPath)
     {
         if (OperatingSystem.IsWindows() && !IsDeveloperModeEnabled()) {
-            await CreateManyRequestPermission(targets, linkToPath);
+            CreateManyRequestPermission(targets, linkToPath);
             return;
         }
 
@@ -29,7 +29,7 @@ public abstract class SymlinkHelper
     }
 
     [SupportedOSPlatform("windows")]
-    private static async ValueTask CreateManyRequestPermission(IEnumerable<string> targets, string linkToPath)
+    private static void CreateManyRequestPermission(IEnumerable<string> targets, string linkToPath)
     {
         StringBuilder arguments = new();
 
@@ -51,7 +51,7 @@ public abstract class SymlinkHelper
         };
 
         if (Process.Start(processInfo) is { } process) {
-            await process.WaitForExitAsync();
+            process.WaitForExit();
         }
     }
 

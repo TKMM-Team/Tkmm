@@ -227,13 +227,15 @@ public sealed partial class Config : ConfigModule<Config>
                 Directory.Move(oldValue, newValue);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToMoveMergeOutput"], oldValue, newValue));
+                TkLog.Instance.LogError(ex, Locale["Config_ErrorFailedToMoveMergeOutput"], oldValue, newValue);
             }
         }
 
         if (!Directory.Exists(newValue)) {
             Directory.CreateDirectory(newValue);
         }
+
+        ExportLocations.Reset(newValue);
     }
     
     partial void OnUseRomfsliteChanged(bool value)
