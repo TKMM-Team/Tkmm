@@ -34,7 +34,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Header = "TkConfig_PreferredGameVersion",
         Description = "TkConfig_PreferredGameVersionDescription",
         Group = "ConfigSection_GameDump")]
-    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.2", "1.4.1", "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
+    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.3", "1.4.2", "1.4.1", "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
     private string _preferredGameVersion = DEFAULT_GAME_VERSION;
 
     [ObservableProperty]
