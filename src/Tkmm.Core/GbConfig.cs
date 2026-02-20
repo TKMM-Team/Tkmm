@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Microsoft.Extensions.Logging;
@@ -47,6 +46,10 @@ public sealed class GbConfig : ConfigModule<GbConfig>
             OnPropertyChanged();
         }
     }
+
+    public string? PairedSecretKey { get; set; }
+
+    public string? PairedUserId { get; set; }
 
     public override void Load(ref GbConfig module)
     {

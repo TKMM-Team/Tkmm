@@ -22,12 +22,12 @@ internal abstract class Program
     public static void Main(string[] args)
     {
         try {
-            if (SingleInstanceAppManager.Start(args, Attach) == false) {
+            if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
             }
 
             if (TkConsoleApp.IsComplexRequest(args)) {
-                TkConsoleApp.StartCli(args);
+                TkConsoleApp.ProcessArguments(args);
                 return;
             }
 
@@ -86,7 +86,7 @@ internal abstract class Program
     private static void HandleArgs(string[] args)
     {
         ArgumentHandler.EnsureWired();
-        TkConsoleApp.ProcessBasicArgs(args);
+        TkConsoleApp.ProcessArguments(args);
     }
 
     public static void ProcessStartupArgs()

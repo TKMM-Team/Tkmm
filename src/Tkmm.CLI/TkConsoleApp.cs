@@ -5,10 +5,16 @@ namespace Tkmm.CLI;
 public static class TkConsoleApp
 {
     public static event Func<string, Stream?, Task>? InstallRequested;
+
     public static event Func<long, long?, Task>? OpenModRequested;
+
     public static event Action<string>? PageRequested;
+
     public static event Action<string>? SettingsFocusRequested;
+
     public static event Action<string>? ErrorOccurred;
+
+    public static event Action<string, string>? PairToGameBanana;
 
     /// <summary>
     /// Checks if the arguments form a complex request.
@@ -24,86 +30,75 @@ public static class TkConsoleApp
     /// Processes basic input arguments and returns the number of complex arguments. 
     /// </summary>
     /// <param name="args">Command-line arguments</param>
-    public static void ProcessBasicArgs(string[] args)
+    public static void ProcessArguments(string[] args)
     {
         foreach (var raw in args) {
             var arg = raw.Trim('"');
-            if (!(Path.Exists(arg) || (arg.Length > 5 && arg.AsSpan()[..5] is "tkmm:"))) {
+
+            if (arg.StartsWith("tkmm://", StringComparison.OrdinalIgnoreCase)) {
+                HandleAppUri(new Uri(arg));
                 continue;
             }
 
-            // tkmm:// deep links
-            if (arg.StartsWith("tkmm://", StringComparison.OrdinalIgnoreCase)) {
-                if (TryHandleTkmmUri(arg)) {
-                    continue;
-                }
-                ShowError($"Invalid input: {arg}");
+            if (!Path.Exists(arg) || InstallRequested is null) {
+                continue;
             }
 
-            // Local file/folder install
             if (File.Exists(arg)) {
-                try {
-                    Stream stream = File.OpenRead(arg);
-                    if (InstallRequested is not null) {
-                        _ = InstallRequested.Invoke(arg, stream);
-                    }
-                }
-                catch (Exception ex) {
-                    ShowError($"Error while installing file: {ex.Message}");
-                }
+                using var fs = File.OpenRead(arg);
+                _ = InstallRequested.Invoke(arg, fs);
+                continue;
             }
-            else {
-                ShowError($"Invalid input: {arg}");
-            }
+
+            _ = InstallRequested.Invoke(arg, null);
         }
     }
 
-    private static bool TryHandleTkmmUri(string uri)
+    private static void HandleAppUri(Uri uri)
     {
-        var u = uri.TrimEnd('/');
+        if (uri.GetComponents(UriComponents.Path, UriFormat.Unescaped) is not { } path) {
+            return;
+        }
 
-        // Pages
-        if (u.Equals("tkmm://home", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("home"); return true; }
-        if (u.Equals("tkmm://profiles", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("profiles"); return true; }
-        if (u.Equals("tkmm://projects", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("projects"); return true; }
-        if (u.Equals("tkmm://gamebanana", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("gamebanana"); return true; }
-        if (u.Equals("tkmm://optimizer", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("optimizer"); return true; }
-        if (u.Equals("tkmm://cheats", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("cheats"); return true; }
-        if (u.Equals("tkmm://logs", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("logs"); return true; }
-        if (u.Equals("tkmm://settings", StringComparison.OrdinalIgnoreCase)) { PageRequested?.Invoke("settings"); return true; }
+        var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-        // Settings subsections
-        const string settingsPrefix = "tkmm://settings/";
-        if (u.StartsWith(settingsPrefix, StringComparison.OrdinalIgnoreCase)) {
-            var section = u.Substring(settingsPrefix.Length);
+        if (parts is [var page]) {
+            PageRequested?.Invoke(page);
+            return;
+        }
+
+        if (parts is ["settings", var section]) {
             PageRequested?.Invoke("settings");
             SettingsFocusRequested?.Invoke(section);
-            return true;
+            return;
         }
 
-        // Open mod in viewer, optional specific file: tkmm://mod/<modId> or tkmm://mod/<modId>/<fileId>
-        if (!u.StartsWith("tkmm://mod/", StringComparison.OrdinalIgnoreCase)) {
-            return false;
+        if (parts is ["pair", var key, var memberId]) {
+            PairToGameBanana?.Invoke(key, memberId);
+            return;
         }
-        
-        var rest = u["tkmm://mod/".Length..];
-        var parts = rest.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            
-        if (parts.Length < 1 || !long.TryParse(parts[0], out var modId)) {
-            return false;
+
+        if (OpenModRequested is null) {
+            ShowError("Invalid State: OpenModRequest is not registered.");
+            return;
         }
-            
-        long? fileId = null;
-            
-        if (parts.Length >= 2 && long.TryParse(parts[1], out var parsedFileId)) {
-            fileId = parsedFileId;
+
+        if (parts is not ["mod", var modIdStr, ..]) {
+            ShowError($"Invalid URI: {uri}");
+            return;
         }
-        
-        if (OpenModRequested is not null) {
-            _ = OpenModRequested.Invoke(modId, fileId);
+
+        if (!long.TryParse(modIdStr, out var modId)) {
+            ShowError($"Invalid Mod ID: {modIdStr}");
+            return;
         }
-        
-        return true;
+
+        long? fileId = 0;
+        if (parts[^1] is { } fileIdStr && long.TryParse(fileIdStr, out var fileIdParsed)) {
+            fileId = fileIdParsed;
+        }
+
+        _ = OpenModRequested.Invoke(modId, fileId);
     }
 
     private static void ShowError(string message)
@@ -114,7 +109,7 @@ public static class TkConsoleApp
     public static void StartCli(string[] args)
     {
         var app = ConsoleApp.Create();
-        ProcessBasicArgs(args);
+        ProcessArguments(args);
         app.Run(args);
     }
 }

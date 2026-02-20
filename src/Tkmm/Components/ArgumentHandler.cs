@@ -4,6 +4,7 @@ using ConfigFactory.Models;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.CLI;
+using Tkmm.Core;
 using Tkmm.ViewModels.Pages;
 using TkSharp.Core;
 
@@ -90,6 +91,12 @@ internal static class ArgumentHandler
             Dispatcher.UIThread.Post(() => {
                 App.ToastError(new ArgumentException(message));
             });
+        };
+
+        TkConsoleApp.PairToGameBanana += (key, memberId) => {
+            GbConfig.Shared.PairedSecretKey = key;
+            GbConfig.Shared.PairedUserId = memberId;
+            GbConfig.Shared.Save();
         };
 
         _wired = true;
