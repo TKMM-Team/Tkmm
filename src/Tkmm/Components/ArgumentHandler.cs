@@ -25,7 +25,10 @@ internal static class ArgumentHandler
         TkConsoleApp.OpenModRequested += async (modId, fileId, isSilent) => {
             try {
                 await Dispatcher.UIThread.InvokeAsync(async () => {
-                    PageManager.Shared.Focus(Page.GbMods);
+                    if (!isSilent) {
+                        PageManager.Shared.Focus(Page.GbMods);
+                    }
+                    
                     var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
                     await gameBananaPage.OpenModInViewerAsync(modId, fileId, isSilent);
                 });

@@ -56,7 +56,7 @@ public static class TkConsoleApp
 
     private static void HandleAppUri(Uri uri)
     {
-        if (uri.GetComponents(UriComponents.Path, UriFormat.Unescaped) is not { } path) {
+        if (uri.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped) is not { } path) {
             return;
         }
 
@@ -80,6 +80,12 @@ public static class TkConsoleApp
 
         if (OpenModRequested is null) {
             ShowError("Invalid State: OpenModRequest is not registered.");
+            return;
+        }
+
+        if (parts is ["mod", var mode, var modIdStrA, var fileIdStrA] && long.TryParse(modIdStrA, out var modIdA) && long.TryParse(fileIdStrA, out var fileIdA)) {
+            // mode can be 'install' or 'view'/'open'; 'install' sets is_silent to true
+            _ = OpenModRequested.Invoke(modIdA, fileIdA, mode is "install");
             return;
         }
 

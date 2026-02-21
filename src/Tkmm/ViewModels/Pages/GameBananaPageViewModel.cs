@@ -95,7 +95,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         try {
             var modRecord = new GameBananaModRecord { Id = (int)modId };
             await modRecord.DownloadFullMod();
-            
+
             if (modRecord.Full == null) {
                 TkStatus.SetTemporary(Locale["GameBanana_FailedToLoadMod"], TkIcons.ERROR);
                 return;
@@ -113,6 +113,7 @@ public partial class GameBananaPageViewModel : ObservableObject
                 catch {
                     TkStatus.SetTemporary(Locale["GameBanana_FailedToOpenBrowser"], TkIcons.ERROR);
                 }
+
                 return;
             }
 
@@ -129,15 +130,16 @@ public partial class GameBananaPageViewModel : ObservableObject
                 IsShowingDetail = true;
                 ViewerOpacity = 1.0;
             }
-            
+
             if (fileId is { } desiredFileId) {
                 var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
                 if (target is null) {
                     TkStatus.SetTemporary(Locale["GameBanana_NoMatchingFile"], TkIcons.ERROR);
+                    return;
                 }
-                else {
-                    Viewer?.InstallModCommand.Execute(target);
-                }
+                
+                TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
+                await ModActions.Instance.Install((modRecord.Full, target));
             }
         }
         catch (Exception ex) {
@@ -163,5 +165,4 @@ public partial class GameBananaPageViewModel : ObservableObject
         TkStatus.Set($"Downloading '{target.Name}'", "fa-solid fa-download", StatusType.Working);
         await ModActions.Instance.Install((mod.Full, target));
     }
-
 }
