@@ -18,7 +18,7 @@ public static class GameBananaSync
             $"RemoteInstall/{userId}/{secretKey}/{MOD_MANAGER_ALIAS}", ct: ct);
 
         if (queue is not null) {
-            TkConsoleApp.ProcessArguments(queue);
+            TkConsoleApp.ProcessArguments(queue.Distinct().ToArray());
         }
     }
 }
