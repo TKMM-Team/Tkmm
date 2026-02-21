@@ -5,7 +5,7 @@ namespace Tkmm.Core.Services;
 
 public static class GameBananaRemoteInstallService
 {
-    public const string MOD_MANAGER_ALIAS = "TKMM"; // TODO: TBD by GB staff
+    public const string MOD_MANAGER_ALIAS = "TotkModManager"; // TODO: TBD by GB staff
 
     private static readonly Timer _timer = new(e => _ = InstallQueue());
 
