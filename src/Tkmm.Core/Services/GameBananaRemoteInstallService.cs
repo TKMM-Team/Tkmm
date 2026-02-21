@@ -18,7 +18,7 @@ public static class GameBananaRemoteInstallService
         }
 
         var queue = await GameBanana.Get<JsonElement>(
-            $"RemoteInstall/{userId}/{secretKey}/{MOD_MANAGER_ALIAS}", ct: ct);
+            $"RemoteInstall/{userId}/{secretKey}/{MOD_MANAGER_ALIAS}?v={DateTimeOffset.UtcNow.Ticks}", ct: ct);
 
         if (queue.ValueKind is not JsonValueKind.Array) {
             throw new InvalidDataException($"Expected array from GB remote install queue but found: {queue}");
