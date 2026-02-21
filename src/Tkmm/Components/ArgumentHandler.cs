@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using ConfigFactory.Models;
 using Microsoft.Extensions.Logging;
@@ -100,6 +101,10 @@ internal static class ArgumentHandler
             GbConfig.Shared.PairedSecretKey = key;
             GbConfig.Shared.PairedUserId = memberId;
             GbConfig.Shared.Save();
+            
+            App.Toast(
+                "TKMM has been paired with GameBanana for remote mod installations.",
+                title: "Pair Successful", NotificationType.Success);
         };
 
         _wired = true;
