@@ -22,12 +22,12 @@ internal static class ArgumentHandler
 
         TkConsoleApp.InstallRequested += async (arg, stream) => await ModActions.Instance.Install(arg, stream);
 
-        TkConsoleApp.OpenModRequested += async (modId, fileId) => {
+        TkConsoleApp.OpenModRequested += async (modId, fileId, isSilent) => {
             try {
                 await Dispatcher.UIThread.InvokeAsync(async () => {
                     PageManager.Shared.Focus(Page.GbMods);
                     var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
-                    await gameBananaPage.OpenModInViewerAsync(modId, fileId);
+                    await gameBananaPage.OpenModInViewerAsync(modId, fileId, isSilent);
                 });
             }
             catch (Exception ex) {

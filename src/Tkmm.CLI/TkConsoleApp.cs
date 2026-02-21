@@ -6,7 +6,7 @@ public static class TkConsoleApp
 {
     public static event Func<string, Stream?, Task>? InstallRequested;
 
-    public static event Func<long, long?, Task>? OpenModRequested;
+    public static event Func<long, long?, bool, Task>? OpenModRequested;
 
     public static event Action<string>? PageRequested;
 
@@ -98,7 +98,7 @@ public static class TkConsoleApp
             fileId = fileIdParsed;
         }
 
-        _ = OpenModRequested.Invoke(modId, fileId);
+        _ = OpenModRequested.Invoke(modId, fileId, uri.Query.Contains("silent"));
     }
 
     private static void ShowError(string message)

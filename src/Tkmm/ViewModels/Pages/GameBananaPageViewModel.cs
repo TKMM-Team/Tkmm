@@ -90,7 +90,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         });
     }
 
-    public async Task OpenModInViewerAsync(long modId, long? fileId = null)
+    public async Task OpenModInViewerAsync(long modId, long? fileId = null, bool isSilent = false)
     {
         try {
             var modRecord = new GameBananaModRecord { Id = (int)modId };
@@ -116,17 +116,19 @@ public partial class GameBananaPageViewModel : ObservableObject
                 return;
             }
 
-            Viewer?.Reset();
-            Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
-            Viewer.PropertyChanged += (_, e) => {
-                if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
-                    UpdateCombinedLoading();
-                }
-            };
-            UpdateCombinedLoading();
-            OnPropertyChanged(nameof(Viewer));
-            IsShowingDetail = true;
-            ViewerOpacity = 1.0;
+            if (!isSilent) {
+                Viewer?.Reset();
+                Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
+                Viewer.PropertyChanged += (_, e) => {
+                    if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
+                        UpdateCombinedLoading();
+                    }
+                };
+                UpdateCombinedLoading();
+                OnPropertyChanged(nameof(Viewer));
+                IsShowingDetail = true;
+                ViewerOpacity = 1.0;
+            }
             
             if (fileId is { } desiredFileId) {
                 var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
