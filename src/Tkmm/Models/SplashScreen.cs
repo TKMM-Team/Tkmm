@@ -25,7 +25,5 @@ public class SplashScreen : IApplicationSplashScreen
         await TKMM.Initialize(TkThumbnailProvider.Instance, cancellationToken);
         
         PageManager.Shared.Focus(PageManager.Shared.Default);
-        
-        _ = GameBananaRemoteInstallService.InstallQueue(cancellationToken);
     }
 }
