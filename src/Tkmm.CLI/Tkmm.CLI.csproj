@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType Condition="'$(IsSwitch)' == 'true'">Library</OutputType>
     <OutputType Condition="'$(IsSwitch)' != 'true'">Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>CA1822</NoWarn>
@@ -19,12 +19,12 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="ConsoleAppFramework" Version="5.5.0">
+    <PackageReference Include="ConsoleAppFramework" Version="5.7.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Kokuban" Version="0.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
   </ItemGroup>
   
   <ItemGroup>

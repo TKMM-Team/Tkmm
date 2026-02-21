@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -29,18 +29,18 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.2" TreatAsUsed="True" />
+    <PackageReference Include="Avalonia" Version="11.3.12" TreatAsUsed="True" />
     <PackageReference Include="Avalonia.Controls.PanAndZoom" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" TreatAsUsed="True" />
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.2" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12" TreatAsUsed="True" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.12" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
     <!--Versions greater than 11.0.10.2 causes https://github.com/TKMM-Team/Tkmm/issues/5 -->
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="[11.0.10.2]" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.12" />
     <PackageReference Include="AvaMark" Version="0.2.1" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.3" />
-    <PackageReference Include="FluentAvaloniaUI" Version="2.4.0" />
-    <PackageReference Include="Humanizer" Version="2.14.1" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.5.0" />
+    <PackageReference Include="Humanizer" Version="3.0.1" />
     <PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.11.1" />
     <PackageReference Include="MenuFactory" Version="1.1.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.2" />

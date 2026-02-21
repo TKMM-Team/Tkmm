@@ -17,7 +17,7 @@ public class InstallModDropHandler : DropHandlerBase
     public override async void Drop(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
     {
         try {
-            if (e.Data.GetFiles() is { } paths) {
+            if (e.DataTransfer.TryGetFiles() is { } paths) {
                 foreach (var item in paths) {
                     switch (item) {
                         case IStorageFile file:
@@ -31,12 +31,12 @@ public class InstallModDropHandler : DropHandlerBase
                     }
                 }
             }
-            else if (e.Data.GetText() is { } arg) {
+            else if (e.DataTransfer.TryGetText() is { } arg) {
                 await ModActions.Instance.Install(arg);
             }
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, "Failed to install drag/drop target: {TargetData}.", e.Data);
+            TkLog.Instance.LogError(ex, "Failed to install drag/drop target: {TargetData}.", e.DataTransfer.TryGetText());
         }
     }
 }
