@@ -22,6 +22,8 @@ internal abstract class Program
     public static void Main(string[] args)
     {
         try {
+            GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
+            
             if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
             }

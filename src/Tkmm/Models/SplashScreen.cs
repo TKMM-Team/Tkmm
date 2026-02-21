@@ -2,6 +2,7 @@
 using FluentAvalonia.UI.Windowing;
 using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Core.Services;
 using Tkmm.Views.Common;
 using PageManager = Tkmm.Components.PageManager;
 
@@ -25,6 +26,6 @@ public class SplashScreen : IApplicationSplashScreen
         
         PageManager.Shared.Focus(PageManager.Shared.Default);
         
-        _ = GameBananaSync.InstallQueue(cancellationToken);
+        _ = GameBananaRemoteInstallService.InstallQueue(cancellationToken);
     }
 }

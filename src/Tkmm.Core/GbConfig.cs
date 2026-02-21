@@ -1,12 +1,14 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 using Microsoft.Extensions.Logging;
+using Tkmm.Core.Services;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Core;
 
-public sealed class GbConfig : ConfigModule<GbConfig>
+public sealed partial class GbConfig : ConfigModule<GbConfig>
 {
     [Config(
         Header = "GbConfig_UseThreadedDownloads",
@@ -47,6 +49,13 @@ public sealed class GbConfig : ConfigModule<GbConfig>
         }
     }
 
+    [Config(
+        Header = "GbConfig_GameBananaPollIntervalMinutes",
+        Description = "GbConfig_GameBananaPollIntervalMinutesDescription",
+        Group = "ConfigSection_GameBananaClient")]
+    [ObservableProperty]
+    public partial int? GameBananaPollIntervalMinutes { get; set; } = 5;
+
     public string? PairedSecretKey { get; set; }
 
     public string? PairedUserId { get; set; }
@@ -65,5 +74,10 @@ public sealed class GbConfig : ConfigModule<GbConfig>
     public override string Translate(string input)
     {
         return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
+    }
+
+    partial void OnGameBananaPollIntervalMinutesChanged(int? value)
+    {
+        GameBananaRemoteInstallService.SetInterval(value);
     }
 }

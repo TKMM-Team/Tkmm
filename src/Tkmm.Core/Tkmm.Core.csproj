@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <NoWarn>CS0657</NoWarn>
+      <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
