@@ -1,11 +1,11 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Microsoft.Extensions.Logging;
+using System.Net.NetworkInformation;
 using Tkmm.Core.Providers;
 using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
-using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Components;
 
@@ -66,7 +66,7 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         }
         
     TryUseUrl:
-        if (!InternetHelper.HasInternet) {
+        if (!NetworkInterface.GetIsNetworkAvailable()) {
             goto UseDefault;
         }
         
@@ -91,6 +91,12 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
         
     UseDefault:
         if (!useDefault) {
+            return;
+        }
+        
+        if (item.Thumbnail is { ThumbnailPath.Length: > 0 } existingThumbnail) {
+            existingThumbnail.Bitmap = _defaultThumbnail;
+            existingThumbnail.IsDefault = false;
             return;
         }
         

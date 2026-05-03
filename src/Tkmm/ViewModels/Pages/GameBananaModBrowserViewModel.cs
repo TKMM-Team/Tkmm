@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using System.Text.Json;
 using Avalonia.Controls;
 using Avalonia.Platform;
@@ -38,7 +39,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     private double? _downloadSpeed;
 
     [ObservableProperty]
-    private GameBananaFeed? _suggestedModsFeed = InternetHelper.HasInternet ? GetSuggestedFeed() : null;
+    private GameBananaFeed? _suggestedModsFeed = NetworkInterface.GetIsNetworkAvailable() ? GetSuggestedFeed() : null;
 
     public GameBananaFeed? Feed => IsShowingSuggested ? SuggestedModsFeed : Source.Feed;
 
@@ -95,7 +96,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     [RelayCommand]
     private async Task Refresh(ScrollViewer? modsViewer = null)
     {
-        if (!InternetHelper.HasInternet) {
+        if (!NetworkInterface.GetIsNetworkAvailable()) {
             IsLoadSuccess = false;
             return;
         }
