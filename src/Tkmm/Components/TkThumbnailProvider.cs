@@ -54,10 +54,15 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
             goto TryUseUrl;
         }
 
-        // ReSharper disable once ConvertToUsingDeclaration
-        await using (var imageStream = src.OpenRead(thumbnail.ThumbnailPath)) {
-            thumbnail.Bitmap = new Bitmap(imageStream);
-            return;
+        try {
+            // ReSharper disable once ConvertToUsingDeclaration
+            await using (var imageStream = src.OpenRead(thumbnail.ThumbnailPath)) {
+                thumbnail.Bitmap = new Bitmap(imageStream);
+                return;
+            }
+        }
+        catch {
+            // continue with attempt to resolve the thumbnail with the URL
         }
         
     TryUseUrl:
