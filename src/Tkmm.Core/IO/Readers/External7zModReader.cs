@@ -71,8 +71,8 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
                     ClearAttributes(sevenZipTmp);
                     Directory.Delete(sevenZipTmp, recursive: true);
                 }
-                catch {
-                    TkLog.Instance.LogWarning("[External 7z] Failed to delete temp extract directory, try removing it manually: {Path}", tmp);
+                catch (Exception ex) {
+                    TkLog.Instance.LogWarning("[External 7z] Failed to delete temp extract directory, try removing it manually: {Path}\n\n{Exception}", tmp, ex);
                 }
             }
         }
