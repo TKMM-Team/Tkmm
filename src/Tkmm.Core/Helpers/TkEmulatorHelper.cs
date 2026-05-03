@@ -186,6 +186,11 @@ public static class TkEmulatorHelper
 
             var romFolderPath = line[itemValue];
 
+            var normalizedRomFolderPath = romFolderPath.Replace('/', '\\').TrimEnd('\\');
+            if (normalizedRomFolderPath.EndsWith(@"\System Volume Information", StringComparison.OrdinalIgnoreCase)) {
+                continue;
+            }
+
             if (!Directory.Exists(romFolderPath)) {
                 continue;
             }
