@@ -36,5 +36,5 @@
 - **[Arch Leaders](https://github.com/ArchLeaders)**: Lead Developer
 - **[Aster](https://github.com/AsteroidPizza39)**: Co-Founder, Artist, & Operations Manager
 - **[The5thTear](https://github.com/The5thTear)**: Co-Founder & Developer
-- **[Lord Bubbles](https://github.com/MasterBubbles)**: Developer & GPT Master
+- **[Lord Bubbles](https://github.com/LordBubblesDev)**: Developer & [TKMM-NX](https://github.com/TKMM-Team/TKMM-NX) Maintainer
 - **[Mikachan](https://github.com/okmika)**: Developer
