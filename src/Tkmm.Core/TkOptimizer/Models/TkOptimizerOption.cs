@@ -3,22 +3,23 @@ using Tkmm.Core.TkOptimizer.Models.ValueTypes;
 
 namespace Tkmm.Core.TkOptimizer.Models;
 
-public sealed class TkOptimizerOption(string key, string name, string description, List<string> configClass, TkOptimizerValue value)
+public sealed class TkOptimizerOption(string key, string outputFileName, string name, string description, List<string> configClass, TkOptimizerValue value)
 {
     public string Name => GetLocaleOrDefault($"TkOptimizer_{key.Dehumanize()}_Title", name);
 
     public string Description => GetLocaleOrDefault($"TkOptimizer_{key.Dehumanize()}_Description", description);
 
+    public string OutputFileName { get; } = outputFileName;
+
     public List<string> ConfigClass { get; } = configClass;
 
     public TkOptimizerValue Value { get; } = value;
 
-    public static TkOptimizerOption FromJson(TkOptimizerContext context, string key, TkOptimizerJson.Option option)
+    public static TkOptimizerOption FromJson(TkOptimizerContext context, string outputFileName, string key, TkOptimizerJson.Option option)
     {
         TkOptimizerValue value = (option.Class, option.Type) switch {
             (Class: "dropdown", _)
-                => new TkOptimizerEnumValue(context,
-                    option.Default.GetInt32(), option.GetEnumValues()),
+                => BuildEnumValue(context, option),
             (Class: "scale", Type: "s32")
                 => new TkOptimizerRangeValue(context, option.Default.GetInt32()) {
                     MinValue = option.Values![0].GetInt32(),
@@ -38,6 +39,16 @@ public sealed class TkOptimizerOption(string key, string name, string descriptio
 
         value.Key = key;
 
-        return new TkOptimizerOption(key, option.Name, option.Description, option.ConfigClass, value);
+        return new TkOptimizerOption(key, outputFileName, option.Name, option.Description, option.ConfigClass, value);
+    }
+
+    private static TkOptimizerEnumValue BuildEnumValue(TkOptimizerContext context, TkOptimizerJson.Option option)
+    {
+        var values = option.GetEnumValues();
+        var defaultIndex = option.Default.GetInt32();
+
+        defaultIndex = values.Count == 0 ? 0 : Math.Clamp(defaultIndex, 0, values.Count - 1);
+
+        return new TkOptimizerEnumValue(context, defaultIndex, values);
     }
 }

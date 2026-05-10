@@ -22,6 +22,8 @@ using Tkmm.Builders;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
+using Tkmm.Core.TkOptimizer;
+using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.ViewModels;
 using Tkmm.Views;
@@ -176,8 +178,14 @@ public class App : Application
         OnThemeChanged(Config.Shared.Theme);
 
         ArgumentHandler.EnsureWired();
-        
+
+#if !SWITCH
+        TkOptimizerSdPrompt.RequestSdCardRootAsync = TkOptimizerSdPathDialog.RequestSdCardRootAsync;
+#endif
+
         base.OnFrameworkInitializationCompleted();
+
+        Program.NotifyUiFrameworkReady();
         
         Dispatcher.UIThread.Post(() => {
             Task.Delay(1000).Wait();

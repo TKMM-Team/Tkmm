@@ -3,15 +3,15 @@ using System.Text.Json;
 using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
 using TkSharp.Core.Models;
-using TkOptimizerConfigJson = System.Collections.Generic.Dictionary<string, Tkmm.Core.TkOptimizer.TkOptimizerProfile>;
-using TkOptimizerConfig = System.Collections.Generic.Dictionary<System.Ulid, Tkmm.Core.TkOptimizer.TkOptimizerProfile>;
 
 namespace Tkmm.Core.TkOptimizer;
 
 public class TkOptimizerStore(Ulid id)
 {
-    private static readonly string _storeFilePath = Path.Combine(TKMM.ModManager.DataFolderPath, "tk-optimizer.json");
-    private static readonly TkOptimizerConfig _store = FromDisk();
+    private static readonly string StoreFilePath =
+        Path.Combine(TKMM.ModManager.DataFolderPath, "tk-optimizer.json");
+    private static readonly Dictionary<Ulid, bool> Enabled = LoadEnabled();
+    private static readonly Dictionary<Ulid, TkOptimizerProfile> SessionProfiles = [];
 
     public static TkOptimizerStore Current => CreateStore(TKMM.ModManager.GetCurrentProfile());
 
@@ -21,31 +21,34 @@ public class TkOptimizerStore(Ulid id)
         return new TkOptimizerStore(profile.Id);
     }
 
-    public static bool Remove(TkProfile profile)
+    public static void Remove(TkProfile profile)
     {
-        return _store.Remove(profile.Id);
+        Enabled.Remove(profile.Id);
+        SessionProfiles.Remove(profile.Id);
+        SaveEnabled();
     }
 
     public static bool IsProfileEnabled(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
-        return !_store.TryGetValue(profile.Id, out var optimizerProfile) || optimizerProfile.IsEnabled;
+        return !Enabled.TryGetValue(profile.Id, out var on) || on;
     }
 
     public bool IsEnabled {
-        get => GetProfile().IsEnabled;
+        get => !Enabled.TryGetValue(id, out var on) || on;
         set {
-            GetProfile().IsEnabled = value;
-            Save();
+            Enabled[id] = value;
+            SaveEnabled();
             TKMM.MergeBasic();
+            TkOptimizerService.Context.ApplyToSdCard();
         }
     }
 
     public string? Preset {
-        get => GetProfile().Preset;
+        get => GetSessionProfile().Preset;
         set {
-            GetProfile().Preset = value;
-            Save();
+            GetSessionProfile().Preset = value;
+            TKMM.MergeBasic();
         }
     }
 
@@ -61,7 +64,6 @@ public class TkOptimizerStore(Ulid id)
                 break;
         }
 
-        Save();
         TKMM.MergeBasic();
     }
 
@@ -70,31 +72,9 @@ public class TkOptimizerStore(Ulid id)
         return GetCheatGroup(cheat.Version).Contains(key);
     }
 
-    public void Set<T>(string key, T value) where T : unmanaged
+    private TkOptimizerProfile GetSessionProfile()
     {
-        GetProfile().Values[key] = JsonSerializer.SerializeToElement(value);
-        Save();
-    }
-
-    public T Get<T>(string key, T @default) where T : unmanaged
-    {
-        return TryGet(key, out T result) ? result : @default;
-    }
-
-    public bool TryGet<T>(string key, out T value) where T : unmanaged
-    {
-        if (!GetProfile().Values.TryGetValue(key, out var json)) {
-            value = default;
-            return false;
-        }
-
-        value = json.Deserialize<T>();
-        return true;
-    }
-
-    private TkOptimizerProfile GetProfile()
-    {   
-        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out var exists);
+        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(SessionProfiles, id, out var exists);
         if (!exists || profile is null) profile = new TkOptimizerProfile();
 
         return profile;
@@ -102,36 +82,47 @@ public class TkOptimizerStore(Ulid id)
 
     private HashSet<string> GetCheatGroup(string version)
     {
-        var profile = GetProfile();
-        
+        var profile = GetSessionProfile();
+
         ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out var exists);
         if (!exists || group is null) group = [];
 
         return group;
     }
 
-    private static TkOptimizerConfig FromDisk()
+    private static Dictionary<Ulid, bool> LoadEnabled()
     {
-        if (!File.Exists(_storeFilePath) || new FileInfo(_storeFilePath) is { Length: 0 }) {
+        try {
+            if (!File.Exists(StoreFilePath) || new FileInfo(StoreFilePath) is { Length: 0 }) {
+                return [];
+            }
+
+            var raw = JsonSerializer.Deserialize<Dictionary<string, bool>>(File.ReadAllText(StoreFilePath));
+            if (raw is null) {
+                return [];
+            }
+
+            Dictionary<Ulid, bool> map = [];
+            foreach (var (key, value) in raw) {
+                if (Ulid.TryParse(key, out var profileId)) {
+                    map[profileId] = value;
+                }
+            }
+
+            return map;
+        }
+        catch {
             return [];
         }
-
-        using var fs = File.OpenRead(_storeFilePath);
-        return JsonSerializer.Deserialize<TkOptimizerConfigJson>(fs)?
-            .ToDictionary(x => Ulid.Parse(x.Key), x => x.Value) ?? [];
     }
 
-    private static void Save()
+    private static void SaveEnabled()
     {
-        if (Path.GetDirectoryName(_storeFilePath) is { } folder) {
+        if (Path.GetDirectoryName(StoreFilePath) is { } folder) {
             Directory.CreateDirectory(folder);
         }
 
-        using var fs = File.Create(_storeFilePath);
-        JsonSerializer.Serialize(fs,
-            _store.ToDictionary(x => x.Key.ToString(), x => x.Value)
-        );
-        
-        TkOptimizerService.Context.ApplyToMergedOutput();
+        var serial = Enabled.ToDictionary(static x => x.Key.ToString(), static x => x.Value);
+        File.WriteAllText(StoreFilePath, JsonSerializer.Serialize(serial));
     }
 }

@@ -109,7 +109,7 @@ public static class TKMM
         var startTime = Stopwatch.GetTimestamp();
 
         await merger.MergeAsync(GetMergeTargets(profile), ct);
-        TkOptimizerService.Context.Apply(writer, profile);
+        await TkOptimizerService.Context.ApplyAsync(writer, profile, ct);
 
         // For atmosphere 20.0 support with TotK Optimizer
         if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
@@ -190,7 +190,6 @@ public static class TKMM
         ModManager.PropertyChanged += static (_, e) => {
             if (e.PropertyName == nameof(TkModManager.CurrentProfile)) {
                 MergeBasic();
-                TkOptimizerService.Context.ApplyToMergedOutput();
             }
         };
 

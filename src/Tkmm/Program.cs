@@ -17,6 +17,8 @@ namespace Tkmm;
 internal abstract class Program
 {
     private static string[]? _startupArgs;
+    private static string[]? _deferredSecondInstanceArgs;
+    private static volatile bool _uiFrameworkReady;
 
     [STAThread]
     public static void Main(string[] args)
@@ -60,12 +62,33 @@ internal abstract class Program
     private static void Attach(string[] args)
     {
         if (!TkConsoleApp.IsComplexRequest(args)) {
-            Dispatcher.UIThread.Invoke(App.Focus);
-            HandleArgs(args);
+            if (!_uiFrameworkReady) {
+                _deferredSecondInstanceArgs = args;
+                return;
+            }
+
+            Dispatcher.UIThread.Post(() => {
+                App.Focus();
+                HandleArgs(args);
+            });
+
             return;
         }
 
         TkConsoleApp.StartCli(args);
+    }
+
+    internal static void NotifyUiFrameworkReady()
+    {
+        _uiFrameworkReady = true;
+        
+        if (_deferredSecondInstanceArgs is not { } deferredArgs) {
+            return;
+        }
+        
+        _deferredSecondInstanceArgs = null;
+        App.Focus();
+        HandleArgs(deferredArgs);
     }
 
     private static AppBuilder BuildAvaloniaApp()
