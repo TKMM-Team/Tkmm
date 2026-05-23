@@ -23,8 +23,11 @@ public sealed class TkOptimizerContext : ObservableObject
 {
     private static readonly SemaphoreSlim ApplyAsyncLock = new(1, 1);
     private readonly Dictionary<string, JsonElement> _optionValues = new(StringComparer.OrdinalIgnoreCase);
+#if !SWITCH
     private string? _ephemeralSdCardRootPath;
+#endif
 
+#if !SWITCH
     private bool HasOutputDestination()
     {
         if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
@@ -35,21 +38,23 @@ public sealed class TkOptimizerContext : ObservableObject
             return true;
         }
 
-#if !SWITCH
         if (string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
             return false;
         }
         
         var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
         return !string.IsNullOrWhiteSpace(emulatorSdPath);
-#endif
-
     }
+#endif
 
     private string? GetSdRootForWrite()
         => !string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)
             ? TkConfig.Shared.SdCardRootPath
+#if !SWITCH
             : _ephemeralSdCardRootPath;
+#else
+            : null;
+#endif
 
     [NotNull]
     public TkOptimizerStore? Store {
@@ -212,6 +217,8 @@ public sealed class TkOptimizerContext : ObservableObject
         var emuRoot = Path.Combine(emulatorSdPath, "UltraCam", "TOTK", "Config");
         
         return Directory.Exists(emuRoot) ? emuRoot : null;
+#else
+        return null;
 #endif
     }
 
