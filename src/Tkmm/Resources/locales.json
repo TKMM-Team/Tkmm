@@ -1,4 +1,4 @@
-﻿{
+{
   "Languages": [
     "ar_SA",
     "de_DE",
@@ -195,8 +195,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "警告",
+      "zh_TW": "警告"
     },
     "Action_Yes": {
       "ar_SA": "",
@@ -305,8 +305,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "自动保存设置",
+      "zh_TW": "自動儲存設定"
     },
     "Config_AutoSaveSettingsDescription": {
       "ar_SA": "",
@@ -327,8 +327,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "在更改设置且没有错误时自动保存。",
+      "zh_TW": "在更改設定且沒有錯誤時自動儲存。"
     },
     "Config_DefaultAuthor": {
       "ar_SA": "",
@@ -349,8 +349,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "默认作者",
+      "zh_TW": "預設作者"
     },
     "Config_DefaultAuthorDescription": {
       "ar_SA": "",
@@ -371,8 +371,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打包 TKCL 模组时使用的默认作者。",
+      "zh_TW": "打包 TKCL 模組時使用的預設作者。"
     },
     "Config_EmulatorExecutablePath": {
       "ar_SA": "",
@@ -393,8 +393,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "模拟器可执行文件路径",
+      "zh_TW": "模擬器執行檔路徑"
     },
     "Config_EmulatorExecutablePathDescription": {
       "ar_SA": "",
@@ -415,8 +415,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "模拟器可执行文件的绝对路径。",
+      "zh_TW": "模擬器執行檔的絕對路徑。"
     },
     "Config_ErrorFailedToLoadConfig": {
       "ar_SA": "",
@@ -437,8 +437,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法加载配置：'{0}'",
+      "zh_TW": "無法載入設定：'{0}'"
     },
     "Config_ErrorFailedToMoveMergeOutput": {
       "ar_SA": "",
@@ -459,8 +459,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法移动合并输出文件夹。请重新应用您的模组以修复此问题。\n\n旧路径：'{0}'\n新路径：'{1}'\n",
+      "zh_TW": "無法移動合併輸出資料夾。請重新套用您的模組以修復此問題。\n\n舊路徑：'{0}'\n新路徑：'{1}'\n"
     },
     "Config_ErrorFailedToRenameRomfslite": {
       "ar_SA": "",
@@ -481,8 +481,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法重命名 romfs/romfslite 文件夹。请确保游戏未在运行后重试。",
+      "zh_TW": "無法重新命名 romfs/romfslite 資料夾。請確認遊戲未在執行後重試。"
     },
     "Config_ExportLocations": {
       "ar_SA": "",
@@ -503,8 +503,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "导出位置",
+      "zh_TW": "匯出位置"
     },
     "Config_ExportLocationsDescription": {
       "ar_SA": "",
@@ -525,8 +525,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "自定义合并模组的导出位置。",
+      "zh_TW": "自訂合併模組的匯出位置。"
     },
     "Config_MergeOutputFolder": {
       "ar_SA": "",
@@ -547,8 +547,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并输出文件夹",
+      "zh_TW": "合併輸出資料夾"
     },
     "Config_MergeOutputFolderDescription": {
       "ar_SA": "",
@@ -569,8 +569,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "写入合并输出的位置。（默认位置为 TKMM 可执行文件旁的 './Merged'）",
+      "zh_TW": "寫入合併輸出的位置。（預設位置為 TKMM 執行檔旁的 './Merged'）"
     },
     "Config_SelectEmulatorExecutable": {
       "ar_SA": "",
@@ -591,8 +591,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择模拟器可执行文件",
+      "zh_TW": "選擇模擬器執行檔"
     },
     "Config_SelectSevenZipLocation": {
       "ar_SA": "",
@@ -613,8 +613,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "7z 位置",
+      "zh_TW": "7z 位置"
     },
     "Config_SevenZipPath": {
       "ar_SA": "",
@@ -635,8 +635,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "7z 路径",
+      "zh_TW": "7z 路徑"
     },
     "Config_SevenZipPathDescription": {
       "ar_SA": "",
@@ -657,8 +657,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "用于加速 7z 提取的 7-zip 可执行文件的绝对路径。",
+      "zh_TW": "用於加速 7z 提取的 7-zip 執行檔的絕對路徑。"
     },
     "Config_ShowAdvancedSettings": {
       "ar_SA": "",
@@ -679,8 +679,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "显示高级设置",
+      "zh_TW": "顯示進階設定"
     },
     "Config_ShowAdvancedSettingsDescription": {
       "ar_SA": "",
@@ -701,8 +701,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使高级选项可见。\n\n[前方高能] 操作失误可能会破坏您的配置（需要重启）。",
+      "zh_TW": "使進階選項可見。\n\n[前方高能] 操作失誤可能會破壞您的設定（需要重新啟動）。"
     },
     "Config_ShowTriviaPopup": {
       "ar_SA": "",
@@ -723,8 +723,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "显示冷知识弹窗",
+      "zh_TW": "顯示冷知識彈窗"
     },
     "Config_ShowTriviaPopupDescription": {
       "ar_SA": "",
@@ -745,8 +745,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并时显示冷知识弹窗。",
+      "zh_TW": "合併時顯示冷知識彈窗。"
     },
     "Config_SystemLanguage": {
       "ar_SA": "",
@@ -767,8 +767,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "系统语言",
+      "zh_TW": "系統語言"
     },
     "Config_SystemLanguageDescription": {
       "ar_SA": "",
@@ -789,8 +789,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "用户界面使用的语言（需要重启）",
+      "zh_TW": "使用者介面使用的語言（需要重新啟動）"
     },
     "Config_TargetLanguage": {
       "ar_SA": "",
@@ -811,8 +811,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "目标语言",
+      "zh_TW": "目標語言"
     },
     "Config_TargetLanguageDescription": {
       "ar_SA": "",
@@ -833,8 +833,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您想为其构建模组的 TotK 内部语言。",
+      "zh_TW": "您想為其建置模組的 TotK 內部語言。"
     },
     "Config_Theme": {
       "ar_SA": "",
@@ -855,8 +855,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "主题",
+      "zh_TW": "主題"
     },
     "Config_UseRomfslite": {
       "ar_SA": "",
@@ -877,8 +877,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使用 romfslite",
+      "zh_TW": "使用 romfslite"
     },
     "Config_UseRomfsliteDescription": {
       "ar_SA": "",
@@ -899,8 +899,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将模组写入 romfslite 而不是 romfs（需要 TotK Optimizer）。这修复了固件 20.0.0+ 引入的问题。",
+      "zh_TW": "將模組寫入 romfslite 而不是 romfs（需要 TotK Optimizer）。這修復了韌體 20.0.0+ 引入的問題。"
     },
     "ConfigSection_Application": {
       "ar_SA": "",
@@ -921,8 +921,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "应用程序",
+      "zh_TW": "應用程式"
     },
     "ConfigSection_GameBananaClient": {
       "ar_SA": "",
@@ -943,8 +943,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "GameBanana 客户端",
+      "zh_TW": "GameBanana 客戶端"
     },
     "ConfigSection_GameDump": {
       "ar_SA": "",
@@ -965,8 +965,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏转储",
+      "zh_TW": "遊戲傾印"
     },
     "ConfigSection_Merging": {
       "ar_SA": "",
@@ -987,8 +987,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并",
+      "zh_TW": "合併"
     },
     "ConfigSection_Packaging": {
       "ar_SA": "",
@@ -1009,8 +1009,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打包",
+      "zh_TW": "打包"
     },
     "DefaultProfileName": {
       "ar_SA": "",
@@ -1053,8 +1053,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "关于",
+      "zh_TW": "關於"
     },
     "EditExportLocations_Title": {
       "ar_SA": "",
@@ -1229,8 +1229,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "致谢",
+      "zh_TW": "致謝"
     },
     "GameBanana_Downloads": {
       "ar_SA": "",
@@ -1251,8 +1251,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "模组文件",
+      "zh_TW": "模組檔案"
     },
     "GameBanana_ErrorLoadingMod": {
       "ar_SA": "",
@@ -1273,8 +1273,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "加载模组时出错",
+      "zh_TW": "載入模組時出錯"
     },
     "GameBanana_FailedToLoadMod": {
       "ar_SA": "",
@@ -1295,8 +1295,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法加载模组",
+      "zh_TW": "無法載入模組"
     },
     "GameBanana_FailedToOpenBrowser": {
       "ar_SA": "",
@@ -1317,8 +1317,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法在外部浏览器中打开模组",
+      "zh_TW": "無法在外部瀏覽器中開啟模組"
     },
     "GameBanana_LoadingImages": {
       "ar_SA": "",
@@ -1339,8 +1339,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "正在加载图片...",
+      "zh_TW": "正在載入圖片..."
     },
     "GameBanana_NoMatchingFile": {
       "ar_SA": "",
@@ -1361,8 +1361,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "没有匹配该模组的文件",
+      "zh_TW": "沒有符合該模組的檔案"
     },
     "GameBanana_OpenInGameBanana": {
       "ar_SA": "",
@@ -1383,8 +1383,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "在 GameBanana 中打开",
+      "zh_TW": "在 GameBanana 中開啟"
     },
     "GameBanana_RecommendedFile": {
       "ar_SA": "",
@@ -1405,8 +1405,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "推荐文件",
+      "zh_TW": "推薦檔案"
     },
     "GameBanana_SuggestedMods": {
       "ar_SA": "",
@@ -1427,8 +1427,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "推荐模组",
+      "zh_TW": "推薦模組"
     },
     "GameBananaPageDesc": {
       "ar_SA": "",
@@ -1493,8 +1493,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "下载超时时间（秒）",
+      "zh_TW": "下載逾時時間（秒）"
     },
     "GbConfig_DownloadTimeoutSecondsDescription": {
       "ar_SA": "",
@@ -1515,8 +1515,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "等待响应失败前的最长时间（秒）。",
+      "zh_TW": "等待回應失敗前的最長時間（秒）。"
     },
     "GbConfig_GameBananaDownloadMaxRetries": {
       "ar_SA": "",
@@ -1537,8 +1537,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "GameBanana 下载最大重试次数",
+      "zh_TW": "GameBanana 下載最大重試次數"
     },
     "GbConfig_GameBananaDownloadMaxRetriesDescription": {
       "ar_SA": "",
@@ -1559,8 +1559,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "下载失败前的最大重试次数。",
+      "zh_TW": "下載失敗前的最大重試次數。"
     },
     "GbConfig_GameBananaPollIntervalMinutes": {
       "ar_SA": "",
@@ -1581,8 +1581,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "GameBanana 轮询间隔（分钟）",
+      "zh_TW": "GameBanana 輪詢間隔（分鐘）"
     },
     "GbConfig_GameBananaPollIntervalMinutesDescription": {
       "ar_SA": "",
@@ -1603,8 +1603,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "从 GameBanana 获取远程安装模组的时间间隔（分钟）。（清空该值则仅在启动时轮询一次。）",
+      "zh_TW": "從 GameBanana 取得遠端安裝模組的時間間隔（分鐘）。（清空該值則僅在啟動時輪詢一次。）"
     },
     "GbConfig_UseThreadedDownloads": {
       "ar_SA": "",
@@ -1625,8 +1625,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使用多线程下载",
+      "zh_TW": "使用多執行緒下載"
     },
     "GbConfig_UseThreadedDownloadsDescription": {
       "ar_SA": "",
@@ -1647,8 +1647,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "使用多线程以获得更快的下载速度。如果您遇到网络问题，请禁用此功能。",
+      "zh_TW": "使用多執行緒以獲得更快的下載速度。如果您遇到網路問題，請停用此功能。"
     },
     "General": {
       "ar_SA": "",
@@ -1669,8 +1669,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "常规",
+      "zh_TW": "一般"
     },
     "HomePage_Contributors": {
       "ar_SA": "",
@@ -1691,8 +1691,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "贡献者",
+      "zh_TW": "貢獻者"
     },
     "HomePage_DragAndDropImport": {
       "ar_SA": "",
@@ -1713,8 +1713,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "拖放模组文件夹或 TKCL 文件以导入",
+      "zh_TW": "拖放模組資料夾或 TKCL 檔案以匯入"
     },
     "HomePageDesc": {
       "ar_SA": "",
@@ -2021,8 +2021,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打开日志文件夹",
+      "zh_TW": "開啟紀錄檔資料夾"
     },
     "Menu_Help": {
       "ar_SA": "",
@@ -2197,8 +2197,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将模组导出为项目",
+      "zh_TW": "將模組匯出為專案"
     },
     "Menu_ModMerge": {
       "ar_SA": "",
@@ -2329,8 +2329,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "重启至配置菜单",
+      "zh_TW": "重新啟動至設定選單"
     },
     "Menu_NxShutdown": {
       "ar_SA": "",
@@ -2395,8 +2395,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "清空合并输出",
+      "zh_TW": "清空合併輸出"
     },
     "Menu_ToolsExportToSdCard": {
       "ar_SA": "",
@@ -2439,8 +2439,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "如果您 SD 卡上已有 TotK 模组，它们将被您当前的配置文件覆盖。确定要继续吗？",
+      "zh_TW": "如果您 SD 卡上已有 TotK 模組，它們將被您目前的設定檔覆寫。確定要繼續嗎？"
     },
     "MergeActions_ErrorExportingProfile": {
       "ar_SA": "",
@@ -2461,8 +2461,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将配置文件 '{0}' 导出到外部驱动器 '{1}' 时发生错误。",
+      "zh_TW": "將設定檔 '{0}' 匯出到外部磁碟機 '{1}' 時發生錯誤。"
     },
     "MergeActions_ErrorMergingProfile": {
       "ar_SA": "",
@@ -2483,8 +2483,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并选定的配置文件 '{0}' 时发生错误。",
+      "zh_TW": "合併選定的設定檔 '{0}' 時發生錯誤。"
     },
     "MergeActions_ErrorOpeningFolder": {
       "ar_SA": "",
@@ -2505,8 +2505,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打开合并输出文件夹时发生错误。",
+      "zh_TW": "開啟合併輸出資料夾時發生錯誤。"
     },
     "MergeActions_MergeAndExport": {
       "ar_SA": "",
@@ -2527,8 +2527,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并并导出",
+      "zh_TW": "合併並匯出"
     },
     "MergeActions_MergeSuccessful": {
       "ar_SA": "",
@@ -2549,8 +2549,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "成功合并配置文件 '{0}'。",
+      "zh_TW": "成功合併設定檔 '{0}'。"
     },
     "MergeActions_MergeSuccessfulTitle": {
       "ar_SA": "",
@@ -2571,8 +2571,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并成功！",
+      "zh_TW": "合併成功！"
     },
     "MergeActions_NoSuitableDisks": {
       "ar_SA": "",
@@ -2593,8 +2593,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "找不到合适的磁盘。请确保已插入 SD 卡或通过 USB 虚拟连接，且已安装 Atmosphere。",
+      "zh_TW": "找不到合適的磁碟。請確保已插入 SD 卡或透過 USB 虛擬連接，且已安裝 Atmosphere。"
     },
     "MergeActions_SelectSdCard": {
       "ar_SA": "",
@@ -2615,8 +2615,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 SD 卡",
+      "zh_TW": "選擇 SD 卡"
     },
     "NetworkSettings_Action_ConnectNetwork": {
       "ar_SA": "",
@@ -3077,8 +3077,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "该模组没有包含任何可配置选项。",
+      "zh_TW": "該模組沒有包含任何可設定選項。"
     },
     "NoModOptions_Title": {
       "ar_SA": "",
@@ -3099,8 +3099,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "没有可用选项",
+      "zh_TW": "沒有可用選項"
     },
     "NoticePopupMessage": {
       "ar_SA": "",
@@ -3143,8 +3143,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "重启至配置界面",
+      "zh_TW": "重新啟動至設定界面"
     },
     "Profile_CannotDeleteProfile": {
       "ar_SA": "",
@@ -3165,8 +3165,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无法删除配置文件",
+      "zh_TW": "無法刪除設定檔"
     },
     "Profile_OneProfileMustExist": {
       "ar_SA": "",
@@ -3187,8 +3187,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "必须至少保留一个配置文件。",
+      "zh_TW": "必須至少保留一個設定檔。"
     },
     "Profile_PermanentlyDeleteProfileDescription": {
       "ar_SA": "",
@@ -3209,8 +3209,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "警告：此操作不可撤销\n\n确定要永久删除配置文件 '{0}' 吗？",
+      "zh_TW": "警告：此操作不可復原\n\n確定要永久刪除設定檔 '{0}' 嗎？"
     },
     "Profile_PermanentlyDeleteProfileTitle": {
       "ar_SA": "",
@@ -3231,8 +3231,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "永久删除配置文件",
+      "zh_TW": "永久刪除設定檔"
     },
     "ProfilesPageDesc": {
       "ar_SA": "",
@@ -3297,8 +3297,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "跟踪已移除的 RSDB 条目",
+      "zh_TW": "追蹤已移除的 RSDB 項目"
     },
     "ProjectFlags_TrackRemovedRsDbEntries_Description": {
       "ar_SA": "",
@@ -3319,8 +3319,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "跟踪所有被移除的 RSDB 条目。\n\n重要提示：请务必在与已修改的 RSDB 文件相同的版本上构建，以确保不包含来自游戏版本的更改。",
+      "zh_TW": "追蹤所有被移除的 RSDB 項目。\n\n重要提示：請務必在與已修改的 RSDB 檔案相同的版本上建置，以確保不包含來自遊戲版本的變更。"
     },
     "ProjectsPageDesc": {
       "ar_SA": "",
@@ -3495,8 +3495,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "所选的转储没有包含有效的 TotK ROM，或者无法使用提供的密钥解密。",
+      "zh_TW": "所選的傾印沒有包含有效的 TotK ROM，或者無法使用提供的金鑰解密。"
     },
     "SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration_Title": {
       "ar_SA": "",
@@ -3517,8 +3517,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无效的基础游戏",
+      "zh_TW": "無效的基礎遊戲"
     },
     "SetupWizard_BaseGameSplit_Content": {
       "ar_SA": "",
@@ -3539,8 +3539,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的基础游戏 ROM 是一个单独的 .xci / .nsp 文件，还是分割在文件夹中的多个部分文件？",
+      "zh_TW": "您的基礎遊戲 ROM 是一個單獨的 .xci / .nsp 檔案，還是分割在資料夾中的多個部分檔案？"
     },
     "SetupWizard_BaseGameSplit_SingleFile": {
       "ar_SA": "",
@@ -3561,8 +3561,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "单个 XCI/NSP 文件",
+      "zh_TW": "單一 XCI/NSP 檔案"
     },
     "SetupWizard_BaseGameSplit_SplitFolder": {
       "ar_SA": "",
@@ -3583,8 +3583,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "文件夹中的分割文件",
+      "zh_TW": "資料夾中的分割檔案"
     },
     "SetupWizard_BaseGameSplit_Title": {
       "ar_SA": "",
@@ -3605,8 +3605,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "基础游戏格式",
+      "zh_TW": "基礎遊戲格式"
     },
     "SetupWizard_DumpType_Description": {
       "ar_SA": "",
@@ -3627,8 +3627,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请选择您的基础游戏的转储类型。",
+      "zh_TW": "請選擇您的基礎遊戲的傾印類型。"
     },
     "SetupWizard_DumpType_Nand": {
       "ar_SA": "",
@@ -3649,8 +3649,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "它安装在我的模拟器的 NAND 中",
+      "zh_TW": "它安裝在我的模擬器的 NAND 中"
     },
     "SetupWizard_DumpType_Nsp": {
       "ar_SA": "",
@@ -3671,8 +3671,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": ".NSP 文件",
+      "zh_TW": ".NSP 檔案"
     },
     "SetupWizard_DumpType_Romfs": {
       "ar_SA": "",
@@ -3693,8 +3693,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "RomFS 转储",
+      "zh_TW": "RomFS 傾印"
     },
     "SetupWizard_DumpType_SdCard": {
       "ar_SA": "",
@@ -3715,8 +3715,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "它安装或转储在我的 Switch SD 卡中",
+      "zh_TW": "它安裝或傾印在我的 Switch SD 卡中"
     },
     "SetupWizard_DumpType_Title": {
       "ar_SA": "",
@@ -3737,8 +3737,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "基础游戏转储类型",
+      "zh_TW": "基礎遊戲傾印類型"
     },
     "SetupWizard_DumpType_XciNsp": {
       "ar_SA": "",
@@ -3759,8 +3759,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": ".XCI 或 .NSP 文件",
+      "zh_TW": ".XCI 或 .NSP 檔案"
     },
     "SetupWizard_EmulatorNameInput_Description": {
       "ar_SA": "",
@@ -3781,8 +3781,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请输入您的模拟器名称（或可执行文件路径）。这将用于定位其配置文件。",
+      "zh_TW": "請輸入您的模擬器名稱（或執行檔路徑）。這將用於定位其設定檔。"
     },
     "SetupWizard_EmulatorNameInput_Title": {
       "ar_SA": "",
@@ -3803,8 +3803,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "模拟器名称",
+      "zh_TW": "模擬器名稱"
     },
     "SetupWizard_EmulatorNameInput_Warning": {
       "ar_SA": "",
@@ -3825,8 +3825,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请确保在继续前正在运行您的模拟器，或提供可执行文件的完整路径\n而不是仅提供名称（例如 D:\\Emulators\\Ryujinx\\Ryujinx.exe）。",
+      "zh_TW": "請確保在繼續前正在執行您的模擬器，或提供執行檔的完整路徑\n而不是僅提供名稱（例如 D:\\Emulators\\Ryujinx\\Ryujinx.exe）。"
     },
     "SetupWizard_EmulatorNameInput_Watermark": {
       "ar_SA": "",
@@ -3847,8 +3847,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "例如 Ryujinx",
+      "zh_TW": "例如 Ryujinx"
     },
     "SetupWizard_EmulatorSelection_ManualOption": {
       "ar_SA": "",
@@ -3869,8 +3869,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "手动配置模拟器（高级）",
+      "zh_TW": "手動設定模擬器（進階）"
     },
     "SetupWizard_EmulatorSelection_OtherOption": {
       "ar_SA": "",
@@ -4133,8 +4133,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请选择包含您 prod/title .keys 文件的文件夹：",
+      "zh_TW": "請選擇包含您 prod/title .keys 檔案的資料夾："
     },
     "SetupWizard_KeysFolder_Title": {
       "ar_SA": "",
@@ -4155,8 +4155,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "Keys 文件夹",
+      "zh_TW": "Keys 資料夾"
     },
     "SetupWizard_ManualSetup_MissingKeys_Content": {
       "ar_SA": "",
@@ -4177,8 +4177,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "缺少生产密钥 (prod.keys) 和/或 标题密钥 (title.keys)。",
+      "zh_TW": "缺少生產金鑰 (prod.keys) 和/或 標題金鑰 (title.keys)。"
     },
     "SetupWizard_MergeOutputSetup_Description": {
       "ar_SA": "",
@@ -4199,8 +4199,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "可选：您想设置默认输出文件夹吗？\n\n这将在合并时用于安装您的模组。\n\n1- 在您的模拟器中右键单击 TotK 并选择“打开模组数据位置”或“打开模组文件夹”。\n2- 在打开的窗口中，新建一个名为“TKMM”的文件夹\n3- 选择以下您所创建文件夹的路径。",
+      "zh_TW": "選填：您想設定預設輸出資料夾嗎？\n\n這將在合併時用於安裝您的模組。\n\n1- 在您的模擬器中用滑鼠右鍵按一下 TotK 並選擇「開啟模組資料位置」或「開啟模組資料夾」。\n2- 在開啟的視窗中，新增一個名為「TKMM」的資料夾\n3- 選擇以下您所建立資料夾的路徑。"
     },
     "SetupWizard_MergeOutputSetup_Path": {
       "ar_SA": "",
@@ -4221,8 +4221,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并输出路径：",
+      "zh_TW": "合併輸出路徑："
     },
     "SetupWizard_MergeOutputSetup_Title": {
       "ar_SA": "",
@@ -4243,8 +4243,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择合并输出",
+      "zh_TW": "選擇合併輸出"
     },
     "SetupWizard_MissingDump_Content": {
       "ar_SA": "",
@@ -4485,8 +4485,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择基础游戏文件",
+      "zh_TW": "選擇基礎遊戲檔案"
     },
     "SetupWizard_SelectEmulatorExecutable": {
       "ar_SA": "",
@@ -4507,8 +4507,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择模拟器可执行文件",
+      "zh_TW": "選擇模擬器執行檔"
     },
     "SetupWizard_SelectKeysFolder": {
       "ar_SA": "",
@@ -4529,8 +4529,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 keys 文件夹",
+      "zh_TW": "選擇 keys 資料夾"
     },
     "SetupWizard_SelectNandFolder": {
       "ar_SA": "",
@@ -4551,8 +4551,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 NAND 文件夹",
+      "zh_TW": "選擇 NAND 資料夾"
     },
     "SetupWizard_SelectRomfsFolder": {
       "ar_SA": "",
@@ -4573,8 +4573,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 RomFS 文件夹",
+      "zh_TW": "選擇 RomFS 資料夾"
     },
     "SetupWizard_SelectSdCardRoot": {
       "ar_SA": "",
@@ -4595,8 +4595,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 SD 卡的根目录",
+      "zh_TW": "選擇 SD 卡的根目錄"
     },
     "SetupWizard_SelectSplitFilesFolder": {
       "ar_SA": "",
@@ -4617,8 +4617,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择包含分割文件的文件夹",
+      "zh_TW": "選擇包含分割檔案的資料夾"
     },
     "SetupWizard_SelectUpdateNspFile": {
       "ar_SA": "",
@@ -4639,8 +4639,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择更新 NSP 文件",
+      "zh_TW": "選擇更新 NSP 檔案"
     },
     "SetupWizard_UpdateDumpConfigPage_InvalidConfiguration": {
       "ar_SA": "",
@@ -4661,8 +4661,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您提供的文件不包含有效的 TotK 更新，或者无法使用提供的密钥解密。",
+      "zh_TW": "您提供的檔案不包含有效的 TotK 更新，或者無法使用提供的金鑰解密。"
     },
     "SetupWizard_UpdateDumpConfigPage_InvalidConfiguration_Title": {
       "ar_SA": "",
@@ -4683,8 +4683,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "无效的更新",
+      "zh_TW": "無效的更新"
     },
     "SetupWizard_UpdateDumpType_Description": {
       "ar_SA": "",
@@ -4705,8 +4705,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "请选择您拥有游戏更新的转储类型。",
+      "zh_TW": "請選擇您擁有遊戲更新的傾印類型。"
     },
     "SetupWizard_UpdateDumpType_Title": {
       "ar_SA": "",
@@ -4727,8 +4727,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "更新转储类型",
+      "zh_TW": "更新傾印類型"
     },
     "Status_ExportingMod": {
       "ar_SA": "",
@@ -4815,8 +4815,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并完成",
+      "zh_TW": "合併完成"
     },
     "Status_MergeFailed": {
       "ar_SA": "",
@@ -4837,8 +4837,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "合并失败",
+      "zh_TW": "合併失敗"
     },
     "Status_Merging": {
       "ar_SA": "",
@@ -5013,8 +5013,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您想更新到最新版本吗？\n\n此操作将在完成后保存并重启 Switch。",
+      "zh_TW": "您想更新到最新版本嗎？\n\n此操作將在完成後儲存並重新啟動 Switch。"
     },
     "System_Popup_SoftwareUpToDate": {
       "ar_SA": "",
@@ -5453,8 +5453,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "向您的列表中添加新模组。",
+      "zh_TW": "向您的清單中新增新模組。"
     },
     "Tip_MergeMods": {
       "ar_SA": "",
@@ -5475,8 +5475,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "将当前模组列表应用到游戏。",
+      "zh_TW": "將目前模組清單套用至遊戲。"
     },
     "Tip_MoveDown": {
       "ar_SA": "",
@@ -5673,8 +5673,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "确保您的模拟器 NAND 中已安装密钥和 TotK 更新。或者，在转储设置中选择一个“首选游戏版本”。",
+      "zh_TW": "確保您的模擬器 NAND 中已安裝金鑰和 TotK 更新。或者，在傾印設定中選擇一個「偏好遊戲版本」。"
     },
     "TkConfig_ErrorFailedToDetectUpdate": {
       "ar_SA": "",
@@ -5695,8 +5695,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "未能检测到 TotK 更新",
+      "zh_TW": "未能檢測到 TotK 更新"
     },
     "TkConfig_ErrorKeysNotFound": {
       "ar_SA": "",
@@ -5717,8 +5717,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "找不到密钥",
+      "zh_TW": "找不到金鑰"
     },
     "TkConfig_ErrorNoUpdateOnNand": {
       "ar_SA": "",
@@ -5739,8 +5739,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "NAND 上没有更新",
+      "zh_TW": "NAND 上沒有更新"
     },
     "TkConfig_ErrorNoUpdateSelected": {
       "ar_SA": "",
@@ -5761,8 +5761,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "Ryujinx 中未选择更新。右键单击模拟器中的游戏，前往“管理游戏更新”并选择一个。",
+      "zh_TW": "Ryujinx 中未選擇更新。用滑鼠右鍵按一下模擬器中的遊戲，前往「管理遊戲更新」並選擇一個。"
     },
     "TkConfig_GameDumpFolderPaths": {
       "ar_SA": "",
@@ -5783,8 +5783,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏转储文件夹路径",
+      "zh_TW": "遊戲傾印資料夾路徑"
     },
     "TkConfig_GameDumpFolderPathsDescription": {
       "ar_SA": "",
@@ -5805,8 +5805,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的转储 RomFS 文件夹的绝对路径。",
+      "zh_TW": "您的傾印 RomFS 資料夾的絕對路徑。"
     },
     "TkConfig_GameUpdateFilePaths": {
       "ar_SA": "",
@@ -5827,8 +5827,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏更新文件路径",
+      "zh_TW": "遊戲更新檔案路徑"
     },
     "TkConfig_GameUpdateFilePathsDescription": {
       "ar_SA": "",
@@ -5849,8 +5849,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的转储游戏更新文件 (.nsp) 的绝对路径。",
+      "zh_TW": "您的傾印遊戲更新檔案 (.nsp) 的絕對路徑。"
     },
     "TkConfig_KeysFolderPath": {
       "ar_SA": "",
@@ -5871,8 +5871,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "Keys 文件夹路径",
+      "zh_TW": "Keys 資料夾路徑"
     },
     "TkConfig_KeysFolderPathDescription": {
       "ar_SA": "",
@@ -5893,8 +5893,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "包含您转储的 Switch 密钥的文件夹的绝对路径。",
+      "zh_TW": "包含您傾印的 Switch 金鑰的資料夾的絕對路徑。"
     },
     "TkConfig_NandFolderPaths": {
       "ar_SA": "",
@@ -5915,8 +5915,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "NAND 文件夹路径",
+      "zh_TW": "NAND 資料夾路徑"
     },
     "TkConfig_NandFolderPathsDescription": {
       "ar_SA": "",
@@ -5937,8 +5937,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的虚拟 NAND 文件夹的绝对路径。",
+      "zh_TW": "您的虛擬 NAND 資料夾的絕對路徑。"
     },
     "TkConfig_PackagedBaseGamePaths": {
       "ar_SA": "",
@@ -5959,8 +5959,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "打包基础游戏路径",
+      "zh_TW": "打包基礎遊戲路徑"
     },
     "TkConfig_PackagedBaseGamePathsDescription": {
       "ar_SA": "",
@@ -5981,8 +5981,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您转储的基础游戏文件 (.xci 或 .nsp) 或分割文件夹的绝对路径。",
+      "zh_TW": "您傾印的基礎遊戲檔案 (.xci 或 .nsp) 或分割資料夾的絕對路徑。"
     },
     "TkConfig_PreferredGameVersion": {
       "ar_SA": "",
@@ -6003,8 +6003,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "首选游戏版本",
+      "zh_TW": "偏好遊戲版本"
     },
     "TkConfig_PreferredGameVersionDescription": {
       "ar_SA": "",
@@ -6025,8 +6025,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "如果在配置的 SD 卡中找到多个版本，读取时寻找的游戏版本。",
+      "zh_TW": "如果在設定的 SD 卡中找到多個版本，讀取時尋找的遊戲版本。"
     },
     "TkConfig_SdCardRootPath": {
       "ar_SA": "",
@@ -6047,8 +6047,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "SD 卡根目录路径",
+      "zh_TW": "SD 卡根目錄路徑"
     },
     "TkConfig_SdCardRootPathDescription": {
       "ar_SA": "",
@@ -6069,8 +6069,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "您的 SD 卡或 emuMMC 根目录路径（必须包含安装了基础游戏或更新的 Nintendo/Contents 文件夹）。",
+      "zh_TW": "您的 SD 卡或 emuMMC 根目錄路徑（必須包含安裝了基礎遊戲或更新的 Nintendo/Contents 資料夾）。"
     },
     "TkConfig_SelectBaseGame": {
       "ar_SA": "",
@@ -6091,8 +6091,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择基础游戏 XCI/NSP",
+      "zh_TW": "選擇基礎遊戲 XCI/NSP"
     },
     "TkConfig_SelectGameDumpFolder": {
       "ar_SA": "",
@@ -6113,8 +6113,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择游戏转储文件夹路径（包含 1.1.0 或更新版本）",
+      "zh_TW": "選擇遊戲傾印資料夾路徑（包含 1.1.0 或更新版本）"
     },
     "TkConfig_SelectGameUpdate": {
       "ar_SA": "",
@@ -6135,8 +6135,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择游戏更新 NSP",
+      "zh_TW": "選擇遊戲更新 NSP"
     },
     "TkConfig_SelectKeysFolder": {
       "ar_SA": "",
@@ -6157,8 +6157,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 prod/title keys 文件夹",
+      "zh_TW": "選擇 prod/title keys 資料夾"
     },
     "TkConfig_SelectNandFolder": {
       "ar_SA": "",
@@ -6179,8 +6179,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择虚拟 NAND 文件夹路径",
+      "zh_TW": "選擇虛擬 NAND 資料夾路徑"
     },
     "TkConfig_SelectSdCardRoot": {
       "ar_SA": "",
@@ -6201,8 +6201,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "选择 SD 卡根目录文件夹",
+      "zh_TW": "選擇 SD 卡根目錄資料夾"
     },
     "TkExtensibleRomProvider_InvalidConfig": {
       "ar_SA": "",
@@ -6311,8 +6311,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "添加到当前配置文件",
+      "zh_TW": "新增到目前設定檔"
     },
     "Tooltip_BackToModBrowser": {
       "ar_SA": "",
@@ -6333,8 +6333,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "返回模组浏览器",
+      "zh_TW": "返回模組瀏覽器"
     },
     "Tooltip_DeleteSelectedProfile": {
       "ar_SA": "",
@@ -6355,8 +6355,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "删除选定的配置文件",
+      "zh_TW": "刪除選定的設定檔"
     },
     "Tooltip_InstallMod": {
       "ar_SA": "",
@@ -6377,8 +6377,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "安装模组",
+      "zh_TW": "安裝模組"
     },
     "Tooltip_ReloadSourceFolder": {
       "ar_SA": "",
@@ -6399,8 +6399,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "重新加载源文件夹及其所有配置",
+      "zh_TW": "重新載入來源資料夾及其所有設定"
     },
     "TotkOptimizerPageCredits": {
       "ar_SA": "",
@@ -6531,8 +6531,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "游戏语言：",
+      "zh_TW": "遊戲語言："
     },
     "WizPageFinal_Message2": {
       "ar_SA": "",
@@ -6553,8 +6553,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "警告：这需要与您的游戏内语言相对应！例如，如果您使用英语并且主机区域设置为欧洲，请选择“英国英语”。\n\n如果未选择正确的语言，将导致模组文本显示为“MsgNotFound”。",
+      "zh_TW": "警告：這需要與您的遊戲內語言相對應！例如，如果您使用英語並且主機區域設定為歐洲，請選擇「英國英語」。\n\n如果未選擇正確的語言，將導致模組文字顯示為「MsgNotFound」。"
     },
     "WizPageFinal_Message3": {
       "ar_SA": "",
@@ -6575,8 +6575,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "",
-      "zh_TW": ""
+      "zh_CN": "恭喜！TKMM 成功配置为使用以下 TotK 版本：",
+      "zh_TW": "恭喜！TKMM 成功設定為使用以下 TotK 版本："
     },
     "WizPageFinal_Title": {
       "ar_SA": "",
