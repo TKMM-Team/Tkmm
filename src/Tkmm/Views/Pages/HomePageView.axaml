@@ -313,7 +313,7 @@
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type tk:TkProfileMod}">
-                            <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto,Auto">
+                            <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto,Auto,Auto">
                                 <TextBlock VerticalAlignment="Center"
                                            Background="Transparent"
                                            Text="{Binding Mod.Name}"
@@ -321,38 +321,25 @@
                                            ToolTip.Tip="{Binding Mod.Name}" />
                                 <Border Grid.Column="1"
                                         VerticalAlignment="Center"
-                                        IsVisible="{Binding Mod.HasXLink}"
+                                        IsVisible="{Binding Mod.HasSLink}"
                                         Padding="3" Margin="3,0,0,0"
                                         Opacity="0.6" CornerRadius="5"
                                         BorderThickness=".5"
-                                        Classes.slink="{Binding Mod.HasSLink}"
-                                        Classes.elink="{Binding Mod.HasELink}">
-                                    <Border.Styles>
-                                        <Style Selector="Border.slink">
-                                            <Setter Property="Background" Value="#fff028" />
-                                            <Setter Property="BorderBrush" Value="#292206" />
-                                        </Style>
-                                        <Style Selector="Border.elink">
-                                            <Setter Property="Background" Value="#4386ff" />
-                                            <Setter Property="BorderBrush" Value="#000102" />
-                                        </Style>
-                                    </Border.Styles>
+                                        Background="#fff028" BorderBrush="#292206">
                                     <TextBlock FontSize="8" FontWeight="Bold"
-                                               Classes.slink="{Binding Mod.HasSLink}"
-                                               Classes.elink="{Binding Mod.HasELink}">
-                                        <TextBlock.Styles>
-                                            <Style Selector="TextBlock.slink">
-                                                <Setter Property="Text" Value="slnk" />
-                                                <Setter Property="Foreground" Value="#292206" />
-                                            </Style>
-                                            <Style Selector="TextBlock.elink">
-                                                <Setter Property="Text" Value="elnk" />
-                                                <Setter Property="Foreground" Value="#000102" />
-                                            </Style>
-                                        </TextBlock.Styles>
-                                    </TextBlock>
+                                               Text="slnk" Foreground="#292206" />
                                 </Border>
-                                <ToggleButton Grid.Column="2"
+                                <Border Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding Mod.HasELink}"
+                                        Padding="3" Margin="3,0,0,0"
+                                        Opacity="0.6" CornerRadius="5"
+                                        BorderThickness=".5"
+                                        Background="#4386ff" BorderBrush="#000102">
+                                    <TextBlock FontSize="8" FontWeight="Bold"
+                                               Text="elnk" Foreground="#000102" />
+                                </Border>
+                                <ToggleButton Grid.Column="3"
                                               Height="20"
                                               Margin="5,0,0,0"
                                               Padding="3,1"
@@ -367,7 +354,7 @@
                                         </StackPanel>
                                     </ToggleButton.Content>
                                 </ToggleButton>
-                                <CheckBox Grid.Column="3"
+                                <CheckBox Grid.Column="4"
                                           Width="20"
                                           Height="20"
                                           Margin="5,0,0,0"
