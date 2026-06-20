@@ -51,6 +51,9 @@ public static class AppUpdater
         }
 
     Retry:
+        var processPath = Environment.ProcessPath
+            ?? throw new InvalidOperationException("Could not determine the current process path.");
+
         TaskDialog taskDialog = new() {
             Header = Locale[TkLocale.System_Popup_Updater_Title],
             SubHeader = Locale[TkLocale.System_Popup_Updater],
@@ -70,7 +73,7 @@ public static class AppUpdater
             });
 
             try {
-                await PerformUpdate(release, ct);
+                await PerformUpdate(release, processPath, ct);
                 dialog.Hide(TaskDialogStandardResult.Yes);
             }
             catch (Exception ex) {
@@ -91,7 +94,7 @@ public static class AppUpdater
             case TaskDialogStandardResult.Retry:
                 goto Retry;
             case TaskDialogStandardResult.Yes:
-                Restart();
+                Restart(processPath);
                 return;
         }
     }
@@ -102,7 +105,7 @@ public static class AppUpdater
         return latest.TagName.Length < 1 || latest.TagName[1..] != App.Version ? latest : null;
     }
 
-    private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
+    private static async ValueTask PerformUpdate(Release release, string processPath, CancellationToken ct = default)
     {
         await using var stream = await OctokitHelper.DownloadReleaseAsset(release, AssetName, "Tkmm", ct);
 
@@ -121,23 +124,20 @@ public static class AppUpdater
         }
 
         archive.ExtractToDirectory(AppContext.BaseDirectory);
-        Restart();
+        Restart(processPath);
     }
 
-    private static void Restart()
+    private static void Restart(string processPath)
     {
-        var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
+        var processName = Path.GetFileName(processPath);
 
-        switch (processName.Length) {
-            case >= 6 when Path.GetExtension(processName.AsSpan()) is ".moldy":
-                processName = processName[..^6];
-                break;
-            case 0:
-                processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
-                break;
+        if (string.IsNullOrEmpty(processName)) {
+            processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
         }
 
-        ProcessStartInfo processStart = new(processName) {
+        var executablePath = Path.Combine(AppContext.BaseDirectory, processName);
+
+        ProcessStartInfo processStart = new(executablePath) {
             UseShellExecute = true,
             WorkingDirectory = AppContext.BaseDirectory,
         };
