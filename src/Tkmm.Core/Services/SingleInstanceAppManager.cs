@@ -5,13 +5,27 @@ namespace Tkmm.Core.Services;
 
 public static class SingleInstanceAppManager
 {
+    private const string RestartEnvironmentVariable = "TKMM_RESTARTING";
     private const string ID = "TKMM-[2E988D65-5221-4004-B282-E2B9E47A3AEF]";
     
     private static Action<string[]>? _attach;
+
+    public static void MarkRestarting() =>
+        Environment.SetEnvironmentVariable(RestartEnvironmentVariable, "1");
     
     public static bool Start(string[] args, Action<string[]> attach)
     {
         _attach = attach;
+
+        if (Environment.GetEnvironmentVariable(RestartEnvironmentVariable) == "1") {
+            Environment.SetEnvironmentVariable(RestartEnvironmentVariable, null);
+            while (IsInstanceRunning()) {
+                Thread.Sleep(25);
+            }
+
+            Task.Run(StartServerListener);
+            return true;
+        }
 
         using NamedPipeClientStream client = new(ID);
         try {
@@ -32,6 +46,18 @@ public static class SingleInstanceAppManager
         Console.WriteLine($"Redirecting [{args.Length}] to '{ID}'...");
         client.ReadByte();
         return false;
+    }
+
+    private static bool IsInstanceRunning()
+    {
+        using NamedPipeClientStream client = new(ID);
+        try {
+            client.Connect(0);
+            return true;
+        }
+        catch {
+            return false;
+        }
     }
 
     // ReSharper disable once FunctionRecursiveOnAllPaths

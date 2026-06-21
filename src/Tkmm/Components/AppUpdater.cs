@@ -7,6 +7,7 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Services;
 using Tkmm.Dialogs;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana.Helpers;
@@ -121,7 +122,6 @@ public static class AppUpdater
         }
 
         await archive.ExtractToDirectoryAsync(AppContext.BaseDirectory, ct);
-        await Task.Delay(1000, ct);
         Restart();
     }
 
@@ -137,6 +137,8 @@ public static class AppUpdater
         if (processName.Length == 0 || !Path.Exists(Path.Combine(executableDirectory, processName))) {
             processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
         }
+
+        SingleInstanceAppManager.MarkRestarting();
 
         ProcessStartInfo processStart = new(processName) {
             UseShellExecute = true,
