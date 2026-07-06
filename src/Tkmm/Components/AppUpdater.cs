@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using Humanizer;
 using Tkmm.Core;
@@ -19,7 +20,19 @@ public static class AppUpdater
 {
 #if !SWITCH
     private static readonly string RuntimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
-    private static readonly string AssetName = $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
+
+    private static string AssetName =>
+        $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.{(IsAppImage ? "AppImage" : "zip")}";
+
+    private static bool IsAppImage => RuntimeId is "linux" && TryGetAppImagePath(out _);
+
+    private static bool TryGetAppImagePath([NotNullWhen(true)] out string? appImagePath)
+    {
+        appImagePath = Environment.GetEnvironmentVariable("APPIMAGE");
+        return appImagePath is not null
+               && File.Exists(appImagePath)
+               && Path.GetFileName(appImagePath).Contains("Tkmm", StringComparison.OrdinalIgnoreCase);
+    }
 
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
@@ -115,6 +128,11 @@ public static class AppUpdater
         Config.SaveAll();
         TKMM.ModManager.Save();
 
+        if (IsAppImage) {
+            await UpdateAppImage(stream, ct);
+            return;
+        }
+
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
         foreach (var entry in archive.Entries) {
             var target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
@@ -125,8 +143,42 @@ public static class AppUpdater
         Restart();
     }
 
+    private static async ValueTask UpdateAppImage(Stream stream, CancellationToken ct)
+    {
+        if (!TryGetAppImagePath(out var appImagePath)) {
+            throw new InvalidOperationException("AppImage path could not be resolved.");
+        }
+
+        if (File.Exists(appImagePath)) {
+            File.Move(appImagePath, $"{appImagePath}.moldy", overwrite: true);
+        }
+
+        await using (var output = File.Create(appImagePath)) {
+            await stream.CopyToAsync(output, ct);
+        }
+
+        if (OperatingSystem.IsLinux()) {
+            var mode = File.GetUnixFileMode(appImagePath);
+            File.SetUnixFileMode(appImagePath,
+                mode | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+        }
+
+        Restart();
+    }
+
     private static void Restart()
     {
+        if (IsAppImage && TryGetAppImagePath(out var appImagePath)) {
+            SingleInstanceAppManager.MarkRestarting();
+
+            Process.Start(new ProcessStartInfo(appImagePath) {
+                UseShellExecute = true,
+                WorkingDirectory = Path.GetDirectoryName(appImagePath),
+            });
+            Environment.Exit(0);
+            return;
+        }
+
         var executableDirectory = AppContext.BaseDirectory;
         var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 
@@ -152,7 +204,15 @@ public static class AppUpdater
 #endif
     public static void CleanupUpdate()
     {
-        foreach (var oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
+        var cleanupDirectory = TryGetAppImagePath(out var appImagePath)
+            ? Path.GetDirectoryName(appImagePath)
+            : AppContext.BaseDirectory;
+
+        if (string.IsNullOrEmpty(cleanupDirectory)) {
+            return;
+        }
+
+        foreach (var oldFile in Directory.EnumerateFiles(cleanupDirectory, "*.moldy")) {
         Retry:
             try {
                 File.Delete(oldFile);
