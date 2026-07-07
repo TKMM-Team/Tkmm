@@ -163,22 +163,18 @@ public static class AppUpdater
                 mode | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
         }
 
-        Restart();
+        SingleInstanceAppManager.MarkRestarting();
+
+        Process.Start(new ProcessStartInfo(appImagePath) {
+            UseShellExecute = true,
+            WorkingDirectory = Path.GetDirectoryName(appImagePath),
+        });
+        
+        Environment.Exit(0);
     }
 
     private static void Restart()
     {
-        if (IsAppImage && TryGetAppImagePath(out var appImagePath)) {
-            SingleInstanceAppManager.MarkRestarting();
-
-            Process.Start(new ProcessStartInfo(appImagePath) {
-                UseShellExecute = true,
-                WorkingDirectory = Path.GetDirectoryName(appImagePath),
-            });
-            Environment.Exit(0);
-            return;
-        }
-
         var executableDirectory = AppContext.BaseDirectory;
         var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 
