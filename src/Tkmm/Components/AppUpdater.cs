@@ -200,6 +200,7 @@ public static class AppUpdater
 #endif
     public static void CleanupUpdate()
     {
+#if !SWITCH
         var cleanupDirectory = TryGetAppImagePath(out var appImagePath)
             ? Path.GetDirectoryName(appImagePath)
             : AppContext.BaseDirectory;
@@ -217,5 +218,6 @@ public static class AppUpdater
                 goto Retry;
             }
         }
+#endif
     }
 }
