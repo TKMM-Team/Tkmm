@@ -3,6 +3,7 @@ using System.IO.Compression;
 using Humanizer;
 using Tkmm.Core;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ public static class AppUpdater
         appImagePath = Environment.GetEnvironmentVariable("APPIMAGE");
         return appImagePath is not null
                && File.Exists(appImagePath)
-               && Path.GetFileName(appImagePath).Contains("Tkmm", StringComparison.OrdinalIgnoreCase);
+               && Path.GetFileName(appImagePath).EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase);
     }
 
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
@@ -133,6 +134,8 @@ public static class AppUpdater
             return;
         }
 
+        EnsureProcessStartLoaded();
+
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
         foreach (var entry in archive.Entries) {
             var target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
@@ -195,6 +198,13 @@ public static class AppUpdater
 
         Process.Start(processStart);
         Environment.Exit(0);
+    }
+
+    private static void EnsureProcessStartLoaded()
+    {
+        _ = Environment.ProcessId;
+        RuntimeHelpers.PrepareMethod(
+            typeof(Process).GetMethod(nameof(Process.Start), [typeof(ProcessStartInfo)])!.MethodHandle);
     }
 
 #endif
