@@ -11,7 +11,7 @@ namespace Tkmm.Components;
 
 public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailProvider
 {
-    private static readonly HttpClient _client = new();
+    private const string THUMBNAIL_CACHE_TARGET = "thumbnails";
     
     public static readonly TkThumbnailProvider Instance;
 
@@ -41,8 +41,8 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
             }
         }
     }
-    
-    public async Task ResolveThumbnail(TkItem item, ITkSystemSource? src, bool useDefault = false, CancellationToken ct = default)
+
+    private async Task ResolveThumbnail(TkItem item, ITkSystemSource? src, bool useDefault = false, CancellationToken ct = default)
     {
         var thumbnail = item.Thumbnail;
         
@@ -50,40 +50,34 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
             goto UseDefault;
         }
 
-        if (!src.Exists(thumbnail.ThumbnailPath)) {
-            goto TryUseUrl;
-        }
-
-        try {
-            // ReSharper disable once ConvertToUsingDeclaration
-            await using (var imageStream = src.OpenRead(thumbnail.ThumbnailPath)) {
-                thumbnail.Bitmap = new Bitmap(imageStream);
+        if (thumbnail.RelativeThumbnailPath is { } relativePath && src.Exists(relativePath)) {
+            if (await TryLoadFromSource(thumbnail, src, relativePath)) {
                 return;
             }
         }
-        catch {
-            // continue with attempt to resolve the thumbnail with the URL
-        }
-        
-    TryUseUrl:
-        if (!NetworkInterface.GetIsNetworkAvailable()) {
-            goto UseDefault;
+
+        if (!IsRemoteUrl(thumbnail.ThumbnailPath) && src.Exists(thumbnail.ThumbnailPath)) {
+            if (await TryLoadFromSource(thumbnail, src, thumbnail.ThumbnailPath)) {
+                return;
+            }
         }
         
         if (!Uri.TryCreate(thumbnail.ThumbnailPath, UriKind.Absolute, out var uri)) {
             goto UseDefault;
         }
 
+        var url = uri.ToString();
+        var cacheFilePath = TkImageResolver.GetCacheFilePath(url, THUMBNAIL_CACHE_TARGET);
+
+        if (!File.Exists(cacheFilePath) && !NetworkInterface.GetIsNetworkAvailable()) {
+            goto UseDefault;
+        }
+
         try {
-            await using var imageStream = await _client.GetStreamAsync(uri, ct)
-                .ConfigureAwait(false);
-            
-            using MemoryStream ms = new();
-            await imageStream.CopyToAsync(ms, ct);
-            ms.Seek(0, SeekOrigin.Begin);
-            
-            thumbnail.Bitmap = new Bitmap(ms);
-            return;
+            if (await TkImageResolver.LoadOrDownloadAsync(url, THUMBNAIL_CACHE_TARGET, ct) is { } bitmap) {
+                thumbnail.Bitmap = bitmap;
+                return;
+            }
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, "Failed to resolve thumbnail URI '{Uri}'", uri);
@@ -105,4 +99,19 @@ public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailP
             IsDefault = true
         };
     }
+
+    private static async Task<bool> TryLoadFromSource(TkThumbnail thumbnail, ITkSystemSource src, string path)
+    {
+        try {
+            await using var imageStream = src.OpenRead(path);
+            thumbnail.Bitmap = new Bitmap(imageStream);
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    private static bool IsRemoteUrl(string path)
+        => Uri.TryCreate(path, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
 }

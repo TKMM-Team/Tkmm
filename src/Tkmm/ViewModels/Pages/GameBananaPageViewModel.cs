@@ -62,8 +62,17 @@ public partial class GameBananaPageViewModel : ObservableObject
             return;
         }
 
+        await ShowViewerAsync(mod.Full);
+    }
+
+    private async Task ShowViewerAsync(GameBananaMod mod)
+    {
+        Viewer?.CancelLoading();
         Viewer?.Reset();
-        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full);
+        Viewer = null;
+        OnPropertyChanged(nameof(Viewer));
+
+        Viewer = GameBananaModPageViewModel.CreateForMod(mod);
         Viewer.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
                 UpdateCombinedLoading();
@@ -73,6 +82,14 @@ public partial class GameBananaPageViewModel : ObservableObject
         OnPropertyChanged(nameof(Viewer));
         IsShowingDetail = true;
         ViewerOpacity = 1.0;
+
+        await Task.Delay(300);
+
+        if (Viewer?.SelectedMod?.Id != mod.Id) {
+            return;
+        }
+
+        await Viewer.StartLoadingAsync();
     }
 
     [RelayCommand]
@@ -81,6 +98,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         ViewerOpacity = 0.0;
         Task.Delay(300).ContinueWith(_ => {
             Dispatcher.UIThread.Post(() => {
+                Viewer?.CancelLoading();
                 Viewer?.Reset();
                 Viewer = null;
                 OnPropertyChanged(nameof(Viewer));
@@ -118,17 +136,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             }
 
             if (!isSilent) {
-                Viewer?.Reset();
-                Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
-                Viewer.PropertyChanged += (_, e) => {
-                    if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
-                        UpdateCombinedLoading();
-                    }
-                };
-                UpdateCombinedLoading();
-                OnPropertyChanged(nameof(Viewer));
-                IsShowingDetail = true;
-                ViewerOpacity = 1.0;
+                await ShowViewerAsync(modRecord.Full);
             }
 
             if (fileId is { } desiredFileId) {

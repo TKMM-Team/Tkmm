@@ -22,10 +22,6 @@
         </Style>
     </UserControl.Styles>
 
-    <UserControl.DataContext>
-        <pages:GameBananaModPageViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Resources>
         <converters:GameBananaFileSorter x:Key="FileSorter" />
     </UserControl.Resources>
@@ -120,7 +116,7 @@
                                        VerticalAlignment="Center"
                                        FontSize="16"
                                        Foreground="{DynamicResource SystemBaseMediumColor}"
-                                       IsVisible="{Binding ShowNoImagesMessage}" />
+                                       IsVisible="{Binding ShowLoadingImagesMessage}" />
 
                             <!-- Left/Right Navigation Buttons -->
                             <Button HorizontalAlignment="Left"
@@ -196,7 +192,7 @@
                         </ScrollViewer>
 
                         <!-- Description -->
-                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding SelectedMod}" />
+                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding MarkdownMod}" />
                     </StackPanel>
                 </Border>
 

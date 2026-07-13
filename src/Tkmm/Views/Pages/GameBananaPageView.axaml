@@ -164,7 +164,13 @@
                     <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
                 </Transitions>
             </Grid.Transitions>
-            <views:GameBananaModPageView DataContext="{Binding Viewer}"  />
+            <ContentControl Content="{Binding Viewer}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate DataType="pages:GameBananaModPageViewModel">
+                        <views:GameBananaModPageView />
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
         </Grid>
 
         <Grid Grid.Row="2" 
