@@ -11,7 +11,7 @@ namespace Tkmm.Components;
 
 public sealed class TkThumbnailProvider(Bitmap defaultThumbnail) : ITkThumbnailProvider
 {
-    private const string THUMBNAIL_CACHE_TARGET = "thumbnails";
+    public const string THUMBNAIL_CACHE_TARGET = "thumbnails";
     
     public static readonly TkThumbnailProvider Instance;
 

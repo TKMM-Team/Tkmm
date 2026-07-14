@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tkmm.Actions;
 using Tkmm.Components;
+using Tkmm.Models;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -12,6 +13,9 @@ namespace Tkmm.ViewModels.Pages;
 public partial class GameBananaModPageViewModel : ObservableObject
 {
     private const string GAME_BANANA_STATIC_CACHE_TARGET = "gamebanana";
+    private const string GAME_BANANA_LOGO_URL = "https://images.gamebanana.com/static/img/banana.png";
+
+    private static object? _bananaIconCache;
 
     private CancellationTokenSource? _loadingCts;
 
@@ -88,6 +92,12 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public string ModUrl => SelectedMod != null ? $"https://gamebanana.com/mods/{SelectedMod.Id}" : string.Empty;
 
+    public bool IsBookmarked => SelectedMod is { } mod && GameBananaBookmarks.IsBookmarked((int)mod.Id);
+
+    public string BookmarkIcon => IsBookmarked ? "fa-solid fa-star" : "fa-regular fa-star";
+
+    public string BookmarkLabel => Locale[IsBookmarked ? "GameBanana_RemoveBookmark" : "GameBanana_BookmarkMod"];
+
     public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
     {
         var viewer = new GameBananaModPageViewModel();
@@ -104,10 +114,13 @@ public partial class GameBananaModPageViewModel : ObservableObject
         IsLoading = true;
         Images.Clear();
         SelectedImageIndex = 0;
-        BananaIcon = null;
+        BananaIcon = _bananaIconCache;
 
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
+        OnPropertyChanged(nameof(IsBookmarked));
+        OnPropertyChanged(nameof(BookmarkIcon));
+        OnPropertyChanged(nameof(BookmarkLabel));
         OnPropertyChanged(nameof(FormattedDateAdded));
         OnPropertyChanged(nameof(FormattedDateUpdated));
         NotifyImagePropertiesChanged();
@@ -135,6 +148,8 @@ public partial class GameBananaModPageViewModel : ObservableObject
         var ct = _loadingCts.Token;
 
         try {
+            _ = LoadBananaIconAsync(ct);
+
             await Dispatcher.UIThread.InvokeAsync(() => MarkdownMod = SelectedMod, DispatcherPriority.Background);
 
             await LoadImagesAsync(ct);
@@ -148,7 +163,6 @@ public partial class GameBananaModPageViewModel : ObservableObject
                 return;
             }
 
-            _ = LoadBananaIconAsync(ct);
             _ = LoadAvatarsAsync(ct);
         }
         catch (OperationCanceledException) {
@@ -216,10 +230,27 @@ public partial class GameBananaModPageViewModel : ObservableObject
         await ModActions.Instance.Install((SelectedMod, file));
     }
 
+    [RelayCommand]
+    private void ToggleBookmark()
+    {
+        if (SelectedMod is null) {
+            return;
+        }
+
+        GameBananaBookmarks.Toggle(SelectedMod);
+        OnPropertyChanged(nameof(IsBookmarked));
+        OnPropertyChanged(nameof(BookmarkIcon));
+        OnPropertyChanged(nameof(BookmarkLabel));
+    }
+
     private async Task LoadBananaIconAsync(CancellationToken ct)
     {
+        if (_bananaIconCache is not null) {
+            return;
+        }
+
         if (await TkImageResolver.EnsureCachedAsync(
-                "https://images.gamebanana.com/static/img/banana.png",
+                GAME_BANANA_LOGO_URL,
                 GAME_BANANA_STATIC_CACHE_TARGET,
                 ct) is not { } cacheFilePath) {
             return;
@@ -229,7 +260,8 @@ public partial class GameBananaModPageViewModel : ObservableObject
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() => BananaIcon = bitmap, DispatcherPriority.Background);
+        _bananaIconCache = bitmap;
+        await Dispatcher.UIThread.InvokeAsync(() => BananaIcon = bitmap);
     }
 
     private async Task LoadAvatarsAsync(CancellationToken ct)

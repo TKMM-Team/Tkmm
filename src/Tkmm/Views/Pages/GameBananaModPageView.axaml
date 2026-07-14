@@ -60,21 +60,35 @@
                                    Text="{Binding FormattedDateAdded, StringFormat=' on {0}'}" />
                     </StackPanel>
                 </StackPanel>
-                <HyperlinkButton Grid.Column="2"
-                                 VerticalAlignment="Top"
-                                 NavigateUri="{Binding ModUrl}"
-                                 IsVisible="{Binding ShowGameBananaLink}"
-                                 ToolTip.Tip="Open in GameBanana">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <Image Width="20"
-                               Height="20"
-                               Source="{Binding BananaIcon}"
-                               Stretch="Uniform" />
-                        <TextBlock Text="{markup:Locale GameBanana_OpenInGameBanana}"
-                                   FontSize="14"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                </HyperlinkButton>
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            VerticalAlignment="Top">
+                    <Button Padding="8,4"
+                            Command="{Binding ToggleBookmarkCommand}"
+                            IsVisible="{Binding ShowGameBananaLink}"
+                            ToolTip.Tip="{Binding BookmarkLabel}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <pi:Icon Value="{Binding BookmarkIcon}" />
+                            <TextBlock Text="{Binding BookmarkLabel}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <HyperlinkButton NavigateUri="{Binding ModUrl}"
+                                     IsVisible="{Binding ShowGameBananaLink}"
+                                     ToolTip.Tip="Open in GameBanana">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Image Width="20"
+                                   Height="20"
+                                   Source="{Binding BananaIcon}"
+                                   Stretch="Uniform" />
+                            <TextBlock Text="{markup:Locale GameBanana_OpenInGameBanana}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
             </Grid>
         </Border>
 

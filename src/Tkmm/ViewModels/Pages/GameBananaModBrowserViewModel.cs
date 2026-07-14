@@ -5,7 +5,9 @@ using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Models;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 using TkSharp.Extensions.GameBanana.Helpers;
@@ -19,6 +21,9 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     [ObservableProperty]
     private string _searchArgument = string.Empty;
+
+    [ObservableProperty]
+    private bool _isShowingBookmarks;
 
     [ObservableProperty]
     private bool _isShowingSuggested;
@@ -39,9 +44,14 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     private double? _downloadSpeed;
 
     [ObservableProperty]
+    private GameBananaFeed? _bookmarksFeed = GameBananaBookmarks.Load();
+
+    [ObservableProperty]
     private GameBananaFeed? _suggestedModsFeed = NetworkInterface.GetIsNetworkAvailable() ? GetSuggestedFeed() : null;
 
-    public GameBananaFeed? Feed => IsShowingSuggested ? SuggestedModsFeed : Source.Feed;
+    public GameBananaFeed? Feed => IsShowingBookmarks ? BookmarksFeed : IsShowingSuggested ? SuggestedModsFeed : Source.Feed;
+
+    public bool IsFeedVisible => IsShowingBookmarks || IsShowingSuggested || IsLoadSuccess;
 
     public GameBananaModBrowserViewModel()
     {
@@ -79,6 +89,9 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
             return Task.CompletedTask;
         };
+
+        GameBananaBookmarks.Changed += ReloadBookmarksFeed;
+        DownloadBookmarkThumbnails();
 
         _ = Refresh();
 
@@ -141,6 +154,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
         try {
             await Source.LoadPage(Source.CurrentPage, SearchArgument);
+            await LoadFeedThumbnails(Source.Feed);
             IsLoadSuccess = true;
         }
         catch (HttpRequestException ex) {
@@ -167,9 +181,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             using var stream = AssetLoader.Open(new Uri("avares://Tkmm/Assets/GameBanana/Suggested.json"));
             var feed = JsonSerializer.Deserialize(stream, GameBananaFeedJsonContext.Default.GameBananaFeed)!;
             
-            _ = Task.Run(() => Parallel.ForEachAsync(
-                feed.Records, static (record, ct) => record.DownloadThumbnail(ct)
-            ));
+            _ = LoadFeedThumbnails(feed);
 
             return feed;
         }
@@ -182,8 +194,71 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         return null;
     }
 
+    partial void OnIsLoadSuccessChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsFeedVisible));
+    }
+
     partial void OnIsShowingSuggestedChanged(bool value)
     {
+        if (value) {
+            IsShowingBookmarks = false;
+            IsLoadSuccess = true;
+        }
+
         OnPropertyChanged(nameof(Feed));
+        OnPropertyChanged(nameof(IsFeedVisible));
+    }
+
+    partial void OnIsShowingBookmarksChanged(bool value)
+    {
+        if (value) {
+            IsShowingSuggested = false;
+            IsLoadSuccess = true;
+        }
+
+        OnPropertyChanged(nameof(Feed));
+        OnPropertyChanged(nameof(IsFeedVisible));
+    }
+
+    private void ReloadBookmarksFeed()
+    {
+        BookmarksFeed = GameBananaBookmarks.Load();
+        DownloadBookmarkThumbnails();
+
+        if (IsShowingBookmarks) {
+            OnPropertyChanged(nameof(Feed));
+        }
+    }
+
+    private void DownloadBookmarkThumbnails()
+    {
+        if (BookmarksFeed is null) {
+            return;
+        }
+
+        _ = LoadFeedThumbnails(BookmarksFeed);
+    }
+
+    private static Task LoadFeedThumbnails(GameBananaFeed? feed, CancellationToken ct = default)
+    {
+        if (feed is null || !NetworkInterface.GetIsNetworkAvailable()) {
+            return Task.CompletedTask;
+        }
+
+        return Task.Run(() => Parallel.ForEachAsync(
+            feed.Records, ct, static (record, ct) => new ValueTask(LoadThumbnailAsync(record, ct))
+        ), ct);
+    }
+
+    private static async Task LoadThumbnailAsync(GameBananaModRecord record, CancellationToken ct = default)
+    {
+        if (record.ThumbnailUrl is not { } url) {
+            return;
+        }
+
+        if (await TkImageResolver.LoadOrDownloadAsync(url, TkThumbnailProvider.THUMBNAIL_CACHE_TARGET, ct) is { } bitmap) {
+            record.Thumbnail = bitmap;
+        }
     }
 }
