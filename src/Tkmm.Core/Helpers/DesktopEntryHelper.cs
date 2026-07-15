@@ -41,7 +41,7 @@ public static class DesktopEntryHelper
 
         UpdateDesktopDatabase(applicationsDirectory);
         EnsureMimeAppsListEntry();
-        RegisterMimeAssociation(desktopFilePath);
+        RegisterMimeAssociation();
     }
 
     public static string? ResolveLinuxExecutablePath()
@@ -90,11 +90,10 @@ public static class DesktopEntryHelper
         return builder.ToString();
     }
 
-    private static void RegisterMimeAssociation(string desktopFilePath)
+    private static void RegisterMimeAssociation()
     {
         TryRunCommand("xdg-settings", $"set default-url-scheme-handler {URI_SCHEME} {URI_HANDLER_DESKTOP_FILE_NAME}");
         TryRunCommand("xdg-mime", $"default {URI_HANDLER_DESKTOP_FILE_NAME} x-scheme-handler/{URI_SCHEME}");
-        TryRunCommand("gio", $"mime x-scheme-handler/{URI_SCHEME} \"{desktopFilePath}\"");
     }
 
     private static void UpdateDesktopDatabase(string applicationsDirectory)

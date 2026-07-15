@@ -24,14 +24,14 @@ internal abstract class Program
     {
         try {
             GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
-
-#if !SWITCH
-            DesktopEntryHelper.TryRegisterUriSchemeHandler();
-#endif
             
             if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
             }
+
+#if !SWITCH
+            DesktopEntryHelper.TryRegisterUriSchemeHandler();
+#endif
 
             if (TkConsoleApp.IsComplexRequest(args)) {
                 TkConsoleApp.ProcessArguments(args);
