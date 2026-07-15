@@ -10,6 +10,7 @@ public static class DesktopEntryHelper
     private const string URI_SCHEME = "tkmm";
     private const string DisplayName = "TKMM";
 
+    private static readonly UTF8Encoding Utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
     private static readonly string[] ToolPaths = ["/usr/bin", "/bin", "/usr/local/bin"];
 
     public static void TryRegisterUriSchemeHandler()
@@ -35,16 +36,12 @@ public static class DesktopEntryHelper
 
         var desktopFilePath = Path.Combine(applicationsDirectory, URI_HANDLER_DESKTOP_FILE_NAME);
         var desktopEntry = BuildDesktopEntry(executablePath);
-        var needsWrite = !File.Exists(desktopFilePath)
-                         || File.ReadAllText(desktopFilePath) != desktopEntry;
 
-        if (needsWrite) {
-            File.WriteAllText(desktopFilePath, desktopEntry, Encoding.UTF8);
-        }
+        File.WriteAllText(desktopFilePath, desktopEntry, Utf8NoBom);
 
         UpdateDesktopDatabase(applicationsDirectory);
         EnsureMimeAppsListEntry();
-        RegisterMimeAssociation();
+        RegisterMimeAssociation(desktopFilePath);
     }
 
     public static string? ResolveLinuxExecutablePath()
@@ -63,31 +60,41 @@ public static class DesktopEntryHelper
 
     private static string BuildDesktopEntry(string executablePath)
     {
-        var escapedExecutablePath = executablePath.Replace("\"", "\\\"", StringComparison.Ordinal);
+        var quotedExecutablePath = EscapeQuotedDesktopExecPath(executablePath);
 
-        return $"""
-                [Desktop Entry]
-                Version=1.0
-                Type=Application
-                Name={DisplayName}
-                Comment=TotK Mod Manager
-                Exec="{escapedExecutablePath}" %u
-                TryExec="{escapedExecutablePath}"
-                Icon=tkmm
-                MimeType=x-scheme-handler/{URI_SCHEME};
-                Categories=Utility;
-                NoDisplay=true
-                Terminal=false
-                StartupNotify=false
-
-                """;
+        return string.Join('\n', [
+            "[Desktop Entry]",
+            "Version=1.0",
+            "Type=Application",
+            $"Name={DisplayName}",
+            $"Exec=\"{quotedExecutablePath}\" %u",
+            $"MimeType=x-scheme-handler/{URI_SCHEME};",
+            "NoDisplay=true",
+            "Terminal=false",
+            string.Empty,
+        ]);
     }
 
-    private static void RegisterMimeAssociation()
+    private static string EscapeQuotedDesktopExecPath(string path)
+    {
+        var builder = new StringBuilder(path.Length * 2);
+
+        foreach (var ch in path) {
+            if (ch is '"' or '\\') {
+                builder.Append('\\');
+            }
+
+            builder.Append(ch);
+        }
+
+        return builder.ToString();
+    }
+
+    private static void RegisterMimeAssociation(string desktopFilePath)
     {
         TryRunCommand("xdg-settings", $"set default-url-scheme-handler {URI_SCHEME} {URI_HANDLER_DESKTOP_FILE_NAME}");
         TryRunCommand("xdg-mime", $"default {URI_HANDLER_DESKTOP_FILE_NAME} x-scheme-handler/{URI_SCHEME}");
-        TryRunCommand("gio", $"mime x-scheme-handler/{URI_SCHEME} {URI_HANDLER_DESKTOP_FILE_NAME}");
+        TryRunCommand("gio", $"mime x-scheme-handler/{URI_SCHEME} \"{desktopFilePath}\"");
     }
 
     private static void UpdateDesktopDatabase(string applicationsDirectory)
@@ -111,7 +118,7 @@ public static class DesktopEntryHelper
 
         SetMimeAppsAssociation(lines, "Default Applications", association);
         SetMimeAppsAssociation(lines, "Added Associations", association);
-        File.WriteAllLines(mimeAppsPath, lines);
+        File.WriteAllText(mimeAppsPath, string.Join('\n', lines) + '\n', Utf8NoBom);
     }
 
     private static void SetMimeAppsAssociation(List<string> lines, string sectionName, string association)
