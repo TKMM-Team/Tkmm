@@ -208,6 +208,12 @@ public static class TKMM
         const string processName = "Tkmm";
         RegistryHelper.CreateGameBananaWebProtocol(processName, Environment.ProcessPath);
         RegistryHelper.CreateFileAssociations(processName, ".tkcl", Environment.ProcessPath);
+
+#if !SWITCH
+        if (DesktopEntryHelper.ResolveLinuxExecutablePath() is { } linuxExecutablePath) {
+            DesktopEntryHelper.RegisterUriSchemeHandler(processName, linuxExecutablePath);
+        }
+#endif
     }
 
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)
