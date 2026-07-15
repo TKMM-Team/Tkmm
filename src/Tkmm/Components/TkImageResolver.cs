@@ -11,8 +11,6 @@ public class TkImageResolver : IImageResolver
 {
     public static readonly TkImageResolver Instance = new();
 
-    private static readonly SemaphoreSlim CacheLock = new(1, 1);
-
     public async ValueTask FetchImage(ImageLoadContext context, object? state, string? url)
     {
         if (url is null) {
@@ -47,32 +45,44 @@ public class TkImageResolver : IImageResolver
     public static async ValueTask<string?> EnsureCachedAsync(string url, string cacheTarget, CancellationToken ct = default)
     {
         var cacheFilePath = GetCacheFilePath(url, cacheTarget);
+        if (File.Exists(cacheFilePath)) {
+            return cacheFilePath;
+        }
 
-        await CacheLock.WaitAsync(ct);
+        var cacheDirectory = Path.GetDirectoryName(cacheFilePath)!;
+        Directory.CreateDirectory(cacheDirectory);
+
+        var tempFilePath = Path.Combine(cacheDirectory, $"{Path.GetFileName(cacheFilePath)}.{Guid.NewGuid():N}.tmp");
+
         try {
-            if (File.Exists(cacheFilePath)) {
-                return cacheFilePath;
-            }
-
-            Directory.CreateDirectory(Path.GetDirectoryName(cacheFilePath)!);
-
             using var response = await DownloadHelper.Client.GetAsync(url, ct);
             if (!response.IsSuccessStatusCode) {
-                return null;
+                return File.Exists(cacheFilePath) ? cacheFilePath : null;
             }
 
-            await using var src = await response.Content.ReadAsStreamAsync(ct);
-            await using var fs = new FileStream(
-                cacheFilePath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.Read);
+            await using (var src = await response.Content.ReadAsStreamAsync(ct))
+            await using (var fs = new FileStream(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
+                await src.CopyToAsync(fs, ct);
+            }
 
-            await src.CopyToAsync(fs, ct);
+            try {
+                File.Move(tempFilePath, cacheFilePath, overwrite: true);
+            }
+            catch (IOException) when (File.Exists(cacheFilePath)) {
+                // Another download finished first.
+            }
+
             return cacheFilePath;
         }
         finally {
-            CacheLock.Release();
+            try {
+                if (File.Exists(tempFilePath)) {
+                    File.Delete(tempFilePath);
+                }
+            }
+            catch {
+                // ignored
+            }
         }
     }
 
