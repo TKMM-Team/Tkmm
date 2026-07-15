@@ -11,6 +11,8 @@ public class TkImageResolver : IImageResolver
 {
     public static readonly TkImageResolver Instance = new();
 
+    private static readonly SemaphoreSlim CacheLock = new(1, 1);
+
     public async ValueTask FetchImage(ImageLoadContext context, object? state, string? url)
     {
         if (url is null) {
@@ -37,36 +39,52 @@ public class TkImageResolver : IImageResolver
             return bitmap;
         }
 
-        return await EnsureCachedAsync(url, cacheTarget, ct) is not { } retryCacheFilePath ? null : TryLoadBitmap(retryCacheFilePath);
+        return await EnsureCachedAsync(url, cacheTarget, ct) is not { } retryCacheFilePath
+            ? null
+            : TryLoadBitmap(retryCacheFilePath);
     }
 
     public static async ValueTask<string?> EnsureCachedAsync(string url, string cacheTarget, CancellationToken ct = default)
     {
         var cacheFilePath = GetCacheFilePath(url, cacheTarget);
 
-        if (File.Exists(cacheFilePath)) {
+        await CacheLock.WaitAsync(ct);
+        try {
+            if (File.Exists(cacheFilePath)) {
+                return cacheFilePath;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(cacheFilePath)!);
+
+            using var response = await DownloadHelper.Client.GetAsync(url, ct);
+            if (!response.IsSuccessStatusCode) {
+                return null;
+            }
+
+            await using var src = await response.Content.ReadAsStreamAsync(ct);
+            await using var fs = new FileStream(
+                cacheFilePath,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.Read);
+
+            await src.CopyToAsync(fs, ct);
             return cacheFilePath;
         }
-
-        Directory.CreateDirectory(Path.GetDirectoryName(cacheFilePath)!);
-
-        using var response = await DownloadHelper.Client.GetAsync(url, ct);
-        if (!response.IsSuccessStatusCode) {
-            return null;
+        finally {
+            CacheLock.Release();
         }
-
-        await using var src = await response.Content.ReadAsStreamAsync(ct);
-        await using var ms = new MemoryStream();
-        await src.CopyToAsync(ms, ct);
-        await File.WriteAllBytesAsync(cacheFilePath, ms.ToArray(), ct);
-
-        return cacheFilePath;
     }
 
     public static Bitmap? TryLoadBitmap(string cacheFilePath)
     {
         try {
-            using var fs = File.OpenRead(cacheFilePath);
+            using var fs = new FileStream(
+                cacheFilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read);
+
             return new Bitmap(fs);
         }
         catch (Exception ex) {
