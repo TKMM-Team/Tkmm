@@ -7,6 +7,7 @@ using R2CSharp.Lib.Extensions;
 using Tkmm.Components;
 using Tkmm.CLI;
 using Tkmm.Core;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
 using TkSharp.Core;
@@ -23,6 +24,10 @@ internal abstract class Program
     {
         try {
             GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
+
+#if !SWITCH
+            DesktopEntryHelper.TryRegisterUriSchemeHandler();
+#endif
             
             if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
