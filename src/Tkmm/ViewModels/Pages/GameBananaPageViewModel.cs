@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
+using Tkmm.Components;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -11,6 +12,33 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class GameBananaPageViewModel : ObservableObject
 {
+    private const string BANANA_LOGO_URL = "https://images.gamebanana.com/static/img/banana.png";
+
+    private static Task<object?>? _bananaIconTask;
+
+    public static object? Icon { get; private set; }
+
+    public object? BananaIcon => Icon;
+
+    public static Task<object?> LoadBananaIconAsync(CancellationToken ct = default)
+    {
+        if (Icon is not null) {
+            return Task.FromResult<object?>(Icon);
+        }
+
+        return _bananaIconTask ??= LoadBananaIconCoreAsync(ct);
+    }
+
+    private static async Task<object?> LoadBananaIconCoreAsync(CancellationToken ct)
+    {
+        try {
+            return Icon ??= await TkImageResolver.LoadOrDownloadAsync(BANANA_LOGO_URL, "gamebanana", ct);
+        }
+        finally {
+            _bananaIconTask = null;
+        }
+    }
+
     [ObservableProperty]
     public partial bool IsShowingDetail { get; set; }
 
@@ -31,6 +59,10 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     public GameBananaPageViewModel()
     {
+        _ = LoadBananaIconAsync().ContinueWith(
+            _ => OnPropertyChanged(nameof(BananaIcon)),
+            TaskScheduler.Default);
+
         Browser.PropertyChanged += (_, e) => {
             switch (e.PropertyName) {
                 case nameof(Browser.IsLoading):
@@ -106,6 +138,26 @@ public partial class GameBananaPageViewModel : ObservableObject
                 UpdateCombinedLoading();
             });
         });
+    }
+
+    public async Task OpenMemberInBrowserAsync(int memberId)
+    {
+        if (IsShowingDetail) {
+            CloseViewerImmediately();
+        }
+
+        await Browser.OpenMemberAsync(memberId);
+    }
+
+    private void CloseViewerImmediately()
+    {
+        Viewer?.CancelLoading();
+        Viewer?.Reset();
+        Viewer = null;
+        OnPropertyChanged(nameof(Viewer));
+        IsShowingDetail = false;
+        ViewerOpacity = 0;
+        UpdateCombinedLoading();
     }
 
     public async Task OpenModInViewerAsync(long modId, long? fileId = null, bool isSilent = false)

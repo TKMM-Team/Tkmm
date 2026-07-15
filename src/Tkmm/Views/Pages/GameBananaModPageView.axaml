@@ -50,7 +50,7 @@
                         <HyperlinkButton FontSize="12"
                                          FontStyle="Italic"
                                          Foreground="{DynamicResource SystemAccentColor}"
-                                         NavigateUri="{Binding SelectedMod.Submitter.Url}"
+                                         NavigateUri="{Binding SelectedMod.Submitter.Url, Converter={x:Static converters:GbMemberUriConverter.Instance}}"
                                          Content="{Binding SelectedMod.Submitter.Name}"
                                          Padding="0"
                                          Margin="0" />
@@ -385,7 +385,7 @@
                                                                              Width="32"
                                                                              Height="32"
                                                                              Padding="4"
-                                                                             NavigateUri="{Binding ProfileUrl}"
+                                                                             NavigateUri="{Binding ProfileUrl, Converter={x:Static converters:GbMemberUriConverter.Instance}}"
                                                                              ToolTip.Tip="View Profile"
                                                                              VerticalAlignment="Top"
                                                                              IsVisible="{Binding ProfileUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">

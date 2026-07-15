@@ -13,9 +13,6 @@ namespace Tkmm.ViewModels.Pages;
 public partial class GameBananaModPageViewModel : ObservableObject
 {
     private const string GAME_BANANA_STATIC_CACHE_TARGET = "gamebanana";
-    private const string GAME_BANANA_LOGO_URL = "https://images.gamebanana.com/static/img/banana.png";
-
-    private static object? _bananaIconCache;
 
     private CancellationTokenSource? _loadingCts;
 
@@ -114,7 +111,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
         IsLoading = true;
         Images.Clear();
         SelectedImageIndex = 0;
-        BananaIcon = _bananaIconCache;
+        BananaIcon = GameBananaPageViewModel.Icon;
 
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
@@ -184,7 +181,6 @@ public partial class GameBananaModPageViewModel : ObservableObject
         MarkdownMod = null;
         Images.Clear();
         SelectedImageIndex = 0;
-        BananaIcon = null;
         IsLoading = false;
 
         OnPropertyChanged(nameof(ModUrl));
@@ -243,25 +239,16 @@ public partial class GameBananaModPageViewModel : ObservableObject
         OnPropertyChanged(nameof(BookmarkLabel));
     }
 
-    private async Task LoadBananaIconAsync(CancellationToken ct)
+    private Task LoadBananaIconAsync(CancellationToken ct)
     {
-        if (_bananaIconCache is not null) {
-            return;
-        }
+        return BananaIcon is not null ? Task.CompletedTask : AssignBananaIconAsync(ct);
+    }
 
-        if (await TkImageResolver.EnsureCachedAsync(
-                GAME_BANANA_LOGO_URL,
-                GAME_BANANA_STATIC_CACHE_TARGET,
-                ct) is not { } cacheFilePath) {
-            return;
+    private async Task AssignBananaIconAsync(CancellationToken ct)
+    {
+        if (await GameBananaPageViewModel.LoadBananaIconAsync(ct) is { } icon) {
+            await Dispatcher.UIThread.InvokeAsync(() => BananaIcon = icon);
         }
-
-        if (TkImageResolver.TryLoadBitmap(cacheFilePath) is not { } bitmap) {
-            return;
-        }
-
-        _bananaIconCache = bitmap;
-        await Dispatcher.UIThread.InvokeAsync(() => BananaIcon = bitmap);
     }
 
     private async Task LoadAvatarsAsync(CancellationToken ct)

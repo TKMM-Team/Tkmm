@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 using Avalonia.Controls;
@@ -19,6 +20,9 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 {
     private const int GAME_ID = 7617;
 
+    private PropertyChangedEventHandler? _sourcePropertyChangedHandler;
+    private INotifyPropertyChanged? _attachedSource;
+
     [ObservableProperty]
     private string _searchArgument = string.Empty;
 
@@ -27,6 +31,12 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isShowingSuggested;
+
+    [ObservableProperty]
+    private bool _isShowingMember;
+
+    [ObservableProperty]
+    private string? _memberUrl;
 
     [ObservableProperty]
     private bool _isLoading;
@@ -38,7 +48,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     private bool _isLoadSuccess;
 
     [ObservableProperty]
-    private GameBananaSource _source = new(GAME_ID);
+    private IGameBananaSource _source = CreateGameSource();
 
     [ObservableProperty]
     private double? _downloadSpeed;
@@ -53,14 +63,19 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     public bool IsFeedVisible => IsShowingBookmarks || IsShowingSuggested || IsLoadSuccess;
 
+    private static bool ShowGameBananaLink =>
+#if SWITCH
+        false;
+#else
+        true;
+#endif
+
+    public bool ShowMemberLink => ShowGameBananaLink && IsShowingMember;
+
     public GameBananaModBrowserViewModel()
     {
-        Source.PropertyChanged += (_, e) => {
-            if (e.PropertyName is nameof(Source.Feed)) {
-                OnPropertyChanged(nameof(Feed));
-            }
-        };
-        
+        AttachSourceHandler(Source);
+
         DownloadHelper.Reporters.Push(
             new DownloadReporter {
                 ProgressReporter = new Progress<double>(
@@ -96,11 +111,14 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         _ = Refresh();
 
         TKMM.Config.PropertyChanged += async (_, eventArgs) => {
-            if (eventArgs.PropertyName is not nameof(Config.GameBananaSortMode)) {
+            if (eventArgs.PropertyName is not nameof(Config.GameBananaSortMode) || IsShowingMember) {
                 return;
             }
 
-            Source.SortMode = TKMM.Config.GameBananaSortMode;
+            if (Source is GameBananaSource gameSource) {
+                gameSource.SortMode = TKMM.Config.GameBananaSortMode;
+            }
+
             await Refresh();
             Config.Shared.Save();
         };
@@ -123,6 +141,13 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     {
         Source.CurrentPage = 0;
         await Refresh(modsViewer);
+    }
+
+    public async Task OpenMemberAsync(int memberId)
+    {
+        SearchArgument = $"member:{memberId}";
+        Source.CurrentPage = 0;
+        await Refresh();
     }
 
     [RelayCommand]
@@ -149,11 +174,22 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     private async Task ReloadPage()
     {
+        if (IsShowingBookmarks || IsShowingSuggested) {
+            return;
+        }
+
+        if (!TryApplySearchSource()) {
+            IsLoadSuccess = false;
+            IsLoading = false;
+            return;
+        }
+
         Source.Feed?.Records.Clear();
         IsLoadSuccess = IsLoading = true;
 
         try {
-            await Source.LoadPage(Source.CurrentPage, SearchArgument);
+            var searchTerm = IsShowingMember ? null : SearchArgument;
+            await Source.LoadPage(Source.CurrentPage, searchTerm);
             await LoadFeedThumbnails(Source.Feed);
             IsLoadSuccess = true;
         }
@@ -172,6 +208,79 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         }
         finally {
             IsLoading = false;
+        }
+    }
+
+    private bool TryApplySearchSource()
+    {
+        if (TryParseMemberSearch(SearchArgument, out var memberId)) {
+            IsShowingMember = true;
+            MemberUrl = $"https://gamebanana.com/members/{memberId}";
+            IsShowingBookmarks = false;
+            IsShowingSuggested = false;
+
+            if (Source is not GameBananaMemberSource memberSource || memberSource.MemberId != memberId) {
+                Source = new GameBananaMemberSource(memberId, GAME_ID);
+            }
+
+            OnPropertyChanged(nameof(ShowMemberLink));
+            return true;
+        }
+
+        if (SearchArgument.StartsWith("member:", StringComparison.OrdinalIgnoreCase)) {
+            App.ToastError(new ArgumentException(Locale["GameBanana_InvalidMemberSearch"]));
+            return false;
+        }
+
+        IsShowingMember = false;
+        MemberUrl = null;
+
+        if (Source is not GameBananaSource) {
+            Source = CreateGameSource();
+        }
+
+        OnPropertyChanged(nameof(ShowMemberLink));
+        return true;
+    }
+
+    private static bool TryParseMemberSearch(string search, out int memberId)
+    {
+        memberId = 0;
+
+        if (!search.StartsWith("member:", StringComparison.OrdinalIgnoreCase)) {
+            return false;
+        }
+
+        return int.TryParse(search.AsSpan(7).Trim(), out memberId) && memberId > 0;
+    }
+
+    private static GameBananaSource CreateGameSource()
+        => new(GAME_ID) { SortMode = TKMM.Config.GameBananaSortMode };
+
+    partial void OnSourceChanged(IGameBananaSource value)
+        => AttachSourceHandler(value);
+
+    partial void OnIsShowingMemberChanged(bool value)
+        => OnPropertyChanged(nameof(ShowMemberLink));
+
+    private void AttachSourceHandler(IGameBananaSource source)
+    {
+        if (_attachedSource is not null && _sourcePropertyChangedHandler is not null) {
+            _attachedSource.PropertyChanged -= _sourcePropertyChangedHandler;
+        }
+
+        _sourcePropertyChangedHandler = (_, e) => {
+            if (e.PropertyName is nameof(IGameBananaSource.Feed)) {
+                OnPropertyChanged(nameof(Feed));
+            }
+        };
+
+        if (source is INotifyPropertyChanged notifySource) {
+            _attachedSource = notifySource;
+            notifySource.PropertyChanged += _sourcePropertyChangedHandler;
+        }
+        else {
+            _attachedSource = null;
         }
     }
 

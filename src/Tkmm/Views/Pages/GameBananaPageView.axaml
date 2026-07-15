@@ -58,6 +58,7 @@
                                   Height="30"
                                   Padding="0"
                                   Margin="0,0,5,0"
+                                  IsVisible="{Binding !Browser.IsShowingMember}"
                                   IsChecked="{Binding Browser.IsShowingBookmarks}">
                         <StackPanel Margin="7,0" Orientation="Horizontal">
                             <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_Bookmarks}" />
@@ -68,6 +69,7 @@
                     <ToggleButton Grid.Column="4"
                                   Height="30"
                                   Padding="0"
+                                  IsVisible="{Binding !Browser.IsShowingMember}"
                                   IsChecked="{Binding Browser.IsShowingSuggested}">
                         <StackPanel Margin="7,0" Orientation="Horizontal">
                             <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_SuggestedMods}" />
@@ -75,9 +77,30 @@
                         </StackPanel>
                     </ToggleButton>
 
+                    <HyperlinkButton Grid.Column="3"
+                                     Grid.ColumnSpan="3"
+                                     Height="30"
+                                     Margin="0,0,5,0"
+                                     Padding="8,0"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Right"
+                                     NavigateUri="{Binding Browser.MemberUrl}"
+                                     IsVisible="{Binding Browser.ShowMemberLink}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Image Width="20"
+                                   Height="20"
+                                   Source="{Binding BananaIcon}"
+                                   Stretch="Uniform" />
+                            <TextBlock Text="{ext:Locale GameBanana_ViewMemberOnGameBanana}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </HyperlinkButton>
+
                     <ComboBox Grid.Column="5"
                               Width="100"
                               Margin="5,0,0,0"
+                              IsVisible="{Binding !Browser.IsShowingMember}"
                               ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                               SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
                               ToolTip.Tip="Sort Mode" />
