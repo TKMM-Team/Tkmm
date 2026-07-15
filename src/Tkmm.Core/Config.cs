@@ -178,7 +178,7 @@ public sealed partial class Config : ConfigModule<Config>
 #endif
 
     [ObservableProperty]
-    private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Default;
+    private GameBananaSortMode _gameBananaSortMode = GameBananaSortMode.Generic_Newest;
 
     public bool ConfigExists()
     {

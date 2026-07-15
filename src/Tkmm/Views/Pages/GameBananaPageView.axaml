@@ -8,6 +8,7 @@
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:views="clr-namespace:Tkmm.Views.Pages"
+             xmlns:converters="clr-namespace:Tkmm.Converters"
              xmlns:ext="clr-namespace:Tkmm.Markup"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -98,12 +99,17 @@
                     </HyperlinkButton>
 
                     <ComboBox Grid.Column="5"
-                              Width="100"
                               Margin="5,0,0,0"
                               IsVisible="{Binding !Browser.IsShowingMember}"
                               ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                               SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
-                              ToolTip.Tip="Sort Mode" />
+                              ToolTip.Tip="{ext:Locale GameBanana_SortMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="gb:GameBananaSortMode">
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaSortModeLocaleConverter.Instance}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
 
                 <!-- Content Area -->

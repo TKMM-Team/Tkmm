@@ -59,6 +59,8 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     [ObservableProperty]
     private GameBananaFeed? _suggestedModsFeed = NetworkInterface.GetIsNetworkAvailable() ? GetSuggestedFeed() : null;
 
+    private CancellationTokenSource? _reloadCts;
+
     public GameBananaFeed? Feed => IsShowingBookmarks ? BookmarksFeed : IsShowingSuggested ? SuggestedModsFeed : Source.Feed;
 
     public bool IsFeedVisible => IsShowingBookmarks || IsShowingSuggested || IsLoadSuccess;
@@ -174,9 +176,8 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     private async Task ReloadPage()
     {
-        if (IsShowingBookmarks || IsShowingSuggested) {
-            return;
-        }
+        IsShowingBookmarks = false;
+        IsShowingSuggested = false;
 
         if (!TryApplySearchSource()) {
             IsLoadSuccess = false;
@@ -184,14 +185,22 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             return;
         }
 
+        var cts = new CancellationTokenSource();
+        var ct = cts.Token;
+
+        Interlocked.Exchange(ref _reloadCts, cts)?.Cancel();
+
         Source.Feed?.Records.Clear();
         IsLoadSuccess = IsLoading = true;
 
         try {
             var searchTerm = IsShowingMember ? null : SearchArgument;
-            await Source.LoadPage(Source.CurrentPage, searchTerm);
-            await LoadFeedThumbnails(Source.Feed);
+            await Source.LoadPage(Source.CurrentPage, searchTerm, ct);
+            await LoadFeedThumbnails(Source.Feed, ct);
             IsLoadSuccess = true;
+        }
+        catch (OperationCanceledException) {
+            return;
         }
         catch (HttpRequestException ex) {
             IsLoadSuccess = false;
@@ -207,7 +216,11 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             App.ToastError(ex);
         }
         finally {
-            IsLoading = false;
+            if (Interlocked.CompareExchange(ref _reloadCts, null, cts) == cts) {
+                IsLoading = false;
+            }
+
+            cts.Dispose();
         }
     }
 
@@ -366,8 +379,16 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             return;
         }
 
-        if (await TkImageResolver.LoadOrDownloadAsync(url, TkThumbnailProvider.THUMBNAIL_CACHE_TARGET, ct) is { } bitmap) {
-            record.Thumbnail = bitmap;
+        try {
+            if (await TkImageResolver.LoadOrDownloadAsync(url, TkThumbnailProvider.THUMBNAIL_CACHE_TARGET, ct) is { } bitmap) {
+                record.Thumbnail = bitmap;
+            }
+        }
+        catch (OperationCanceledException) {
+            throw;
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogDebug(ex, "Failed to load thumbnail for {ModName}", record.Name);
         }
     }
 }
