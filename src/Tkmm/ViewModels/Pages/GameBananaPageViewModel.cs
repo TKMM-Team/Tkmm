@@ -86,15 +86,22 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ViewMod(GameBananaModRecord mod)
     {
-        if (mod.Full is null) {
-            await mod.DownloadFullMod();
-        }
+        try {
+            if (mod.Full is null) {
+                await mod.DownloadFullMod();
+            }
 
-        if (mod.Full is null) {
-            return;
-        }
+            if (mod.Full is null) {
+                TkStatus.SetTemporary(Locale["GameBanana_FailedToLoadMod"], TkIcons.ERROR);
+                return;
+            }
 
-        await ShowViewerAsync(mod.Full);
+            await ShowViewerAsync(mod.Full);
+        }
+        catch (Exception ex) {
+            TkStatus.SetTemporary(Locale["GameBanana_ErrorLoadingMod"], TkIcons.ERROR);
+            TkLog.Instance.LogError(ex, "An error occurred while loading mod {ModId}.", mod.Id);
+        }
     }
 
     private async Task ShowViewerAsync(GameBananaMod mod)
