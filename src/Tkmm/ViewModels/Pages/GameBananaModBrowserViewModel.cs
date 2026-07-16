@@ -65,6 +65,18 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
     public bool IsFeedVisible => IsShowingBookmarks || IsShowingSuggested || IsLoadSuccess;
 
+    public bool CanGoToNextPage
+    {
+        get
+        {
+            if (IsShowingBookmarks || IsShowingSuggested || Source.Feed?.Metadata is not { } metadata) {
+                return false;
+            }
+
+            return Source.CurrentPage + 1 < metadata.TotalPageCount;
+        }
+    }
+
     private static bool ShowGameBananaLink =>
 #if SWITCH
         false;
@@ -198,6 +210,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
             await Source.LoadPage(Source.CurrentPage, searchTerm, ct);
             await LoadFeedThumbnails(Source.Feed, ct);
             IsLoadSuccess = true;
+            OnPropertyChanged(nameof(CanGoToNextPage));
         }
         catch (OperationCanceledException) {
             return;
@@ -285,6 +298,10 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         _sourcePropertyChangedHandler = (_, e) => {
             if (e.PropertyName is nameof(IGameBananaSource.Feed)) {
                 OnPropertyChanged(nameof(Feed));
+                OnPropertyChanged(nameof(CanGoToNextPage));
+            }
+            else if (e.PropertyName is nameof(IGameBananaSource.CurrentPage)) {
+                OnPropertyChanged(nameof(CanGoToNextPage));
             }
         };
 
@@ -330,6 +347,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
         OnPropertyChanged(nameof(Feed));
         OnPropertyChanged(nameof(IsFeedVisible));
+        OnPropertyChanged(nameof(CanGoToNextPage));
     }
 
     partial void OnIsShowingBookmarksChanged(bool value)
@@ -341,6 +359,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
 
         OnPropertyChanged(nameof(Feed));
         OnPropertyChanged(nameof(IsFeedVisible));
+        OnPropertyChanged(nameof(CanGoToNextPage));
     }
 
     private void ReloadBookmarksFeed()
