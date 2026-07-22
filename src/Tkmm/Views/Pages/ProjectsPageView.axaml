@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="using:Tkmm.ViewModels.Pages"
+             xmlns:vm="using:Tkmm.ViewModels"
              xmlns:tk="using:TkSharp.Packaging"
              xmlns:fa="https://github.com/projektanker/icons.avalonia"
              xmlns:converters="clr-namespace:Tkmm.Converters"
@@ -351,11 +352,74 @@
                     </Border>
                 </TabItem>
                 <TabItem Header="Advanced">
-                    <StackPanel Spacing="5">
-                        <CheckBox Content="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries}"
-                                  ToolTip.Tip="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries_Description}"
-                                  IsChecked="{Binding Project.Flags.TrackRemovedRsDbEntries}" />
-                    </StackPanel>
+                    <ScrollViewer>
+                        <StackPanel Spacing="8">
+                            <CheckBox Content="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries}"
+                                      ToolTip.Tip="{markup:Locale ProjectFlags_TrackRemovedRsDbEntries_Description}"
+                                      IsChecked="{Binding Project.Flags.TrackRemovedRsDbEntries}" />
+                            <CheckBox Content="{markup:Locale ProjectFlags_ResourceSizeOverrides}"
+                                      ToolTip.Tip="{markup:Locale ProjectFlags_ResourceSizeOverrides_Description}"
+                                      IsChecked="{Binding Project.Flags.ResourceSizeOverrides.Enabled}" />
+                            <StackPanel Margin="24,0,0,0"
+                                        Spacing="8"
+                                        IsVisible="{Binding Project.Flags.ResourceSizeOverrides.Enabled}">
+                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                    <Button Command="{Binding ImportResourceSizeOverridesCommand}"
+                                            ToolTip.Tip="Import values from a resource size table">
+                                        <fa:Icon Value="fa-solid fa-file-import" />
+                                    </Button>
+                                    <Button Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            Command="{Binding ClearResourceSizeOverridesCommand}"
+                                            ToolTip.Tip="Clear all overrides">
+                                        <fa:Icon Value="fa-regular fa-trash" />
+                                    </Button>
+                                    <TextBlock Grid.Column="2"
+                                               Margin="8,0"
+                                               VerticalAlignment="Center"
+                                               Text="{Binding ResourceSizeOverrideEntries.Count, StringFormat={}{0} overrides}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,140,Auto">
+                                    <TextBox Text="{Binding ResourceSizeOverrideCanonical}"
+                                             Watermark="Canonical resource path" />
+                                    <NumericUpDown Grid.Column="1"
+                                                   Margin="8,0"
+                                                   FormatString="0"
+                                                   Minimum="1"
+                                                   Maximum="4294967295"
+                                                   Value="{Binding ResourceSizeOverrideSize}" />
+                                    <Button Grid.Column="2"
+                                            Command="{Binding AddResourceSizeOverrideCommand}"
+                                            ToolTip.Tip="Add or update override">
+                                        <fa:Icon Value="fa-regular fa-plus" />
+                                    </Button>
+                                </Grid>
+                                <ListBox MaxHeight="260" ItemsSource="{Binding ResourceSizeOverrideEntries}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ResourceSizeOverrideEntryViewModel">
+                                            <Grid ColumnDefinitions="*,140,Auto" Margin="0,2">
+                                                <TextBlock Text="{Binding Canonical}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           VerticalAlignment="Center" />
+                                                <NumericUpDown Grid.Column="1"
+                                                               Margin="8,0"
+                                                               FormatString="0"
+                                                               Minimum="1"
+                                                               Maximum="4294967295"
+                                                               Value="{Binding Size}" />
+                                                <Button Grid.Column="2"
+                                                        Command="{Binding $parent[UserControl].DataContext.RemoveResourceSizeOverrideCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip.Tip="Remove override">
+                                                    <fa:Icon Value="fa-regular fa-trash" />
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
         </Grid>

@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Tkmm.ViewModels"
+             xmlns:fa="https://github.com/projektanker/icons.avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="640"
+             d:DesignHeight="480"
+             x:DataType="vm:ResourceSizeOverrideImportViewModel"
+             x:Class="Tkmm.Dialogs.ResourceSizeOverrideImportView">
+    <Grid Width="640" Height="480" RowDefinitions="Auto,Auto,*">
+        <TextBox Margin="0,0,0,8"
+                 Text="{Binding Search}"
+                 Watermark="Search canonical paths" />
+        <StackPanel Grid.Row="1"
+                    Margin="0,0,0,8"
+                    Orientation="Horizontal"
+                    Spacing="5">
+            <Button Command="{Binding SelectAllCommand}"
+                    ToolTip.Tip="Select all filtered entries">
+                <fa:Icon Value="fa-regular fa-square-check" />
+            </Button>
+            <Button Command="{Binding ClearCommand}"
+                    ToolTip.Tip="Clear filtered entries">
+                <fa:Icon Value="fa-regular fa-square" />
+            </Button>
+        </StackPanel>
+        <ListBox Grid.Row="2" ItemsSource="{Binding Entries}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:ResourceSizeOverrideImportEntryViewModel">
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2">
+                        <CheckBox IsChecked="{Binding IsSelected}" />
+                        <TextBlock Grid.Column="1"
+                                   Margin="8,0"
+                                   Text="{Binding Canonical}"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding Size}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

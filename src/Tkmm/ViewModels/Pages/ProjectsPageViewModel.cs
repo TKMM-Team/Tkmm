@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -26,6 +27,29 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
 
     [ObservableProperty]
     private TkProject? _project;
+
+    public ObservableCollection<ResourceSizeOverrideEntryViewModel> ResourceSizeOverrideEntries { get; } = [];
+
+    [ObservableProperty]
+    private string _resourceSizeOverrideCanonical = string.Empty;
+
+    [ObservableProperty]
+    private decimal _resourceSizeOverrideSize = 1;
+
+    partial void OnProjectChanging(TkProject? value) => SaveResourceSizeOverrides();
+
+    partial void OnProjectChanged(TkProject? value)
+    {
+        ResourceSizeOverrideEntries.Clear();
+        if (value is null) {
+            return;
+        }
+
+        foreach (var (canonical, size) in value.Flags.ResourceSizeOverrides.Entries
+                     .OrderBy(entry => entry.Key, StringComparer.Ordinal)) {
+            ResourceSizeOverrideEntries.Add(new ResourceSizeOverrideEntryViewModel(canonical, size));
+        }
+    }
 
     [RelayCommand]
     private async Task NewProject()
@@ -99,6 +123,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         TkStatus.Set($"Saving '{Project.Mod.Name}'", "fa-regular fa-floppy-disk-circle-arrow-right", StatusType.Working);
 
         ApplyDeletions();
+        SaveResourceSizeOverrides();
         Project.Save();
         TkProjectManager.Save();
 
@@ -111,6 +136,8 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         if (Project is null) {
             return;
         }
+
+        SaveResourceSizeOverrides();
 
         FilePickerSaveOptions filePickerOptions = new() {
             Title = "Export TotK changelog package.",
@@ -147,6 +174,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
+        SaveResourceSizeOverrides();
         TkStatus.Set($"Installing '{Project.Mod.Name}'", "fa-regular fa-download", StatusType.Working);
 
         var writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
@@ -156,6 +184,111 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         TKMM.ModManager.Import(Project.Mod);
 
         TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
+    }
+
+    [RelayCommand]
+    private void AddResourceSizeOverride()
+    {
+        var canonical = ResourceSizeOverrideCanonical.Trim();
+        if (canonical.Length == 0 || ResourceSizeOverrideSize is < 1 or > uint.MaxValue) {
+            return;
+        }
+
+        var size = (uint)ResourceSizeOverrideSize;
+        if (ResourceSizeOverrideEntries.FirstOrDefault(entry => entry.Canonical == canonical) is { } existing) {
+            existing.Size = size;
+        }
+        else {
+            ResourceSizeOverrideEntries.Add(new ResourceSizeOverrideEntryViewModel(canonical, size));
+        }
+
+        ResourceSizeOverrideCanonical = string.Empty;
+        ResourceSizeOverrideSize = 1;
+    }
+
+    [RelayCommand]
+    private void RemoveResourceSizeOverride(ResourceSizeOverrideEntryViewModel entry)
+    {
+        ResourceSizeOverrideEntries.Remove(entry);
+    }
+
+    [RelayCommand]
+    private async Task ClearResourceSizeOverrides()
+    {
+        if (ResourceSizeOverrideEntries.Count == 0
+            || await MessageDialog.Show(
+                "Remove every configured resource-size override?",
+                "Clear Resource Size Overrides",
+                MessageDialogButtons.YesNo) is not MessageDialogResult.Yes) {
+            return;
+        }
+
+        ResourceSizeOverrideEntries.Clear();
+    }
+
+    [RelayCommand]
+    private async Task ImportResourceSizeOverrides()
+    {
+        if (Project is null) {
+            return;
+        }
+
+        FilePickerOpenOptions options = new() {
+            Title = "Import resource-size overrides.",
+            AllowMultiple = false,
+            FileTypeFilter = [
+                new FilePickerFileType("Resource Size Table") {
+                    Patterns = ["*.rsizetable", "*.rsizetable.zs"]
+                }
+            ]
+        };
+
+        if (await App.XamlRoot.StorageProvider.OpenFilePickerAsync(options) is not [{ } file]
+            || file.TryGetLocalPath() is not { } path) {
+            return;
+        }
+
+        try {
+            TkStatus.Set("Scanning project resources", "fa-regular fa-magnifying-glass", StatusType.Working);
+            using var rom = TKMM.GetTkRom();
+            var candidates = await Project.GetResourceSizeOverrideCandidates(path, rom);
+            TkStatus.SetTemporary($"Found {candidates.Count:N0} resource-size candidates", "fa-regular fa-circle-check");
+            ResourceSizeOverrideImportViewModel viewModel = new(candidates);
+            ContentDialog dialog = new() {
+                Title = Locale["ProjectFlags_ResourceSizeOverrides"],
+                Content = new ResourceSizeOverrideImportView { DataContext = viewModel },
+                PrimaryButtonText = "Import",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary
+            };
+
+            if (await dialog.ShowAsync() is ContentDialogResult.Primary) {
+                foreach (var entry in viewModel.SelectedEntries) {
+                    if (ResourceSizeOverrideEntries.FirstOrDefault(existing => existing.Canonical == entry.Canonical) is { } existing) {
+                        existing.Size = entry.Size;
+                    }
+                    else {
+                        ResourceSizeOverrideEntries.Add(new ResourceSizeOverrideEntryViewModel(entry.Canonical, entry.Size));
+                    }
+                }
+
+                TkStatus.SetTemporary("Imported resource-size overrides", "fa-regular fa-circle-check");
+            }
+        }
+        catch (Exception ex) {
+            TkStatus.SetTemporary("Resource-size import failed", "fa-regular fa-circle-exclamation");
+            App.ToastError(ex);
+        }
+    }
+
+    private void SaveResourceSizeOverrides()
+    {
+        if (Project is null) {
+            return;
+        }
+
+        Project.Flags.ResourceSizeOverrides.Entries = ResourceSizeOverrideEntries
+            .ToDictionary(entry => entry.Canonical, entry => entry.Size, StringComparer.Ordinal);
     }
 
     [RelayCommand]
