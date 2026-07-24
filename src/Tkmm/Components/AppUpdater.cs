@@ -1,12 +1,15 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using Humanizer;
 using Tkmm.Core;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.Services;
 using Tkmm.Dialogs;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana.Helpers;
@@ -18,7 +21,19 @@ public static class AppUpdater
 {
 #if !SWITCH
     private static readonly string RuntimeId = OperatingSystem.IsWindows() ? "win" : OperatingSystem.IsLinux() ? "linux" : "osx";
-    private static readonly string AssetName = $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.zip";
+
+    private static string AssetName =>
+        $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.{(IsAppImage ? "AppImage" : "zip")}";
+
+    private static bool IsAppImage => RuntimeId is "linux" && TryGetAppImagePath(out _);
+
+    private static bool TryGetAppImagePath([NotNullWhen(true)] out string? appImagePath)
+    {
+        appImagePath = Environment.GetEnvironmentVariable("APPIMAGE");
+        return appImagePath is not null
+               && File.Exists(appImagePath)
+               && Path.GetFileName(appImagePath).EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase);
+    }
 
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
@@ -114,42 +129,97 @@ public static class AppUpdater
         Config.SaveAll();
         TKMM.ModManager.Save();
 
+        if (IsAppImage) {
+            await UpdateAppImage(stream, ct);
+            return;
+        }
+
+        EnsureProcessStartLoaded();
+
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
         foreach (var entry in archive.Entries) {
             var target = Path.Combine(AppContext.BaseDirectory, entry.FullName);
             if (File.Exists(target)) File.Move(target, $"{target}.moldy");
         }
 
-        archive.ExtractToDirectory(AppContext.BaseDirectory);
+        await archive.ExtractToDirectoryAsync(AppContext.BaseDirectory, ct);
         Restart();
+    }
+
+    private static async ValueTask UpdateAppImage(Stream stream, CancellationToken ct)
+    {
+        if (!TryGetAppImagePath(out var appImagePath)) {
+            throw new InvalidOperationException("AppImage path could not be resolved.");
+        }
+
+        if (File.Exists(appImagePath)) {
+            File.Move(appImagePath, $"{appImagePath}.moldy", overwrite: true);
+        }
+
+        await using (var output = File.Create(appImagePath)) {
+            await stream.CopyToAsync(output, ct);
+        }
+
+        if (OperatingSystem.IsLinux()) {
+            var mode = File.GetUnixFileMode(appImagePath);
+            File.SetUnixFileMode(appImagePath,
+                mode | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+        }
+
+        SingleInstanceAppManager.MarkRestarting();
+
+        Process.Start(new ProcessStartInfo(appImagePath) {
+            UseShellExecute = true,
+            WorkingDirectory = Path.GetDirectoryName(appImagePath),
+        });
+        
+        Environment.Exit(0);
     }
 
     private static void Restart()
     {
+        var executableDirectory = AppContext.BaseDirectory;
         var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 
-        switch (processName.Length) {
-            case >= 6 when Path.GetExtension(processName.AsSpan()) is ".moldy":
-                processName = processName[..^6];
-                break;
-            case 0:
-                processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
-                break;
+        if (processName.EndsWith(".moldy", StringComparison.Ordinal)) {
+            processName = processName[..^6];
         }
+
+        if (processName.Length == 0 || !Path.Exists(Path.Combine(executableDirectory, processName))) {
+            processName = OperatingSystem.IsWindows() ? "Tkmm.exe" : "Tkmm";
+        }
+
+        SingleInstanceAppManager.MarkRestarting();
 
         ProcessStartInfo processStart = new(processName) {
             UseShellExecute = true,
-            WorkingDirectory = AppContext.BaseDirectory,
+            WorkingDirectory = executableDirectory,
         };
 
         Process.Start(processStart);
         Environment.Exit(0);
     }
 
+    private static void EnsureProcessStartLoaded()
+    {
+        _ = Environment.ProcessId;
+        RuntimeHelpers.PrepareMethod(
+            typeof(Process).GetMethod(nameof(Process.Start), [typeof(ProcessStartInfo)])!.MethodHandle);
+    }
+
 #endif
     public static void CleanupUpdate()
     {
-        foreach (var oldFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.moldy")) {
+#if !SWITCH
+        var cleanupDirectory = TryGetAppImagePath(out var appImagePath)
+            ? Path.GetDirectoryName(appImagePath)
+            : AppContext.BaseDirectory;
+
+        if (string.IsNullOrEmpty(cleanupDirectory)) {
+            return;
+        }
+
+        foreach (var oldFile in Directory.EnumerateFiles(cleanupDirectory, "*.moldy")) {
         Retry:
             try {
                 File.Delete(oldFile);
@@ -158,5 +228,6 @@ public static class AppUpdater
                 goto Retry;
             }
         }
+#endif
     }
 }

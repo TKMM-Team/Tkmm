@@ -1,14 +1,11 @@
 [Desktop Entry]
-Categories=Game
-Comment=
-Exec=Tkmm
-GenericName=
-Icon=tkmm
-MimeType=
-Name=TKMM
-Path=/usr/bin/Tkmm
-StartupNotify=true
-Terminal=false
-TerminalOptions=
-Type=Application
 Version=1.0
+Type=Application
+Name=TKMM
+Comment=TotK Mod Manager
+Exec=Tkmm %u
+Icon=tkmm
+MimeType=x-scheme-handler/tkmm;
+Categories=Game;
+Terminal=false
+StartupNotify=true

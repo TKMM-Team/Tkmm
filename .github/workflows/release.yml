@@ -99,9 +99,6 @@ jobs:
           -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }} \
           -p:DebugType=embedded
 
-      - name: Remove JSON Files (temporary - step can be removed later)
-        run: find ${{ matrix.target.project }}-${{ matrix.config.runtime }} -name "*.json" -type f -delete
-
       - name: Archive Build
         uses: TheDoctor0/zip-release@0.7.6
         with:
@@ -177,7 +174,6 @@ jobs:
           --sc true \
           --version-suffix ${{ needs.release.outputs.version }} \
           -p:Version=${{ needs.release.outputs.version }} \
-          -p:NoUpdate=true \
           -p:DebugType=embedded \
           -p:IsReadonlyFileSystem=True
 
@@ -191,10 +187,14 @@ jobs:
 
           rm -rf AppDir
           mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps
 
-          cp distribution/appimage/Tkmm.desktop AppDir/Tkmm.desktop
+          cp distribution/appimage/Tkmm.desktop AppDir/usr/share/applications/tkmm.desktop
+          ln -s usr/share/applications/tkmm.desktop AppDir/Tkmm.desktop
           cp distribution/appimage/AppRun AppDir/AppRun
           cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
+          cp distribution/appimage/tkmm.svg AppDir/usr/share/icons/hicolor/scalable/apps/tkmm.svg
 
           cp -R ${{ matrix.target.project }}-${{ matrix.config.runtime }}/* AppDir/usr/bin/
 

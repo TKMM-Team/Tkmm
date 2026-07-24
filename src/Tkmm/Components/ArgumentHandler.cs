@@ -39,6 +39,19 @@ internal static class ArgumentHandler
             }
         };
 
+        TkConsoleApp.OpenMemberRequested += async memberId => {
+            try {
+                await Dispatcher.UIThread.InvokeAsync(async () => {
+                    PageManager.Shared.Focus(Page.GbMods);
+                    var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
+                    await gameBananaPage.OpenMemberInBrowserAsync(memberId);
+                });
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, "Error opening member {MemberId}: {Message}", memberId, ex.Message);
+            }
+        };
+
         TkConsoleApp.PageRequested += name => {
             try {
                 Dispatcher.UIThread.Post(() => {

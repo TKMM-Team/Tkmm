@@ -3,15 +3,12 @@ using AvaMark;
 using AvaMark.ViewModels;
 using Microsoft.Extensions.Logging;
 using TkSharp.Core;
+using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.Components;
 
 public class TkImageResolver : IImageResolver
 {
-    private static readonly HttpClient _httpClient = new(new SocketsHttpHandler {
-        PooledConnectionLifetime = TimeSpan.FromMinutes(2)
-    });
-
     public static readonly TkImageResolver Instance = new();
 
     public async ValueTask FetchImage(ImageLoadContext context, object? state, string? url)
@@ -21,33 +18,100 @@ public class TkImageResolver : IImageResolver
         }
         
         try {
-            var tmpFolderPath = GetTempFolderPath(state?.ToString() ?? "detached");
-            var tmpFileName = Path.Combine(tmpFolderPath, GetFileName(url));
-
-            if (File.Exists(tmpFileName)) {
-                context.Source = new Bitmap(tmpFileName);
-                return;
+            if (await LoadOrDownloadAsync(url, state?.ToString() ?? "detached") is { } bitmap) {
+                context.Source = bitmap;
             }
-
-            Directory.CreateDirectory(tmpFolderPath);
-
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode) {
-                return;
-            }
-
-            await using var fs = File.Create(tmpFileName);
-            await using var src = await response.Content.ReadAsStreamAsync();
-            await src.CopyToAsync(fs);
-
-            fs.Seek(0, SeekOrigin.Begin);
-            context.Source = new Bitmap(fs);
         }
         catch (Exception ex) {
             TkLog.Instance.LogWarning(ex, "Failed to resolve {ImageUrl} with {State}", url, state);
         }
     }
+
+    public static async ValueTask<Bitmap?> LoadOrDownloadAsync(string url, string cacheTarget, CancellationToken ct = default)
+    {
+        if (await EnsureCachedAsync(url, cacheTarget, ct) is not { } cacheFilePath) {
+            return null;
+        }
+
+        if (TryLoadBitmap(cacheFilePath) is { } bitmap) {
+            return bitmap;
+        }
+
+        return await EnsureCachedAsync(url, cacheTarget, ct) is not { } retryCacheFilePath
+            ? null
+            : TryLoadBitmap(retryCacheFilePath);
+    }
+
+    public static async ValueTask<string?> EnsureCachedAsync(string url, string cacheTarget, CancellationToken ct = default)
+    {
+        var cacheFilePath = GetCacheFilePath(url, cacheTarget);
+        if (File.Exists(cacheFilePath)) {
+            return cacheFilePath;
+        }
+
+        var cacheDirectory = Path.GetDirectoryName(cacheFilePath)!;
+        Directory.CreateDirectory(cacheDirectory);
+
+        var tempFilePath = Path.Combine(cacheDirectory, $"{Path.GetFileName(cacheFilePath)}.{Guid.NewGuid():N}.tmp");
+
+        try {
+            using var response = await DownloadHelper.Client.GetAsync(url, ct);
+            if (!response.IsSuccessStatusCode) {
+                return File.Exists(cacheFilePath) ? cacheFilePath : null;
+            }
+
+            await using (var src = await response.Content.ReadAsStreamAsync(ct))
+            await using (var fs = new FileStream(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
+                await src.CopyToAsync(fs, ct);
+            }
+
+            try {
+                File.Move(tempFilePath, cacheFilePath, overwrite: true);
+            }
+            catch (IOException) when (File.Exists(cacheFilePath)) {
+                // Another download finished first.
+            }
+
+            return cacheFilePath;
+        }
+        finally {
+            try {
+                if (File.Exists(tempFilePath)) {
+                    File.Delete(tempFilePath);
+                }
+            }
+            catch {
+                // ignored
+            }
+        }
+    }
+
+    public static Bitmap? TryLoadBitmap(string cacheFilePath)
+    {
+        try {
+            using var fs = new FileStream(
+                cacheFilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read);
+
+            return new Bitmap(fs);
+        }
+        catch (Exception ex) {
+            TkLog.Instance.LogWarning(ex, "Failed to read cached image at {CacheFilePath}, re-downloading", cacheFilePath);
+            try {
+                File.Delete(cacheFilePath);
+            }
+            catch (Exception deleteEx) {
+                TkLog.Instance.LogWarning(deleteEx, "Failed to delete invalid cached image at {CacheFilePath}", cacheFilePath);
+            }
+
+            return null;
+        }
+    }
+
+    public static string GetCacheFilePath(string url, string cacheTarget)
+        => Path.Combine(GetTempFolderPath(cacheTarget), GetFileName(url));
 
     private static unsafe string GetFileName(ReadOnlySpan<char> url)
     {
@@ -68,7 +132,7 @@ public class TkImageResolver : IImageResolver
         });
     }
 
-    public static string GetTempFolderPath(string target)
+    private static string GetTempFolderPath(string target)
     {
         return Path.Combine(Path.GetTempPath(), "tkmm", "images", target);
     }

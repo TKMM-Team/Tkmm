@@ -8,6 +8,8 @@ public static class TkConsoleApp
 
     public static event Func<long, long?, bool, Task>? OpenModRequested;
 
+    public static event Func<int, Task>? OpenMemberRequested;
+
     public static event Action<string>? PageRequested;
 
     public static event Action<string>? SettingsFocusRequested;
@@ -78,18 +80,36 @@ public static class TkConsoleApp
             return;
         }
 
-        if (OpenModRequested is null) {
-            ShowError("Invalid State: OpenModRequest is not registered.");
+        if (parts is ["member", ..]) {
+            parts[0] = "members";
+        }
+
+        if (parts is ["members", var memberIdStr] && int.TryParse(memberIdStr, out var parsedMemberId) && parsedMemberId > 0) {
+            if (OpenMemberRequested is null) {
+                ShowError("Invalid State: OpenMemberRequested is not registered.");
+                return;
+            }
+
+            _ = OpenMemberRequested.Invoke(parsedMemberId);
             return;
         }
 
-        if (parts is ["mod", var mode, var modIdStrA, var fileIdStrA] && long.TryParse(modIdStrA, out var modIdA) && long.TryParse(fileIdStrA, out var fileIdA)) {
+        if (parts is ["mod", ..]) {
+            parts[0] = "mods";
+        }
+
+        if (OpenModRequested is null) {
+            ShowError("Invalid State: OpenModRequested is not registered.");
+            return;
+        }
+
+        if (parts is ["mods", var mode, var modIdStrA, var fileIdStrA] && long.TryParse(modIdStrA, out var modIdA) && long.TryParse(fileIdStrA, out var fileIdA)) {
             // mode can be 'install' or 'view'/'open'; 'install' sets is_silent to true
             _ = OpenModRequested.Invoke(modIdA, fileIdA, mode is "install");
             return;
         }
 
-        if (parts is not ["mod", var modIdStr, ..]) {
+        if (parts is not ["mods", var modIdStr, ..]) {
             ShowError($"Invalid URI: {uri}");
             return;
         }

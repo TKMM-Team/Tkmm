@@ -2,8 +2,8 @@ using Avalonia;
 using Avalonia.Data;
 using AvaMark;
 using ReverseMarkdown;
-using System.Text.RegularExpressions;
 using Tkmm.Components;
+using Tkmm.Helpers;
 using TkSharp.Core.Models;
 using TkSharp.Extensions.GameBanana;
 
@@ -57,9 +57,7 @@ public abstract partial class MarkdownView : AvaloniaObject
     
     
     private static string ReplaceGameBananaUrls(string markdownContent)
-    {
-        return GbUrlRegex().Replace(markdownContent, match => $"tkmm://mod/{match.Groups[1].Value}");
-    }
+        => GameBananaUriHelper.ReplaceTkmmUrls(markdownContent);
     
     
     public static void SetMod(AvaloniaObject element, TkMod mod)
@@ -73,7 +71,4 @@ public abstract partial class MarkdownView : AvaloniaObject
 
     public static GameBananaMod? GetGameBananaMod(AvaloniaObject element)
         => element.GetValue(GameBananaModProperty);
-    
-    [GeneratedRegex(@"https?://gamebanana\.com/mods/(\d+)")]
-    private static partial Regex GbUrlRegex();
 }

@@ -7,6 +7,7 @@ using R2CSharp.Lib.Extensions;
 using Tkmm.Components;
 using Tkmm.CLI;
 using Tkmm.Core;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
 using TkSharp.Core;
@@ -29,6 +30,10 @@ internal abstract class Program
             if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
             }
+
+#if !SWITCH
+            DesktopEntryHelper.TryRegisterUriSchemeHandler();
+#endif
 
             if (TkConsoleApp.IsComplexRequest(args)) {
                 TkConsoleApp.ProcessArguments(args);

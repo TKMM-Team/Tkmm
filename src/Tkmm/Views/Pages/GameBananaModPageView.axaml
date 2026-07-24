@@ -22,10 +22,6 @@
         </Style>
     </UserControl.Styles>
 
-    <UserControl.DataContext>
-        <pages:GameBananaModPageViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Resources>
         <converters:GameBananaFileSorter x:Key="FileSorter" />
     </UserControl.Resources>
@@ -54,7 +50,7 @@
                         <HyperlinkButton FontSize="12"
                                          FontStyle="Italic"
                                          Foreground="{DynamicResource SystemAccentColor}"
-                                         NavigateUri="{Binding SelectedMod.Submitter.Url}"
+                                         NavigateUri="{Binding SelectedMod.Submitter.Url, Converter={x:Static converters:GbMemberUriConverter.Instance}}"
                                          Content="{Binding SelectedMod.Submitter.Name}"
                                          Padding="0"
                                          Margin="0" />
@@ -64,21 +60,34 @@
                                    Text="{Binding FormattedDateAdded, StringFormat=' on {0}'}" />
                     </StackPanel>
                 </StackPanel>
-                <HyperlinkButton Grid.Column="2"
-                                 VerticalAlignment="Top"
-                                 NavigateUri="{Binding ModUrl}"
-                                 IsVisible="{Binding ShowGameBananaLink}"
-                                 ToolTip.Tip="Open in GameBanana">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <Image Width="20"
-                               Height="20"
-                               Source="{Binding BananaIcon}"
-                               Stretch="Uniform" />
-                        <TextBlock Text="{markup:Locale GameBanana_OpenInGameBanana}"
-                                   FontSize="14"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                </HyperlinkButton>
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            VerticalAlignment="Top">
+                    <Button Padding="8,4"
+                            Command="{Binding ToggleBookmarkCommand}"
+                            ToolTip.Tip="{Binding BookmarkLabel}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <pi:Icon Value="{Binding BookmarkIcon}" />
+                            <TextBlock Text="{Binding BookmarkLabel}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <HyperlinkButton NavigateUri="{Binding ModUrl}"
+                                     IsVisible="{Binding ShowGameBananaLink}"
+                                     ToolTip.Tip="Open in GameBanana">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Image Width="20"
+                                   Height="20"
+                                   Source="{Binding BananaIcon}"
+                                   Stretch="Uniform" />
+                            <TextBlock Text="{markup:Locale GameBanana_OpenInGameBanana}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -120,7 +129,7 @@
                                        VerticalAlignment="Center"
                                        FontSize="16"
                                        Foreground="{DynamicResource SystemBaseMediumColor}"
-                                       IsVisible="{Binding ShowNoImagesMessage}" />
+                                       IsVisible="{Binding ShowLoadingImagesMessage}" />
 
                             <!-- Left/Right Navigation Buttons -->
                             <Button HorizontalAlignment="Left"
@@ -196,7 +205,7 @@
                         </ScrollViewer>
 
                         <!-- Description -->
-                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding SelectedMod}" />
+                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding MarkdownMod}" />
                     </StackPanel>
                 </Border>
 
@@ -375,7 +384,7 @@
                                                                              Width="32"
                                                                              Height="32"
                                                                              Padding="4"
-                                                                             NavigateUri="{Binding ProfileUrl}"
+                                                                             NavigateUri="{Binding ProfileUrl, Converter={x:Static converters:GbMemberUriConverter.Instance}}"
                                                                              ToolTip.Tip="View Profile"
                                                                              VerticalAlignment="Top"
                                                                              IsVisible="{Binding ProfileUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">

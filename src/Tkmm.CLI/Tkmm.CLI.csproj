@@ -12,7 +12,7 @@
   <PropertyGroup Condition="'$(RuntimeIdentifier)' != '' AND '$(IsSwitch)' != 'true'">
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
-    <TimeMode>partial</TimeMode>
+    <TrimMode>partial</TrimMode>
     <DebugType>embedded</DebugType>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>

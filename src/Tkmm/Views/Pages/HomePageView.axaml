@@ -313,13 +313,33 @@
                          ToolTip.Tip="Mods">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type tk:TkProfileMod}">
-                            <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto">
+                            <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto,Auto,Auto">
                                 <TextBlock VerticalAlignment="Center"
                                            Background="Transparent"
                                            Text="{Binding Mod.Name}"
                                            TextTrimming="CharacterEllipsis"
                                            ToolTip.Tip="{Binding Mod.Name}" />
-                                <ToggleButton Grid.Column="1"
+                                <Border Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding Mod.HasSLink}"
+                                        Padding="3" Margin="3,0,0,0"
+                                        Opacity="0.6" CornerRadius="5"
+                                        BorderThickness=".5"
+                                        Background="#fff028" BorderBrush="#292206">
+                                    <TextBlock FontSize="8" FontWeight="Bold"
+                                               Text="slnk" Foreground="#292206" />
+                                </Border>
+                                <Border Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding Mod.HasELink}"
+                                        Padding="3" Margin="3,0,0,0"
+                                        Opacity="0.6" CornerRadius="5"
+                                        BorderThickness=".5"
+                                        Background="#4386ff" BorderBrush="#000102">
+                                    <TextBlock FontSize="8" FontWeight="Bold"
+                                               Text="elnk" Foreground="#000102" />
+                                </Border>
+                                <ToggleButton Grid.Column="3"
                                               Height="20"
                                               Margin="5,0,0,0"
                                               Padding="3,1"
@@ -334,7 +354,7 @@
                                         </StackPanel>
                                     </ToggleButton.Content>
                                 </ToggleButton>
-                                <CheckBox Grid.Column="2"
+                                <CheckBox Grid.Column="4"
                                           Width="20"
                                           Height="20"
                                           Margin="5,0,0,0"

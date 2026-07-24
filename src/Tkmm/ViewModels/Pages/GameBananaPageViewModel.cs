@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
+using Tkmm.Components;
 using TkSharp.Core;
 using TkSharp.Extensions.GameBanana;
 
@@ -11,6 +12,33 @@ namespace Tkmm.ViewModels.Pages;
 
 public partial class GameBananaPageViewModel : ObservableObject
 {
+    private const string BANANA_LOGO_URL = "https://images.gamebanana.com/static/img/banana.png";
+
+    private static Task<object?>? _bananaIconTask;
+
+    public static object? Icon { get; private set; }
+
+    public object? BananaIcon => Icon;
+
+    public static Task<object?> LoadBananaIconAsync(CancellationToken ct = default)
+    {
+        if (Icon is not null) {
+            return Task.FromResult<object?>(Icon);
+        }
+
+        return _bananaIconTask ??= LoadBananaIconCoreAsync(ct);
+    }
+
+    private static async Task<object?> LoadBananaIconCoreAsync(CancellationToken ct)
+    {
+        try {
+            return Icon ??= await TkImageResolver.LoadOrDownloadAsync(BANANA_LOGO_URL, "gamebanana", ct);
+        }
+        finally {
+            _bananaIconTask = null;
+        }
+    }
+
     [ObservableProperty]
     public partial bool IsShowingDetail { get; set; }
 
@@ -31,6 +59,10 @@ public partial class GameBananaPageViewModel : ObservableObject
 
     public GameBananaPageViewModel()
     {
+        _ = LoadBananaIconAsync().ContinueWith(
+            _ => OnPropertyChanged(nameof(BananaIcon)),
+            TaskScheduler.Default);
+
         Browser.PropertyChanged += (_, e) => {
             switch (e.PropertyName) {
                 case nameof(Browser.IsLoading):
@@ -54,16 +86,32 @@ public partial class GameBananaPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ViewMod(GameBananaModRecord mod)
     {
-        if (mod.Full is null) {
-            await mod.DownloadFullMod();
-        }
+        try {
+            if (mod.Full is null) {
+                await mod.DownloadFullMod();
+            }
 
-        if (mod.Full is null) {
-            return;
-        }
+            if (mod.Full is null) {
+                TkStatus.SetTemporary(Locale["GameBanana_FailedToLoadMod"], TkIcons.ERROR);
+                return;
+            }
 
+            await ShowViewerAsync(mod.Full);
+        }
+        catch (Exception ex) {
+            TkStatus.SetTemporary(Locale["GameBanana_ErrorLoadingMod"], TkIcons.ERROR);
+            TkLog.Instance.LogError(ex, "An error occurred while loading mod {ModId}.", mod.Id);
+        }
+    }
+
+    private async Task ShowViewerAsync(GameBananaMod mod)
+    {
+        Viewer?.CancelLoading();
         Viewer?.Reset();
-        Viewer = GameBananaModPageViewModel.CreateForMod(mod.Full);
+        Viewer = null;
+        OnPropertyChanged(nameof(Viewer));
+
+        Viewer = GameBananaModPageViewModel.CreateForMod(mod);
         Viewer.PropertyChanged += (_, e) => {
             if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
                 UpdateCombinedLoading();
@@ -73,6 +121,14 @@ public partial class GameBananaPageViewModel : ObservableObject
         OnPropertyChanged(nameof(Viewer));
         IsShowingDetail = true;
         ViewerOpacity = 1.0;
+
+        await Task.Delay(300);
+
+        if (Viewer?.SelectedMod?.Id != mod.Id) {
+            return;
+        }
+
+        await Viewer.StartLoadingAsync();
     }
 
     [RelayCommand]
@@ -81,6 +137,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         ViewerOpacity = 0.0;
         Task.Delay(300).ContinueWith(_ => {
             Dispatcher.UIThread.Post(() => {
+                Viewer?.CancelLoading();
                 Viewer?.Reset();
                 Viewer = null;
                 OnPropertyChanged(nameof(Viewer));
@@ -88,6 +145,26 @@ public partial class GameBananaPageViewModel : ObservableObject
                 UpdateCombinedLoading();
             });
         });
+    }
+
+    public async Task OpenMemberInBrowserAsync(int memberId)
+    {
+        if (IsShowingDetail) {
+            CloseViewerImmediately();
+        }
+
+        await Browser.OpenMemberAsync(memberId);
+    }
+
+    private void CloseViewerImmediately()
+    {
+        Viewer?.CancelLoading();
+        Viewer?.Reset();
+        Viewer = null;
+        OnPropertyChanged(nameof(Viewer));
+        IsShowingDetail = false;
+        ViewerOpacity = 0;
+        UpdateCombinedLoading();
     }
 
     public async Task OpenModInViewerAsync(long modId, long? fileId = null, bool isSilent = false)
@@ -118,17 +195,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             }
 
             if (!isSilent) {
-                Viewer?.Reset();
-                Viewer = GameBananaModPageViewModel.CreateForMod(modRecord.Full);
-                Viewer.PropertyChanged += (_, e) => {
-                    if (e.PropertyName == nameof(GameBananaModPageViewModel.IsLoading)) {
-                        UpdateCombinedLoading();
-                    }
-                };
-                UpdateCombinedLoading();
-                OnPropertyChanged(nameof(Viewer));
-                IsShowingDetail = true;
-                ViewerOpacity = 1.0;
+                await ShowViewerAsync(modRecord.Full);
             }
 
             if (fileId is { } desiredFileId) {

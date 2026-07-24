@@ -2,21 +2,25 @@ using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
+using Tkmm.Components;
+using Tkmm.Models;
 using TkSharp.Core;
-using TkSharp.Core.Models;
 using TkSharp.Extensions.GameBanana;
-using TkSharp.Extensions.GameBanana.Helpers;
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class GameBananaModPageViewModel : ObservableObject
 {
-    private static object? _gameBananaLogoCache;
+    private const string GAME_BANANA_STATIC_CACHE_TARGET = "gamebanana";
+
+    private CancellationTokenSource? _loadingCts;
 
     [ObservableProperty]
     public partial GameBananaMod? SelectedMod { get; set; }
+
+    [ObservableProperty]
+    public partial GameBananaMod? MarkdownMod { get; set; }
 
     [ObservableProperty]
     private int _selectedImageIndex;
@@ -42,12 +46,19 @@ public partial class GameBananaModPageViewModel : ObservableObject
         NotifyImagePropertiesChanged();
     }
 
+    partial void OnIsLoadingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowLoadingImagesMessage));
+        OnPropertyChanged(nameof(ShowNoImagesMessage));
+    }
+
     private void NotifyImagePropertiesChanged()
     {
         OnPropertyChanged(nameof(SelectedImage));
         OnPropertyChanged(nameof(CanGoToPreviousImage));
         OnPropertyChanged(nameof(CanGoToNextImage));
         OnPropertyChanged(nameof(HasImages));
+        OnPropertyChanged(nameof(ShowLoadingImagesMessage));
         OnPropertyChanged(nameof(ShowNoImagesMessage));
         OnPropertyChanged(nameof(ShowNoThumbnailMessage));
     }
@@ -62,7 +73,9 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public bool HasImages => Images.Count > 0;
 
-    public bool ShowNoImagesMessage => Images.Count == 0;
+    public bool ShowLoadingImagesMessage => IsLoading && Images.Count == 0;
+
+    public bool ShowNoImagesMessage => !IsLoading && Images.Count == 0;
 
     public bool ShowNoThumbnailMessage => Images.Count == 0;
 
@@ -76,50 +89,104 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public string ModUrl => SelectedMod != null ? $"https://gamebanana.com/mods/{SelectedMod.Id}" : string.Empty;
 
+    public bool IsBookmarked => SelectedMod is { } mod && GameBananaBookmarks.IsBookmarked((int)mod.Id);
+
+    public string BookmarkIcon => IsBookmarked ? "fa-solid fa-star" : "fa-regular fa-star";
+
+    public string BookmarkLabel => Locale[IsBookmarked ? "GameBanana_RemoveBookmark" : "GameBanana_BookmarkMod"];
+
     public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
     {
         var viewer = new GameBananaModPageViewModel();
-        viewer.LoadMod(mod);
+        viewer.PrepareMod(mod);
         return viewer;
     }
 
-    private void LoadMod(GameBananaMod mod)
+    private void PrepareMod(GameBananaMod mod)
     {
+        CancelLoading();
+
         SelectedMod = mod;
+        MarkdownMod = null;
         IsLoading = true;
+        Images.Clear();
+        SelectedImageIndex = 0;
+        BananaIcon = GameBananaPageViewModel.Icon;
 
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
+        OnPropertyChanged(nameof(IsBookmarked));
+        OnPropertyChanged(nameof(BookmarkIcon));
+        OnPropertyChanged(nameof(BookmarkLabel));
         OnPropertyChanged(nameof(FormattedDateAdded));
         OnPropertyChanged(nameof(FormattedDateUpdated));
+        NotifyImagePropertiesChanged();
+    }
 
-        _ = Task.Run(async () => {
-            try {
-                await Task.Delay(100);
-                await LoadBananaIconAsync();
-                await LoadAvatarsAsync();
-                await LoadImagesAsync();
+    public void CancelLoading()
+    {
+        if (_loadingCts is not { } cts) {
+            return;
+        }
+
+        cts.Cancel();
+        cts.Dispose();
+        _loadingCts = null;
+    }
+
+    public async Task StartLoadingAsync()
+    {
+        if (SelectedMod is null) {
+            return;
+        }
+
+        CancelLoading();
+        _loadingCts = new CancellationTokenSource();
+        var ct = _loadingCts.Token;
+
+        try {
+            _ = LoadBananaIconAsync(ct);
+
+            await Dispatcher.UIThread.InvokeAsync(() => MarkdownMod = SelectedMod, DispatcherPriority.Background);
+
+            await LoadImagesAsync(ct);
+
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                IsLoading = false;
+                NotifyImagePropertiesChanged();
+            }, DispatcherPriority.Background);
+
+            if (ct.IsCancellationRequested) {
+                return;
             }
-            finally {
-                await Dispatcher.UIThread.InvokeAsync(() => { IsLoading = false; });
-            }
-        });
+
+            _ = LoadAvatarsAsync(ct);
+        }
+        catch (OperationCanceledException) {
+            // Viewer was closed or replaced before loading finished.
+        }
     }
 
     public void Reset()
     {
+        CancelLoading();
+
+        if (SelectedMod?.Credits is { } credits) {
+            foreach (var author in credits.SelectMany(creditGroup => creditGroup.Authors)) {
+                author.LoadedAvatar = null;
+            }
+        }
+
         SelectedMod = null;
+        MarkdownMod = null;
         Images.Clear();
         SelectedImageIndex = 0;
-        BananaIcon = null;
+        IsLoading = false;
 
-        if (SelectedMod?.Credits is null) {
-            return;
-        }
-
-        foreach (var author in SelectedMod.Credits.SelectMany(creditGroup => creditGroup.Authors)) {
-            author.LoadedAvatar = null;
-        }
+        OnPropertyChanged(nameof(ModUrl));
+        OnPropertyChanged(nameof(FormattedDateAdded));
+        OnPropertyChanged(nameof(FormattedDateUpdated));
+        NotifyImagePropertiesChanged();
     }
 
     [RelayCommand]
@@ -159,71 +226,88 @@ public partial class GameBananaModPageViewModel : ObservableObject
         await ModActions.Instance.Install((SelectedMod, file));
     }
 
-    private async Task LoadBananaIconAsync()
+    [RelayCommand]
+    private void ToggleBookmark()
     {
-        // Avoid multiple calls to fetch this image
-        BananaIcon = _gameBananaLogoCache
-            ??= await LoadImageFromUrlAsync("https://images.gamebanana.com/static/img/banana.png", "game banana logo");
+        if (SelectedMod is null) {
+            return;
+        }
+
+        GameBananaBookmarks.Toggle(SelectedMod);
+        OnPropertyChanged(nameof(IsBookmarked));
+        OnPropertyChanged(nameof(BookmarkIcon));
+        OnPropertyChanged(nameof(BookmarkLabel));
     }
 
-    private async Task LoadAvatarsAsync()
+    private Task LoadBananaIconAsync(CancellationToken ct)
+    {
+        return BananaIcon is not null ? Task.CompletedTask : AssignBananaIconAsync(ct);
+    }
+
+    private async Task AssignBananaIconAsync(CancellationToken ct)
+    {
+        if (await GameBananaPageViewModel.LoadBananaIconAsync(ct) is { } icon) {
+            await Dispatcher.UIThread.InvokeAsync(() => BananaIcon = icon);
+        }
+    }
+
+    private async Task LoadAvatarsAsync(CancellationToken ct)
     {
         if (SelectedMod?.Credits is not null) {
             foreach (var author in SelectedMod.Credits.SelectMany(creditGroup => creditGroup.Authors)) {
-                await LoadSingleAvatarAsync(author);
+                ct.ThrowIfCancellationRequested();
+                await LoadSingleAvatarAsync(author, ct);
             }
         }
     }
 
-    private static async Task LoadSingleAvatarAsync(GameBananaAuthor author)
+    private static async Task LoadSingleAvatarAsync(GameBananaAuthor author, CancellationToken ct)
     {
         var avatarUrl = !string.IsNullOrEmpty(author.AvatarUrl)
             ? author.AvatarUrl
             : "https://images.gamebanana.com/static/img/defaults/avatar.gif";
 
-        var bitmap = await LoadImageFromUrlAsync(avatarUrl, $"avatar for {author.Name}");
-        if (bitmap != null) {
-            await Dispatcher.UIThread.InvokeAsync(() => { author.LoadedAvatar = bitmap; });
+        if (await TkImageResolver.EnsureCachedAsync(avatarUrl, GAME_BANANA_STATIC_CACHE_TARGET, ct) is not { } cacheFilePath) {
+            return;
         }
+
+        if (TkImageResolver.TryLoadBitmap(cacheFilePath) is not { } bitmap) {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() => author.LoadedAvatar = bitmap, DispatcherPriority.Background);
     }
 
-    private async Task LoadImagesAsync()
+    private async Task LoadImagesAsync(CancellationToken ct)
     {
         await Dispatcher.UIThread.InvokeAsync(() => {
             Images.Clear();
             SelectedImageIndex = 0;
             NotifyImagePropertiesChanged();
-        });
+        }, DispatcherPriority.Background);
 
-        if (SelectedMod?.Media.Images is not null) {
-            foreach (var image in SelectedMod.Media.Images) {
-                var bitmap = await LoadImageFromUrlAsync($"{image.BaseUrl}/{image.File}", "mod image");
-                if (bitmap != null) {
-                    await Dispatcher.UIThread.InvokeAsync(() => {
-                        Images.Add(bitmap);
-                        NotifyImagePropertiesChanged();
-                    });
-                }
+        if (SelectedMod?.Media.Images is not { } images) {
+            return;
+        }
+
+        var cacheTarget = SelectedMod.Id.ToString();
+        foreach (var image in images) {
+            ct.ThrowIfCancellationRequested();
+
+            if (await TkImageResolver.EnsureCachedAsync($"{image.BaseUrl}/{image.File}", cacheTarget, ct) is not { } cacheFilePath) {
+                continue;
             }
-        }
-    }
 
-    private static async Task<object?> LoadImageFromUrlAsync(string url, string description)
-    {
-        try {
-            await using var imageStream = await DownloadHelper.Client.GetStreamAsync(url);
-            await using MemoryStream ms = new();
-            await imageStream.CopyToAsync(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-
-            if (TkThumbnail.CreateBitmap is not null) {
-                return TkThumbnail.CreateBitmap(ms);
+            if (TkImageResolver.TryLoadBitmap(cacheFilePath) is not { } bitmap) {
+                continue;
             }
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogWarning("Failed to load {Description}: {Message}", description, ex.Message);
-        }
 
-        return null;
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                Images.Add(bitmap);
+                NotifyImagePropertiesChanged();
+            }, DispatcherPriority.Background);
+
+            await Task.Yield();
+        }
     }
 }

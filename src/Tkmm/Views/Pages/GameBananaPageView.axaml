@@ -8,6 +8,7 @@
              xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              xmlns:pages="clr-namespace:Tkmm.ViewModels.Pages"
              xmlns:views="clr-namespace:Tkmm.Views.Pages"
+             xmlns:converters="clr-namespace:Tkmm.Converters"
              xmlns:ext="clr-namespace:Tkmm.Markup"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -25,7 +26,7 @@
             <Grid RowDefinitions="Auto,*,Auto">
                 <!-- Search and Controls -->
                 <Grid Grid.Row="0" Margin="15"
-                      ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+                      ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto">
                     <TextBox Grid.Column="0"
                              Margin="0,0,5,0"
                              VerticalAlignment="Center"
@@ -57,6 +58,19 @@
                     <ToggleButton Grid.Column="3"
                                   Height="30"
                                   Padding="0"
+                                  Margin="0,0,5,0"
+                                  IsVisible="{Binding !Browser.ShowMemberLink}"
+                                  IsChecked="{Binding Browser.IsShowingBookmarks}">
+                        <StackPanel Margin="7,0" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_Bookmarks}" />
+                            <pi:Icon Value="fa-solid fa-star" />
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Grid.Column="4"
+                                  Height="30"
+                                  Padding="0"
+                                  IsVisible="{Binding !Browser.ShowMemberLink}"
                                   IsChecked="{Binding Browser.IsShowingSuggested}">
                         <StackPanel Margin="7,0" Orientation="Horizontal">
                             <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_SuggestedMods}" />
@@ -64,12 +78,38 @@
                         </StackPanel>
                     </ToggleButton>
 
-                    <ComboBox Grid.Column="4"
-                              Width="100"
+                    <HyperlinkButton Grid.Column="3"
+                                     Grid.ColumnSpan="3"
+                                     Height="30"
+                                     Margin="0,0,5,0"
+                                     Padding="8,0"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Right"
+                                     NavigateUri="{Binding Browser.MemberUrl}"
+                                     IsVisible="{Binding Browser.ShowMemberLink}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Image Width="20"
+                                   Height="20"
+                                   Source="{Binding BananaIcon}"
+                                   Stretch="Uniform" />
+                            <TextBlock Text="{ext:Locale GameBanana_ViewMemberOnGameBanana}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </HyperlinkButton>
+
+                    <ComboBox Grid.Column="5"
                               Margin="5,0,0,0"
+                              IsVisible="{Binding !Browser.ShowMemberLink}"
                               ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                               SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
-                              ToolTip.Tip="Sort Mode" />
+                              ToolTip.Tip="{ext:Locale GameBanana_SortMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="gb:GameBananaSortMode">
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaSortModeLocaleConverter.Instance}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
 
                 <!-- Content Area -->
@@ -79,12 +119,12 @@
                             VerticalAlignment="Center"
                             Command="{Binding Browser.RefreshCommand}"
                             Content="Retry"
-                            IsVisible="{Binding !Browser.IsLoadSuccess}" />
+                            IsVisible="{Binding !Browser.IsFeedVisible}" />
                     
                     <!-- Mods List -->
                     <ScrollViewer Name="ModsViewer"
                                   IsScrollInertiaEnabled="True"
-                                  IsVisible="{Binding Browser.IsLoadSuccess}">
+                                  IsVisible="{Binding Browser.IsFeedVisible}">
                         <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Browser.Feed.Records}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -136,6 +176,12 @@
                       Margin="0,5,0,0"
                       HorizontalAlignment="Center"
                       ColumnDefinitions="Auto,Auto">
+                    <Grid.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Converter="{x:Static BoolConverters.Not}" Path="Browser.IsShowingBookmarks" />
+                            <Binding Converter="{x:Static BoolConverters.Not}" Path="Browser.IsShowingSuggested" />
+                        </MultiBinding>
+                    </Grid.IsVisible>
                     <Button Margin="5"
                             Command="{Binding Browser.PrevPageCommand}"
                             CommandParameter="{Binding #ModsViewer}"
@@ -146,7 +192,7 @@
                             Margin="5"
                             Command="{Binding Browser.NextPageCommand}"
                             CommandParameter="{Binding #ModsViewer}"
-                            IsEnabled="{Binding Browser.Source.Feed.Metadata.IsCompleted, Converter={x:Static BoolConverters.Not}}">
+                            IsEnabled="{Binding Browser.CanGoToNextPage}">
                         <pi:Icon Value="fa-solid fa-chevron-right" />
                     </Button>
                 </Grid>
@@ -164,7 +210,13 @@
                     <DoubleTransition Property="Opacity" Duration="0:0:0.3"/>
                 </Transitions>
             </Grid.Transitions>
-            <views:GameBananaModPageView DataContext="{Binding Viewer}"  />
+            <ContentControl Content="{Binding Viewer}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate DataType="pages:GameBananaModPageViewModel">
+                        <views:GameBananaModPageView />
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
         </Grid>
 
         <Grid Grid.Row="2" 
