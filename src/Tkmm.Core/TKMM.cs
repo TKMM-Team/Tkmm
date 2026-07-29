@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
+using Tkmm.Core.IO;
 using Tkmm.Core.IO.Readers;
 using Tkmm.Core.Providers;
 using Tkmm.Core.Services;
@@ -95,7 +96,12 @@ public static class TKMM
         
         EmptyMergeOutput(mergeOutput);
 
-        FolderModWriter writer = new(mergeOutput);
+        ITkModWriter writer = new FolderModWriter(mergeOutput);
+        
+        // For atmosphere 20.0 support with TotK Optimizer
+        if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
+            writer = new RomfsLiteExModWriter(writer);
+        }
 
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
@@ -110,19 +116,6 @@ public static class TKMM
 
         await merger.MergeAsync(GetMergeTargets(profile), ct);
         await TkOptimizerService.Context.ApplyAsync(writer, profile, ct);
-
-        // For atmosphere 20.0 support with TotK Optimizer
-        if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
-            try {
-                var romfsPath = Path.Combine(mergeOutput, "romfs");
-                if (Directory.Exists(romfsPath)) {
-                    Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
-                }
-            }
-            catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
-            }
-        }
 
         var delta = Stopwatch.GetElapsedTime(startTime);
         TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
@@ -155,7 +148,9 @@ public static class TKMM
 
     public static void EmptyMergeOutput(string outputPath)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(outputPath, ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"], recursive: true);
+        DirectoryHelper.DeleteTargetsFromDirectory(outputPath,
+            ["romfs", "romfslite", "RomfsLiteEX", "exefs", "cheats", "romfs_metadata.bin"],
+            recursive: true);
     }
 
     static TKMM()

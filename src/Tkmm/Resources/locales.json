@@ -462,28 +462,6 @@
       "zh_CN": "无法移动合并输出文件夹。请重新应用您的模组以修复此问题。\n\n旧路径：'{0}'\n新路径：'{1}'\n",
       "zh_TW": "無法移動合併輸出資料夾。請重新套用您的模組以修復此問題。\n\n舊路徑：'{0}'\n新路徑：'{1}'\n"
     },
-    "Config_ErrorFailedToRenameRomfslite": {
-      "ar_SA": "",
-      "de_DE": "",
-      "el_GR": "",
-      "en_US": "Failed to rename the romfs/romfslite folder. Ensure the game is not running and try again.",
-      "es_ES": "",
-      "fr_FR": "",
-      "he_IL": "",
-      "it_IT": "",
-      "ja_JP": "",
-      "ko_KR": "",
-      "no_NO": "",
-      "pl_PL": "",
-      "pt_BR": "",
-      "ru_RU": "",
-      "sv_SE": "",
-      "th_TH": "",
-      "tr_TR": "",
-      "uk_UA": "",
-      "zh_CN": "无法重命名 romfs/romfslite 文件夹。请确保游戏未在运行后重试。",
-      "zh_TW": "無法重新命名 romfs/romfslite 資料夾。請確認遊戲未在執行後重試。"
-    },
     "Config_ExportLocations": {
       "ar_SA": "",
       "de_DE": "",
@@ -862,7 +840,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Use romfslite",
+      "en_US": "Use RomfsLiteEX",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
@@ -877,14 +855,14 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "使用 romfslite",
-      "zh_TW": "使用 romfslite"
+      "zh_CN": "使用 RomfsLiteEX",
+      "zh_TW": "使用 RomfsLiteEX"
     },
     "Config_UseRomfsliteDescription": {
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "Write mods to romfslite instead of romfs (requires TotK Optimizer). This fixes issues introduced in firmware 20.0.0+.",
+      "en_US": "Write mods to RomfsLiteEX (split folders for FAT32) instead of romfs (requires TotK Optimizer). This fixes issues introduced in firmware 20.0.0+.",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
@@ -899,8 +877,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "将模组写入 romfslite 而不是 romfs（需要 TotK Optimizer）。这修复了固件 20.0.0+ 引入的问题。",
-      "zh_TW": "將模組寫入 romfslite 而不是 romfs（需要 TotK Optimizer）。這修復了韌體 20.0.0+ 引入的問題。"
+      "zh_CN": "",
+      "zh_TW": ""
     },
     "ConfigSection_Application": {
       "ar_SA": "",
