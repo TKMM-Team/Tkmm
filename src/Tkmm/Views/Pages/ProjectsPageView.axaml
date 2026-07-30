@@ -400,6 +400,7 @@
                                                    Minimum="1"
                                                    Maximum="4294967295"
                                                    ShowButtonSpinner="False"
+                                                   TextInput="OnResourceSizeTextInput"
                                                    Value="{Binding ResourceSizeOverrideSize}" />
                                     <Button Grid.Column="2"
                                             Width="20"
@@ -427,6 +428,7 @@
                                                                    Minimum="1"
                                                                    Maximum="4294967295"
                                                                    ShowButtonSpinner="False"
+                                                                   TextInput="OnResourceSizeTextInput"
                                                                    Value="{Binding Size}" />
                                                     <Button Grid.Column="2"
                                                             Width="20"

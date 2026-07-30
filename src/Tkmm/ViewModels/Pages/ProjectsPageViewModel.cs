@@ -39,7 +39,7 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     private string _resourceSizeOverrideCanonical = string.Empty;
 
     [ObservableProperty]
-    private decimal _resourceSizeOverrideSize = 1;
+    private uint? _resourceSizeOverrideSize = 1;
 
     partial void OnProjectChanging(TkProject? value) => SaveResourceSizeOverrides();
 
@@ -198,11 +198,11 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     private void AddResourceSizeOverride()
     {
         var canonical = ResourceSizeOverrideCanonical.Trim();
-        if (canonical.Length == 0 || ResourceSizeOverrideSize is < 1 or > uint.MaxValue) {
+        if (canonical.Length == 0 || ResourceSizeOverrideSize is not > 0) {
             return;
         }
 
-        var size = (uint)ResourceSizeOverrideSize;
+        var size = ResourceSizeOverrideSize.Value;
         if (ResourceSizeOverrideEntries.FirstOrDefault(entry => entry.Canonical == canonical) is { } existing) {
             existing.Size = size;
         }
@@ -295,8 +295,18 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             return;
         }
 
+        if (ResourceSizeOverrideSize is not > 0) {
+            ResourceSizeOverrideSize = 1;
+        }
+
+        foreach (var entry in ResourceSizeOverrideEntries) {
+            if (entry.Size is not > 0) {
+                entry.Size = 1;
+            }
+        }
+
         Project.Flags.ResourceSizeOverrides.Entries = ResourceSizeOverrideEntries
-            .Select(entry => (Canonical: entry.Canonical.Trim(), entry.Size))
+            .Select(entry => (Canonical: entry.Canonical.Trim(), Size: entry.Size!.Value))
             .Where(entry => entry.Canonical.Length > 0)
             .GroupBy(entry => entry.Canonical, StringComparer.Ordinal)
             .ToDictionary(group => group.Key, group => group.Last().Size, StringComparer.Ordinal);

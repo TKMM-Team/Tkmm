@@ -12,4 +12,11 @@ public partial class ProjectsPageView : UserControl
     {
         InitializeComponent();
     }
+
+    private void OnResourceSizeTextInput(object? sender, TextInputEventArgs e)
+    {
+        if (e.Text is { Length: > 0 } text && text.Any(c => !char.IsDigit(c))) {
+            e.Handled = true;
+        }
+    }
 }
