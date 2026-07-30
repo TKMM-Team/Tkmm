@@ -1,10 +1,12 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core;
 using Tkmm.Core.Helpers;
@@ -23,12 +25,15 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
     public ProjectsPageViewModel()
     {
         TkProjectManager.Load();
+        ResourceSizeOverrideEntries.CollectionChanged += OnResourceSizeOverrideEntriesChanged;
     }
 
     [ObservableProperty]
     private TkProject? _project;
 
     public ObservableCollection<ResourceSizeOverrideEntryViewModel> ResourceSizeOverrideEntries { get; } = [];
+
+    public string ResourceSizeOverrideCountText => "override".ToQuantity(ResourceSizeOverrideEntries.Count);
 
     [ObservableProperty]
     private string _resourceSizeOverrideCanonical = string.Empty;
@@ -50,6 +55,9 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
             ResourceSizeOverrideEntries.Add(new ResourceSizeOverrideEntryViewModel(canonical, size));
         }
     }
+
+    private void OnResourceSizeOverrideEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => OnPropertyChanged(nameof(ResourceSizeOverrideCountText));
 
     [RelayCommand]
     private async Task NewProject()
@@ -288,7 +296,10 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         }
 
         Project.Flags.ResourceSizeOverrides.Entries = ResourceSizeOverrideEntries
-            .ToDictionary(entry => entry.Canonical, entry => entry.Size, StringComparer.Ordinal);
+            .Select(entry => (Canonical: entry.Canonical.Trim(), entry.Size))
+            .Where(entry => entry.Canonical.Length > 0)
+            .GroupBy(entry => entry.Canonical, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Last().Size, StringComparer.Ordinal);
     }
 
     [RelayCommand]
