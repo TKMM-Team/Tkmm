@@ -434,7 +434,8 @@
                                                             Margin="5,0,0,0"
                                                             Padding="0"
                                                             VerticalAlignment="Center"
-                                                            Command="{Binding $parent[UserControl].((pages:ProjectsPageViewModel)DataContext).RemoveResourceSizeOverrideCommand}"
+                                                            x:CompileBindings="False"
+                                                            Command="{Binding $parent[UserControl].DataContext.RemoveResourceSizeOverrideCommand}"
                                                             CommandParameter="{Binding}"
                                                             ToolTip.Tip="Remove override">
                                                         <fa:Icon Value="fa-regular fa-trash" />
