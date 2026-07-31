@@ -1,3 +1,4 @@
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tkmm.Components;
@@ -23,8 +24,10 @@ public sealed partial class TriviaProvider : ObservableObject
             }
             
             var index = Random.Shared.Next(0, _current.Count - 1);
-            Message = _current[index];
+            var next = _current[index];
             _current.RemoveAt(index);
+
+            Dispatcher.UIThread.Post(() => Message = next);
         });
 
         _timer.Change(0, 5000);

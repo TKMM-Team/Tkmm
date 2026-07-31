@@ -25,7 +25,10 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
         
         LogInfo();
 
-        if (EnsureConfiguration(out var reason)) {
+        string? reason = null;
+        var isValid = await Task.Run(() => EnsureConfiguration(out reason));
+
+        if (isValid) {
             TkLog.Instance.LogInformation(
                 "Executing {ActionName} from {ActionGroupName}.", actionName, ActionGroupName);
             
@@ -41,7 +44,7 @@ public abstract class GuardedActionGroup<TSingleton> where TSingleton : GuardedA
             "Failed to run {ActionName} from {ActionGroupName}, the configuration was invalid.",
             actionName, ActionGroupName);
         
-        await ShowFailureDialog(actionName, reason);
+        await ShowFailureDialog(actionName, reason!);
         
         return false;
     }

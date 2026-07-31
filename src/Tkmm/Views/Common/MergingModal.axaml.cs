@@ -29,13 +29,16 @@ public partial class MergingModal : UserControl
 
         overlayLayer.Children.Add(_host);
 
-        _ = Task.Run(() => {
-            while (!cancellationToken.IsCancellationRequested) {
+        _ = Task.Run(async () => {
+            try {
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            catch (OperationCanceledException) {
             }
 
-            Dispatcher.UIThread.Invoke(() => {
+            await Dispatcher.UIThread.InvokeAsync(() => {
                 overlayLayer.Children.Remove(_host);
             });
-        }, cancellationToken);
+        });
     }
 }

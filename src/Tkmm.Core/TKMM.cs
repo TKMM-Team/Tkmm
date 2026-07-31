@@ -93,15 +93,6 @@ public static class TKMM
     public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, string? mergeOutput = null, CancellationToken ct = default)
     {
         mergeOutput ??= MergedOutputFolder;
-        
-        EmptyMergeOutput(mergeOutput);
-
-        ITkModWriter writer = new FolderModWriter(mergeOutput);
-        
-        // For atmosphere 20.0 support with TotK Optimizer
-        if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
-            writer = new RomfsLiteExModWriter(writer);
-        }
 
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
@@ -109,16 +100,28 @@ public static class TKMM
         ipsOutputPath ??= Path.Combine("..", "..", "exefs_patches", "TKMM");
 #endif
 
-        using var tkRom = GetTkRom();
-        TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
+        // Keep merge prep off the UI thread so the trivia popup can keep updating.
+        await Task.Run(async () => {
+            EmptyMergeOutput(mergeOutput);
 
-        var startTime = Stopwatch.GetTimestamp();
+            ITkModWriter writer = new FolderModWriter(mergeOutput);
 
-        await merger.MergeAsync(GetMergeTargets(profile), ct);
-        await TkOptimizerService.Context.ApplyAsync(writer, profile, ct);
+            // For atmosphere 20.0 support with TotK Optimizer
+            if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
+                writer = new RomfsLiteExModWriter(writer);
+            }
 
-        var delta = Stopwatch.GetElapsedTime(startTime);
-        TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+            using var tkRom = GetTkRom();
+            TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
+
+            var startTime = Stopwatch.GetTimestamp();
+
+            await merger.MergeAsync(GetMergeTargets(profile), ct).ConfigureAwait(false);
+            await TkOptimizerService.Context.ApplyAsync(writer, profile, ct).ConfigureAwait(false);
+
+            var delta = Stopwatch.GetElapsedTime(startTime);
+            TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+        }, ct).ConfigureAwait(false);
     }
 
     /// <summary>

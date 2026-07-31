@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -38,13 +39,18 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
     public async Task Merge(TkProfile profile, string? ipsOutputPath = null, CancellationToken ct = default)
     {
-        if (!await CanActionRun()) {
-            return;
-        }
-
         CancellationTokenSource modalCancelTokenSource = new();
 
         try {
+            TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
+            MergingModal.ShowModal(modalCancelTokenSource.Token);
+
+            await Dispatcher.UIThread.InvokeAsync(static () => { }, DispatcherPriority.Background);
+
+            if (!await CanActionRun()) {
+                return;
+            }
+
             var drive = Path.GetPathRoot(TKMM.MergedOutputFolder);
             if (!string.IsNullOrEmpty(drive) && !Directory.Exists(drive)) {
                 throw new DirectoryNotFoundException(
@@ -52,8 +58,6 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 );
             }
 
-            TkStatus.Set("Merging", "fa-code-merge", StatusType.Working);
-            MergingModal.ShowModal(modalCancelTokenSource.Token);
             await TKMM.Merge(profile, ipsOutputPath, ct: modalCancelTokenSource.Token);
             App.Toast(string.Format(Locale["MergeActions_MergeSuccessful"], profile.Name),
                 Locale["MergeActions_MergeSuccessfulTitle"], NotificationType.Success, TimeSpan.FromDays(5));
