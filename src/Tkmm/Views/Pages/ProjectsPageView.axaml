@@ -291,6 +291,10 @@
                                                                            ToolTip.Tip="Priority (0 is Lowest)"
                                                                            Watermark="Priority (0 is Lowest)"
                                                                            Value="{Binding Priority}" />
+                                                            <CheckBox Content="{markup:Locale Project_OptionEnabledByDefault}"
+                                                                      IsChecked="{Binding IsDefaultSelected}"
+                                                                      IsEnabled="{Binding CanChangeDefaultSelected}"
+                                                                      ToolTip.Tip="{markup:Locale Project_OptionEnabledByDefault_Description}" />
                                                             <Grid ColumnDefinitions="*,Auto">
                                                                 <TextBox
                                                                     Text="{Binding Thumbnail, Converter={x:Static converters:PathToThumbnailConverter.Instance}}"
