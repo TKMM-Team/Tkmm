@@ -5,8 +5,7 @@ namespace Tkmm.ViewModels;
 public sealed partial class ResourceSizeOverrideEntryViewModel(string canonical, uint size) : ObservableObject
 {
     [ObservableProperty]
-    private string _canonical = canonical;
-
+    public partial string Canonical { get; set; } = canonical;
     [ObservableProperty]
-    private uint _size = size;
+    public partial uint? Size { get; set; } = size;
 }

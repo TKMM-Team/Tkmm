@@ -5,28 +5,35 @@
              xmlns:vm="using:Tkmm.ViewModels"
              xmlns:fa="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d"
-             d:DesignWidth="640"
-             d:DesignHeight="480"
              x:DataType="vm:ResourceSizeOverrideImportViewModel"
              x:Class="Tkmm.Dialogs.ResourceSizeOverrideImportView">
-    <Grid Width="640" Height="480" RowDefinitions="Auto,Auto,*">
-        <TextBox Margin="0,0,0,8"
-                 Text="{Binding Search}"
-                 Watermark="Search canonical paths" />
-        <StackPanel Grid.Row="1"
-                    Margin="0,0,0,8"
-                    Orientation="Horizontal"
-                    Spacing="5">
-            <Button Command="{Binding SelectAllCommand}"
+    <Grid Width="480" Height="360" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,Auto,*" Margin="0,0,0,8">
+            <Button Width="20"
+                    Height="20"
+                    Padding="2"
+                    VerticalAlignment="Center"
+                    Command="{Binding SelectAllCommand}"
                     ToolTip.Tip="Select all filtered entries">
                 <fa:Icon Value="fa-regular fa-square-check" />
             </Button>
-            <Button Command="{Binding ClearCommand}"
+            <Button Grid.Column="1"
+                    Width="20"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    Padding="2"
+                    VerticalAlignment="Center"
+                    Command="{Binding ClearCommand}"
                     ToolTip.Tip="Clear filtered entries">
                 <fa:Icon Value="fa-regular fa-square" />
             </Button>
-        </StackPanel>
-        <ListBox Grid.Row="2" ItemsSource="{Binding Entries}">
+            <TextBox Grid.Column="2"
+                     Margin="5,0,0,0"
+                     VerticalAlignment="Center"
+                     Text="{Binding Search}"
+                     Watermark="Search canonical paths" />
+        </Grid>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Entries}">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="vm:ResourceSizeOverrideImportEntryViewModel">
                     <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2">
