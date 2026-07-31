@@ -92,10 +92,6 @@ public static class TKMM
     public static async ValueTask Merge(TkProfile profile, string? ipsOutputPath = null, string? mergeOutput = null, CancellationToken ct = default)
     {
         mergeOutput ??= MergedOutputFolder;
-        
-        EmptyMergeOutput(mergeOutput);
-
-        FolderModWriter writer = new(mergeOutput);
 
 #if SWITCH
         // Since the FolderModWriter is writing to the merged output,
@@ -103,29 +99,34 @@ public static class TKMM
         ipsOutputPath ??= Path.Combine("..", "..", "exefs_patches", "TKMM");
 #endif
 
-        using var tkRom = GetTkRom();
-        TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
+        await Task.Run(async () => {
+            EmptyMergeOutput(mergeOutput);
 
-        var startTime = Stopwatch.GetTimestamp();
+            FolderModWriter writer = new(mergeOutput);
+            using var tkRom = GetTkRom();
+            TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
 
-        await merger.MergeAsync(GetMergeTargets(profile), ct);
-        TkOptimizerService.Context.Apply(writer, profile);
+            var startTime = Stopwatch.GetTimestamp();
 
-        // For atmosphere 20.0 support with TotK Optimizer
-        if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
-            try {
-                var romfsPath = Path.Combine(mergeOutput, "romfs");
-                if (Directory.Exists(romfsPath)) {
-                    Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
+            await merger.MergeAsync(GetMergeTargets(profile), ct).ConfigureAwait(false);
+            TkOptimizerService.Context.Apply(writer, profile);
+
+            // For atmosphere 20.0 support with TotK Optimizer
+            if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
+                try {
+                    var romfsPath = Path.Combine(mergeOutput, "romfs");
+                    if (Directory.Exists(romfsPath)) {
+                        Directory.Move(romfsPath, Path.Combine(mergeOutput, "romfslite"));
+                    }
+                }
+                catch (Exception ex) {
+                    TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
                 }
             }
-            catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
-            }
-        }
 
-        var delta = Stopwatch.GetElapsedTime(startTime);
-        TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+            var delta = Stopwatch.GetElapsedTime(startTime);
+            TkLog.Instance.LogInformation("Elapsed time: {TotalMilliseconds}ms", delta.TotalMilliseconds);
+        }, ct).ConfigureAwait(false);
     }
 
     /// <summary>
