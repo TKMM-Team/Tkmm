@@ -135,9 +135,52 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             if (canDeleteResult is not MessageDialogResult.Yes) {
                 return;
             }
-            
-            TKMM.EmptyMergeOutput(output);
-            DirectoryHelper.Copy(TKMM.MergedOutputFolder, output, overwrite: true);
+
+            var progressView = new SdExportProgressView {
+                Title = Locale["Menu_ToolsExportToSdCard"]
+            };
+            progressView.SetIndeterminate(Locale["MergeActions_WipingSdCard"]);
+            progressView.Show();
+
+            try {
+                await Task.Run(() => {
+                    TKMM.EmptyMergeOutput(output);
+
+                    Dispatcher.UIThread.Post(() =>
+                        progressView.BeginCopy(Locale["MergeActions_ExportingToSdCard"]));
+
+                    var lastUiUpdate = Stopwatch.StartNew();
+                    var hasReported = false;
+                    var progress = new Progress<(int Copied, int Total)>(report => {
+                        if (hasReported && report.Copied != report.Total && lastUiUpdate.ElapsedMilliseconds < 50) {
+                            return;
+                        }
+
+                        hasReported = true;
+                        lastUiUpdate.Restart();
+
+                        Dispatcher.UIThread.Post(() =>
+                            progressView.SetProgress(
+                                Locale["MergeActions_ExportingToSdCard"],
+                                report.Copied,
+                                report.Total));
+                    });
+
+                    DirectoryHelper.CopyMergeOutput(
+                        TKMM.MergedOutputFolder,
+                        output,
+                        Config.Shared.UseRomfslite,
+                        overwrite: true,
+                        progress);
+                }, ct);
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, drive.Name));
+                await ErrorDialog.ShowAsync(ex);
+            }
+            finally {
+                progressView.Hide();
+            }
         }
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, drive.Name));
