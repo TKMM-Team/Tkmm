@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="120"
+             x:Class="Tkmm.Views.Common.SdExportProgressView"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+    <Grid Background="#9A111111">
+        <Border Padding="20"
+                MinWidth="340"
+                MaxWidth="420"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BoxShadow="5 5 15 0 #9A000000"
+                BorderBrush="{DynamicResource ControlOnImageFillColorSecondary}"
+                BorderThickness="2"
+                Background="{DynamicResource CardStrokeColorDefaultSolid}"
+                CornerRadius="{DynamicResource ControlCornerRadius}">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <ui:SymbolIcon Symbol="Save"
+                                   FontSize="28"
+                                   VerticalAlignment="Center" />
+                    <TextBlock x:Name="TitleText"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock x:Name="StatusText"
+                               FontSize="14"
+                               TextWrapping="Wrap"
+                               Opacity="0.9" />
+
+                    <Grid ColumnDefinitions="*,Auto"
+                          ColumnSpacing="10">
+                        <ProgressBar x:Name="Progress"
+                                     Grid.Column="0"
+                                     MinHeight="4"
+                                     Height="4"
+                                     VerticalAlignment="Center"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     IsIndeterminate="True" />
+
+                        <TextBlock x:Name="PercentText"
+                                   Grid.Column="1"
+                                   FontSize="13"
+                                   Opacity="0.85"
+                                   VerticalAlignment="Center"
+                                   MinWidth="36"
+                                   TextAlignment="Right"
+                                   Text="" />
+                    </Grid>
+
+                    <TextBlock x:Name="DetailText"
+                               FontSize="12"
+                               Opacity="0.6"
+                               IsVisible="False"
+                               Text="" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
