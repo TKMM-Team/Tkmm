@@ -14,6 +14,8 @@ public sealed class TkOptimizerJson
 
         public required string Section { get; init; }
 
+        public bool Auto { get; init; }
+
         [JsonPropertyName("Name_Values")]
         public List<string>? NameValues { get; init; }
 

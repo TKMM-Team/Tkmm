@@ -23,6 +23,7 @@ public sealed class TkOptimizerContext : ObservableObject
 {
     private static readonly SemaphoreSlim ApplyAsyncLock = new(1, 1);
     private readonly Dictionary<string, JsonElement> _optionValues = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<TkOptimizerOption> _autoOptions = [];
 #if !SWITCH
     private string? _ephemeralSdCardRootPath;
 #endif
@@ -112,10 +113,18 @@ public sealed class TkOptimizerContext : ObservableObject
         foreach (var section in options.GroupBy(x => x.Option.Section)) {
             TkOptimizerOptionGroup group = new(section.Key);
             foreach (var (fileName, key, option) in section) {
-                group.Options.Add(TkOptimizerOption.FromJson(context, fileName, key, option));
+                var loaded = TkOptimizerOption.FromJson(context, fileName, key, option);
+                if (loaded.IsAuto) {
+                    context._autoOptions.Add(loaded);
+                    continue;
+                }
+
+                group.Options.Add(loaded);
             }
-            
-            context.Groups.Add(group);
+
+            if (group.Options.Count > 0) {
+                context.Groups.Add(group);
+            }
         }
     }
     
@@ -426,6 +435,7 @@ public sealed class TkOptimizerContext : ObservableObject
 #endif
 
         foreach (var optionsByFile in Groups.SelectMany(x => x.Options)
+                     .Concat(_autoOptions)
                      .GroupBy(x => x.OutputFileName, StringComparer.OrdinalIgnoreCase)) {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -481,8 +491,8 @@ public sealed class TkOptimizerContext : ObservableObject
                 
                 var key = option.ConfigClass[1];
                 var value = option.Value switch {
-                    TkOptimizerBoolValue boolean => boolean.Value ? "On" : "Off",
-                    TkOptimizerFloatingPointRangeValue f32 => f32.Value.ToString(CultureInfo.InvariantCulture),
+                    TkOptimizerBoolValue boolean => FormatBool(option, boolean.Value),
+                    TkOptimizerFloatingPointRangeValue f32 => FormatFloat(option, f32.Value),
                     TkOptimizerRangeValue s32 => s32.Value.ToString(CultureInfo.InvariantCulture),
                     _ => null
                 };
@@ -498,6 +508,24 @@ public sealed class TkOptimizerContext : ObservableObject
             
             writer.WriteLine();
         }
+    }
+
+    private static string FormatBool(TkOptimizerOption option, bool value)
+    {
+        if (string.Equals(option.OutputFileName, "Heap", StringComparison.OrdinalIgnoreCase)) {
+            return value ? "True" : "False";
+        }
+
+        return value ? "On" : "Off";
+    }
+
+    private static string FormatFloat(TkOptimizerOption option, double value)
+    {
+        if (string.Equals(option.OutputFileName, "Heap", StringComparison.OrdinalIgnoreCase)) {
+            return value.ToString("F2", CultureInfo.InvariantCulture);
+        }
+
+        return value.ToString(CultureInfo.InvariantCulture);
     }
 
     private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)

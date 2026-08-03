@@ -3,7 +3,7 @@ using Tkmm.Core.TkOptimizer.Models.ValueTypes;
 
 namespace Tkmm.Core.TkOptimizer.Models;
 
-public sealed class TkOptimizerOption(string key, string outputFileName, string name, string description, List<string> configClass, TkOptimizerValue value)
+public sealed class TkOptimizerOption(string key, string outputFileName, string name, string description, List<string> configClass, TkOptimizerValue value, bool isAuto = false)
 {
     public string Name => GetLocaleOrDefault($"TkOptimizer_{key.Dehumanize()}_Title", name);
 
@@ -14,6 +14,8 @@ public sealed class TkOptimizerOption(string key, string outputFileName, string 
     public List<string> ConfigClass { get; } = configClass;
 
     public TkOptimizerValue Value { get; } = value;
+
+    public bool IsAuto { get; } = isAuto;
 
     public static TkOptimizerOption FromJson(TkOptimizerContext context, string outputFileName, string key, TkOptimizerJson.Option option)
     {
@@ -39,7 +41,7 @@ public sealed class TkOptimizerOption(string key, string outputFileName, string 
 
         value.Key = key;
 
-        return new TkOptimizerOption(key, outputFileName, option.Name, option.Description, option.ConfigClass, value);
+        return new TkOptimizerOption(key, outputFileName, option.Name, option.Description, option.ConfigClass, value, option.Auto);
     }
 
     private static TkOptimizerEnumValue BuildEnumValue(TkOptimizerContext context, TkOptimizerJson.Option option)
