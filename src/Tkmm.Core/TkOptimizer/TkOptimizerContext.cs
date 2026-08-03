@@ -10,6 +10,7 @@ using Tkmm.Core.Helpers;
 using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
 using Tkmm.Core.TkOptimizer.Models.ValueTypes;
+using TkSharp;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 using TkSharp.IO.Writers;
@@ -233,10 +234,16 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private static Dictionary<string, Dictionary<string, string>> ParseIni(string iniPath)
     {
+        using var reader = File.OpenText(iniPath);
+        return ParseIni(reader);
+    }
+
+    private static Dictionary<string, Dictionary<string, string>> ParseIni(TextReader reader)
+    {
         var result = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
         Dictionary<string, string>? currentSection = null;
 
-        foreach (var rawLine in File.ReadLines(iniPath)) {
+        while (reader.ReadLine() is { } rawLine) {
             var line = rawLine.Trim();
             if (line.Length == 0 || line.StartsWith(';') || line.StartsWith('#')) {
                 continue;
@@ -256,6 +263,11 @@ public sealed class TkOptimizerContext : ObservableObject
 
             var key = line[..separatorIndex].Trim();
             var value = line[(separatorIndex + 1)..].Trim();
+            var comment = value.IndexOf('#');
+            if (comment >= 0) {
+                value = value[..comment].Trim();
+            }
+
             currentSection[key] = value;
         }
 
@@ -401,6 +413,8 @@ public sealed class TkOptimizerContext : ObservableObject
 
     private async ValueTask ApplyCoreAsync(TkProfile? profile, CancellationToken cancellationToken)
     {
+        profile ??= TKMM.ModManager.GetCurrentProfile();
+
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
             return;
         }
@@ -434,16 +448,20 @@ public sealed class TkOptimizerContext : ObservableObject
         }
 #endif
 
-        foreach (var optionsByFile in Groups.SelectMany(x => x.Options)
-                     .Concat(_autoOptions)
-                     .GroupBy(x => x.OutputFileName, StringComparer.OrdinalIgnoreCase)) {
+        var allOptions = Groups.SelectMany(x => x.Options).Concat(_autoOptions).ToArray();
+
+        foreach (var optionsByFile in allOptions.GroupBy(x => x.OutputFileName, StringComparer.OrdinalIgnoreCase)) {
             cancellationToken.ThrowIfCancellationRequested();
+
+            var fileOptions = optionsByFile.ToArray();
+            var config = BuildConfigContent(fileOptions);
+            ApplyModIniOverrides(config, optionsByFile.Key, fileOptions, profile);
 
             var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config", $"{optionsByFile.Key}.ini");
 
             using MemoryStream memoryStream = new();
             await using (StreamWriter writer = new(memoryStream, leaveOpen: true)) {
-                WriteConfigContent(writer, optionsByFile);
+                WriteConfigContent(writer, config);
             }
 
 #if !SWITCH
@@ -476,16 +494,143 @@ public sealed class TkOptimizerContext : ObservableObject
         Store = null;
     }
 
-    private static void WriteConfigContent(StreamWriter writer, IEnumerable<TkOptimizerOption> options)
+    private static void ApplyModIniOverrides(Dictionary<string, Dictionary<string, string>> config, string outputFileName,
+        TkOptimizerOption[] fileOptions, TkProfile profile)
     {
+        Dictionary<string, Dictionary<string, TkOptimizerOption>> lookup = new(StringComparer.OrdinalIgnoreCase);
+        foreach (var option in fileOptions) {
+            if (option.ConfigClass.Count < 2) {
+                continue;
+            }
+
+            if (!lookup.TryGetValue(option.ConfigClass[0], out var keys)) {
+                keys = new Dictionary<string, TkOptimizerOption>(StringComparer.OrdinalIgnoreCase);
+                lookup[option.ConfigClass[0]] = keys;
+            }
+
+            for (var i = 1; i < option.ConfigClass.Count; i++) {
+                keys[option.ConfigClass[i]] = option;
+            }
+        }
+
+        var optimizerId = TkOptimizerService.GetStaticId();
+        foreach (var changelog in TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)) {
+            if (changelog.Source is not { } source) {
+                continue;
+            }
+
+            var relativePath = ResolveExtrasIniPath(source, outputFileName);
+            if (relativePath is null) {
+                continue;
+            }
+
+            Dictionary<string, Dictionary<string, string>> ini;
+            try {
+                using var stream = source.OpenRead(relativePath);
+                using var reader = new StreamReader(stream);
+                ini = ParseIni(reader);
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogWarning(ex, "Failed to parse optimizer extras INI '{RelativePath}'", relativePath);
+                continue;
+            }
+
+            foreach (var (section, values) in ini) {
+                if (!lookup.TryGetValue(section, out var sectionOptions)) {
+                    TkLog.Instance.LogWarning(
+                        "Ignoring section [{Section}] in '{RelativePath}': section is not defined for '{OutputFile}'",
+                        section, relativePath, outputFileName);
+                    continue;
+                }
+
+                if (!config.TryGetValue(section, out var sectionValues)) {
+                    sectionValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    config[section] = sectionValues;
+                }
+
+                foreach (var (key, rawValue) in values) {
+                    if (!sectionOptions.TryGetValue(key, out var option)) {
+                        TkLog.Instance.LogWarning(
+                            "Ignoring '{Key}' in [{Section}] from '{RelativePath}': option is not defined for '{OutputFile}'",
+                            key, section, relativePath, outputFileName);
+                        continue;
+                    }
+
+                    if (!TryFormatOverrideValue(option, rawValue, out var formatted)) {
+                        TkLog.Instance.LogWarning(
+                            "Ignoring '{Key}' in [{Section}] from '{RelativePath}': invalid value '{RawValue}'",
+                            key, section, relativePath, rawValue);
+                        continue;
+                    }
+
+                    sectionValues[key] = formatted;
+                }
+            }
+        }
+    }
+
+    private static string? ResolveExtrasIniPath(ITkSystemSource source, string outputFileName)
+    {
+        foreach (var folder in (string[])["UltraCam", "Ultracam"]) {
+            var relativePath = $"extras/{folder}/{outputFileName}.ini";
+            if (source.Exists(relativePath)) {
+                return relativePath;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool TryFormatOverrideValue(TkOptimizerOption option, string rawValue, [NotNullWhen(true)] out string? formatted)
+    {
+        formatted = null;
+        rawValue = rawValue.Trim();
+        if (rawValue.Length == 0) {
+            return false;
+        }
+
+        switch (option.Value) {
+            case TkOptimizerBoolValue:
+                if (!TryParseIniBool(rawValue, out var boolValue)) {
+                    return false;
+                }
+
+                formatted = FormatBool(option, boolValue);
+                return true;
+            case TkOptimizerRangeValue:
+                if (!int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue)) {
+                    return false;
+                }
+
+                formatted = intValue.ToString(CultureInfo.InvariantCulture);
+                return true;
+            case TkOptimizerFloatingPointRangeValue:
+                if (!double.TryParse(rawValue, NumberStyles.Float | NumberStyles.AllowThousands,
+                        CultureInfo.InvariantCulture, out var floatValue)) {
+                    return false;
+                }
+
+                formatted = FormatFloat(option, floatValue);
+                return true;
+            case TkOptimizerEnumValue:
+                formatted = rawValue;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static Dictionary<string, Dictionary<string, string>> BuildConfigContent(IEnumerable<TkOptimizerOption> options)
+    {
+        Dictionary<string, Dictionary<string, string>> config = new(StringComparer.OrdinalIgnoreCase);
+
         foreach (var sectionOptions in options.GroupBy(x => x.ConfigClass[0])) {
-            writer.Write("[");
-            writer.Write(sectionOptions.Key);
-            writer.WriteLine("]");
+            Dictionary<string, string> sectionValues = new(StringComparer.OrdinalIgnoreCase);
+            config[sectionOptions.Key] = sectionValues;
 
             foreach (var option in sectionOptions) {
                 if (option.Value is TkOptimizerEnumValue enumValue) {
-                    WriteEnumValue(writer, option, enumValue);
+                    WriteEnumValue(sectionValues, option, enumValue);
                     continue;
                 }
                 
@@ -501,6 +646,21 @@ public sealed class TkOptimizerContext : ObservableObject
                     continue;
                 }
                 
+                sectionValues[key] = value;
+            }
+        }
+
+        return config;
+    }
+
+    private static void WriteConfigContent(StreamWriter writer, Dictionary<string, Dictionary<string, string>> config)
+    {
+        foreach (var (section, values) in config) {
+            writer.Write("[");
+            writer.Write(section);
+            writer.WriteLine("]");
+
+            foreach (var (key, value) in values) {
                 writer.Write(key);
                 writer.Write(" = ");
                 writer.WriteLine(value);
@@ -528,7 +688,7 @@ public sealed class TkOptimizerContext : ObservableObject
         return value.ToString(CultureInfo.InvariantCulture);
     }
 
-    private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)
+    private static void WriteEnumValue(Dictionary<string, string> sectionValues, TkOptimizerOption option, TkOptimizerEnumValue enumValue)
     {
         if (enumValue.Values.Count == 0) {
             return;
@@ -543,9 +703,7 @@ public sealed class TkOptimizerContext : ObservableObject
         }
 
         if (choice.ValueKind is JsonValueKind.Number && choice.TryGetInt32(out var s32)) {
-            writer.Write(properties[0]);
-            writer.Write(" = ");
-            writer.WriteLine(s32);
+            sectionValues[properties[0]] = s32.ToString(CultureInfo.InvariantCulture);
             return;
         }
 
@@ -561,9 +719,7 @@ public sealed class TkOptimizerContext : ObservableObject
         }
 
         for (var i = 0; i < properties.Length; i++) {
-            writer.Write(properties[i]);
-            writer.Write(" = ");
-            writer.WriteLine(value[sections[i]]);
+            sectionValues[properties[i]] = value[sections[i]].ToString();
         }
     }
 
