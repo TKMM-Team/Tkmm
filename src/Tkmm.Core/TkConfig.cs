@@ -116,6 +116,17 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     private PathCollection _nandFolderPaths = [];
 #endif
 
+    public void ResetGameDumpSettings()
+    {
+        PreferredGameVersion = DEFAULT_GAME_VERSION;
+        KeysFolderPath = null;
+        PackagedBaseGamePaths = [];
+        PackagedUpdatePaths = [];
+        SdCardRootPath = null;
+        GameDumpFolderPaths = [];
+        NandFolderPaths = [];
+    }
+
     public TkExtensibleRomProvider CreateRomProvider()
     {
         using var checksums = TkEmbeddedDataSource.GetChecksumsBin();

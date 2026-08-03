@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
+using Tkmm.Components;
 
 namespace Tkmm.Helpers;
 
@@ -11,7 +12,7 @@ public static class TempFolderGuard
 {
     public static bool IsRunningFromTemporaryFolder()
     {
-        if (IsRunningFromAppImage()) {
+        if (AppUpdater.IsAppImage) {
             return false;
         }
 
@@ -31,21 +32,6 @@ public static class TempFolderGuard
         }
 
         shellView.Opened += OnShellOpened;
-    }
-
-    private static bool IsRunningFromAppImage()
-    {
-        if (Environment.GetEnvironmentVariable("APPIMAGE") is not { Length: > 0 } appImagePath) {
-            return false;
-        }
-
-        try {
-            return Path.GetExtension(appImagePath.AsSpan()).Equals(".AppImage", StringComparison.OrdinalIgnoreCase)
-                   && File.Exists(appImagePath);
-        }
-        catch {
-            return false;
-        }
     }
 
     private static async void OnShellOpened(object? sender, EventArgs e)
