@@ -197,7 +197,7 @@ public static class TKMM
 
         ReaderProvider = new TkModReaderProvider(ModManager, RomProvider);
         ReaderProvider.Register(new GameBananaModReader(ReaderProvider));
-        ReaderProvider.Register(new External7zModReader(ModManager, RomProvider));
+        ReaderProvider.Register(new External7zModReader(ModManager, RomProvider, ReaderProvider));
 
         Span<string> hiddenSystemFolders = [".data", ".data2", ".layout"];
         DirectoryHelper.HideTargetsInDirectory(BaseDirectory, hiddenSystemFolders);
