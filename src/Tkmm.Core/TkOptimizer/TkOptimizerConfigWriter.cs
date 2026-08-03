@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.Logging;
@@ -46,7 +47,15 @@ internal static class TkOptimizerConfigWriter
         return config;
     }
 
-    public static void Write(StreamWriter writer, Dictionary<string, Dictionary<string, string>> config)
+    public static string Format(Dictionary<string, Dictionary<string, string>> config)
+    {
+        StringBuilder builder = new();
+        using StringWriter writer = new(builder);
+        Write(writer, config);
+        return builder.ToString();
+    }
+
+    public static void Write(TextWriter writer, Dictionary<string, Dictionary<string, string>> config)
     {
         foreach (var (section, values) in config) {
             writer.Write("[");
@@ -63,10 +72,93 @@ internal static class TkOptimizerConfigWriter
         }
     }
 
+    public static async Task WriteFileAsync(string fullPath, Dictionary<string, Dictionary<string, string>> config,
+        CancellationToken cancellationToken)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+
+        string text;
+        if (File.Exists(fullPath)) {
+            var existing = await File.ReadAllTextAsync(fullPath, cancellationToken).ConfigureAwait(false);
+            text = TkOptimizerIni.Patch(existing, config);
+        }
+        else {
+            text = Format(config);
+        }
+
+        await File.WriteAllTextAsync(fullPath, text, cancellationToken).ConfigureAwait(false);
+    }
+
     public static void ApplyModOverrides(Dictionary<string, Dictionary<string, string>> config, string outputFileName,
         TkOptimizerOption[] fileOptions, TkProfile profile)
     {
+        var lookup = BuildOptionLookup(fileOptions);
+        var optimizerId = TkOptimizerService.GetStaticId();
+
+        foreach (var changelog in TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)) {
+            if (changelog.Source is not { } source) {
+                continue;
+            }
+
+            var relativePath = ResolveExtrasIniPath(source, outputFileName);
+            if (relativePath is null) {
+                continue;
+            }
+
+            try {
+                using var stream = source.OpenRead(relativePath);
+                using var reader = new StreamReader(stream);
+                ApplyIniValues(config, TkOptimizerIni.Parse(reader), lookup, relativePath, outputFileName);
+            }
+            catch (Exception ex) {
+                TkLog.Instance.LogWarning(ex, "Failed to parse optimizer extras INI '{RelativePath}'", relativePath);
+            }
+        }
+    }
+
+    private static void ApplyIniValues(Dictionary<string, Dictionary<string, string>> config,
+        Dictionary<string, Dictionary<string, string>> ini,
+        Dictionary<string, Dictionary<string, TkOptimizerOption>> lookup,
+        string sourcePath, string outputFileName)
+    {
+        foreach (var (section, values) in ini) {
+            if (!lookup.TryGetValue(section, out var sectionOptions)) {
+                TkLog.Instance.LogWarning(
+                    "Ignoring section [{Section}] in '{SourcePath}': section is not defined for '{OutputFile}'",
+                    section, sourcePath, outputFileName);
+                continue;
+            }
+
+            if (!config.TryGetValue(section, out var sectionValues)) {
+                sectionValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                config[section] = sectionValues;
+            }
+
+            foreach (var (key, rawValue) in values) {
+                if (!sectionOptions.TryGetValue(key, out var option)) {
+                    TkLog.Instance.LogWarning(
+                        "Ignoring '{Key}' in [{Section}] from '{SourcePath}': option is not defined for '{OutputFile}'",
+                        key, section, sourcePath, outputFileName);
+                    continue;
+                }
+
+                if (!TkOptimizerIni.TryFormatOverrideValue(option, rawValue, out var formatted)) {
+                    TkLog.Instance.LogWarning(
+                        "Ignoring '{Key}' in [{Section}] from '{SourcePath}': invalid value '{RawValue}'",
+                        key, section, sourcePath, rawValue);
+                    continue;
+                }
+
+                sectionValues[key] = formatted;
+            }
+        }
+    }
+
+    private static Dictionary<string, Dictionary<string, TkOptimizerOption>> BuildOptionLookup(
+        IEnumerable<TkOptimizerOption> fileOptions)
+    {
         Dictionary<string, Dictionary<string, TkOptimizerOption>> lookup = new(StringComparer.OrdinalIgnoreCase);
+
         foreach (var option in fileOptions) {
             if (option.ConfigClass.Count < 2) {
                 continue;
@@ -82,60 +174,7 @@ internal static class TkOptimizerConfigWriter
             }
         }
 
-        var optimizerId = TkOptimizerService.GetStaticId();
-        foreach (var changelog in TkModManager.GetMergeTargets(profile, mod => mod.Mod.Id != optimizerId)) {
-            if (changelog.Source is not { } source) {
-                continue;
-            }
-
-            var relativePath = ResolveExtrasIniPath(source, outputFileName);
-            if (relativePath is null) {
-                continue;
-            }
-
-            Dictionary<string, Dictionary<string, string>> ini;
-            try {
-                using var stream = source.OpenRead(relativePath);
-                using var reader = new StreamReader(stream);
-                ini = TkOptimizerIni.Parse(reader);
-            }
-            catch (Exception ex) {
-                TkLog.Instance.LogWarning(ex, "Failed to parse optimizer extras INI '{RelativePath}'", relativePath);
-                continue;
-            }
-
-            foreach (var (section, values) in ini) {
-                if (!lookup.TryGetValue(section, out var sectionOptions)) {
-                    TkLog.Instance.LogWarning(
-                        "Ignoring section [{Section}] in '{RelativePath}': section is not defined for '{OutputFile}'",
-                        section, relativePath, outputFileName);
-                    continue;
-                }
-
-                if (!config.TryGetValue(section, out var sectionValues)) {
-                    sectionValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                    config[section] = sectionValues;
-                }
-
-                foreach (var (key, rawValue) in values) {
-                    if (!sectionOptions.TryGetValue(key, out var option)) {
-                        TkLog.Instance.LogWarning(
-                            "Ignoring '{Key}' in [{Section}] from '{RelativePath}': option is not defined for '{OutputFile}'",
-                            key, section, relativePath, outputFileName);
-                        continue;
-                    }
-
-                    if (!TkOptimizerIni.TryFormatOverrideValue(option, rawValue, out var formatted)) {
-                        TkLog.Instance.LogWarning(
-                            "Ignoring '{Key}' in [{Section}] from '{RelativePath}': invalid value '{RawValue}'",
-                            key, section, relativePath, rawValue);
-                        continue;
-                    }
-
-                    sectionValues[key] = formatted;
-                }
-            }
-        }
+        return lookup;
     }
 
     private static string? ResolveExtrasIniPath(ITkSystemSource source, string outputFileName)

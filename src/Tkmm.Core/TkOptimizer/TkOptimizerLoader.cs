@@ -100,6 +100,7 @@ internal static class TkOptimizerLoader
         }
 
         foreach (var optionsByFile in context.Groups.SelectMany(x => x.Options)
+                     .Concat(context.AutoOptions)
                      .GroupBy(x => x.OutputFileName, StringComparer.OrdinalIgnoreCase)) {
             var iniPath = Path.Combine(configRoot, $"{optionsByFile.Key}.ini");
             if (!File.Exists(iniPath)) {

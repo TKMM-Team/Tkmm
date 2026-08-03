@@ -154,23 +154,14 @@ public sealed class TkOptimizerContext : ObservableObject
 
             var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config", $"{optionsByFile.Key}.ini");
 
-            using MemoryStream memoryStream = new();
-            await using (StreamWriter writer = new(memoryStream, leaveOpen: true)) {
-                TkOptimizerConfigWriter.Write(writer, config);
-            }
-
 #if !SWITCH
-            if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath))
-            {
+            if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
                 var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
 
                 if (!string.IsNullOrWhiteSpace(emulatorSdPath)) {
                     var fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
-                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-
-                    memoryStream.Position = 0;
-                    await using var emulatorOutput = File.Create(fullPath);
-                    await memoryStream.CopyToAsync(emulatorOutput, cancellationToken);
+                    await TkOptimizerConfigWriter.WriteFileAsync(fullPath, config, cancellationToken)
+                        .ConfigureAwait(false);
                 }
             }
 #endif
@@ -178,11 +169,8 @@ public sealed class TkOptimizerContext : ObservableObject
             var physicalSdRoot = GetSdRootForWrite();
             if (!string.IsNullOrWhiteSpace(physicalSdRoot)) {
                 var fullPath = Path.Combine(physicalSdRoot, outputSdFileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-
-                memoryStream.Position = 0;
-                await using var sdOutput = File.Create(fullPath);
-                await memoryStream.CopyToAsync(sdOutput, cancellationToken);
+                await TkOptimizerConfigWriter.WriteFileAsync(fullPath, config, cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
 
