@@ -101,6 +101,25 @@ public static class DirectoryHelper
             progress);
     }
 
+    public static IReadOnlyList<string> GetMergeExportFiles(string source, bool useRomfsLite)
+    {
+        source = Path.GetFullPath(source);
+
+        return GetMergeExportEntries(source, useRomfsLite)
+            .SelectMany(entry => {
+                var path = Path.Combine(source, entry);
+                if (File.Exists(path)) {
+                    return (IEnumerable<string>)[path];
+                }
+
+                return Directory.Exists(path)
+                    ? Directory.EnumerateFiles(path, "*", NoFollowReparsePoints)
+                    : [];
+            })
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
     public static void CopyMergeOutput(string source, string output, bool useRomfsLite, bool overwrite,
         IProgress<(int Copied, int Total)>? progress)
     {
@@ -114,34 +133,26 @@ public static class DirectoryHelper
         
         Directory.CreateDirectory(output);
 
-        var files = GetMergeExportEntries(source, useRomfsLite)
-            .SelectMany(entry => {
-                var path = Path.Combine(source, entry);
-                if (File.Exists(path)) {
-                    return (IEnumerable<string>)[path];
-                }
-
-                return Directory.Exists(path)
-                    ? Directory.EnumerateFiles(path, "*", NoFollowReparsePoints)
-                    : [];
-            });
-
-        CopyFiles(files, source, output, overwrite, progress);
+        CopyFiles(GetMergeExportFiles(source, useRomfsLite), source, output, overwrite, progress);
     }
 
-    private static IEnumerable<string> GetMergeExportEntries(string mergeOutput, bool useRomfsLite)
+    public static IReadOnlyList<string> GetMergeExportEntries(string mergeOutput, bool useRomfsLite)
     {
+        List<string> entries = [];
+
         var romfsRoot = ResolveRomfsRoot(mergeOutput, useRomfsLite);
         if (romfsRoot is not null) {
-            yield return romfsRoot;
+            entries.Add(romfsRoot);
         }
 
         foreach (var entry in (string[])["exefs", "cheats", "romfs_metadata.bin"]) {
             var path = Path.Combine(mergeOutput, entry);
             if (Directory.Exists(path) || File.Exists(path)) {
-                yield return entry;
+                entries.Add(entry);
             }
         }
+
+        return entries;
     }
 
     private static string? ResolveRomfsRoot(string mergeOutput, bool useRomfsLite)

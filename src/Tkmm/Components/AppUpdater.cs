@@ -25,7 +25,7 @@ public static class AppUpdater
     private static string AssetName =>
         $"Tkmm-{RuntimeId}-{RuntimeInformation.ProcessArchitecture.ToString().ToLower()}.{(IsAppImage ? "AppImage" : "zip")}";
 
-    private static bool IsAppImage => RuntimeId is "linux" && TryGetAppImagePath(out _);
+    public static bool IsAppImage => RuntimeId is "linux" && TryGetAppImagePath(out _);
 
     private static bool TryGetAppImagePath([NotNullWhen(true)] out string? appImagePath)
     {
@@ -131,6 +131,7 @@ public static class AppUpdater
 
         if (IsAppImage) {
             await UpdateAppImage(stream, ct);
+            RestartAppImage();
             return;
         }
 
@@ -165,6 +166,13 @@ public static class AppUpdater
             File.SetUnixFileMode(appImagePath,
                 mode | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
         }
+    }
+
+    private static void RestartAppImage()
+    {
+        if (!TryGetAppImagePath(out var appImagePath)) {
+            throw new InvalidOperationException("AppImage path could not be resolved.");
+        }
 
         SingleInstanceAppManager.MarkRestarting();
 
@@ -176,8 +184,13 @@ public static class AppUpdater
         Environment.Exit(0);
     }
 
-    private static void Restart()
+    public static void Restart()
     {
+        if (IsAppImage) {
+            RestartAppImage();
+            return;
+        }
+
         var executableDirectory = AppContext.BaseDirectory;
         var processName = Path.GetFileName(Environment.ProcessPath) ?? string.Empty;
 

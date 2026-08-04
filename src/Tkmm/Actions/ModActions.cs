@@ -24,6 +24,8 @@ public sealed partial class ModActions : GuardedActionGroup<ModActions>
         await CanActionRun(showError: false);
 
         try {
+            context = TkclSelectionDialog.AttachTo(context);
+
             TkStatus.Set(Locale[TkLocale.Status_Importing, input], TkIcons.GEAR_FOLDER, StatusType.Working);
             if (await TKMM.Install(input, stream, context, profile, ct) is not { } mod) {
                 TkLog.Instance.LogError("The input of type '{InputType}' ('{Input}') failed to install.",

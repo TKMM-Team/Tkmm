@@ -10,10 +10,14 @@ namespace Tkmm.Core.IO.Readers;
 
 // ReSharper disable once InconsistentNaming
 
-public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRomProvider romProvider) : ITkModReader
+public sealed class External7zModReader(
+    ITkSystemProvider systemProvider,
+    ITkRomProvider romProvider,
+    ITkModReaderProvider readerProvider) : ITkModReader
 {
     private readonly ITkSystemProvider _systemProvider = systemProvider;
     private readonly ITkRomProvider _romProvider = romProvider;
+    private readonly ITkModReaderProvider _readerProvider = readerProvider;
     
     public async ValueTask<TkMod?> ReadMod(TkModContext context, CancellationToken ct = default)
     {
@@ -43,6 +47,14 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
             }
             
             await External7zHelper.ExtractToFolder(tmpInput, tmpOutput, ct);
+
+            var tkclFiles = Directory.Exists(tmpOutput)
+                ? Directory.EnumerateFiles(tmpOutput, "*.tkcl", SearchOption.AllDirectories).ToList()
+                : [];
+
+            if (tkclFiles.Count > 0) {
+                return await ReadEmbeddedTkcl(tmpOutput, tkclFiles, context, ct).ConfigureAwait(false);
+            }
 
             if (!TryGetRoot(tmpOutput, out var root)) {
                 TkLog.Instance.LogWarning(
@@ -76,6 +88,29 @@ public sealed class External7zModReader(ITkSystemProvider systemProvider, ITkRom
                 }
             }
         }
+    }
+
+    private async ValueTask<TkMod?> ReadEmbeddedTkcl(
+        string tmpOutput, List<string> tkclFiles, TkModContext context, CancellationToken ct)
+    {
+        var relativeCandidates = tkclFiles
+            .Select(path => Path.GetRelativePath(tmpOutput, path).Replace('\\', '/'))
+            .ToList();
+
+        var selectedRelative = await context.ResolveEmbeddedTkcl(relativeCandidates, ct)
+            .ConfigureAwait(false);
+        if (selectedRelative is null) {
+            return null;
+        }
+
+        var selectedPath = Path.Combine(tmpOutput, selectedRelative.Replace('/', Path.DirectorySeparatorChar));
+        if (!File.Exists(selectedPath) || _readerProvider.GetReader(selectedPath) is not { } reader) {
+            return null;
+        }
+
+        await using var fs = File.OpenRead(selectedPath);
+        return await reader.ReadMod(Path.GetFileName(selectedPath), fs, context, ct)
+            .ConfigureAwait(false);
     }
 
     private static void ClearAttributes(string path)

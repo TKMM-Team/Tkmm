@@ -1,6 +1,8 @@
 using Tkmm.Actions;
 using Tkmm.Attributes;
+using Tkmm.Components;
 using Tkmm.Core;
+using Tkmm.Dialogs;
 
 // ReSharper disable UnusedMember.Global
 
@@ -26,5 +28,27 @@ public sealed class ToolsMenuModel
     public static void EmptyMergeOutput()
     {
         TKMM.EmptyMergeOutput(TKMM.MergedOutputFolder);
+    }
+
+    [TkMenu(TkLocale.Menu_ToolsResetConfigAndRestart, TkLocale.Menu_Tools, Icon = "fa-solid fa-rotate-left")]
+    public static async Task ResetConfigAndRestart()
+    {
+        var result = await MessageDialog.Show(
+            Locale[TkLocale.Menu_ToolsResetConfigAndRestart_Confirm],
+            Locale[TkLocale.Menu_ToolsResetConfigAndRestart],
+            MessageDialogButtons.YesNo);
+
+        if (result is not MessageDialogResult.Yes) {
+            return;
+        }
+
+        TkConfig.Shared.ResetGameDumpSettings();
+        TkConfig.Shared.Save();
+
+#if SWITCH
+        Environment.Exit(0);
+#else
+        AppUpdater.Restart();
+#endif
     }
 }

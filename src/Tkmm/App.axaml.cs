@@ -25,6 +25,7 @@ using Tkmm.Core.Logging;
 using Tkmm.Core.TkOptimizer;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
+using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
 using Tkmm.Views.Pages;
@@ -122,9 +123,13 @@ public class App : Application
         shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
         
         BatteryStatusWatcher.Start();
-#endif
-
         shellView.InitializeWizard();
+#else
+        var isTempLaunch = TempFolderGuard.IsRunningFromTemporaryFolder();
+        if (!isTempLaunch) {
+            shellView.InitializeWizard();
+        }
+#endif
         
         shellView.Closed += async (_, _) => { await SystemActions.SoftClose(); };
 
@@ -145,6 +150,12 @@ public class App : Application
         shellView.MainMenu.ItemsSource = MenuFactory.Items;
 
         desktop.MainWindow = shellView;
+
+#if !SWITCH
+        if (isTempLaunch) {
+            TempFolderGuard.Apply(shellView);
+        }
+#endif
 
         // ConfigFactory Configuration
         BrowserDialog.StorageProvider = shellView.StorageProvider;
@@ -188,6 +199,11 @@ public class App : Application
         Program.NotifyUiFrameworkReady();
         
         Dispatcher.UIThread.Post(() => {
+#if !SWITCH
+            if (TempFolderGuard.IsRunningFromTemporaryFolder()) {
+                return;
+            }
+#endif
             Task.Delay(1000).Wait();
             Program.ProcessStartupArgs();
         });

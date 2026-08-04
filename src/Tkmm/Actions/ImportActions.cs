@@ -51,7 +51,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             try {
                 TkStatus.Set(Locale[TkLocale.Status_Importing, targetFile.Name], TkIcons.PROGRESS);
                 await using var stream = await targetFile.OpenReadAsync();
-                if (await TKMM.Install(targetFile.Name, stream, context, ct: ct) is { } result) {
+                if (await TKMM.Install(targetFile.Name, stream, TkclSelectionDialog.AttachTo(context), ct: ct) is { } result) {
                     TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
                     return true;
                 }
@@ -91,7 +91,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
                 }
                 
                 TkStatus.Set(Locale[TkLocale.Status_Importing, folder], TkIcons.GEAR_FOLDER);
-                if (await TKMM.Install(folder, context: context, ct: ct) is { } result) {
+                if (await TKMM.Install(folder, context: TkclSelectionDialog.AttachTo(context), ct: ct) is { } result) {
                     TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
                     return true;
                 }
@@ -132,7 +132,7 @@ public sealed partial class ImportActions : GuardedActionGroup<ImportActions>
             var argument = textBox.Text;
             try {
                 TkStatus.Set(Locale[TkLocale.Status_Importing, argument], TkIcons.GEAR_FOLDER);
-                if (await TKMM.Install(argument, context: context, ct: ct) is { } result) {
+                if (await TKMM.Install(argument, context: TkclSelectionDialog.AttachTo(context), ct: ct) is { } result) {
                     TkStatus.SetTemporary(Locale[TkLocale.Status_Imported, result.Name], TkIcons.CIRCLE_CHECK);
                     return true;
                 }

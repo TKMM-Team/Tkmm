@@ -2,14 +2,15 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core;
-using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
+using Tkmm.Helpers;
 using Tkmm.Models;
 using Tkmm.Views.Common;
 using TkSharp.Core;
@@ -73,6 +74,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         }
     }
 
+#if !SWITCH
     [RelayCommand]
     public Task ExportToSdCard(CancellationToken ct = default)
     {
@@ -88,45 +90,59 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         var disks = DriveInfo.GetDrives()
             .Where(static driveInfo => {
                 try {
-                    return driveInfo is {
-                        DriveType: DriveType.Removable
-                    } && Directory.Exists(Path.Combine(driveInfo.RootDirectory.FullName, "atmosphere"));
+                    return driveInfo is { IsReady: true, DriveType: not DriveType.CDRom and not DriveType.NoRootDirectory }
+                           && Directory.Exists(Path.Combine(driveInfo.RootDirectory.FullName, "atmosphere"));
                 }
                 catch {
                     return false;
                 }
             })
             .Select(static driveInfo => new DisplayDisk(driveInfo))
+            .Concat(OperatingSystem.IsWindows()
+                ? MtpSdCardHelper.FindAtmosphereRoots()
+                    .Select(static root => new DisplayDisk(root.DeviceId, root.FriendlyName, root.RootPath))
+                : [])
+            .Append(DisplayDisk.ManualSelection)
             .ToArray();
-
-        if (disks.Length is 0) {
-            await ErrorDialog.ShowAsync(
-                new DriveNotFoundException(Locale["MergeActions_NoSuitableDisks"])
-            );
-
-            return;
-        }
 
         ContentDialog dialog = new() {
             Title = Locale["MergeActions_SelectSdCard"],
             Content = new ComboBox {
                 ItemsSource = disks,
                 SelectedIndex = 0,
-                DisplayMemberBinding = new Binding("DisplayName")
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                MinWidth = 320,
+                DisplayMemberBinding = new Binding(nameof(DisplayDisk.DisplayName))
             },
             PrimaryButtonText = Locale["MergeActions_MergeAndExport"],
             SecondaryButtonText = Locale["Action_Cancel"]
         };
 
         if (await dialog.ShowAsync() is not ContentDialogResult.Primary || dialog.Content is not ComboBox {
-                SelectedItem: DisplayDisk {
-                    Drive: { } drive
-                }
-            }) return;
-        
-        var output = Path.Combine(drive.Name, "atmosphere", "contents", "0100F2C0115B6000");
-        var ipsOutputPath = Path.Combine(drive.Name, "atmosphere", "exefs_patches", "TKMM");
-        await Merge(profile, ipsOutputPath, ct);
+                SelectedItem: DisplayDisk selectedDisk
+            }) {
+            return;
+        }
+
+        if (selectedDisk.IsMtp) {
+            ContentDialog mtpWarning = new() {
+                Title = Locale["Action_Warning"],
+                Content = Locale["MergeActions_MtpSlowWarning"],
+                PrimaryButtonText = Locale["Action_Continue"],
+                CloseButtonText = Locale["Action_Cancel"]
+            };
+
+            if (await mtpWarning.ShowAsync() is not ContentDialogResult.Primary) {
+                return;
+            }
+        }
+
+        using var target = await CreateExportTarget(selectedDisk);
+        if (target is null) {
+            return;
+        }
+
+        await Merge(profile, target.LocalIpsDirectory, ct);
 
         try {
             var canDeleteResult = await MessageDialog.Show(
@@ -144,11 +160,6 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
             try {
                 await Task.Run(() => {
-                    TKMM.EmptyMergeOutput(output);
-
-                    Dispatcher.UIThread.Post(() =>
-                        progressView.BeginCopy(Locale["MergeActions_ExportingToSdCard"]));
-
                     var lastUiUpdate = Stopwatch.StartNew();
                     var hasReported = false;
                     var progress = new Progress<(int Copied, int Total)>(report => {
@@ -166,16 +177,16 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                                 report.Total));
                     });
 
-                    DirectoryHelper.CopyMergeOutput(
+                    target.Publish(
                         TKMM.MergedOutputFolder,
-                        output,
                         Config.Shared.UseRomfslite,
-                        overwrite: true,
-                        progress);
+                        progress,
+                        wipeCompleted: () => Dispatcher.UIThread.Post(() =>
+                            progressView.BeginCopy(Locale["MergeActions_ExportingToSdCard"])));
                 }, ct);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, drive.Name));
+                TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, target.Label));
                 await ErrorDialog.ShowAsync(ex);
             }
             finally {
@@ -183,11 +194,35 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             }
         }
         catch (Exception ex) {
-            TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, drive.Name));
+            TkLog.Instance.LogError(ex, string.Format(Locale["MergeActions_ErrorExportingProfile"], profile.Name, target.Label));
             await ErrorDialog.ShowAsync(ex);
         }
     }
-    
+
+    private static async Task<ISdExportTarget?> CreateExportTarget(DisplayDisk selectedDisk)
+    {
+        if (selectedDisk.IsManualSelection) {
+            var results = await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
+                Title = Locale["MergeActions_SelectSdCard"],
+                AllowMultiple = false
+            });
+
+            if (results is not [{ } folder] || folder.TryGetLocalPath() is not { } localPath) {
+                return null;
+            }
+
+            return SdExportTarget.FromFileSystem(localPath);
+        }
+
+        if (selectedDisk.IsMtp
+            && OperatingSystem.IsWindows()
+            && selectedDisk is { MtpDeviceId: { } deviceId, MtpRootPath: { } mtpRootPath }) {
+            return SdExportTarget.FromMtp(deviceId, selectedDisk.MtpDeviceName ?? string.Empty, mtpRootPath);
+        }
+
+        return SdExportTarget.FromFileSystem(selectedDisk.RootPath);
+    }
+
     [RelayCommand]
     public async Task OpenMergedOutput()
     {
@@ -207,4 +242,5 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             await ErrorDialog.ShowAsync(ex);
         }
     }
+#endif
 }
