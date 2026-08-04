@@ -29,7 +29,8 @@ public static class TKMM
 #else
     public static readonly string BaseDirectory = AppContext.BaseDirectory;
 #endif
-    
+    public static readonly string[] MergeOutputFolderTargets = ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"];
+
     private static readonly TkModReaderProvider ReaderProvider;
     private static ITkThumbnailProvider? _thumbnailProvider;
 
@@ -156,7 +157,7 @@ public static class TKMM
 
     public static void EmptyMergeOutput(string outputPath)
     {
-        DirectoryHelper.DeleteTargetsFromDirectory(outputPath, ["romfs", "romfslite", "exefs", "cheats", "romfs_metadata.bin"], recursive: true);
+        DirectoryHelper.DeleteTargetsFromDirectory(outputPath, MergeOutputFolderTargets, recursive: true);
     }
 
     static TKMM()
