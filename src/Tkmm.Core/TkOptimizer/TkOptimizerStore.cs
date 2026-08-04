@@ -10,8 +10,8 @@ public class TkOptimizerStore(Ulid id)
 {
     private static readonly string StoreFilePath =
         Path.Combine(TKMM.ModManager.DataFolderPath, "tk-optimizer.json");
-    private static readonly Dictionary<Ulid, bool> Enabled = LoadEnabled();
-    private static readonly Dictionary<Ulid, TkOptimizerProfile> SessionProfiles = [];
+
+    private static readonly Dictionary<Ulid, TkOptimizerProfile> Store = FromDisk();
 
     public static TkOptimizerStore Current => CreateStore(TKMM.ModManager.GetCurrentProfile());
 
@@ -23,31 +23,31 @@ public class TkOptimizerStore(Ulid id)
 
     public static void Remove(TkProfile profile)
     {
-        Enabled.Remove(profile.Id);
-        SessionProfiles.Remove(profile.Id);
-        SaveEnabled();
+        Store.Remove(profile.Id);
+        Save();
     }
 
     public static bool IsProfileEnabled(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
-        return !Enabled.TryGetValue(profile.Id, out var on) || on;
+        return !Store.TryGetValue(profile.Id, out var optimizerProfile) || optimizerProfile.IsEnabled;
     }
 
     public bool IsEnabled {
-        get => !Enabled.TryGetValue(id, out var on) || on;
+        get => GetProfile().IsEnabled;
         set {
-            Enabled[id] = value;
-            SaveEnabled();
+            GetProfile().IsEnabled = value;
+            Save();
             TKMM.MergeBasic();
             TkOptimizerService.Context.ApplyToSdCard();
         }
     }
 
     public string? Preset {
-        get => GetSessionProfile().Preset;
+        get => GetProfile().Preset;
         set {
-            GetSessionProfile().Preset = value;
+            GetProfile().Preset = value;
+            Save();
             TKMM.MergeBasic();
         }
     }
@@ -64,6 +64,7 @@ public class TkOptimizerStore(Ulid id)
                 break;
         }
 
+        Save();
         TKMM.MergeBasic();
     }
 
@@ -72,57 +73,52 @@ public class TkOptimizerStore(Ulid id)
         return GetCheatGroup(cheat.Version).Contains(key);
     }
 
-    private TkOptimizerProfile GetSessionProfile()
+    private TkOptimizerProfile GetProfile()
     {
-        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(SessionProfiles, id, out var exists);
-        if (!exists || profile is null) profile = new TkOptimizerProfile();
+        ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(Store, id, out var exists);
+        if (!exists || profile is null) {
+            profile = new TkOptimizerProfile();
+        }
 
         return profile;
     }
 
     private HashSet<string> GetCheatGroup(string version)
     {
-        var profile = GetSessionProfile();
+        var profile = GetProfile();
 
         ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(profile.Cheats, version, out var exists);
-        if (!exists || group is null) group = [];
+        if (!exists || group is null) {
+            group = [];
+        }
 
         return group;
     }
 
-    private static Dictionary<Ulid, bool> LoadEnabled()
+    private static Dictionary<Ulid, TkOptimizerProfile> FromDisk()
     {
         try {
             if (!File.Exists(StoreFilePath) || new FileInfo(StoreFilePath) is { Length: 0 }) {
                 return [];
             }
 
-            var raw = JsonSerializer.Deserialize<Dictionary<string, bool>>(File.ReadAllText(StoreFilePath));
-            if (raw is null) {
-                return [];
-            }
-
-            Dictionary<Ulid, bool> map = [];
-            foreach (var (key, value) in raw) {
-                if (Ulid.TryParse(key, out var profileId)) {
-                    map[profileId] = value;
-                }
-            }
-
-            return map;
+            using var fs = File.OpenRead(StoreFilePath);
+            return JsonSerializer.Deserialize<Dictionary<string, TkOptimizerProfile>>(fs)?
+                .ToDictionary(x => Ulid.Parse(x.Key), x => x.Value) ?? [];
         }
         catch {
             return [];
         }
     }
 
-    private static void SaveEnabled()
+    private static void Save()
     {
         if (Path.GetDirectoryName(StoreFilePath) is { } folder) {
             Directory.CreateDirectory(folder);
         }
 
-        var serial = Enabled.ToDictionary(static x => x.Key.ToString(), static x => x.Value);
-        File.WriteAllText(StoreFilePath, JsonSerializer.Serialize(serial));
+        using var fs = File.Create(StoreFilePath);
+        JsonSerializer.Serialize(fs,
+            Store.ToDictionary(static x => x.Key.ToString(), static x => x.Value));
     }
 }
