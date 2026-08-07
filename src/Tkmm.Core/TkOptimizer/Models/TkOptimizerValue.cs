@@ -9,7 +9,7 @@ public abstract class TkOptimizerValue<T>(TkOptimizerContext context, T @default
 
     public T Value {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _context.Store.TryGet(Key, out T value) ? value : @default;
+        get => _context.TryGetOptionValue(Key, out T value) ? value : @default;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
             Set(value);
@@ -25,6 +25,6 @@ public abstract class TkOptimizerValue(TkOptimizerContext context) : ObservableO
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void Set<T>(T value) where T : unmanaged
     {
-        context.Store.Set(Key, value);
+        context.SetOptionValue(Key, value);
     }
 }
