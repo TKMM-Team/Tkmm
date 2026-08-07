@@ -105,7 +105,10 @@ public static class TKMM
 
             FolderModWriter writer = new(mergeOutput);
             using var tkRom = GetTkRom();
-            TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
+            string[] locales = Config.Shared.MergeAllMalsLocales
+                ? [.. Config.Shared.GameLanguages.Select(language => language.Value)]
+                : [Config.Shared.GameLanguage];
+            TkMerger merger = new(writer, tkRom, locales, ipsOutputPath);
 
             var startTime = Stopwatch.GetTimestamp();
 

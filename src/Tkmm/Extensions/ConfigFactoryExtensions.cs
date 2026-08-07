@@ -28,6 +28,7 @@ public static class ConfigFactoryExtensions
         }
         
         var advancedHeaders = new[] {
+            Locale["Config_MergeAllMalsLocales"],
             Locale["Config_ExportLocations"],
             Locale["TkConfig_KeysFolderPath"],
             Locale["TkConfig_PackagedBaseGamePaths"],

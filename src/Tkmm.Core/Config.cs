@@ -154,6 +154,13 @@ public sealed partial class Config : ConfigModule<Config>
         RuntimeItemsSourceMethodName = nameof(GetGameLanguages))]
     private GameLanguage _gameLanguage;
 
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_MergeAllMalsLocales",
+        Description = "Config_MergeAllMalsLocalesDescription",
+        Group = "ConfigSection_Merging")]
+    private bool _mergeAllMalsLocales;
+
 #if !SWITCH
     [ObservableProperty]
     [property: Config(
