@@ -77,16 +77,16 @@
                             Margin="5,0">
                     <pi:Icon Name="WiFiIcon"
                              Value="{Binding WiFiIcon, Mode=OneWay}"
-                             FontSize="20"
+                             FontSize="18"
                              Margin="0,0,12,0" />
                     <TextBlock FontSize="15"
                                VerticalAlignment="Center"
-                               Margin="0,0,4,0"
+                               Margin="0,0,6,0"
                                Text="{Binding BatteryCharge, StringFormat={}{0}%, Mode=OneWay}" />
                     <pi:Icon Name="BatteryIcon"
                              Value="{Binding BatteryIcon, Mode=OneWay}"
                              FontSize="25"
-                             Margin="0,0,2,0" />
+                             Margin="0,0,4,0" />
                 </StackPanel>
             </Grid>
 

@@ -31,7 +31,7 @@ public static class Connman
     private const string GET_TECHNOLOGIES_COMMAND = "connmanctl technologies";
     private const string ENABLE_TECHNOLOGY_COMMAND = "connmanctl enable {0}";
     private const string DISABLE_TECHNOLOGY_COMMAND = "connmanctl disable {0}";
-    private const string GET_SIGNAL_COMMAND = "iw dev wlan0 link | awk '/signal:/ {print $2}'";
+    private const string GET_SIGNAL_COMMAND = "awk 'NR==3 {print int($4)}' /proc/net/wireless";
 
     public static async ValueTask Scan(CancellationToken ct = default)
     {
