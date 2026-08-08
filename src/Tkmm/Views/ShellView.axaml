@@ -15,6 +15,7 @@
                Title="{x:Static desktop:App.ShortTitle}"
                xmlns:tk="using:TkSharp.Core"
                xmlns:controls="clr-namespace:Tkmm.Controls"
+               xmlns:ext="clr-namespace:Tkmm.Markup"
                Width="870"
                Height="550"
                MinWidth="650"
@@ -54,7 +55,19 @@
                 <Menu Name="MainMenu"
                       IsVisible="{Binding !IsFirstTimeSetup}"
                       Grid.Column="1" />
-                <Menu Name="PowerOptionsMenu" IsVisible="False" Grid.Column="2" />
+                <Menu Name="PowerOptionsMenu" IsVisible="False" Grid.Column="2">
+                    <MenuItem Name="NxPowerMenuItem" Classes="MenuFactory-TopLevel">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <pi:Icon Value="fa-solid fa-power-off"
+                                         FontSize="14"
+                                         VerticalAlignment="Center" />
+                                <TextBlock Text="{ext:Locale Menu_Nx}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
 
                 <StackPanel Name="NxStatusPanel"
                             IsVisible="False"

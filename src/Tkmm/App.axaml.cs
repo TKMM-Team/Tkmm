@@ -119,7 +119,7 @@ public class App : Application
             localeKeyName => Locale[localeKeyName, failSoftly: true]
         );
         nxSystemMenu.AddMenuGroup<NxMenuModel>();
-        shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
+        shellView.NxPowerMenuItem.ItemsSource = nxSystemMenu.Items.OfType<MenuItem>().First().ItemsSource;
         
         BatteryStatusWatcher.Start();
         WiFiStatusWatcher.Start();
