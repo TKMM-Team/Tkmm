@@ -64,8 +64,8 @@
                             Margin="5,0">
                     <pi:Icon Name="WiFiIcon"
                              Value="{Binding WiFiIcon, Mode=OneWay}"
-                             FontSize="25"
-                             Margin="0,0,8,0" />
+                             FontSize="20"
+                             Margin="0,0,12,0" />
                     <TextBlock FontSize="15"
                                VerticalAlignment="Center"
                                Margin="0,0,4,0"
