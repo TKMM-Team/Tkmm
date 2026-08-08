@@ -3,11 +3,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tkmm.Core.Models.NX;
 using Tkmm.Core.Services;
+#if SWITCH
+using Tkmm.Components.NX;
+#endif
 
 namespace Tkmm.ViewModels.Pages;
 
 public partial class NetworkSettingsPageViewModel : ObservableObject
 {
+    public static NetworkSettingsPageViewModel Shared { get; } = new();
+
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly Timer _autoRefreshTimer; 
     
@@ -46,6 +51,13 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         _macAddress = Connman.GetMacAddress();
         _autoRefreshTimer = new Timer(state => _ = Task.Run(() => RefreshNetworksInternal()));
         _autoRefreshTimer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(1));
+
+        SyncWiFiStatusWatcher();
+    }
+
+    partial void OnConnectedChanged(NxNetwork? value)
+    {
+        SyncWiFiStatusWatcher();
     }
 
     [RelayCommand]
@@ -73,6 +85,8 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
             Networks.Clear();
             Connected = null;
         }
+
+        SyncWiFiStatusWatcher();
     }
 
     private static void OnSshEnabledChanged(bool isEnabled)
@@ -105,12 +119,16 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         
         await foreach (var network in Connman.GetNetworks(ct)) {
             if (Networks.FirstOrDefault(net => net.Id == network.Id) is { } existing) {
-                if (existing.IsConnected) {
-                    await SetConnected(network);
-                }
-                
                 existing.IsConnected = network.IsConnected;
                 existing.IsKnown = network.IsKnown;
+
+                if (network.IsConnected) {
+                    await SetConnected(network);
+                }
+                else if (Connected?.Id == existing.Id) {
+                    Connected = null;
+                }
+
                 goto UpdateTrackingList;
             }
 
@@ -128,6 +146,10 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
             if (foundNetworks.Contains(Networks[i].Id)) {
                 continue;
             }
+
+            if (Connected?.Id == Networks[i].Id) {
+                Connected = null;
+            }
             
             Networks.RemoveAt(i);
             i--;
@@ -144,5 +166,12 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
         }
         
         Connected = network;
+    }
+
+    private void SyncWiFiStatusWatcher()
+    {
+#if SWITCH
+        WiFiStatusWatcher.SetConnected(WiFiService.IsEnabled && Connected is { IsConnected: true });
+#endif
     }
 }

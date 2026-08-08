@@ -33,6 +33,7 @@ using TkSharp.Core.Models;
 #if SWITCH
 using Tkmm.Components.NX;
 using Tkmm.Models.MenuModels;
+using Tkmm.ViewModels.Pages;
 using Tkmm.VirtualKeyboard.Extensions;
 #endif
 
@@ -112,7 +113,7 @@ public class App : Application
 #if SWITCH
         shellView.AddVirtualKeyboard();
         shellView.PowerOptionsMenu.IsVisible = true;
-        shellView.NxBatteryStatusPanel.IsVisible = true;
+        shellView.NxStatusPanel.IsVisible = true;
         
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
             localeKeyName => Locale[localeKeyName, failSoftly: true]
@@ -121,6 +122,8 @@ public class App : Application
         shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
         
         BatteryStatusWatcher.Start();
+        WiFiStatusWatcher.Start();
+        _ = NetworkSettingsPageViewModel.Shared;
         shellView.InitializeWizard();
 #else
         var isTempLaunch = TempFolderGuard.IsRunningFromTemporaryFolder();

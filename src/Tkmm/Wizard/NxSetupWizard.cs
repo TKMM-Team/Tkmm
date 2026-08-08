@@ -31,7 +31,7 @@ namespace Tkmm.Wizard
 
             var networkPage = new NetworkSettingsPageView {
                 MaxHeight = windowHeight * 0.62,
-                DataContext = new NetworkSettingsPageViewModel()
+                DataContext = NetworkSettingsPageViewModel.Shared
             };
 
             var wifiResult = await NextPage()
