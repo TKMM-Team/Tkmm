@@ -34,9 +34,8 @@ public partial class NetworkSettingsPageViewModel : ObservableObject
 
     public NetworkSettingsPageViewModel()
     {
-        WiFiService = new NxNetworkService(Locale[TkLocale.NetworkSettings_WiFiService_Name], OnWiFiEnabledChanged) {
-            IsEnabled = Connman.IsTechnologyEnabled("wifi")
-        };
+        WiFiService = new NxNetworkService(Locale[TkLocale.NetworkSettings_WiFiService_Name], OnWiFiEnabledChanged);
+        WiFiService.IsEnabled = Connman.IsTechnologyEnabled("wifi");
 
         NetworkServices = [
             WiFiService,
