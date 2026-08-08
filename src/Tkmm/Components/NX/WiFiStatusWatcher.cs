@@ -46,8 +46,8 @@ public static class WiFiStatusWatcher
 
         ShellViewModel.Shared.WiFiIcon = Connman.GetSignalStrength() switch {
             null => WIFI_DISCONNECTED,
-            >= -50 => WIFI_HIGH,
-            >= -67 => WIFI_MEDIUM,
+            >= -60 => WIFI_HIGH,
+            >= -70 => WIFI_MEDIUM,
             _ => WIFI_LOW
         };
     }
