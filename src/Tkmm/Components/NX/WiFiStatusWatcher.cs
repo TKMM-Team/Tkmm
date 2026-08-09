@@ -34,7 +34,7 @@ public static class WiFiStatusWatcher
         }
 
         UpdateSignal();
-        AutoUpdateWiFiTimer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(2));
+        AutoUpdateWiFiTimer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5));
     }
 
     private static void UpdateSignal()
@@ -46,8 +46,8 @@ public static class WiFiStatusWatcher
 
         ShellViewModel.Shared.WiFiIcon = Connman.GetSignalStrength() switch {
             null => WIFI_DISCONNECTED,
-            >= -62 => WIFI_HIGH,
-            >= -72 => WIFI_MEDIUM,
+            >= 40 => WIFI_HIGH,
+            >= 20 => WIFI_MEDIUM,
             _ => WIFI_LOW
         };
     }

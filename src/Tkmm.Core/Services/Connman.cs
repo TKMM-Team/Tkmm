@@ -31,7 +31,7 @@ public static class Connman
     private const string GET_TECHNOLOGIES_COMMAND = "connmanctl technologies";
     private const string ENABLE_TECHNOLOGY_COMMAND = "connmanctl enable {0}";
     private const string DISABLE_TECHNOLOGY_COMMAND = "connmanctl disable {0}";
-    private const string GET_SIGNAL_COMMAND = "awk 'NR==3 {print int($4)}' /proc/net/wireless";
+    private const string GET_SIGNAL_COMMAND = "awk 'NR==3 {print int($3)}' /proc/net/wireless";
 
     public static async ValueTask Scan(CancellationToken ct = default)
     {
@@ -202,11 +202,11 @@ public static class Connman
         using var output = NxProcessHelper.ReadCommand(GET_SIGNAL_COMMAND);
         var line = output.ReadToEnd().Trim();
 
-        if (string.IsNullOrWhiteSpace(line) || !int.TryParse(line, out var dbm)) {
+        if (string.IsNullOrWhiteSpace(line) || !int.TryParse(line, out var linkQuality)) {
             return null;
         }
 
-        return dbm;
+        return linkQuality;
     }
 
     private static string FindPropertyValue(string property, ReadOnlySpan<char> line, ReadOnlySpan<char> key)
