@@ -1,0 +1,104 @@
+<common:OverlayCard xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:ext="clr-namespace:Tkmm.Markup"
+                    xmlns:common="clr-namespace:Tkmm.Views.Common"
+                    xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+                    mc:Ignorable="d"
+                    d:DesignWidth="720"
+                    d:DesignHeight="640"
+                    x:Class="Tkmm.Views.Common.JoyConControlsView"
+                    x:DataType="common:JoyConControlsView"
+                    CardMaxWidth="720"
+                    CardMinWidth="420"
+                    CardMargin="40,20"
+                    CardPadding="20">
+    <DockPanel LastChildFill="True">
+        <Button DockPanel.Dock="Bottom"
+                HorizontalAlignment="Right"
+                Margin="0,16,0,0"
+                MinWidth="100"
+                Content="{ext:Locale Action_Close}"
+                Click="Close_OnClick" />
+
+        <ScrollViewer Padding="0,0,16,0">
+            <StackPanel Spacing="16"
+                        MaxWidth="650"
+                        HorizontalAlignment="Center">
+                <TextBlock FontSize="24"
+                           FontWeight="SemiBold"
+                           Text="{ext:Locale Menu_HelpJoyConControls}" />
+
+                <Image Source="avares://Tkmm/Assets/JoyConControls.png"
+                       Stretch="Uniform"
+                       MaxWidth="650"
+                       HorizontalAlignment="Center" />
+                
+                <Border Background="#33E6A817"
+                        BorderBrush="#E6A817"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="12"
+                        HorizontalAlignment="Stretch">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <pi:Icon Value="fa-solid fa-triangle-exclamation"
+                                 FontSize="18"
+                                 VerticalAlignment="Top"
+                                 Margin="0,2,0,0" />
+                        <TextBlock Grid.Column="1"
+                                   Text="{ext:Locale JoyConControls_NyxWarning}"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </Border>
+                
+                <Border BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        ClipToBounds="True"
+                        HorizontalAlignment="Stretch">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top"
+                                Background="{DynamicResource CardStrokeColorDefaultSolid}"
+                                Padding="14,10"
+                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="160,*">
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{ext:Locale JoyConControls_Column_Button}" />
+                                <TextBlock Grid.Column="1"
+                                           FontWeight="SemiBold"
+                                           Text="{ext:Locale JoyConControls_Column_Action}" />
+                            </Grid>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding Mappings}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="common:JoyConControlMapping">
+                                    <Border Padding="14,8"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid ColumnDefinitions="160,*" ColumnSpacing="12">
+                                            <TextBlock Text="{Binding Button}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Action}"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.9" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
+                </Border>
+
+                <TextBlock Text="{ext:Locale JoyConControls_UnusedNote}"
+                           TextWrapping="Wrap"
+                           Opacity="0.85" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</common:OverlayCard>

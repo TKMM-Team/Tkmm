@@ -1,20 +1,12 @@
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using FluentAvalonia.UI.Controls;
-
 namespace Tkmm.Views.Common;
 
-public partial class SdExportProgressView : UserControl
+public partial class SdExportProgressView : OverlayCard
 {
-    private readonly DialogHost _host;
-    private OverlayLayer? _overlayLayer;
+    private OverlayModal? _modal;
 
     public SdExportProgressView()
     {
         InitializeComponent();
-        _host = new DialogHost {
-            Content = this
-        };
     }
 
     public string Title
@@ -25,20 +17,13 @@ public partial class SdExportProgressView : UserControl
 
     public void Show()
     {
-        if (OverlayLayer.GetOverlayLayer(App.XamlRoot) is not { } overlayLayer) {
-            return;
-        }
-
-        _overlayLayer = overlayLayer;
-        if (!overlayLayer.Children.Contains(_host)) {
-            overlayLayer.Children.Add(_host);
-        }
+        _modal ??= new OverlayModal(this);
+        _modal.Show();
     }
 
     public void Hide()
     {
-        _overlayLayer?.Children.Remove(_host);
-        _overlayLayer = null;
+        _modal?.Hide();
     }
 
     public void SetIndeterminate(string status)

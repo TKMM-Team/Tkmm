@@ -1,7 +1,6 @@
 #if !SWITCH
+using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using MediaDevices;
@@ -19,31 +18,46 @@ public static class MtpSdCardHelper
     private const int IN_USE = unchecked((int)0x800700AA);
     private const int ACCESS_DENIED = unchecked((int)0x80070005);
 
-    public static IEnumerable<(string DeviceId, string FriendlyName, string RootPath)> FindAtmosphereRoots()
+    private static readonly BlockingCollection<(Action Work, TaskCompletionSource Done)> StaQueue = new();
+
+    static MtpSdCardHelper()
     {
-        if (!OperatingSystem.IsWindows()) {
+        var thread = new Thread(StaThreadProc) {
+            IsBackground = true,
+            Name = "TKMM MTP"
+        };
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
+    }
+
+    public static IReadOnlyList<(string DeviceId, string FriendlyName, string RootPath)> FindAtmosphereRoots(
+        TimeSpan? timeout = null)
+    {
+        List<(string DeviceId, string FriendlyName, string RootPath)> roots = [];
+
+        try {
+            if (!TryRunSta(() => {
+                    foreach (var device in GetDevices()) {
+                        try {
+                            device.Connect();
+                            var name = DeviceName(device);
+                            roots.AddRange(AtmosphereRoots(device).Select(root => (device.DeviceId, name, root)));
+                        }
+                        catch {
+                            // Ignore devices that cannot be queried.
+                        }
+                        finally {
+                            TryDisconnect(device);
+                            device.Dispose();
+                        }
+                    }
+                }, timeout ?? TimeSpan.FromSeconds(2))) {
+                return [];
+            }
+        }
+        catch (Exception ex) when (ex is COMException or InvalidComObjectException) {
             return [];
         }
-
-        List<(string DeviceId, string FriendlyName, string RootPath)> roots = [];
-        RunSta(() => {
-            foreach (var device in MediaDevice.GetDevices()) {
-                try {
-                    device.Connect();
-                    var name = DeviceName(device);
-                    foreach (var root in AtmosphereRoots(device)) {
-                        roots.Add((device.DeviceId, name, root));
-                    }
-                }
-                catch {
-                    // Ignore devices that cannot be queried.
-                }
-                finally {
-                    TryDisconnect(device);
-                    device.Dispose();
-                }
-            }
-        });
 
         return roots;
     }
@@ -58,10 +72,6 @@ public static class MtpSdCardHelper
         IProgress<(int Copied, int Total)>? progress,
         Action? wipeCompleted)
     {
-        if (!OperatingSystem.IsWindows()) {
-            throw new PlatformNotSupportedException("MTP is only supported on Windows.");
-        }
-
         RunSta(() => {
             var contentPath = Combine(mtpRootPath, CONTENTS_RELATIVE_PATH);
             var entries = DirectoryHelper.GetMergeExportEntries(mergeOutputFolder, useRomfsLite);
@@ -110,6 +120,16 @@ public static class MtpSdCardHelper
         });
     }
 
+    private static List<MediaDevice> GetDevices()
+    {
+        try {
+            return MediaDevice.GetDevices().ToList();
+        }
+        catch (InvalidComObjectException) {
+            return MediaDevice.GetDevices().ToList();
+        }
+    }
+
     private static void WithDevice(string deviceId, Action<MediaDevice> action)
         => WithDevice(deviceId, device => {
             action(device);
@@ -118,7 +138,7 @@ public static class MtpSdCardHelper
 
     private static T WithDevice<T>(string deviceId, Func<MediaDevice, T> action)
     {
-        using var device = MediaDevice.GetDevices().FirstOrDefault(d => d.DeviceId == deviceId)
+        using var device = GetDevices().FirstOrDefault(d => d.DeviceId == deviceId)
             ?? throw new InvalidOperationException("The selected MTP device is no longer connected.");
         device.Connect();
         try {
@@ -195,18 +215,12 @@ public static class MtpSdCardHelper
                 return 1;
             }
 
-            if (!device.DirectoryExists(remotePath)) {
-                return 0;
-            }
-
-            return device.EnumerateFiles(remotePath, "*", SearchOption.AllDirectories).Count();
+            return !device.DirectoryExists(remotePath)
+                ? 0
+                : device.EnumerateFiles(remotePath, "*", SearchOption.AllDirectories).Count();
         }
         catch (Exception ex) when (
-            ex is DirectoryNotFoundException ||
-            ex is FileNotFoundException ||
-            ex is IOException ||
-            IsTransient(ex))
-        {
+            ex is DirectoryNotFoundException or FileNotFoundException or IOException || IsTransient(ex)) {
             return -1;
         }
     }
@@ -216,7 +230,6 @@ public static class MtpSdCardHelper
             : Directory.Exists(path) ? Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Count()
             : 0;
 
-    [SupportedOSPlatform("windows")]
     private static dynamic CreateShell()
     {
         var type = Type.GetTypeFromProgID("Shell.Application")
@@ -392,29 +405,37 @@ public static class MtpSdCardHelper
     }
 
     private static void RunSta(Action action)
+        => TryRunSta(action, Timeout.InfiniteTimeSpan);
+
+    private static bool TryRunSta(Action action, TimeSpan timeout)
     {
-        if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA) {
-            action();
-            return;
+        var done = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        StaQueue.Add((action, done));
+
+        if (timeout == Timeout.InfiniteTimeSpan) {
+            done.Task.GetAwaiter().GetResult();
+            return true;
         }
 
-        var error = new StrongBox<Exception?>(null);
-        var thread = new Thread(() => {
+        if (!done.Task.Wait(timeout)) {
+            _ = done.Task.ContinueWith(static t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+            return false;
+        }
+
+        done.Task.GetAwaiter().GetResult();
+        return true;
+    }
+
+    private static void StaThreadProc()
+    {
+        foreach (var (work, done) in StaQueue.GetConsumingEnumerable()) {
             try {
-                action();
+                work();
+                done.TrySetResult();
             }
             catch (Exception ex) {
-                error.Value = ex;
+                done.TrySetException(ex);
             }
-        }) {
-            IsBackground = true,
-            Name = "TKMM MTP"
-        };
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-        if (error.Value is not null) {
-            ExceptionDispatchInfo.Capture(error.Value).Throw();
         }
     }
 }

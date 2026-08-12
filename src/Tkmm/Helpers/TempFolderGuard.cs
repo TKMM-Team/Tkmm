@@ -48,7 +48,7 @@ public static class TempFolderGuard
         ContentDialog dialog = new() {
             Title = Locale["TempFolderGuard_Title"],
             Content = Locale["TempFolderGuard_Message"],
-            PrimaryButtonText = Locale["TempFolderGuard_Close"],
+            PrimaryButtonText = Locale["Action_Close"],
             DefaultButton = ContentDialogButton.Primary
         };
 

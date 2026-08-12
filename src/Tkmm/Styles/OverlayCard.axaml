@@ -1,0 +1,31 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="clr-namespace:Tkmm.Views.Common">
+    <Style Selector="common|OverlayCard">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Background="#9A111111"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                    <Border Padding="{TemplateBinding CardPadding}"
+                            Margin="{TemplateBinding CardMargin}"
+                            MinWidth="{TemplateBinding CardMinWidth}"
+                            MaxWidth="{TemplateBinding CardMaxWidth}"
+                            HorizontalAlignment="{TemplateBinding CardHorizontalAlignment}"
+                            VerticalAlignment="Center"
+                            BoxShadow="5 5 15 0 #9A000000"
+                            BorderBrush="{DynamicResource ControlOnImageFillColorSecondary}"
+                            BorderThickness="2"
+                            Background="{DynamicResource CardStrokeColorDefaultSolid}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

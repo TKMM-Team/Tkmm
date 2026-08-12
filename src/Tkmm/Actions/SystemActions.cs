@@ -10,6 +10,7 @@ using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
+using Tkmm.Views.Common;
 using TkSharp.Core;
 
 namespace Tkmm.Actions;
@@ -39,6 +40,15 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         await dialog.ShowAsync();
     }
+
+#if SWITCH
+    [RelayCommand]
+    public static Task ShowJoyConControls()
+    {
+        new JoyConControlsView().Show();
+        return Task.CompletedTask;
+    }
+#endif
 
     [RelayCommand]
     public static async Task OpenDocumentationWebsite()
