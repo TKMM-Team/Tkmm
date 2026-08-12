@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Avalonia.Controls.Notifications;
 using Avalonia.Platform;
-using AvaMark;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -27,18 +26,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         contents = contents.Replace("@@version@@", App.Version);
 
-        TaskDialog dialog = new() {
-            XamlRoot = App.XamlRoot,
-            Title = Locale["Dialog_About"],
-            Content = new MarkdownViewer {
-                Markdown = contents
-            },
-            Buttons = [
-                TaskDialogButton.OKButton
-            ]
-        };
-
-        await dialog.ShowAsync();
+        await AboutView.ShowAsync(contents);
     }
 
 #if SWITCH

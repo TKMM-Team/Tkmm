@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
@@ -88,11 +89,11 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
         }
 
         var localDisks = await Task.Run(EnumerateLocalExportDisks, ct);
-        var mtpDisks = OperatingSystem.IsWindows()
-            ? await Task.Run(() => MtpSdCardHelper.FindAtmosphereRoots(TimeSpan.FromSeconds(2))
-                .Select(static root => new DisplayDisk(root.DeviceId, root.FriendlyName, root.RootPath))
-                .ToArray(), ct)
-            : [];
+
+        DisplayDisk[] mtpDisks = [];
+        if (OperatingSystem.IsWindows()) {
+            mtpDisks = await EnumerateMtpExportDisksAsync(ct);
+        }
 
         var disks = localDisks.Concat(mtpDisks).Append(DisplayDisk.ManualSelection).ToArray();
 
@@ -209,6 +210,12 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             })
             .Select(static driveInfo => new DisplayDisk(driveInfo));
     }
+
+    [SupportedOSPlatform("windows")]
+    private static Task<DisplayDisk[]> EnumerateMtpExportDisksAsync(CancellationToken ct)
+        => Task.Run(() => MtpSdCardHelper.FindAtmosphereRoots(TimeSpan.FromSeconds(2))
+            .Select(static root => new DisplayDisk(root.DeviceId, root.FriendlyName, root.RootPath))
+            .ToArray(), ct);
 
     private static async Task<ISdExportTarget?> CreateExportTarget(DisplayDisk selectedDisk)
     {
