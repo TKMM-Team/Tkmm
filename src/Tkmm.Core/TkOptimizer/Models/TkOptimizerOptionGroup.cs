@@ -5,12 +5,12 @@ namespace Tkmm.Core.TkOptimizer.Models;
 
 public sealed class TkOptimizerOptionGroup(string name)
 {
-    public string Name { get; } = name;
+    private string Name { get; } = name;
     
     public ObservableCollection<TkOptimizerOption> Options { get; } = [];
 
     public override string ToString()
     {
-        return Name.Humanize();
+        return string.Equals(Name, "cheat", StringComparison.OrdinalIgnoreCase) ? "Cheats" : Name.Humanize();
     }
 }

@@ -239,23 +239,6 @@ public sealed partial class Config : ConfigModule<Config>
     
     partial void OnUseRomfsliteChanged(bool value)
     {
-        try {
-            var romfsPath = Path.Join(TKMM.MergedOutputFolder, "romfs");
-            var romfsLitePath = Path.Join(TKMM.MergedOutputFolder, "romfslite");
-            
-            switch (value) {
-                case true when Directory.Exists(romfsPath) && !Directory.Exists(romfsLitePath) && TkOptimizerStore.IsProfileEnabled():
-                    Directory.Move(romfsPath, romfsLitePath);
-                    break;
-                case false when Directory.Exists(romfsLitePath) && !Directory.Exists(romfsPath):
-                    Directory.Move(romfsLitePath, romfsPath);
-                    break;
-            }
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogError(ex, Locale["Config_ErrorFailedToRenameRomfslite"]);
-        }
-        
         if (EmulatorPath != null && TkEmulatorHelper.GetModPath(EmulatorPath) is {} modPath) {
             MergeOutput = modPath;
         }

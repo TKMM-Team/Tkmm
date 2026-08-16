@@ -1,15 +1,10 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Text;
 using System.Text.Json;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Tkmm.Core.Helpers;
-using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer.Models;
-using Tkmm.Core.TkOptimizer.Models.ValueTypes;
 using TkSharp.Core;
 using TkSharp.Core.Models;
 using TkSharp.IO.Writers;
@@ -21,17 +16,23 @@ namespace Tkmm.Core.TkOptimizer;
 /// </summary>
 public sealed class TkOptimizerContext : ObservableObject
 {
-    private TkOptimizerStore? _store;
+    private static readonly SemaphoreSlim ApplyAsyncLock = new(1, 1);
+    private readonly Dictionary<string, JsonElement> _optionValues = new(StringComparer.OrdinalIgnoreCase);
+#if !SWITCH
+    private string? _ephemeralSdCardRootPath;
+#endif
 
     [NotNull]
     public TkOptimizerStore? Store {
-        get => _store ?? TkOptimizerStore.Current;
-        set => _store = value;
+        get => field ?? TkOptimizerStore.Current;
+        set;
     }
-    
+
     public ObservableCollection<TkOptimizerOptionGroup> Groups { get; } = [];
-    
+
     public ObservableCollection<TkOptimizerCheatGroup> CheatGroups { get; } = [];
+
+    internal List<TkOptimizerOption> AutoOptions { get; } = [];
 
     public bool IsEnabled {
         get => TkOptimizerStore.Current.IsEnabled;
@@ -52,221 +53,158 @@ public sealed class TkOptimizerContext : ObservableObject
     public static TkOptimizerContext Create()
     {
         TkOptimizerContext context = new();
-        
-        using var optionsJsonStream = GetOptionsJsonStream();
-        if (JsonSerializer.Deserialize<TkOptimizerJson>(optionsJsonStream, TkOptimizerJsonContext.Default.TkOptimizerJson) is { } optionsJson) {
-            LoadOptions(context, optionsJson);
-        }
-        
-        using var cheatsJsonStream = GetCheatsJsonStream();
-        if (JsonSerializer.Deserialize<TkOptimizerCheatsJson>(cheatsJsonStream, TkOptimizerCheatsJsonContext.Default.TkOptimizerCheatsJson) is { } cheatsJson) {
-            LoadCheats(context, cheatsJson);
-        }
-
+        TkOptimizerLoader.Load(context);
         return context;
     }
-    
-    private static void LoadOptions(TkOptimizerContext context, TkOptimizerJson json)
+
+    internal bool TryGetOptionValue<T>(string key, out T value) where T : unmanaged
     {
-        foreach (var section in json.Options.GroupBy(x => x.Value.Section)) {
-            TkOptimizerOptionGroup group = new(section.Key);
-            foreach (var (key, option) in section) {
-                group.Options.Add(TkOptimizerOption.FromJson(context, key, option));
-            }
-            
-            context.Groups.Add(group);
+        if (!_optionValues.TryGetValue(key, out var json)) {
+            value = default;
+            return false;
         }
+
+        value = json.Deserialize<T>();
+        return true;
     }
-    
-    private static void LoadCheats(TkOptimizerContext context, TkOptimizerCheatsJson json)
+
+    internal void SetOptionValue<T>(string key, T value, bool writeOutput = true) where T : unmanaged
     {
-        foreach (var cheat in json) {
-            TkOptimizerCheatGroup group = new(cheat.DisplayVersion);
-            foreach (var (name, value) in cheat.Cheats) {
-                using MemoryStream ms = new(Encoding.UTF8.GetBytes(value));
-                group.Cheats.Add(
-                    new TkOptimizerCheat(context, group, name, TkCheat.FromText(ms, cheat.Version))
-                );
-            }
-            
-            context.CheatGroups.Add(group);
+        _optionValues[key] = JsonSerializer.SerializeToElement(value);
+        if (writeOutput) {
+            ApplyToSdCard();
         }
     }
 
-    private static Stream GetOptionsJsonStream()
+    public void ApplyToSdCard()
     {
-        var id = TkOptimizerService.GetStaticId();
+        _ = ApplyToSdCardAsync();
+    }
 
-        Stream? result = null;
-
-        if (TKMM.ModManager.Mods.FirstOrDefault(x => x.Id == id) is { Changelog.Source: { } optimizerSource }) {
-            const string target = "extras/Options.json";
-            if (optimizerSource.Exists(target)) {
-                result = optimizerSource.OpenRead(target);
-            }
+    private async Task ApplyToSdCardAsync()
+    {
+        try {
+            ITkModWriter writer = new FolderModWriter(TKMM.MergedOutputFolder);
+            await ApplyAsync(writer, cancellationToken: CancellationToken.None).ConfigureAwait(true);
         }
-
-        return result ?? typeof(TkOptimizerContext).Assembly
-            .GetManifestResourceStream("Tkmm.Core.Resources.Optimizer.Options.json")!;
-    }
-
-    private static Stream GetCheatsJsonStream()
-    {
-        return typeof(TkOptimizerContext).Assembly
-            .GetManifestResourceStream("Tkmm.Core.Resources.Optimizer.Cheats.json")!;
-    }
-
-    public void ApplyToMergedOutput()
-    {
-        ITkModWriter writer = new FolderModWriter(TKMM.MergedOutputFolder);
-        Apply(writer);
-    }
-    
-    public void Apply(ITkModWriter mergeOutputWriter, TkProfile? profile = null)
-    {
-        var romfslitePath = Path.Combine(TKMM.MergedOutputFolder, "romfslite");
-        var romfsPath = Path.Combine(TKMM.MergedOutputFolder, "romfs");
-        var romfsFolder = Directory.Exists(romfslitePath) && Config.Shared.UseRomfslite ? "romfslite" : "romfs";
-
-        if (TkOptimizerStore.IsProfileEnabled(profile) && Config.Shared.UseRomfslite && Directory.Exists(romfsPath)) {
-            try {
-                Directory.Move(romfsPath, romfslitePath);
-                romfsFolder = "romfslite";
-            }
-            catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Failed to rename romfs to romfslite");
-            }
+        catch (Exception ex) {
+            TkLog.Instance.LogError(ex, "Failed to export TotK Optimizer UltraCam configuration to SD paths.");
         }
-        
-        // ReSharper disable twice StringLiteralTypo
-        var outputFileName = Path.Combine(romfsFolder, "UltraCam", "maxlastbreath.ini");
-        var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config", "maxlastbreath.ini");
-        
+    }
+
+    public async ValueTask ApplyAsync(ITkModWriter mergeOutputWriter, TkProfile? profile = null,
+        CancellationToken cancellationToken = default)
+    {
+        _ = mergeOutputWriter;
+
+        await ApplyAsyncLock.WaitAsync(cancellationToken).ConfigureAwait(true);
+        try {
+            await ApplyCoreAsync(profile, cancellationToken).ConfigureAwait(true);
+        }
+        finally {
+            ApplyAsyncLock.Release();
+        }
+    }
+
+    private async ValueTask ApplyCoreAsync(TkProfile? profile, CancellationToken cancellationToken)
+    {
+        profile ??= TKMM.ModManager.GetCurrentProfile();
+
         if (!TkOptimizerStore.IsProfileEnabled(profile)) {
-            var deleteFilePath = Path.Combine(TKMM.MergedOutputFolder, outputFileName);
-            if (File.Exists(deleteFilePath)) {
-                try {    
-                    File.Delete(deleteFilePath);
-                }
-                catch {
-                    // ignored
-                }
-            }
-            
-            if (Directory.Exists(romfslitePath)) {
-                try {
-                    Directory.Move(romfslitePath, romfsPath);
-                }
-                catch (Exception ex) {
-                    TkLog.Instance.LogError(ex, "Failed to rename romfslite to romfs");
-                }
-            }
-            
             return;
         }
-        
-        Store = TkOptimizerStore.CreateStore(profile);
-        using MemoryStream memoryStream = new();
-        using (StreamWriter writer = new(memoryStream, leaveOpen: true)) {
-            WriteConfigContent(writer);
-        }
-        
-        memoryStream.Position = 0;
 
-        using (var output = mergeOutputWriter.OpenWrite(outputFileName)) {
-            memoryStream.CopyTo(output);
-        }
+        Store = TkOptimizerStore.CreateStore(profile);
 
 #if !SWITCH
-        if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
-            var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
-            
-            if (!string.IsNullOrWhiteSpace(emulatorSdPath)) {
-                var fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-                
-                memoryStream.Position = 0;
-                using var emulatorOutput = File.Create(fullPath);
-                memoryStream.CopyTo(emulatorOutput);
+        if (!HasOutputDestination()) {
+            if (TkOptimizerSdPrompt.RequestSdCardRootAsync is not { } requestRoot) {
+                TkLog.Instance.LogWarning(
+                    "TotK Optimizer configuration was not written: no SD card root or emulator SD path is configured, and no folder prompt is available.");
+                Store = null;
+                return;
+            }
+
+            var chosen = await requestRoot().ConfigureAwait(true);
+            if (chosen is null || string.IsNullOrWhiteSpace(chosen.Path)) {
+                TkLog.Instance.LogInformation("TotK Optimizer SD path selection was cancelled; configuration was not written.");
+                Store = null;
+                return;
+            }
+
+            if (chosen.PersistToConfig) {
+                TkConfig.Shared.SdCardRootPath = chosen.Path;
+                TkConfig.Shared.Save();
+                _ephemeralSdCardRootPath = null;
+            }
+            else {
+                _ephemeralSdCardRootPath = chosen.Path;
             }
         }
 #endif
 
-        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
-            var fullPath = Path.Combine(TkConfig.Shared.SdCardRootPath, outputSdFileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-            
-            memoryStream.Position = 0;
-            using var sdOutput = File.Create(fullPath);
-            memoryStream.CopyTo(sdOutput);
+        var allOptions = Groups.SelectMany(x => x.Options).Concat(AutoOptions).ToArray();
+
+        foreach (var optionsByFile in allOptions.GroupBy(x => x.OutputFileName, StringComparer.OrdinalIgnoreCase)) {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var fileOptions = optionsByFile.ToArray();
+            var config = TkOptimizerConfigWriter.Build(fileOptions);
+            TkOptimizerConfigWriter.ApplyModOverrides(config, optionsByFile.Key, fileOptions, profile);
+
+            var outputSdFileName = Path.Combine("UltraCam", "TOTK", "Config", $"{optionsByFile.Key}.ini");
+
+#if !SWITCH
+            if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
+                var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
+
+                if (!string.IsNullOrWhiteSpace(emulatorSdPath)) {
+                    var fullPath = Path.Combine(emulatorSdPath, outputSdFileName);
+                    await TkOptimizerConfigWriter.WriteFileAsync(fullPath, config, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+            }
+#endif
+
+            var physicalSdRoot = GetSdRootForWrite();
+            if (!string.IsNullOrWhiteSpace(physicalSdRoot)) {
+                var fullPath = Path.Combine(physicalSdRoot, outputSdFileName);
+                await TkOptimizerConfigWriter.WriteFileAsync(fullPath, config, cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
 
         Store = null;
     }
 
-    private void WriteConfigContent(StreamWriter writer)
+#if !SWITCH
+    private bool HasOutputDestination()
     {
-        foreach (var options in Groups.SelectMany(x => x.Options).GroupBy(x => x.ConfigClass[0])) {
-            writer.Write("[");
-            writer.Write(options.Key);
-            writer.WriteLine("]");
-
-            foreach (var option in options) {
-                if (option.Value is TkOptimizerEnumValue enumValue) {
-                    WriteEnumValue(writer, option, enumValue);
-                    continue;
-                }
-                
-                var key = option.ConfigClass[1];
-                var value = option.Value switch {
-                    TkOptimizerBoolValue boolean => boolean.Value ? "On" : "Off",
-                    TkOptimizerFloatingPointRangeValue f32 => f32.Value.ToString(CultureInfo.InvariantCulture),
-                    TkOptimizerRangeValue s32 => s32.Value.ToString(CultureInfo.InvariantCulture),
-                    _ => null
-                };
-
-                if (value is null) {
-                    continue;
-                }
-                
-                writer.Write(key);
-                writer.Write(" = ");
-                writer.WriteLine(value);
-            }
-            
-            writer.WriteLine();
+        if (!string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)) {
+            return true;
         }
+
+        if (!string.IsNullOrWhiteSpace(_ephemeralSdCardRootPath)) {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
+            return false;
+        }
+        
+        var emulatorSdPath = TkEmulatorHelper.GetSdPath(Config.Shared.EmulatorPath);
+        return !string.IsNullOrWhiteSpace(emulatorSdPath);
     }
+#endif
 
-    private static void WriteEnumValue(in StreamWriter writer, TkOptimizerOption option, TkOptimizerEnumValue enumValue)
-    {
-        var choice = enumValue.Values[enumValue.Value].Value;
-        var properties = option.ConfigClass.AsSpan()[1..];
-
-        if (choice.ValueKind is JsonValueKind.Number && choice.TryGetInt32(out var s32)) {
-            writer.Write(properties[0]);
-            writer.Write(" = ");
-            writer.WriteLine(s32);
-            return;
-        }
-
-        if (choice.ValueKind is not JsonValueKind.String || choice.GetString() is not { } value) {
-            throw new ArgumentException($"Unexpected enum value: {choice}");
-        }
-
-        Span<Range> sections = new Range[properties.Length];
-        var sectionCount = value.AsSpan().Split(sections, 'x');
-
-        if (sectionCount != sections.Length) {
-            throw new ArgumentException($"Unexpected split in '{value}', expected {sections.Length} parts but found {sectionCount}.");
-        }
-
-        for (var i = 0; i < properties.Length; i++) {
-            writer.Write(properties[i]);
-            writer.Write(" = ");
-            writer.WriteLine(value[sections[i]]);
-        }
-    }
+    private string? GetSdRootForWrite()
+        => !string.IsNullOrWhiteSpace(TkConfig.Shared.SdCardRootPath)
+            ? TkConfig.Shared.SdCardRootPath
+#if !SWITCH
+            : _ephemeralSdCardRootPath;
+#else
+            : null;
+#endif
 
     public void Reload()
     {
