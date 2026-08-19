@@ -6,6 +6,7 @@
         Height="520"
         MinWidth="480"
         MinHeight="360"
+        RequestedThemeVariant="Dark"
         WindowStartupLocation="CenterScreen">
     <DockPanel Margin="20">
         <StackPanel x:Name="DesktopButtons"

@@ -72,6 +72,9 @@ public partial class CrashHandlerWindow : Window
 
     private void Exit_OnClick(object? sender, RoutedEventArgs e)
     {
+#if SWITCH
+        CrashHandler.StartTkmmService();
+#endif
         CloseApp();
     }
 

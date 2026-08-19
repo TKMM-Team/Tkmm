@@ -122,8 +122,24 @@ public static class CrashHandler
             }
         });
 
+#if SWITCH
+        StopTkmmService();
+#endif
+
         return true;
     }
+
+#if SWITCH
+    public static void StopTkmmService()
+    {
+        NxProcessHelper.Exec("systemctl stop tkmm");
+    }
+
+    public static void StartTkmmService()
+    {
+        NxProcessHelper.Exec("systemctl start tkmm");
+    }
+#endif
 
     private static string? WriteCrashInfo(Exception exception)
     {
