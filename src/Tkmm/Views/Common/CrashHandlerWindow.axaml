@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="Tkmm.Views.Common.CrashHandlerWindow"
         Title="TKMM Crash Handler"
-        Width="720"
+        Width="840"
         Height="520"
         MinWidth="480"
         MinHeight="360"
@@ -43,24 +43,27 @@
                     Click="Shutdown_OnClick" />
         </StackPanel>
 
-        <StackPanel Spacing="12">
-            <TextBlock FontSize="22"
+        <Grid RowDefinitions="Auto,Auto,*">
+            <TextBlock Grid.Row="0"
+                       FontSize="22"
                        FontWeight="SemiBold"
-                       Text="Uh oh! Your TKMM just experienced an oopsie doopsie!"
+                       Text="Uh oh! Your TKMM just experienced a woopsie!"
                        TextWrapping="Wrap" />
 
-            <TextBlock Opacity="0.85"
+            <TextBlock Grid.Row="1"
+                       Margin="0,12,0,0"
+                       Opacity="0.85"
                        Text="Details of the exception are shown below."
                        TextWrapping="Wrap" />
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto">
-                <TextBox x:Name="DetailsTextBox"
-                         IsReadOnly="True"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         MinHeight="280" />
-            </ScrollViewer>
-        </StackPanel>
+            <TextBox Grid.Row="2"
+                     x:Name="DetailsTextBox"
+                     Margin="0,12,0,0"
+                     IsReadOnly="True"
+                     AcceptsReturn="True"
+                     TextWrapping="WrapWithOverflow"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch" />
+        </Grid>
     </DockPanel>
 </Window>
