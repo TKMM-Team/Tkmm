@@ -38,7 +38,8 @@
                                 BorderThickness="1"
                                 CornerRadius="15"
                                 Background="White">
-                            <controls:DiscordQrCode Width="200" Foreground="Black" />
+                            <controls:BrandedQrCode Width="200"
+                                                    Url="https://tkmm.org/discord" />
                         </Border>
                         <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
                     </StackPanel>

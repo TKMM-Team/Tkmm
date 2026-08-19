@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Tkmm.Controls"
+             x:Class="Tkmm.Controls.BrandedQrCode">
+    <Viewbox Width="{Binding $parent[UserControl].Width}"
+             Height="{Binding $parent[UserControl].Width}">
+        <Grid Width="256"
+              Height="256">
+            <Image x:Name="QrImage"
+                   Stretch="Fill" />
+            <Border Background="White"
+                    CornerRadius="5"
+                    Width="65"
+                    Height="65"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Viewbox Margin="2">
+                    <controls:TkmmIcon Foreground="{DynamicResource SystemAccentColor}" />
+                </Viewbox>
+            </Border>
+        </Grid>
+    </Viewbox>
+</UserControl>

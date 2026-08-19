@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
@@ -10,6 +10,7 @@ using Tkmm.Core;
 using Tkmm.Core.Helpers;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
+using Tkmm.Helpers;
 using TkSharp.Core;
 using TkSharp.Core.Common;
 
@@ -22,7 +23,43 @@ internal abstract class Program
     [STAThread]
     public static void Main(string[] args)
     {
+#if !DEBUG
+        AppDomain.CurrentDomain.UnhandledException += static (_, eventArgs) => {
+            if (eventArgs.ExceptionObject is not Exception ex || Dispatcher.UIThread.CheckAccess()) {
+                return;
+            }
+
+            if (CrashHandler.TryRelaunchFatal(ex)) {
+                Environment.Exit(1);
+            }
+        };
+#endif
+
         try {
+            if (CrashHandler.IsLaunch(args)) {
+                if (!CrashHandler.TryAcquireForCurrentProcess()) {
+                    return;
+                }
+
+                _startupArgs = args;
+                BuildAvaloniaApp()
+                    .StartWithClassicDesktopLifetime(args);
+                return;
+            }
+
+            ReadOnlyFileSystemGuard.Detect(DataFolderGuard.GetApplicationBaseDirectory());
+
+            if (CrashHandler.IsRunning()) {
+                return;
+            }
+
+            if (ReadOnlyFileSystemGuard.IsPending) {
+                _startupArgs = args;
+                BuildAvaloniaApp()
+                    .StartWithClassicDesktopLifetime(args);
+                return;
+            }
+
             GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
             
             if (!SingleInstanceAppManager.Start(args, Attach)) {
@@ -58,6 +95,11 @@ internal abstract class Program
             TkLog.Instance.LogError(ex, "An unhandled exception of type '{ErrorType}' occured.", ex.GetType());
 #if DEBUG
             throw;
+#else
+            if (CrashHandler.TryRelaunchFatal(ex)) {
+                Environment.Exit(1);
+                return;
+            }
 #endif
         }
     }

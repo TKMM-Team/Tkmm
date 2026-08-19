@@ -19,7 +19,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     private const string DEFAULT_GAME_VERSION = "Auto";
 
     [JsonIgnore]
-    public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.Shared.Name, "TkConfig.json");
+    public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.DATA_FOLDER_NAME, "TkConfig.json");
 
     public TkConfig()
     {

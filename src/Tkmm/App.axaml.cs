@@ -22,10 +22,13 @@ using Tkmm.Builders;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
+using Tkmm.Core.Services;
+using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
+using Tkmm.Views.Common;
 using Tkmm.Views.Pages;
 using TkSharp.Core;
 using TkSharp.Core.Models;
@@ -57,6 +60,10 @@ public class App : Application
 
     static App()
     {
+        if (CrashHandler.IsLaunch()) {
+            return;
+        }
+
 #if !SWITCH
         ExportLocationControlBuilder.Shared.Register();
 #endif
@@ -67,6 +74,18 @@ public class App : Application
     {
         TkLog.Instance.LogInformation(
             "Version: {Version}", Version);
+
+        if (CrashHandler.IsLaunch()) {
+            return;
+        }
+
+#if !DEBUG
+        Dispatcher.UIThread.UnhandledException += static (_, eventArgs) => {
+            eventArgs.Handled = true;
+            TkLog.Instance.LogError(eventArgs.Exception, "Unhandled UI exception");
+            ErrorDialog.ShowAsync(eventArgs.Exception);
+        };
+#endif
 
         TaskScheduler.UnobservedTaskException += (_, eventArgs) => {
             TkLog.Instance.LogError(
@@ -93,6 +112,29 @@ public class App : Application
 
         BindingPlugins.DataValidators.RemoveAt(0);
         
+        if (CrashHandler.TryGetCrashInfoPath(Environment.GetCommandLineArgs().Skip(1).ToArray()) is { } crashInfoPath) {
+            CrashHandlerWindow crashWindow = new(crashInfoPath);
+            XamlRoot = crashWindow;
+            desktop.MainWindow = crashWindow;
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
+        if (ReadOnlyFileSystemGuard.IsPending) {
+            Window window = new() {
+                Title = Title,
+                Width = 520,
+                Height = 240,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            XamlRoot = window;
+            desktop.MainWindow = window;
+            ReadOnlyFileSystemGuard.Apply(window);
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         TkThumbnail.CreateBitmap = stream => new Bitmap(stream);
         Config.Shared.GetLanguages = () => Locale.Languages;
 
@@ -199,6 +241,10 @@ public class App : Application
                 return;
             }
 #endif
+            if (ReadOnlyFileSystemGuard.IsPending) {
+                return;
+            }
+
             Task.Delay(1000).Wait();
             Program.ProcessStartupArgs();
         });

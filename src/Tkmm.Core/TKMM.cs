@@ -192,13 +192,6 @@ public static class TKMM
         ModManager = TkModManager.Create(dataFolder);
         ModManager.CurrentProfile = ModManager.GetCurrentProfile();
 
-        ModManager.PropertyChanged += static (_, e) => {
-            if (e.PropertyName == nameof(TkModManager.CurrentProfile)) {
-                MergeBasic();
-                TkOptimizerService.Context.ApplyToMergedOutput();
-            }
-        };
-
         ReaderProvider = new TkModReaderProvider(ModManager, RomProvider);
         ReaderProvider.Register(new GameBananaModReader(ReaderProvider));
         ReaderProvider.Register(new External7zModReader(ModManager, RomProvider, ReaderProvider));

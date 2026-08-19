@@ -1,0 +1,69 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Tkmm.Views.Common.CrashHandlerWindow"
+        Title="TKMM Crash Handler"
+        Width="720"
+        Height="520"
+        MinWidth="480"
+        MinHeight="360"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+        <StackPanel x:Name="DesktopButtons"
+                    DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,16,0,0">
+            <Button MinWidth="90"
+                    Content="Copy"
+                    Click="Copy_OnClick" />
+            <Button MinWidth="90"
+                    Content="Restart"
+                    Click="Restart_OnClick" />
+            <Button MinWidth="90"
+                    Content="Exit"
+                    Click="Exit_OnClick" />
+        </StackPanel>
+
+        <StackPanel x:Name="SwitchButtons"
+                    DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,16,0,0"
+                    IsVisible="False">
+            <Button MinWidth="110"
+                    Content="Copy"
+                    Click="Copy_OnClick" />
+            <Button MinWidth="110"
+                    Content="Restart TKMM"
+                    Click="RestartTkmm_OnClick" />
+            <Button MinWidth="90"
+                    Content="Reboot"
+                    Click="Reboot_OnClick" />
+            <Button MinWidth="90"
+                    Content="Shutdown"
+                    Click="Shutdown_OnClick" />
+        </StackPanel>
+
+        <StackPanel Spacing="12">
+            <TextBlock FontSize="22"
+                       FontWeight="SemiBold"
+                       Text="Uh oh! Your TKMM just experienced an oopsie doopsie!"
+                       TextWrapping="Wrap" />
+
+            <TextBlock Opacity="0.85"
+                       Text="Details of the exception are shown below."
+                       TextWrapping="Wrap" />
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <TextBox x:Name="DetailsTextBox"
+                         IsReadOnly="True"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="280" />
+            </ScrollViewer>
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -13,8 +13,10 @@ namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
 {
+    internal const string DATA_FOLDER_NAME = "tkmm2";
+
     [JsonIgnore]
-    public override string Name => "tkmm2";
+    public override string Name => DATA_FOLDER_NAME;
 
     public event Action<string> ThemeChanged = delegate { };
 
