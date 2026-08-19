@@ -33,11 +33,8 @@
                     Margin="0,16,0,0"
                     IsVisible="False">
             <Button MinWidth="110"
-                    Content="Copy"
-                    Click="Copy_OnClick" />
-            <Button MinWidth="110"
-                    Content="Restart TKMM"
-                    Click="RestartTkmm_OnClick" />
+                    Content="Relaunch TKMM"
+                    Click="Exit_OnClick" />
             <Button MinWidth="90"
                     Content="Reboot"
                     Click="Reboot_OnClick" />

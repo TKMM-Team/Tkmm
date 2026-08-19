@@ -56,11 +56,6 @@ public partial class CrashHandlerWindow : Window
         CloseApp();
     }
 
-    private void RestartTkmm_OnClick(object? sender, RoutedEventArgs e)
-    {
-        CloseApp();
-    }
-
     private void Reboot_OnClick(object? sender, RoutedEventArgs e)
     {
 #if SWITCH
