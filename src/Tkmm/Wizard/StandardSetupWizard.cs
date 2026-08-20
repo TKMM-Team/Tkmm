@@ -298,11 +298,9 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
     private async ValueTask<bool> SetupKeysIfNeeded()
     {
         Retry:
-        if (TkConfig.Shared.KeysFolderPath is not null &&
-            TkKeyUtils.GetKeysFromFolder(TkConfig.Shared.KeysFolderPath) is not null) {
-            return true;
-        }
-        KeysFolderPageContext keysContext = new();
+        KeysFolderPageContext keysContext = new() {
+            KeysFolderPath = TkConfig.Shared.KeysFolderPath
+        };
         var result = await NextPage()
             .WithTitle(TkLocale.SetupWizard_KeysFolder_Title)
             .WithContent<KeysFolderPage>(keysContext)
