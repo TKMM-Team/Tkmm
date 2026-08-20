@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Net.Codecrete.QrCodeGenerator;
@@ -9,8 +8,7 @@ namespace Tkmm.Controls;
 
 public partial class BrandedQrCode : UserControl
 {
-    private static readonly Color BrandBlue = Color.FromRgb(0x4A, 0x86, 0xC5);
-    private static readonly IBrush BrandBrush = new SolidColorBrush(BrandBlue);
+    public static readonly IBrush BrandBrush = new SolidColorBrush(Color.FromRgb(0x4A, 0x86, 0xC5));
 
     public static readonly StyledProperty<string?> UrlProperty =
         AvaloniaProperty.Register<BrandedQrCode, string?>(nameof(Url));
@@ -56,8 +54,6 @@ public partial class BrandedQrCode : UserControl
             return;
         }
 
-        ApplyBrandColor();
-
         var qr = QrCode.EncodeText(Url, QrCode.Ecc.High);
         var modules = qr.Size;
         var pixelSize = (modules + BORDER_MODULES * 2) * MODULE_SCALE;
@@ -84,22 +80,6 @@ public partial class BrandedQrCode : UserControl
         DisposeBitmap();
         _bitmap = bitmap;
         QrImage.Source = bitmap;
-    }
-
-    private void ApplyBrandColor()
-    {
-        LogoIcon.Foreground = BrandBrush;
-
-        foreach (var child in Brackets.Children) {
-            switch (child) {
-                case Border bracket:
-                    bracket.BorderBrush = BrandBrush;
-                    break;
-                case Ellipse tip:
-                    tip.Fill = BrandBrush;
-                    break;
-            }
-        }
     }
 
     private void DisposeBitmap()

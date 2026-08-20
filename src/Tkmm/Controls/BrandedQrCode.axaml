@@ -5,12 +5,12 @@
     <UserControl.Styles>
         <Style Selector="Border.qr-bracket">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="#4A86C5" />
+            <Setter Property="BorderBrush" Value="{x:Static controls:BrandedQrCode.BrandBrush}" />
             <Setter Property="Width" Value="52" />
             <Setter Property="Height" Value="52" />
         </Style>
         <Style Selector="Ellipse.qr-bracket-tip">
-            <Setter Property="Fill" Value="#4A86C5" />
+            <Setter Property="Fill" Value="{x:Static controls:BrandedQrCode.BrandBrush}" />
             <Setter Property="Width" Value="10" />
             <Setter Property="Height" Value="10" />
         </Style>
@@ -34,6 +34,7 @@
                     Height="256"
                     IsHitTestVisible="False">
                     
+                <!-- Top-left -->
                 <Border Classes="qr-bracket"
                         BorderThickness="10,10,0,0"
                         CornerRadius="10,0,0,0"
@@ -42,6 +43,7 @@
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="61" Canvas.Top="14" />
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="14" Canvas.Top="61" />
 
+                <!-- Top-right -->
                 <Border Classes="qr-bracket"
                         BorderThickness="0,10,10,0"
                         CornerRadius="0,10,0,0"
@@ -50,6 +52,7 @@
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="185" Canvas.Top="14" />
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="232" Canvas.Top="61" />
 
+                <!-- Bottom-left -->
                 <Border Classes="qr-bracket"
                         BorderThickness="10,0,0,10"
                         CornerRadius="0,0,0,10"
@@ -58,6 +61,7 @@
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="61" Canvas.Top="232" />
                 <Ellipse Classes="qr-bracket-tip" Canvas.Left="14" Canvas.Top="185" />
 
+                <!-- Bottom-right -->
                 <Border Classes="qr-bracket"
                         BorderThickness="0,0,10,10"
                         CornerRadius="0,0,10,0"
@@ -74,7 +78,8 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                 <Viewbox Margin="1">
-                    <controls:TkmmIcon x:Name="LogoIcon" Foreground="#4A86C5" />
+                    <controls:TkmmIcon x:Name="LogoIcon"
+                                       Foreground="{x:Static controls:BrandedQrCode.BrandBrush}" />
                 </Viewbox>
             </Border>
         </Grid>

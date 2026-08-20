@@ -3,8 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             Foreground="{DynamicResource SystemAccentColor}"
              x:Class="Tkmm.Controls.TkmmIcon">
+    <UserControl.Styles>
+        <Style Selector="UserControl">
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+        </Style>
+    </UserControl.Styles>
     <Grid>
         <Viewbox Width="12"
                  Height="12"

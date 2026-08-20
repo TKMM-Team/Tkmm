@@ -80,7 +80,7 @@ public static class ReadOnlyFileSystemGuard
                     TextWrapping = TextWrapping.WrapWithOverflow
                 },
                 new BrandedQrCode {
-                    Width = 200,
+                    Width = 250,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Url = TROUBLESHOOTING_URL
                 }
