@@ -17,10 +17,10 @@ public partial class GameBananaModPageViewModel : ObservableObject
     private CancellationTokenSource? _loadingCts;
 
     [ObservableProperty]
-    public partial GameBananaMod? SelectedMod { get; set; }
+    public partial GameBananaSubmission? SelectedMod { get; set; }
 
     [ObservableProperty]
-    public partial GameBananaMod? MarkdownMod { get; set; }
+    public partial GameBananaSubmission? MarkdownMod { get; set; }
 
     [ObservableProperty]
     private int _selectedImageIndex;
@@ -87,7 +87,10 @@ public partial class GameBananaModPageViewModel : ObservableObject
         ? Images[SelectedImageIndex]
         : null;
 
-    public string ModUrl => SelectedMod != null ? $"https://gamebanana.com/mods/{SelectedMod.Id}" : string.Empty;
+    public string ModUrl => SelectedMod?.ProfileUrl ?? string.Empty;
+
+    public bool HasDownloadableFiles => SelectedMod is { } mod
+        && (mod.Files.Count > 0 || mod.ArchivedFiles.Count > 0);
 
     public bool IsBookmarked => SelectedMod is { } mod && GameBananaBookmarks.IsBookmarked((int)mod.Id);
 
@@ -95,14 +98,14 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
     public string BookmarkLabel => Locale[IsBookmarked ? "GameBanana_RemoveBookmark" : "GameBanana_BookmarkMod"];
 
-    public static GameBananaModPageViewModel CreateForMod(GameBananaMod mod, GameBananaModBrowserViewModel? browser = null)
+    public static GameBananaModPageViewModel CreateForMod(GameBananaSubmission mod, GameBananaModBrowserViewModel? browser = null)
     {
         var viewer = new GameBananaModPageViewModel();
         viewer.PrepareMod(mod);
         return viewer;
     }
 
-    private void PrepareMod(GameBananaMod mod)
+    private void PrepareMod(GameBananaSubmission mod)
     {
         CancelLoading();
 
@@ -115,6 +118,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
 
         OnPropertyChanged(nameof(SelectedMod));
         OnPropertyChanged(nameof(ModUrl));
+        OnPropertyChanged(nameof(HasDownloadableFiles));
         OnPropertyChanged(nameof(IsBookmarked));
         OnPropertyChanged(nameof(BookmarkIcon));
         OnPropertyChanged(nameof(BookmarkLabel));
@@ -184,6 +188,7 @@ public partial class GameBananaModPageViewModel : ObservableObject
         IsLoading = false;
 
         OnPropertyChanged(nameof(ModUrl));
+        OnPropertyChanged(nameof(HasDownloadableFiles));
         OnPropertyChanged(nameof(FormattedDateAdded));
         OnPropertyChanged(nameof(FormattedDateUpdated));
         NotifyImagePropertiesChanged();

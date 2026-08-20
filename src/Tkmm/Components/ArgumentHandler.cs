@@ -8,6 +8,7 @@ using Tkmm.CLI;
 using Tkmm.Core;
 using Tkmm.ViewModels.Pages;
 using TkSharp.Core;
+using TkSharp.Extensions.GameBanana;
 
 namespace Tkmm.Components;
 
@@ -23,7 +24,7 @@ internal static class ArgumentHandler
 
         TkConsoleApp.InstallRequested += async (arg, stream) => await ModActions.Instance.Install(arg, stream);
 
-        TkConsoleApp.OpenModRequested += async (modId, fileId, isSilent) => {
+        TkConsoleApp.OpenModRequested += async (modId, fileId, isSilent, isWip) => {
             try {
                 await Dispatcher.UIThread.InvokeAsync(async () => {
                     if (!isSilent) {
@@ -31,7 +32,9 @@ internal static class ArgumentHandler
                     }
                     
                     var gameBananaPage = PageManager.Shared.Get<GameBananaPageViewModel>(Page.GbMods);
-                    await gameBananaPage.OpenModInViewerAsync(modId, fileId, isSilent);
+                    await gameBananaPage.OpenModInViewerAsync(
+                        modId, fileId, isSilent,
+                        isWip ? GameBananaSubmissionType.Wip : GameBananaSubmissionType.Mod);
                 });
             }
             catch (Exception ex) {

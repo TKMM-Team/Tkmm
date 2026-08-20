@@ -32,34 +32,35 @@ public static class GameBananaBookmarks
         }
     }
 
-    public static bool IsBookmarked(int modId)
-        => Load().Records.Any(record => record.Id == modId);
+    public static bool IsBookmarked(int submissionId)
+        => Load().Records.Any(record => record.Id == submissionId);
 
-    public static void Toggle(GameBananaMod mod)
+    public static void Toggle(GameBananaSubmission submission)
     {
         _cache = null;
         var feed = Load();
-        var modId = (int)mod.Id;
-        var existing = feed.Records.FirstOrDefault(record => record.Id == modId);
+        var submissionId = (int)submission.Id;
+        var existing = feed.Records.FirstOrDefault(record => record.Id == submissionId);
 
         if (existing is not null) {
             feed.Records.Remove(existing);
         }
         else {
-            feed.Records.Insert(0, FromMod(mod));
+            feed.Records.Insert(0, FromSubmission(submission));
         }
 
         Save(feed);
     }
 
-    private static GameBananaModRecord FromMod(GameBananaMod mod)
+    private static GameBananaSubmissionRecord FromSubmission(GameBananaSubmission submission)
         => new() {
-            Id = (int)mod.Id,
-            Name = mod.Name,
-            Url = $"https://gamebanana.com/mods/{mod.Id}",
-            Media = mod.Media,
-            Submitter = mod.Submitter,
-            Version = mod.Version,
+            Id = (int)submission.Id,
+            Name = submission.Name,
+            Url = submission.ProfileUrl,
+            Media = submission.Media,
+            Submitter = submission.Submitter,
+            Version = submission.Version,
+            Type = submission.Type,
         };
 
     private static void Save(GameBananaFeed feed)

@@ -14,15 +14,16 @@ public abstract partial class MarkdownView : AvaloniaObject
     static MarkdownView()
     {
         ModProperty.Changed.AddClassHandler<MarkdownViewer>(HandleModChanged);
-        GameBananaModProperty.Changed.AddClassHandler<MarkdownViewer>(HandleGameBananaModChanged);
+        GameBananaSubmissionProperty.Changed.AddClassHandler<MarkdownViewer>(HandleGameBananaSubmissionChanged);
     }
     
     public static readonly AttachedProperty<TkMod?> ModProperty = AvaloniaProperty.RegisterAttached<MarkdownView, MarkdownViewer, TkMod?>(
         "Mod", null, false, BindingMode.TwoWay);
-    
-    public static readonly AttachedProperty<GameBananaMod?> GameBananaModProperty = AvaloniaProperty.RegisterAttached<MarkdownView, MarkdownViewer, GameBananaMod?>(
-        "GameBananaMod", null, false, BindingMode.TwoWay);
-    
+
+    public static readonly AttachedProperty<GameBananaSubmission?> GameBananaSubmissionProperty =
+        AvaloniaProperty.RegisterAttached<MarkdownView, MarkdownViewer, GameBananaSubmission?>(
+            "GameBananaSubmission", null, false, BindingMode.TwoWay);
+
     private static void HandleModChanged(MarkdownViewer viewer, AvaloniaPropertyChangedEventArgs args)
     {
         if (args.NewValue is not TkMod mod) {
@@ -33,26 +34,25 @@ public abstract partial class MarkdownView : AvaloniaObject
         viewer.ImageResolverState = mod.Id;
         viewer.Markdown = ReplaceGameBananaUrls(mod.Description);
     }
-    
-    private static void HandleGameBananaModChanged(MarkdownViewer viewer, AvaloniaPropertyChangedEventArgs args)
+
+    private static void HandleGameBananaSubmissionChanged(MarkdownViewer viewer, AvaloniaPropertyChangedEventArgs args)
     {
-        if (args.NewValue is not GameBananaMod mod) {
+        if (args.NewValue is not GameBananaSubmission submission) {
             return;
         }
         
         viewer.ImageResolver = TkImageResolver.Instance;
-        viewer.ImageResolverState = mod.Id;
-        
-        var markdownContent = !string.IsNullOrEmpty(mod.Text) 
+        viewer.ImageResolverState = submission.Id;
+
+        var markdownContent = !string.IsNullOrEmpty(submission.Text)
             ? new Converter(new Config {
                 GithubFlavored = true,
                 ListBulletChar = '*',
                 UnknownTags = Config.UnknownTagsOption.Bypass
-            }).Convert(mod.Text)
-            : mod.Description;
+            }).Convert(submission.Text)
+            : submission.Description;
             
         viewer.Markdown = ReplaceGameBananaUrls(markdownContent);
-        
     }
     
     
@@ -65,10 +65,10 @@ public abstract partial class MarkdownView : AvaloniaObject
 
     public static TkMod? GetMod(AvaloniaObject element)
         => element.GetValue(ModProperty);
-        
-    public static void SetGameBananaMod(AvaloniaObject element, GameBananaMod mod)
-        => element.SetValue(GameBananaModProperty, mod);
 
-    public static GameBananaMod? GetGameBananaMod(AvaloniaObject element)
-        => element.GetValue(GameBananaModProperty);
+    public static void SetGameBananaSubmission(AvaloniaObject element, GameBananaSubmission submission)
+        => element.SetValue(GameBananaSubmissionProperty, submission);
+
+    public static GameBananaSubmission? GetGameBananaSubmission(AvaloniaObject element)
+        => element.GetValue(GameBananaSubmissionProperty);
 }

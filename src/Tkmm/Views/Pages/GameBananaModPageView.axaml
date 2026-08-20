@@ -39,9 +39,19 @@
                     <pi:Icon Value="fa-solid fa-arrow-left" />
                 </Button>
                 <StackPanel Grid.Column="1">
-                    <TextBlock FontSize="16"
-                               FontWeight="SemiBold"
-                               Text="{Binding SelectedMod.Name}" />
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="[WIP]"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="Gray"
+                                   Opacity="0.85"
+                                   IsVisible="{Binding SelectedMod.IsWip}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Text="{Binding SelectedMod.Name}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontSize="12"
                                    FontStyle="Italic"
@@ -205,7 +215,7 @@
                         </ScrollViewer>
 
                         <!-- Description -->
-                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaMod="{Binding MarkdownMod}" />
+                        <avaMark:MarkdownViewer controls:MarkdownView.GameBananaSubmission="{Binding MarkdownMod}" />
                     </StackPanel>
                 </Border>
 
@@ -277,7 +287,13 @@
 							<TextBlock FontSize="18"
                                        Text="{markup:Locale GameBanana_Downloads}" />
 
-							<ItemsControl ItemsSource="{Binding SelectedMod.DownloadFiles, Converter={StaticResource FileSorter}}">
+							<TextBlock Text="{markup:Locale GameBanana_NoDownloadableFiles}"
+                                       Foreground="Gray"
+                                       TextWrapping="Wrap"
+                                       IsVisible="{Binding !HasDownloadableFiles}" />
+
+							<ItemsControl ItemsSource="{Binding SelectedMod.DownloadFiles, Converter={StaticResource FileSorter}}"
+                                          IsVisible="{Binding HasDownloadableFiles}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="{x:Type gb:GameBananaFile}">
 										<Border Padding="10"

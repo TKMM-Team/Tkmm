@@ -7,14 +7,20 @@ public static partial class GameBananaUriHelper
     [GeneratedRegex(@"https?://gamebanana\.com/mods/(\d+)", RegexOptions.IgnoreCase)]
     private static partial Regex ModUrlRegex();
 
+    [GeneratedRegex(@"https?://gamebanana\.com/wips/(\d+)", RegexOptions.IgnoreCase)]
+    private static partial Regex WipUrlRegex();
+
     [GeneratedRegex(@"https?://gamebanana\.com/members?/(\d+)", RegexOptions.IgnoreCase)]
     private static partial Regex MemberUrlRegex();
 
     public static string ReplaceTkmmUrls(string content)
-        => ReplaceMemberUrls(ReplaceModUrls(content));
+        => ReplaceMemberUrls(ReplaceWipUrls(ReplaceModUrls(content)));
 
     private static string ReplaceModUrls(string content)
         => ModUrlRegex().Replace(content, match => $"tkmm://mod/{match.Groups[1].Value}");
+
+    private static string ReplaceWipUrls(string content)
+        => WipUrlRegex().Replace(content, match => $"tkmm://wip/{match.Groups[1].Value}");
 
     private static string ReplaceMemberUrls(string content)
         => MemberUrlRegex().Replace(content, match => $"tkmm://members/{match.Groups[1].Value}");

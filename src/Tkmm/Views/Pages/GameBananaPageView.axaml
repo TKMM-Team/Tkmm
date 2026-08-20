@@ -26,7 +26,7 @@
             <Grid RowDefinitions="Auto,*,Auto">
                 <!-- Search and Controls -->
                 <Grid Grid.Row="0" Margin="15"
-                      ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto">
+                      ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto">
                     <TextBox Grid.Column="0"
                              Margin="0,0,5,0"
                              VerticalAlignment="Center"
@@ -79,7 +79,7 @@
                     </ToggleButton>
 
                     <HyperlinkButton Grid.Column="3"
-                                     Grid.ColumnSpan="3"
+                                     Grid.ColumnSpan="4"
                                      Height="30"
                                      Margin="0,0,5,0"
                                      Padding="8,0"
@@ -101,12 +101,25 @@
                     <ComboBox Grid.Column="5"
                               Margin="5,0,0,0"
                               IsVisible="{Binding !Browser.ShowMemberLink}"
+                              ItemsSource="{x:Static gb:GameBananaSubmissionTypeExtensions.All}"
+                              SelectedItem="{Binding Browser.SubmissionType}"
+                              ToolTip.Tip="{ext:Locale GameBanana_SubmissionType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="gb:GameBananaSubmissionType">
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <ComboBox Grid.Column="6"
+                              Margin="5,0,0,0"
+                              IsVisible="{Binding !Browser.ShowMemberLink}"
                               ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                               SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
                               ToolTip.Tip="{ext:Locale GameBanana_SortMode}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="gb:GameBananaSortMode">
-                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaSortModeLocaleConverter.Instance}}" />
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -132,7 +145,7 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type gb:GameBananaModRecord}">
+                                <DataTemplate DataType="{x:Type gb:GameBananaSubmissionRecord}">
                                     <Grid>
                                         <Border Width="300"
                                                 Margin="13"

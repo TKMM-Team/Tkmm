@@ -84,11 +84,11 @@ public partial class GameBananaPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ViewMod(GameBananaModRecord mod)
+    private async Task ViewMod(GameBananaSubmissionRecord mod)
     {
         try {
             if (mod.Full is null) {
-                await mod.DownloadFullMod();
+                await mod.DownloadFullSubmission();
             }
 
             if (mod.Full is null) {
@@ -104,7 +104,7 @@ public partial class GameBananaPageViewModel : ObservableObject
         }
     }
 
-    private async Task ShowViewerAsync(GameBananaMod mod)
+    private async Task ShowViewerAsync(GameBananaSubmission mod)
     {
         Viewer?.CancelLoading();
         Viewer?.Reset();
@@ -167,11 +167,15 @@ public partial class GameBananaPageViewModel : ObservableObject
         UpdateCombinedLoading();
     }
 
-    public async Task OpenModInViewerAsync(long modId, long? fileId = null, bool isSilent = false)
+    public async Task OpenModInViewerAsync(long modId, long? fileId = null, bool isSilent = false,
+        GameBananaSubmissionType type = GameBananaSubmissionType.Mod)
     {
         try {
-            var modRecord = new GameBananaModRecord { Id = (int)modId };
-            await modRecord.DownloadFullMod();
+            var modRecord = new GameBananaSubmissionRecord {
+                Id = (int)modId,
+                Type = type
+            };
+            await modRecord.DownloadFullSubmission();
 
             if (modRecord.Full == null) {
                 TkStatus.SetTemporary(Locale["GameBanana_FailedToLoadMod"], TkIcons.ERROR);
@@ -180,12 +184,12 @@ public partial class GameBananaPageViewModel : ObservableObject
 
             if (modRecord.Full.Game.Id != 7617) {
                 try {
-                    var url = $"https://gamebanana.com/mods/{modId}";
+                    var url = modRecord.Full.ProfileUrl;
                     _ = Process.Start(new ProcessStartInfo {
                         FileName = url,
                         UseShellExecute = true
                     });
-                    TkStatus.SetTemporary("Not a TotK mod, link opened in web browser", TkIcons.CIRCLE_INFO);
+                    TkStatus.SetTemporary("Not a TotK submission, link opened in web browser", TkIcons.CIRCLE_INFO);
                 }
                 catch {
                     TkStatus.SetTemporary(Locale["GameBanana_FailedToOpenBrowser"], TkIcons.ERROR);
@@ -216,10 +220,10 @@ public partial class GameBananaPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static async Task InstallMod(GameBananaModRecord mod)
+    private static async Task InstallMod(GameBananaSubmissionRecord mod)
     {
         if (mod.Full is null) {
-            await mod.DownloadFullMod();
+            await mod.DownloadFullSubmission();
         }
 
         var target = mod.Full?.DownloadFiles

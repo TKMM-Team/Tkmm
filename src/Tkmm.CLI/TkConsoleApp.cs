@@ -6,7 +6,7 @@ public static class TkConsoleApp
 {
     public static event Func<string, Stream?, Task>? InstallRequested;
 
-    public static event Func<long, long?, bool, Task>? OpenModRequested;
+    public static event Func<long, long?, bool, bool, Task>? OpenModRequested;
 
     public static event Func<int, Task>? OpenMemberRequested;
 
@@ -98,24 +98,30 @@ public static class TkConsoleApp
             parts[0] = "mods";
         }
 
+        if (parts is ["wip", ..]) {
+            parts[0] = "wips";
+        }
+
         if (OpenModRequested is null) {
             ShowError("Invalid State: OpenModRequested is not registered.");
             return;
         }
 
-        if (parts is ["mods", var mode, var modIdStrA, var fileIdStrA] && long.TryParse(modIdStrA, out var modIdA) && long.TryParse(fileIdStrA, out var fileIdA)) {
-            // mode can be 'install' or 'view'/'open'; 'install' sets is_silent to true
-            _ = OpenModRequested.Invoke(modIdA, fileIdA, mode is "install");
-            return;
-        }
-
-        if (parts is not ["mods", var modIdStr, ..]) {
+        if (parts is not (["mods", ..] or ["wips", ..])) {
             ShowError($"Invalid URI: {uri}");
             return;
         }
 
-        if (!long.TryParse(modIdStr, out var modId)) {
-            ShowError($"Invalid Mod ID: {modIdStr}");
+        var isWip = parts[0] is "wips";
+
+        if (parts is [_, var mode, var modIdStrA, var fileIdStrA] && long.TryParse(modIdStrA, out var modIdA) && long.TryParse(fileIdStrA, out var fileIdA)) {
+            // mode can be 'install' or 'view'/'open'; 'install' sets is_silent to true
+            _ = OpenModRequested.Invoke(modIdA, fileIdA, mode is "install", isWip);
+            return;
+        }
+
+        if (parts.Length < 2 || !long.TryParse(parts[1], out var modId)) {
+            ShowError($"Invalid Mod ID: {(parts.Length > 1 ? parts[1] : "<missing>")}");
             return;
         }
 
@@ -124,7 +130,7 @@ public static class TkConsoleApp
             fileId = fileIdParsed;
         }
 
-        _ = OpenModRequested.Invoke(modId, fileId, uri.Query.Contains("silent"));
+        _ = OpenModRequested.Invoke(modId, fileId, uri.Query.Contains("silent"), isWip);
     }
 
     private static void ShowError(string message)
