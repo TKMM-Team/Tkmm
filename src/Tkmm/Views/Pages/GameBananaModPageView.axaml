@@ -277,7 +277,7 @@
 							<TextBlock FontSize="18"
                                        Text="{markup:Locale GameBanana_Downloads}" />
 
-							<ItemsControl ItemsSource="{Binding SelectedMod.Files, Converter={StaticResource FileSorter}}">
+							<ItemsControl ItemsSource="{Binding SelectedMod.DownloadFiles, Converter={StaticResource FileSorter}}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="{x:Type gb:GameBananaFile}">
 										<Border Padding="10"
@@ -291,9 +291,16 @@
 													<TextBlock FontSize="11"
                                                                FontWeight="Medium"
                                                                Foreground="{DynamicResource SystemAccentColorLight3}"
-                                                               IsVisible="{Binding IsTkcl}"
+                                                               IsVisible="{Binding IsRecommended}"
                                                                Text="{markup:Locale GameBanana_RecommendedFile}"
                                                                TextWrapping="Wrap"
+                                                               Margin="0,0,0,3" />
+													<TextBlock Text="[ARCHIVED]"
+                                                               FontSize="11"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="Gray"
+                                                               Opacity="0.85"
+                                                               IsVisible="{Binding IsArchived}"
                                                                Margin="0,0,0,3" />
 													<TextBlock Text="{Binding Name}"
                                                                FontWeight="Medium"

@@ -199,7 +199,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             }
 
             if (fileId is { } desiredFileId) {
-                var target = modRecord.Full.Files.FirstOrDefault(f => f.Id == desiredFileId);
+                var target = modRecord.Full.DownloadFiles.FirstOrDefault(f => f.Id == desiredFileId);
                 if (target is null) {
                     TkStatus.SetTemporary(Locale["GameBanana_NoMatchingFile"], TkIcons.ERROR);
                     return;
@@ -222,7 +222,7 @@ public partial class GameBananaPageViewModel : ObservableObject
             await mod.DownloadFullMod();
         }
 
-        var target = mod.Full?.Files
+        var target = mod.Full?.DownloadFiles
             .FirstOrDefault(file => file.IsSelected);
 
         if (target is null) {
