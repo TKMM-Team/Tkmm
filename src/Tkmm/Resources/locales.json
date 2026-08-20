@@ -6384,7 +6384,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "TKMM cannot operate on a read-only microSD card. This is usually due to not ejecting the card safely after connecting it to a PC. Please fix the SD card's file system. You can scan the QR code below for troubleshooting instructions:",
+      "en_US": "TKMM cannot operate on a read-only microSD card. This is usually due to not ejecting the card safely after connecting it to a PC. Please fix the SD card's file system.\n\nYou can scan the QR code below for troubleshooting instructions:",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",

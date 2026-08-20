@@ -7,6 +7,7 @@ using FluentAvalonia.UI.Controls;
 #if SWITCH
 using Avalonia.Layout;
 using Tkmm.Controls;
+using Tkmm.Models.MenuModels;
 #endif
 
 namespace Tkmm.Helpers;
@@ -48,7 +49,11 @@ public static class ReadOnlyFileSystemGuard
         ContentDialog dialog = new() {
             Title = Locale["ReadOnlyFileSystemGuard_Title"],
             Content = BuildDialogContent(),
+#if SWITCH
+            PrimaryButtonText = Locale["Menu_NxReboot"],
+#else
             PrimaryButtonText = Locale["Action_Close"],
+#endif
             DefaultButton = ContentDialogButton.Primary
         };
 
@@ -56,7 +61,11 @@ public static class ReadOnlyFileSystemGuard
             await dialog.ShowAsync();
         }
         finally {
+#if SWITCH
+            NxMenuModel.Reboot();
+#else
             Exit();
+#endif
         }
     }
 
