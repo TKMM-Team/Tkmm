@@ -49,7 +49,7 @@
                          VerticalAlignment="Top"
                          IsVisible="{Binding !IsFirstTimeSetup}"
                          Stretch="Fill">
-                    <controls:TkmmIcon />
+                    <controls:TkmmIcon Foreground="{DynamicResource SystemAccentColor}" />
                 </Viewbox>
 
                 <Menu Name="MainMenu"
