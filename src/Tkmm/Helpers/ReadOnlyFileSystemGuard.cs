@@ -79,17 +79,10 @@ public static class ReadOnlyFileSystemGuard
                     Text = Locale["ReadOnlyFileSystemGuard_MessageNx"],
                     TextWrapping = TextWrapping.WrapWithOverflow
                 },
-                new Border {
-                    BorderBrush = Brushes.Black,
-                    BorderThickness = new Thickness(1),
-                    CornerRadius = new CornerRadius(15),
-                    Background = Brushes.White,
+                new BrandedQrCode {
+                    Width = 200,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Padding = new Thickness(8),
-                    Child = new BrandedQrCode {
-                        Width = 200,
-                        Url = TROUBLESHOOTING_URL
-                    }
+                    Url = TROUBLESHOOTING_URL
                 }
             }
         };

@@ -1,22 +1,27 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Net.Codecrete.QrCodeGenerator;
 
 namespace Tkmm.Controls;
 
 public partial class BrandedQrCode : UserControl
 {
+    private static readonly Color BrandBlue = Color.FromRgb(0x4A, 0x86, 0xC5);
+    private static readonly IBrush BrandBrush = new SolidColorBrush(BrandBlue);
+
     public static readonly StyledProperty<string?> UrlProperty =
         AvaloniaProperty.Register<BrandedQrCode, string?>(nameof(Url));
 
-    private static readonly StyledProperty<Color> ModuleColorProperty =
-        AvaloniaProperty.Register<BrandedQrCode, Color>(nameof(ModuleColor), Colors.Black);
+    private const int BORDER_MODULES = 6;
+    private const int MODULE_SCALE = 10;
+    private const int FINDER_SIZE = 7;
+    private const double CENTER_CLEAR_RATIO = 0.17;
+    private const double FINDER_CORNER_RADIUS = 24;
 
-    private const int BORDER_MODULES = 4;
-    private const int MODULE_SCALE = 8;
+    private RenderTargetBitmap? _bitmap;
 
     public BrandedQrCode()
     {
@@ -28,16 +33,11 @@ public partial class BrandedQrCode : UserControl
         set => SetValue(UrlProperty, value);
     }
 
-    public Color ModuleColor {
-        get => GetValue(ModuleColorProperty);
-        set => SetValue(ModuleColorProperty, value);
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == UrlProperty || change.Property == ModuleColorProperty) {
+        if (change.Property == UrlProperty) {
             RenderQr();
         }
     }
@@ -52,55 +52,97 @@ public partial class BrandedQrCode : UserControl
     {
         if (string.IsNullOrWhiteSpace(Url)) {
             QrImage.Source = null;
+            DisposeBitmap();
             return;
         }
 
+        ApplyBrandColor();
+
         var qr = QrCode.EncodeText(Url, QrCode.Ecc.High);
-        var pixelSize = (qr.Size + BORDER_MODULES * 2) * MODULE_SCALE;
-        var moduleColor = GetModuleColor();
+        var modules = qr.Size;
+        var pixelSize = (modules + BORDER_MODULES * 2) * MODULE_SCALE;
+        var center = (modules - 1) / 2.0;
+        var clearRadius = modules * CENTER_CLEAR_RATIO;
 
-        var bitmap = new WriteableBitmap(
-            new PixelSize(pixelSize, pixelSize),
-            new Vector(96, 96),
-            PixelFormat.Rgba8888,
-            AlphaFormat.Unpremul);
-
-        using (var frameBuffer = bitmap.Lock()) {
-            var stride = frameBuffer.RowBytes / 4;
-            var pixels = new uint[pixelSize * stride];
-
-            Array.Fill(pixels, Colors.White.ToUInt32());
-
-            for (var y = 0; y < qr.Size; y++) {
-                for (var x = 0; x < qr.Size; x++) {
-                    if (!qr.GetModule(x, y)) {
+        var bitmap = new RenderTargetBitmap(new PixelSize(pixelSize, pixelSize), new Vector(96, 96));
+        using (var context = bitmap.CreateDrawingContext(clear: true)) {
+            for (var y = 0; y < modules; y++) {
+                for (var x = 0; x < modules; x++) {
+                    if (!qr.GetModule(x, y) || IsFinderModule(x, y, modules) || IsInCenterClear(x, y, center, clearRadius)) {
                         continue;
                     }
 
-                    var startX = (x + BORDER_MODULES) * MODULE_SCALE;
-                    var startY = (y + BORDER_MODULES) * MODULE_SCALE;
-
-                    for (var dy = 0; dy < MODULE_SCALE; dy++) {
-                        var row = (startY + dy) * stride;
-                        for (var dx = 0; dx < MODULE_SCALE; dx++) {
-                            pixels[row + startX + dx] = moduleColor;
-                        }
-                    }
+                    context.FillRectangle(BrandBrush, ModuleRect(x, y));
                 }
             }
 
-            CopyPixels(frameBuffer.Address, pixels);
+            DrawFinder(context, 0, 0);
+            DrawFinder(context, modules - FINDER_SIZE, 0);
+            DrawFinder(context, 0, modules - FINDER_SIZE);
         }
 
+        DisposeBitmap();
+        _bitmap = bitmap;
         QrImage.Source = bitmap;
     }
 
-    private static unsafe void CopyPixels(IntPtr destination, uint[] pixels)
+    private void ApplyBrandColor()
     {
-        fixed (uint* source = pixels) {
-            Buffer.MemoryCopy(source, (void*)destination, pixels.Length * sizeof(uint), pixels.Length * sizeof(uint));
+        LogoIcon.Foreground = BrandBrush;
+
+        foreach (var child in Brackets.Children) {
+            switch (child) {
+                case Border bracket:
+                    bracket.BorderBrush = BrandBrush;
+                    break;
+                case Ellipse tip:
+                    tip.Fill = BrandBrush;
+                    break;
+            }
         }
     }
 
-    private uint GetModuleColor() => ModuleColor.ToUInt32();
+    private void DisposeBitmap()
+    {
+        if (_bitmap is null) {
+            return;
+        }
+
+        QrImage.Source = null;
+        _bitmap.Dispose();
+        _bitmap = null;
+    }
+
+    private static void DrawFinder(DrawingContext context, int moduleX, int moduleY)
+    {
+        var outer = ModuleRect(moduleX, moduleY, FINDER_SIZE, FINDER_SIZE);
+        var gap = ModuleRect(moduleX + 1, moduleY + 1, FINDER_SIZE - 2, FINDER_SIZE - 2);
+        var core = ModuleRect(moduleX + 2, moduleY + 2, 3, 3);
+
+        context.DrawRectangle(BrandBrush, null, outer, FINDER_CORNER_RADIUS, FINDER_CORNER_RADIUS);
+        context.DrawRectangle(Brushes.White, null, gap, FINDER_CORNER_RADIUS, FINDER_CORNER_RADIUS);
+        context.DrawRectangle(BrandBrush, null, core, FINDER_CORNER_RADIUS, FINDER_CORNER_RADIUS);
+    }
+
+    private static Rect ModuleRect(int moduleX, int moduleY, int widthModules = 1, int heightModules = 1)
+        => new(
+            (moduleX + BORDER_MODULES) * MODULE_SCALE,
+            (moduleY + BORDER_MODULES) * MODULE_SCALE,
+            widthModules * MODULE_SCALE,
+            heightModules * MODULE_SCALE);
+
+    private static bool IsFinderModule(int x, int y, int size)
+        => IsInFinder(x, y, 0, 0)
+           || IsInFinder(x, y, size - FINDER_SIZE, 0)
+           || IsInFinder(x, y, 0, size - FINDER_SIZE);
+
+    private static bool IsInFinder(int x, int y, int originX, int originY)
+        => x >= originX && x < originX + FINDER_SIZE && y >= originY && y < originY + FINDER_SIZE;
+
+    private static bool IsInCenterClear(int x, int y, double center, double radius)
+    {
+        var dx = x - center;
+        var dy = y - center;
+        return dx * dx + dy * dy <= radius * radius;
+    }
 }

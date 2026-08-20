@@ -2,20 +2,79 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Tkmm.Controls"
              x:Class="Tkmm.Controls.BrandedQrCode">
+    <UserControl.Styles>
+        <Style Selector="Border.qr-bracket">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#4A86C5" />
+            <Setter Property="Width" Value="52" />
+            <Setter Property="Height" Value="52" />
+        </Style>
+        <Style Selector="Ellipse.qr-bracket-tip">
+            <Setter Property="Fill" Value="#4A86C5" />
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Height" Value="10" />
+        </Style>
+    </UserControl.Styles>
+
     <Viewbox Width="{Binding $parent[UserControl].Width}"
-             Height="{Binding $parent[UserControl].Width}">
+             Height="{Binding $parent[UserControl].Width}"
+             Stretch="Uniform">
         <Grid Width="256"
               Height="256">
-            <Image x:Name="QrImage"
-                   Stretch="Fill" />
             <Border Background="White"
-                    CornerRadius="5"
-                    Width="65"
-                    Height="65"
+                    CornerRadius="15"
+                    Margin="4" />
+
+            <Image x:Name="QrImage"
+                   Margin="4"
+                   Stretch="Fill" />
+
+            <Canvas x:Name="Brackets"
+                    Width="256"
+                    Height="256"
+                    IsHitTestVisible="False">
+                    
+                <Border Classes="qr-bracket"
+                        BorderThickness="10,10,0,0"
+                        CornerRadius="10,0,0,0"
+                        Canvas.Left="14"
+                        Canvas.Top="14" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="61" Canvas.Top="14" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="14" Canvas.Top="61" />
+
+                <Border Classes="qr-bracket"
+                        BorderThickness="0,10,10,0"
+                        CornerRadius="0,10,0,0"
+                        Canvas.Left="190"
+                        Canvas.Top="14" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="185" Canvas.Top="14" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="232" Canvas.Top="61" />
+
+                <Border Classes="qr-bracket"
+                        BorderThickness="10,0,0,10"
+                        CornerRadius="0,0,0,10"
+                        Canvas.Left="14"
+                        Canvas.Top="190" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="61" Canvas.Top="232" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="14" Canvas.Top="185" />
+
+                <Border Classes="qr-bracket"
+                        BorderThickness="0,0,10,10"
+                        CornerRadius="0,0,10,0"
+                        Canvas.Left="190"
+                        Canvas.Top="190" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="185" Canvas.Top="232" />
+                <Ellipse Classes="qr-bracket-tip" Canvas.Left="232" Canvas.Top="185" />
+            </Canvas>
+
+            <Border Background="White"
+                    CornerRadius="10"
+                    Width="60"
+                    Height="60"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-                <Viewbox Margin="2">
-                    <controls:TkmmIcon Foreground="{DynamicResource SystemAccentColor}" />
+                <Viewbox Margin="1">
+                    <controls:TkmmIcon x:Name="LogoIcon" Foreground="#4A86C5" />
                 </Viewbox>
             </Border>
         </Grid>

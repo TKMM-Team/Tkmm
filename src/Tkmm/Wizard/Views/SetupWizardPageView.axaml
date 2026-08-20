@@ -34,13 +34,8 @@
                       ColumnDefinitions="Auto,*" 
                       IsVisible="{Binding #InfoToggle.IsChecked}">
                     <StackPanel Spacing="5" VerticalAlignment="Top">
-                        <Border BorderBrush="Black"
-                                BorderThickness="1"
-                                CornerRadius="15"
-                                Background="White">
-                            <controls:BrandedQrCode Width="200"
-                                                    Url="https://tkmm.org/discord" />
-                        </Border>
+                        <controls:BrandedQrCode Width="200"
+                                                Url="https://tkmm.org/discord" />
                         <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
                     </StackPanel>
                     <ContentPresenter Content="{Binding}"
