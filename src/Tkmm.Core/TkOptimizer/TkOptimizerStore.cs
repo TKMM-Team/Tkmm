@@ -29,7 +29,27 @@ public class TkOptimizerStore(Ulid id)
     public static bool IsProfileEnabled(TkProfile? profile = null)
     {
         profile ??= TKMM.ModManager.GetCurrentProfile();
-        return !_store.TryGetValue(profile.Id, out var optimizerProfile) || optimizerProfile.IsEnabled;
+        return _store.TryGetValue(profile.Id, out var optimizerProfile)
+            ? optimizerProfile.IsEnabled
+            : Config.Shared.SwitchFirmwareVersion.IsFirmware20OrHigher;
+    }
+
+    public static void EnableOnAllProfiles()
+    {
+        if (TKMM.ModManager?.Profiles is not { Count: > 0 } profiles) {
+            return;
+        }
+
+        foreach (var profile in profiles) {
+            ref var optimizerProfile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, profile.Id, out var exists);
+            if (!exists || optimizerProfile is null) {
+                optimizerProfile = new TkOptimizerProfile();
+            }
+
+            optimizerProfile.IsEnabled = true;
+        }
+
+        Save();
     }
 
     public bool IsEnabled {
@@ -95,7 +115,11 @@ public class TkOptimizerStore(Ulid id)
     private TkOptimizerProfile GetProfile()
     {   
         ref var profile = ref CollectionsMarshal.GetValueRefOrAddDefault(_store, id, out var exists);
-        if (!exists || profile is null) profile = new TkOptimizerProfile();
+        if (!exists || profile is null) {
+            profile = new TkOptimizerProfile {
+                IsEnabled = Config.Shared.SwitchFirmwareVersion.IsFirmware20OrHigher
+            };
+        }
 
         return profile;
     }

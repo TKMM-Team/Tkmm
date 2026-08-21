@@ -1,4 +1,4 @@
-#if !SWITCH
+﻿#if !SWITCH
 
 using Avalonia.Controls.Presenters;
 using Avalonia.Platform.Storage;
@@ -13,19 +13,34 @@ namespace Tkmm.Wizard;
 
 public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizard(presenter)
 {
-    private static readonly FilePickerFileType ExecutableFilePattern = new("Executable") {
-        Patterns = [
-            OperatingSystem.IsWindows() ? "*.exe" : "*"
-        ]
-    };
+    private bool _showSwitchDumpOption = true;
     
     public override async ValueTask Start()
     {
         await FirstPage();
         
     Return:
-        await EmulatorSelectionPage();
-        
+        await TkmmModeSelectionPage();
+
+        if (Config.Shared.TkmmMode.IsSwitch) {
+        NxRecommend:
+            if (!await TkmmNxRecommendPage()) {
+                goto Return;
+            }
+
+            if (!await ManualSetup(DumpSourcePageContext.ForSwitchDumpSource())) {
+                goto NxRecommend;
+            }
+        }
+        else if (!await DumpSourcePage(showSwitchOption: Config.Shared.TkmmMode.IsHybrid)) {
+            goto Return;
+        }
+
+        if ((Config.Shared.TkmmMode.IsSwitch || Config.Shared.TkmmMode.IsHybrid)
+            && !await FirmwareSelectionPage()) {
+            goto Return;
+        }
+
         var result = await NextPage()
             .WithTitle(TkLocale.WizPageFinal_Title)
             .WithContent<GameLanguageSelectionPage>(new GameLanguageSelectionPageContext())
@@ -40,35 +55,106 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         Config.Shared.Save();
     }
 
-    private async ValueTask EmulatorSelectionPage()
+    private async ValueTask TkmmModeSelectionPage()
     {
-        EmulatorSelectionPageContext context = new();
-        
+        TkmmModeSelectionPageContext context = new();
+
     Retry:
         var result = await NextPage()
-            .WithTitle(TkLocale.SetupWizard_EmulatorSelection_Title)
-            .WithContent<EmulatorSelectionPage>(context)
+            .WithTitle(TkLocale.SetupWizard_TkmmMode_Title)
+            .WithContent<TkmmModeSelectionPage>(context)
+            .Show();
+
+        if (!result) {
+            await FirstPage();
+            goto Retry;
+        }
+
+        if (!context.IsValid) {
+            await MessageDialog.Show(
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Content,
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Title);
+            goto Retry;
+        }
+
+        Config.Shared.TkmmMode = context.GetSelection();
+        if (Config.Shared.TkmmMode.IsSwitch) {
+            Config.Shared.MergeOutput = null;
+        }
+
+        if (Config.Shared.TkmmMode.IsEmulator) {
+            Config.Shared.SwitchFirmwareVersion = Config.Shared.FirmwareVersions[0];
+        }
+    }
+
+    private async ValueTask<bool> TkmmNxRecommendPage()
+    {
+        return await NextPage()
+            .WithTitle(TkLocale.SetupWizard_TkmmNx_Title)
+            .WithContent<TkmmNxRecommendPage>()
+            .Show();
+    }
+
+    private async ValueTask<bool> FirmwareSelectionPage()
+    {
+        FirmwareSelectionPageContext context = new();
+
+    Retry:
+        var result = await NextPage()
+            .WithTitle(TkLocale.SetupWizard_Firmware_Title)
+            .WithContent<FirmwareSelectionPage>(context)
+            .Show();
+
+        if (!result) {
+            return false;
+        }
+
+        if (!context.IsValid) {
+            goto Retry;
+        }
+
+        Config.Shared.SwitchFirmwareVersion = context.GetSelection();
+        return true;
+    }
+
+    private async ValueTask<bool> DumpSourcePage(bool? showSwitchOption = null)
+    {
+        if (showSwitchOption is not null) {
+            _showSwitchDumpOption = showSwitchOption.Value;
+        }
+
+        DumpSourcePageContext context = new(_showSwitchDumpOption);
+
+    Retry:
+        var result = await NextPage()
+            .WithTitle(TkLocale.SetupWizard_DumpSource_Title)
+            .WithContent<DumpSourcePage>(context)
             .Show();
 
         switch (result) {
             case false:
-                await FirstPage();
-                goto Retry;
+                return false;
             case true when context.IsValid: {
-                await (context.GetSelection() switch {
-                    EmulatorSelection.Ryujinx => SetupRyujinxPage(),
-                    EmulatorSelection.Other => SetupEmulatorPage(),
-                    EmulatorSelection.Switch => ManualSetup(context),
-                    EmulatorSelection.Manual => ManualSetup(context),
-                    _ => throw new ArgumentException("Invalid selection")
-                });
-                return;
+                switch (context.GetSelection()) {
+                    case DumpSource.Ryujinx:
+                        await SetupRyujinxPage();
+                        return true;
+                    case DumpSource.Other:
+                    case DumpSource.Switch:
+                        if (!await ManualSetup(context)) {
+                            goto Retry;
+                        }
+
+                        return true;
+                    default:
+                        throw new ArgumentException("Invalid selection");
+                }
             }
         }
 
         await MessageDialog.Show(
-            TkLocale.SetupWizard_Popup_InvalidEmulatorSelection_Content,
-            TkLocale.SetupWizard_Popup_InvalidEmulatorSelection_Title);
+            TkLocale.SetupWizard_Popup_InvalidDumpSource_Content,
+            TkLocale.SetupWizard_Popup_InvalidDumpSource_Title);
         
         goto Retry;
     }
@@ -83,7 +169,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             .Show();
 
         if (!result) {
-            await EmulatorSelectionPage();
+            await DumpSourcePage();
             return;
         }
 
@@ -95,53 +181,17 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 goto Retry;
             }
 
-            await ManualSetup(new EmulatorSelectionPageContext(), "ryujinx");
+            await ManualSetup(new DumpSourcePageContext(), "ryujinx");
             return;
         }
 
         await EnsureConfigurationPage(warnInvalid: true);
     }
 
-    private async ValueTask SetupEmulatorPage()
-    {
-    Retry:
-        var emulatorFilePath = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = Locale["SetupWizard_SelectEmulatorExecutable"],
-            AllowMultiple = false,
-            FileTypeFilter = [
-                ExecutableFilePattern
-            ]
-        }) switch {
-            [var target] => target.TryGetLocalPath(),
-            _ => null
-        };
-
-        if (emulatorFilePath is null) {
-            await EmulatorSelectionPage();
-            return;
-        }
-
-        if (TkEmulatorHelper.UseEmulator(emulatorFilePath, out _).Case is string error) {
-            var errorResult = await ErrorDialog.ShowAsync(new Exception(error),
-                TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
-
-            if (errorResult is TaskDialogStandardResult.Retry) {
-                goto Retry;
-            }
-        }
-
-        if (TKMM.TryGetTkRom(out _) is null) {
-            await ManualSetup(new EmulatorSelectionPageContext(), emulatorFilePath);
-            return;
-        }
-
-        await EnsureConfigurationPage(warnInvalid: true);
-    }
-
-    private async ValueTask ManualSetup(EmulatorSelectionPageContext context, string? emulatorPath = null)
+    private async ValueTask<bool> ManualSetup(DumpSourcePageContext context, string? emulatorPath = null)
     {
         Start:
-        if (context.GetSelection() != EmulatorSelection.Switch) {
+        if (context.GetSelection() != DumpSource.Switch) {
             EmulatorNameInputPageContext nameContext = new() { EmulatorName = emulatorPath ?? string.Empty };
             var nameResult = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_EmulatorNameInput_Title)
@@ -149,8 +199,7 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 .Show();
 
             if (!nameResult) {
-                await EmulatorSelectionPage();
-                return;
+                return false;
             }
 
             try {
@@ -182,6 +231,11 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
                 .Show();
 
             if (!dumpType) {
+                // Switch dump-source has no prior step inside ManualSetup.
+                if (context.GetSelection() == DumpSource.Switch) {
+                    return false;
+                }
+
                 goto Start;
             }
             
@@ -275,7 +329,9 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
         }
         
     MergeOutputSetup:
-        if (string.IsNullOrEmpty(Config.Shared.MergeOutput) && context.GetSelection() != EmulatorSelection.Switch) {
+        if (string.IsNullOrEmpty(Config.Shared.MergeOutput)
+            && context.GetSelection() != DumpSource.Switch
+            && !Config.Shared.TkmmMode.IsSwitch) {
             MergeOutputSetupPageContext mergeContext = new();
             var mergeOutput = await NextPage()
                 .WithTitle(TkLocale.SetupWizard_MergeOutputSetup_Title)
@@ -293,6 +349,8 @@ public sealed class StandardSetupWizard(ContentPresenter presenter) : SetupWizar
             Config.Shared.MergeOutput = mergeContext.MergeOutputPath;
             Config.Shared.Save();
         }
+
+        return true;
     }
 
     private async ValueTask<bool> SetupKeysIfNeeded()

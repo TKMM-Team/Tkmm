@@ -401,12 +401,10 @@
                         <pi:Icon Value="fa-solid fa-angles-down" />
                     </Button>
                     <Button Margin="2.5"
+                            VerticalAlignment="Stretch"
                             Command="{Binding InstallCommand}"
                             ToolTip.Tip="{ext:Locale Tip_InstallMod}">
-                        <StackPanel Orientation="Horizontal">
-                            <pi:Icon Value="fa-solid fa-file-import" />
-                            <TextBlock Margin="10,0,0,0" Text="Add Mod" />
-                        </StackPanel>
+                        <pi:Icon Value="fa-solid fa-plus" />
                     </Button>
                     <Button Margin="2.5"
                             VerticalAlignment="Stretch"
@@ -415,12 +413,33 @@
                         <pi:Icon Value="fa-regular fa-file-arrow-up" />
                     </Button>
                     <Button Margin="2.5"
-                            Command="{Binding MergeCommand}"
+                            Command="{Binding ApplyCommand}"
                             ToolTip.Tip="{ext:Locale Tip_MergeMods}"
-                            Classes="accent">
+                            Classes="accent"
+                            IsVisible="{Binding ShowApplyButton}">
                         <StackPanel Orientation="Horizontal">
                             <pi:Icon Value="fa-solid fa-list-check" />
-                            <TextBlock Margin="10,0,0,0" Text="Apply" />
+                            <TextBlock Margin="10,0,0,0" Text="{ext:Locale Menu_ModMerge}" />
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="2.5"
+                            ToolTip.Tip="{ext:Locale Tip_MergeMods}"
+                            Classes="accent"
+                            IsVisible="{Binding ShowApplyDropDown}">
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                <MenuItem Header="{ext:Locale Home_ApplyEmulator}"
+                                          Command="{Binding ApplyToEmulatorCommand}" />
+                                <MenuItem Header="{ext:Locale Home_ApplySdCard}"
+                                          Command="{Binding ApplyToSdCardCommand}" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                        <StackPanel Orientation="Horizontal">
+                            <pi:Icon Value="fa-solid fa-list-check" />
+                            <TextBlock Margin="10,0,0,0" Text="{ext:Locale Menu_ModMerge}" />
+                            <pi:Icon Margin="8,0,0,0"
+                                     FontSize="10"
+                                     Value="fa-solid fa-chevron-down" />
                         </StackPanel>
                     </Button>
                 </WrapPanel>

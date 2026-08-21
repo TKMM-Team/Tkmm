@@ -14,6 +14,8 @@ namespace Tkmm.Core;
 public sealed partial class Config : ConfigModule<Config>
 {
     internal const string DATA_FOLDER_NAME = "tkmm2";
+    
+    private static bool SuppressFirmwareDefaults { get; set; }
 
     [JsonIgnore]
     public override string Name => DATA_FOLDER_NAME;
@@ -42,6 +44,21 @@ public sealed partial class Config : ConfigModule<Config>
         new("TWzh", "繁體中文 (台灣)")
     ];
 
+    [JsonIgnore]
+    public SwitchFirmwareVersion[] FirmwareVersions => [
+        new("Firmware19OrLower"),
+        new("Firmware20OrHigher")
+    ];
+
+#if !SWITCH
+    [JsonIgnore]
+    private static TkmmMode[] TkmmModes => [
+        new("Emulator"),
+        new("Switch"),
+        new("Hybrid")
+    ];
+#endif
+
     public static void SaveAll()
     {
         TkConfig.Shared.Save();
@@ -56,6 +73,10 @@ public sealed partial class Config : ConfigModule<Config>
         }
 
         _gameLanguage = GameLanguages[0];
+        _switchFirmwareVersion = FirmwareVersions[0];
+#if !SWITCH
+        _tkmmMode = TkmmModes[0];
+#endif
     }
 
     [ObservableProperty]
@@ -80,6 +101,39 @@ public sealed partial class Config : ConfigModule<Config>
         DisplayMemberPath = nameof(SystemLanguage.DisplayName),
         RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
     private SystemLanguage _cultureName = "en_US";
+
+#if !SWITCH
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_TkmmMode",
+        Description = "Config_TkmmModeDescription",
+        Group = "ConfigSection_Application")]
+    [property: DropdownConfig(
+        DisplayMemberPath = nameof(TkmmMode.DisplayName),
+        RuntimeItemsSourceMethodName = nameof(GetTkmmModes))]
+    private TkmmMode _tkmmMode;
+
+    partial void OnTkmmModeChanged(TkmmMode value)
+    {
+        if (value.IsSwitch) {
+            MergeOutput = null;
+        }
+
+        if (value.IsEmulator) {
+            SwitchFirmwareVersion = FirmwareVersions[0];
+        }
+    }
+#endif
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_SwitchFirmwareVersion",
+        Description = "Config_SwitchFirmwareVersionDescription",
+        Group = "ConfigSection_Application")]
+    [property: DropdownConfig(
+        DisplayMemberPath = nameof(SwitchFirmwareVersion.DisplayName),
+        RuntimeItemsSourceMethodName = nameof(GetFirmwareVersions))]
+    private SwitchFirmwareVersion _switchFirmwareVersion;
 
     [ObservableProperty]
     [property: Config(
@@ -196,10 +250,27 @@ public sealed partial class Config : ConfigModule<Config>
 
     public GameLanguage[] GetGameLanguages() => GameLanguages;
 
+    public SwitchFirmwareVersion[] GetFirmwareVersions() => FirmwareVersions;
+
+#if !SWITCH
+    public TkmmMode[] GetTkmmModes() => TkmmModes;
+#endif
+
     public List<SystemLanguage> GetLanguagesInternal() => GetLanguages?.Invoke() switch {
         [..] values => values.Select(x => new SystemLanguage(x)).ToList(),
         null => ["en_US"],
     };
+
+    partial void OnSwitchFirmwareVersionChanged(SwitchFirmwareVersion oldValue, SwitchFirmwareVersion newValue)
+    {
+        if (SuppressFirmwareDefaults) {
+            return;
+        }
+
+        if (newValue.IsFirmware20OrHigher && !oldValue.IsFirmware20OrHigher) {
+            FirmwareDefaults.Apply(newValue);
+        }
+    }
 
 #if !SWITCH
     partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
@@ -267,11 +338,15 @@ public sealed partial class Config : ConfigModule<Config>
     public override void Load(ref Config module)
     {
         try {
+            SuppressFirmwareDefaults = true;
             base.Load(ref module);
         }
         catch (Exception ex) {
             module = new Config();
             TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(Config)));
+        }
+        finally {
+            SuppressFirmwareDefaults = false;
         }
     }
 

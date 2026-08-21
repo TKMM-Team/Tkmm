@@ -61,7 +61,7 @@ namespace Tkmm.Wizard
   
         Verify:
             if (TKMM.TryGetTkRom(out string? error) is not null) {
-                goto LangPage;
+                goto FirmwarePage;
             }
 
             if (error is not null) {
@@ -80,6 +80,21 @@ namespace Tkmm.Wizard
 
             NxMenuModel.Reboot();
             await Task.Delay(-1);
+
+        FirmwarePage:
+            FirmwareSelectionPageContext firmwareContext = new();
+            bool firmwareResult = await NextPage()
+                .WithTitle(TkLocale.SetupWizard_Firmware_Title)
+                .WithContent<FirmwareSelectionPage>(firmwareContext)
+                .Show();
+
+            if (!firmwareResult) {
+                goto WiFiPage;
+            }
+
+            if (firmwareContext.IsValid) {
+                Config.Shared.SwitchFirmwareVersion = firmwareContext.GetSelection();
+            }
             
         LangPage:
             bool langResult = await NextPage()
@@ -91,7 +106,7 @@ namespace Tkmm.Wizard
             if (!langResult)
             {
                 if (TKMM.TryGetTkRom() is not null) {
-                    goto WiFiPage;
+                    goto FirmwarePage;
                 }
                 goto Verify;
             }

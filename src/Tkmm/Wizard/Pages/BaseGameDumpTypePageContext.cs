@@ -5,7 +5,7 @@ namespace Tkmm.Wizard.Pages;
 public sealed partial class BaseGameDumpTypePageContext : ObservableObject
 {
     [ObservableProperty]
-    private bool _isXciNspSelected;
+    private bool _isXciNspSelected = true;
 
     [ObservableProperty]
     private bool _isRomfsSelected;

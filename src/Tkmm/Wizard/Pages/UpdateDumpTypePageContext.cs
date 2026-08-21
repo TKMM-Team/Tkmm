@@ -5,7 +5,7 @@ namespace Tkmm.Wizard.Pages;
 public sealed partial class UpdateDumpTypePageContext : ObservableObject
 {
     [ObservableProperty]
-    private bool _isNspSelected;
+    private bool _isNspSelected = true;
 
     [ObservableProperty]
     private bool _isSdCardSelected;

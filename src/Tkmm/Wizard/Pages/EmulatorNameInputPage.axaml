@@ -3,21 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pi="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ext="using:Tkmm.Markup"
              xmlns:vm="using:Tkmm.Wizard.Pages"
              x:DataType="vm:EmulatorNameInputPageContext"
              x:Class="Tkmm.Wizard.Pages.EmulatorNameInputPage">
     <Grid RowDefinitions="Auto,Auto,*,Auto" VerticalAlignment="Stretch">
-        <TextBlock Grid.Row="0" Text="{ext:Locale SetupWizard_EmulatorNameInput_Description}"
-                   Margin="0,0,0,10" />
-        <TextBox Grid.Row="1" Text="{Binding EmulatorName}"
+        <TextBlock Grid.Row="0"
+                   Text="{ext:Locale SetupWizard_EmulatorNameInput_Description}"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,20" />
+        <TextBox Grid.Row="1"
+                 Text="{Binding EmulatorName}"
                  Watermark="{ext:Locale SetupWizard_EmulatorNameInput_Watermark}"
-                 Margin="0,0,0,10"/>
-        <TextBlock Grid.Row="3" Text="{ext:Locale SetupWizard_EmulatorNameInput_Warning}"
-                   HorizontalAlignment="Center"
-                   FontStyle="Italic"
-                   FontWeight="Bold"
-                   Margin="0,0,0,10" />
+                 Margin="0,0,0,10" />
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <TextBlock Text="{ext:Locale SetupWizard_EmulatorNameInput_BrowseLabel}"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap" />
+            <Button Width="32"
+                    Height="32"
+                    Margin="0"
+                    Padding="4"
+                    Command="{Binding BrowseCommand}"
+                    VerticalAlignment="Center">
+                <pi:Icon Value="fa-regular fa-file" FontSize="16" />
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Row="3"
+                    Spacing="8"
+                    Margin="0,0,0,10">
+            <TextBlock Text="{ext:Locale SetupWizard_EmulatorNameInput_Warning}"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontStyle="Italic"
+                       FontWeight="Bold" />
+            <TextBlock Text="{ext:Locale SetupWizard_EmulatorNameInput_AppImageWarning}"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontStyle="Italic"
+                       FontWeight="Bold"
+                       IsVisible="{Binding ShowLinuxAppImageWarning}" />
+        </StackPanel>
     </Grid>
-</UserControl> 
+</UserControl>

@@ -1,4 +1,4 @@
-﻿#if RELEASE
+#if RELEASE
 using Avalonia.Threading;
 #endif
 using Avalonia.Controls;
@@ -19,6 +19,36 @@ public partial class HomePageViewModel : ObservableObject
 
     public static TkModManager ModManager => TKMM.ModManager;
 
+    public Config Config => Config.Shared;
+
+#if SWITCH
+    public bool IsHybridMode => false;
+#else
+    public bool IsHybridMode => Config.TkmmMode.IsHybrid;
+#endif
+
+    public bool ShowApplyButton => !IsHybridMode;
+
+    public bool ShowApplyDropDown => IsHybridMode;
+
+    public HomePageViewModel()
+    {
+#if RELEASE
+        _ = Dispatcher.UIThread.InvokeAsync(async () => await SystemActions.CheckForUpdates(isUserInvoked: false));
+#endif
+#if !SWITCH
+        Config.PropertyChanged += (_, e) => {
+            if (e.PropertyName is not nameof(Config.TkmmMode)) {
+                return;
+            }
+
+            OnPropertyChanged(nameof(IsHybridMode));
+            OnPropertyChanged(nameof(ShowApplyButton));
+            OnPropertyChanged(nameof(ShowApplyDropDown));
+        };
+#endif
+    }
+
     [RelayCommand]
     private static async Task ShowContributors()
     {
@@ -38,9 +68,31 @@ public partial class HomePageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static Task Merge()
+    private static Task Apply()
+    {
+#if SWITCH
+        return MergeActions.Instance.Merge();
+#else
+        return Config.Shared.TkmmMode.IsSwitch
+            ? MergeActions.Instance.ExportToSdCard()
+            : MergeActions.Instance.Merge();
+#endif
+    }
+
+    [RelayCommand]
+    private static Task ApplyToEmulator()
     {
         return MergeActions.Instance.Merge();
+    }
+
+    [RelayCommand]
+    private static Task ApplyToSdCard()
+    {
+#if SWITCH
+        return Task.CompletedTask;
+#else
+        return MergeActions.Instance.ExportToSdCard();
+#endif
     }
 
     [RelayCommand]
@@ -83,12 +135,5 @@ public partial class HomePageViewModel : ObservableObject
     private static Task Remove()
     {
         return ModActions.Instance.RemoveModFromProfile();
-    }
-
-    public HomePageViewModel()
-    {
-#if RELEASE
-        _ = Dispatcher.UIThread.InvokeAsync(async () => await SystemActions.CheckForUpdates(isUserInvoked: false));
-#endif
     }
 }
