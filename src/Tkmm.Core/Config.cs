@@ -45,7 +45,7 @@ public sealed partial class Config : ConfigModule<Config>
     ];
 
     [JsonIgnore]
-    public SwitchFirmwareVersion[] FirmwareVersions => [
+    public static SwitchFirmwareVersion[] FirmwareVersions => [
         new("Firmware19OrLower"),
         new("Firmware20OrHigher")
     ];

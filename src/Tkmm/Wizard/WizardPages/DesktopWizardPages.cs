@@ -1,0 +1,137 @@
+#if !SWITCH
+using System.Runtime.InteropServices;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Core;
+using Tkmm.Core.Helpers;
+using Tkmm.Core.Models;
+using Tkmm.Dialogs;
+using Tkmm.Wizard.Pages;
+
+namespace Tkmm.Wizard.WizardPages;
+
+internal static class DesktopWizardPages
+{
+    public static async ValueTask<StepResult> Mode(DesktopSetupWizard wizard)
+    {
+        var (next, selected) = await wizard.ChooseAsync(
+            TkLocale.SetupWizard_TkmmMode_Title,
+            [
+                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Emulator], new TkmmMode("Emulator"), selected: true),
+                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_NintendoSwitch], new TkmmMode("Switch")),
+                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Both], new TkmmMode("Hybrid"))
+            ],
+            "tkmmMode",
+            Locale[TkLocale.SetupWizard_TkmmMode_Description]);
+
+        if (!next) {
+            return StepResult.Back();
+        }
+
+        if (selected?.Tag is not TkmmMode mode) {
+            return StepResult.Next(WizardSteps.Mode);
+        }
+
+        Config.Shared.TkmmMode = mode;
+        if (mode.IsSwitch) {
+            Config.Shared.MergeOutput = null;
+            return StepResult.Next(WizardSteps.NxRecommend);
+        }
+
+        if (mode.IsEmulator) {
+            Config.Shared.SwitchFirmwareVersion = Config.FirmwareVersions[0];
+        }
+
+        wizard.ShowSwitchDumpOption = mode.IsHybrid;
+        return StepResult.Next(WizardSteps.DumpSource);
+    }
+
+    public static async ValueTask<StepResult> NxRecommend(DesktopSetupWizard wizard)
+    {
+        if (!await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_TkmmNx_Title)
+                .WithContent<TkmmNxRecommendPage>()
+                .Show()) {
+            return StepResult.Back();
+        }
+
+        wizard.DumpSource = DumpSource.Switch;
+        return StepResult.Next(WizardSteps.Manual);
+    }
+
+    public static async ValueTask<StepResult> DumpSourceStep(DesktopSetupWizard wizard)
+    {
+        var isIntelMac = RuntimeInformation.OSArchitecture is Architecture.X64 && OperatingSystem.IsMacOS();
+        var (next, selected) = await wizard.ChooseAsync(
+            TkLocale.SetupWizard_DumpSource_Title,
+            [
+                new WizardRadioOption {
+                    Content = Locale[TkLocale.SetupWizard_DumpSource_RyujinxOption],
+                    IsSelected = !isIntelMac,
+                    IsEnabled = !isIntelMac,
+                    Tag = DumpSource.Ryujinx
+                },
+                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpSource_OtherOption], DumpSource.Other, selected: isIntelMac),
+                new WizardRadioOption {
+                    Content = Locale[TkLocale.SetupWizard_DumpSource_SwitchOption],
+                    IsVisible = wizard.ShowSwitchDumpOption,
+                    Tag = DumpSource.Switch
+                }
+            ],
+            "dumpSource");
+
+        if (!next) {
+            return StepResult.Back();
+        }
+
+        if (selected?.Tag is not DumpSource source) {
+            await MessageDialog.Show(
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Content,
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Title);
+            return StepResult.Next(WizardSteps.DumpSource);
+        }
+
+        wizard.DumpSource = source;
+        wizard.EmulatorPathHint = null;
+        return source is DumpSource.Ryujinx
+            ? StepResult.Next(WizardSteps.Ryujinx)
+            : StepResult.Next(WizardSteps.Manual);
+    }
+
+    public static async ValueTask<StepResult> Ryujinx(DesktopSetupWizard wizard)
+    {
+        if (!await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_RyujinxSetup_Title)
+                .WithContent(TkLocale.SetupWizard_RyujinxSetup_Content)
+                .WithActionContent(TkLocale.SetupWizard_RyujinxSetup_Action)
+                .Show()) {
+            return StepResult.Back();
+        }
+
+        if (TkRyujinxHelper.UseRyujinx(out _).Case is string error) {
+            var errorResult = await ErrorDialog.ShowAsync(new Exception(error), forceShowInDebug: true,
+                TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
+
+            if (errorResult is TaskDialogStandardResult.Retry) {
+                return StepResult.Next(WizardSteps.Ryujinx);
+            }
+
+            wizard.DumpSource = DumpSource.Other;
+            wizard.EmulatorPathHint = "ryujinx";
+            return StepResult.Next(WizardSteps.Manual);
+        }
+
+        if (TKMM.TryGetTkRom(out var romError) is null) {
+            await MessageDialog.Show(
+                romError ?? Locale[TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration],
+                TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
+        }
+
+        return AfterDump();
+    }
+
+    public static StepResult AfterDump()
+        => Config.Shared.TkmmMode.IsSwitch || Config.Shared.TkmmMode.IsHybrid
+            ? StepResult.Next(WizardSteps.Firmware)
+            : StepResult.Next(WizardSteps.GameLanguage);
+}
+#endif

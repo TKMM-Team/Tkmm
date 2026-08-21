@@ -73,7 +73,7 @@ public partial class ShellView : AppWindow
 #if SWITCH
             SetupWizard wizard = new NxSetupWizard(WizardPresenter);
 #else
-            SetupWizard wizard = new StandardSetupWizard(WizardPresenter);
+            SetupWizard wizard = new DesktopSetupWizard(WizardPresenter);
 #endif
             await wizard.Start();
 

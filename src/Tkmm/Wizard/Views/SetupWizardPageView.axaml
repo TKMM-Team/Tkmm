@@ -30,29 +30,19 @@
                     </ContentPresenter.DataTemplates>
                 </ContentPresenter>
                 
-                <Grid Grid.Row="2" 
-                      ColumnDefinitions="Auto,*" 
-                      IsVisible="{Binding #InfoToggle.IsChecked}">
-                    <StackPanel Spacing="5" VerticalAlignment="Top">
-                        <controls:BrandedQrCode Width="200"
-                                                Url="https://tkmm.org/discord" />
-                        <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
-                    </StackPanel>
-                    <ContentPresenter Content="{Binding}"
-                                      Grid.Column="1"
-                                      Margin="20,0,0,0"
-                                      TextWrapping="WrapWithOverflow">
-                        <ContentPresenter.DataTemplates>
-                            <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
-                                <ContentControl Content="{Binding HelpContent}" />
-                            </DataTemplate>
-                        </ContentPresenter.DataTemplates>
-                    </ContentPresenter>
-                </Grid>
+                <StackPanel Grid.Row="2"
+                            Spacing="5"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            IsVisible="{Binding #InfoToggle.IsChecked}">
+                    <controls:BrandedQrCode Width="200"
+                                            Url="https://tkmm.org/discord" />
+                    <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
+                </StackPanel>
             </Grid>
         </ScrollViewer>
 
-        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1">
+        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1" Margin="0,12,0,0">
             <ToggleButton Name="InfoToggle"
                           Padding="6">
                 <fa:Icon Value="fa-regular fa-circle-info" />
@@ -63,8 +53,6 @@
                     Content="{ext:Locale Action_Back}"
                     Margin="10,0,0,0"
                     Command="{Binding MoveBackCommand}" />
-            <StackPanel Orientation="Horizontal">
-            </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"

@@ -7,9 +7,9 @@ namespace Tkmm.Wizard;
 
 public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObject
 {
-    protected bool? _result;
-    protected readonly CancellationTokenSource _cancellationTokenSource = new();
-    
+    private bool? _result;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
     public bool IsFirstPage { get; } = isFirstPage;
 
     [ObservableProperty]
@@ -17,9 +17,6 @@ public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObjec
 
     [ObservableProperty]
     private object? _content;
-
-    [ObservableProperty]
-    private object? _helpContent;
 
     [ObservableProperty]
     private object? _actionContent = Locale[TkLocale.Action_Next];
