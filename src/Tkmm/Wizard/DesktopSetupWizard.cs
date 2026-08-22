@@ -1,6 +1,7 @@
 #if !SWITCH
 using Avalonia.Controls.Presenters;
 using Tkmm.Core;
+using Tkmm.Wizard.Models;
 using Tkmm.Wizard.WizardPages;
 
 namespace Tkmm.Wizard;

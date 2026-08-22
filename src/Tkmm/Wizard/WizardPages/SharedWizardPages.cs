@@ -5,6 +5,8 @@ using Avalonia.Layout;
 using Tkmm.Core;
 using Tkmm.Core.Models;
 using Tkmm.Dialogs;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 
 namespace Tkmm.Wizard.WizardPages;
@@ -48,7 +50,7 @@ internal static class SharedWizardPages
                 TkLocale.SetupWizard_ApplicationLanguage_RestartPrompt,
                 TkLocale.Action_Restart,
                 MessageDialogButtons.YesNo) is MessageDialogResult.Yes) {
-            SetupWizard.RequestRestartToApplyLanguage();
+            AppLanguageHelper.RequestRestartToApplyLanguage();
         }
 
         return StepResult.Next(nextStep);
@@ -63,8 +65,8 @@ internal static class SharedWizardPages
         var (next, selected) = await wizard.ChooseAsync(
             TkLocale.SetupWizard_Firmware_Title,
             [
-                SetupWizard.Opt(Locale[TkLocale.Config_Firmware_19OrLower], "Firmware19OrLower", selected: true),
-                SetupWizard.Opt(Locale[TkLocale.Config_Firmware_20OrHigher], "Firmware20OrHigher")
+                WizardRadioOption.Opt(Locale[TkLocale.Config_Firmware_19OrLower], "Firmware19OrLower", selected: true),
+                WizardRadioOption.Opt(Locale[TkLocale.Config_Firmware_20OrHigher], "Firmware20OrHigher")
             ],
             "firmware",
             Locale[TkLocale.SetupWizard_Firmware_Description],

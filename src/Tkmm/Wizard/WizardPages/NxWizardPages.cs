@@ -5,6 +5,7 @@ using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels.Pages;
 using Tkmm.Views.Pages;
+using Tkmm.Wizard.Models;
 using TkSharp.Extensions.LibHac.Util;
 
 namespace Tkmm.Wizard.WizardPages;

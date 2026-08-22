@@ -2,9 +2,10 @@
 using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
 using Tkmm.Core;
-using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 using Tkmm.Dialogs;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 
 namespace Tkmm.Wizard.WizardPages;
@@ -16,9 +17,9 @@ internal static class DesktopWizardPages
         var (next, selected) = await wizard.ChooseAsync(
             TkLocale.SetupWizard_TkmmMode_Title,
             [
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Emulator], new TkmmMode("Emulator"), selected: true),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_NintendoSwitch], new TkmmMode("Switch")),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Both], new TkmmMode("Hybrid"))
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Emulator], new TkmmMode("Emulator"), selected: true),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_NintendoSwitch], new TkmmMode("Switch")),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Both], new TkmmMode("Hybrid"))
             ],
             "tkmmMode",
             Locale[TkLocale.SetupWizard_TkmmMode_Description]);
@@ -70,7 +71,7 @@ internal static class DesktopWizardPages
                     IsEnabled = !isIntelMac,
                     Tag = DumpSource.Ryujinx
                 },
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpSource_OtherOption], DumpSource.Other, selected: isIntelMac),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpSource_OtherOption], DumpSource.Other, selected: isIntelMac),
                 new WizardRadioOption {
                     Content = Locale[TkLocale.SetupWizard_DumpSource_SwitchOption],
                     IsVisible = wizard.ShowSwitchDumpOption,
@@ -107,7 +108,7 @@ internal static class DesktopWizardPages
             return StepResult.Back();
         }
 
-        if (TkRyujinxHelper.UseRyujinx(out _).Case is string error) {
+        if (EmulatorSetupHelper.TryUseRunningRyujinx() is { } error) {
             var errorResult = await ErrorDialog.ShowAsync(new Exception(error), forceShowInDebug: true,
                 TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
 

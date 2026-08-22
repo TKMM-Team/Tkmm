@@ -1,19 +1,15 @@
 using Avalonia;
 using Avalonia.Controls.Presenters;
-using Avalonia.Platform.Storage;
-using Tkmm.Components;
-using Tkmm.Core;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
 
 namespace Tkmm.Wizard;
 
 public abstract class SetupWizard(ContentPresenter presenter)
 {
-    private static string SkipApplicationLanguageFlagPath
-        => Path.Combine(TKMM.BaseDirectory, ".skip-language-setup");
-
     private readonly Stack<string> _history = new();
 
-    protected bool SkipApplicationLanguage { get; } = CheckSkipApplicationLanguageFlag();
+    protected bool SkipApplicationLanguage { get; } = AppLanguageHelper.CheckSkipApplicationLanguageFlag();
 
     public abstract ValueTask Start();
 
@@ -22,27 +18,6 @@ public abstract class SetupWizard(ContentPresenter presenter)
     internal SetupWizardPageBuilder NextPage() => new(presenter);
 
     internal void ClearHistory() => _history.Clear();
-
-    private static bool CheckSkipApplicationLanguageFlag()
-    {
-        if (!File.Exists(SkipApplicationLanguageFlagPath)) {
-            return false;
-        }
-
-        File.Delete(SkipApplicationLanguageFlagPath);
-        return true;
-    }
-
-    internal static void RequestRestartToApplyLanguage()
-    {
-        Config.Shared.Save();
-        File.WriteAllText(SkipApplicationLanguageFlagPath, string.Empty);
-#if SWITCH
-        Environment.Exit(0);
-#else
-        AppUpdater.Restart();
-#endif
-    }
 
     internal ValueTask<bool> FirstPage() => new SetupWizardPageBuilder(presenter, isFirstPage: true)
         .WithTitle(TkLocale.SetupWizard_FirstPage_Title)
@@ -118,43 +93,4 @@ public abstract class SetupWizard(ContentPresenter presenter)
 
         return await page.Show() ? (true, field.Text) : (false, null);
     }
-
-    private static async Task<string?> PickFolderAsync(string title)
-        => await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
-            Title = title,
-            AllowMultiple = false
-        }) switch {
-            [var target] => target.TryGetLocalPath(),
-            _ => null
-        };
-
-    internal static async Task<string?> PickFileAsync(string title, string name, params string[] patterns)
-        => await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = title,
-            AllowMultiple = false,
-            FileTypeFilter = [new FilePickerFileType(name) { Patterns = patterns }]
-        }) switch {
-            [var target] => target.TryGetLocalPath(),
-            _ => null
-        };
-
-    internal static async ValueTask<bool> ApplyFolder(string title, Action<string> apply)
-    {
-        if (await PickFolderAsync(title) is not { } path) {
-            return false;
-        }
-
-        apply(path);
-        return true;
-    }
-
-    internal static WizardRadioOption Opt(string content, object tag, bool selected = false)
-        => new() { Content = content, Tag = tag, IsSelected = selected };
-}
-
-public readonly record struct StepResult(bool WentBack, string? NextStepId)
-{
-    public static StepResult Back() => new(true, null);
-    public static StepResult Next(string stepId) => new(false, stepId);
-    public static StepResult Done() => new(false, WizardSteps.Done);
 }

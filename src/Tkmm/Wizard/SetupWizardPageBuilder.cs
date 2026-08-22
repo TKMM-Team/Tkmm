@@ -4,9 +4,9 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Media;
-using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Projektanker.Icons.Avalonia;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
 
 namespace Tkmm.Wizard;
 
@@ -145,7 +145,7 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
             Content = new Icon { Value = "fa-regular fa-folder-open" }
         };
         browse.Click += async (_, _) => {
-            if (await BrowseAsync(field.Browse) is { } path) {
+            if (await WizardStorageHelper.BrowseAsync(field.Browse) is { } path) {
                 field.Text = path;
             }
         };
@@ -183,42 +183,4 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
         _mainPanel = null;
         _footerPanel = null;
     }
-
-    private static async Task<string?> BrowseAsync(WizardBrowseOptions options)
-        => await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {
-            Title = options.Title,
-            AllowMultiple = options.AllowMultiple
-        }) switch {
-            [var target] => target.TryGetLocalPath(),
-            _ => null
-        };
-}
-
-public sealed partial class WizardRadioOption : ObservableObject
-{
-    public required string Content { get; init; }
-
-    [ObservableProperty]
-    public partial bool IsSelected { get; set; }
-
-    public bool IsEnabled { get; init; } = true;
-    public bool IsVisible { get; init; } = true;
-    public object? Tag { get; init; }
-}
-
-public sealed class WizardBrowseOptions
-{
-    public string? Title { get; init; }
-    public bool AllowMultiple { get; init; }
-}
-
-public sealed partial class WizardPathField : ObservableObject
-{
-    public string? Header { get; init; }
-
-    [ObservableProperty]
-    public partial string Text { get; set; } = string.Empty;
-
-    public string? Watermark { get; init; }
-    public required WizardBrowseOptions Browse { get; init; }
 }

@@ -1,7 +1,8 @@
 #if !SWITCH
 using Tkmm.Core;
-using Tkmm.Core.Helpers;
 using Tkmm.Dialogs;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -78,8 +79,7 @@ internal static class ManualDumpPages
 
     private static async ValueTask<(bool Ok, string? Hint)> ConfigureEmulator(SetupWizard wizard, string? hint)
     {
-        TkConfig.Shared.ResetGameDumpSettings();
-        Config.Shared.MergeOutput = null;
+        EmulatorSetupHelper.ResetDumpConfiguration();
 
         EmulatorNameInputPageContext ctx = new() { EmulatorName = hint ?? string.Empty };
         if (!await wizard.NextPage()
@@ -90,14 +90,7 @@ internal static class ManualDumpPages
         }
 
         try {
-            Config.Shared.EmulatorPath = ctx.EmulatorName;
-            if (Path.GetFileNameWithoutExtension(ctx.EmulatorName)
-                .Equals("ryujinx", StringComparison.OrdinalIgnoreCase)) {
-                TkRyujinxHelper.UseRyujinx(out _, true);
-            }
-            else {
-                TkEmulatorHelper.UseEmulator(ctx.EmulatorName, out _);
-            }
+            EmulatorSetupHelper.ApplyFromNameOrPath(ctx.EmulatorName);
         }
         catch {
             // Continue with dump setup
@@ -114,10 +107,10 @@ internal static class ManualDumpPages
         var (next, selected) = await wizard.ChooseAsync(
             TkLocale.SetupWizard_DumpType_Title,
             [
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_XciNsp], BaseGameDumpType.XciNsp, selected: true),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_Romfs], BaseGameDumpType.Romfs),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], BaseGameDumpType.SdCard),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], BaseGameDumpType.Nand)
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_XciNsp], BaseGameDumpType.XciNsp, selected: true),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Romfs], BaseGameDumpType.Romfs),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], BaseGameDumpType.SdCard),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], BaseGameDumpType.Nand)
             ],
             "baseGameDumpType",
             Locale[TkLocale.SetupWizard_DumpType_Description]);
@@ -128,7 +121,7 @@ internal static class ManualDumpPages
 
         var type = selected?.Tag is BaseGameDumpType t ? t : BaseGameDumpType.XciNsp;
         var ok = await (type switch {
-            BaseGameDumpType.Romfs => SetupWizard.ApplyFolder(
+            BaseGameDumpType.Romfs => WizardStorageHelper.ApplyFolder(
                 Locale[TkLocale.SetupWizard_SelectRomfsFolder],
                 p => TkConfig.Shared.GameDumpFolderPaths.New(p)),
             BaseGameDumpType.SdCard => ApplySdCard(),
@@ -146,9 +139,9 @@ internal static class ManualDumpPages
         var (next, selected) = await wizard.ChooseAsync(
             TkLocale.SetupWizard_UpdateDumpType_Title,
             [
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_Nsp], UpdateDumpType.Nsp, selected: true),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], UpdateDumpType.SdCard),
-                SetupWizard.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], UpdateDumpType.Nand)
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nsp], UpdateDumpType.Nsp, selected: true),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], UpdateDumpType.SdCard),
+                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], UpdateDumpType.Nand)
             ],
             "updateDumpType",
             Locale[TkLocale.SetupWizard_UpdateDumpType_Description]);
@@ -166,7 +159,7 @@ internal static class ManualDumpPages
                 break;
             default:
                 if (await ConfigureKeys(wizard)
-                    && await SetupWizard.PickFileAsync(
+                    && await WizardStorageHelper.PickFileAsync(
                         Locale[TkLocale.SetupWizard_SelectUpdateNspFile], "NSP", "*.nsp") is { } path) {
                     TkConfig.Shared.PackagedUpdatePaths.New(path);
                 }
@@ -249,8 +242,8 @@ internal static class ManualDumpPages
             var (next, selected) = await wizard.ChooseAsync(
                 TkLocale.SetupWizard_BaseGameSplit_Title,
                 [
-                    SetupWizard.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SingleFile], false, selected: true),
-                    SetupWizard.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SplitFolder], true)
+                    WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SingleFile], false, selected: true),
+                    WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SplitFolder], true)
                 ],
                 "baseGameSplit");
 
@@ -259,13 +252,13 @@ internal static class ManualDumpPages
             }
 
             if (selected?.Tag is true) {
-                if (await SetupWizard.ApplyFolder(
+                if (await WizardStorageHelper.ApplyFolder(
                         Locale[TkLocale.SetupWizard_SelectSplitFilesFolder],
                         p => TkConfig.Shared.PackagedBaseGamePaths.New(p))) {
                     return true;
                 }
             }
-            else if (await SetupWizard.PickFileAsync(
+            else if (await WizardStorageHelper.PickFileAsync(
                          Locale[TkLocale.SetupWizard_SelectBaseGameFile], "XCI/NSP", "*.xci", "*.nsp") is { } file) {
                 TkConfig.Shared.PackagedBaseGamePaths.New(file);
                 return true;
@@ -274,14 +267,14 @@ internal static class ManualDumpPages
     }
 
     private static ValueTask<bool> ApplySdCard()
-        => SetupWizard.ApplyFolder(Locale[TkLocale.SetupWizard_SelectSdCardRoot], path => {
+        => WizardStorageHelper.ApplyFolder(Locale[TkLocale.SetupWizard_SelectSdCardRoot], path => {
             TkConfig.Shared.SdCardRootPath = path;
             TkConfig.Shared.KeysFolderPath = Path.Combine(path, "switch");
         });
 
     private static async ValueTask<bool> ApplyNand(SetupWizard wizard)
         => await ConfigureKeys(wizard)
-           && await SetupWizard.ApplyFolder(
+           && await WizardStorageHelper.ApplyFolder(
                Locale[TkLocale.SetupWizard_SelectNandFolder],
                p => TkConfig.Shared.NandFolderPaths.New(p));
 
