@@ -15,14 +15,35 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
     private readonly SetupWizardPage _page = new(isFirstPage);
     private StackPanel? _mainPanel;
     private StackPanel? _footerPanel;
+    private string? _description;
+    private string? _note;
+    private IReadOnlyList<WizardRadioOption>? _options;
+    private string? _footer;
+    private string? _groupName;
+    private WizardPathField? _pathField;
+    private Control? _control;
 
     public SetupWizardPageBuilder WithTitle(TkLocale title) => WithTitle(Locale[title]);
+    public SetupWizardPageBuilder WithTitle(string title) { _page.Title = title; return this; }
+    public SetupWizardPageBuilder WithDescription(TkLocale description) => WithDescription(Locale[description]);
+    public SetupWizardPageBuilder WithDescription(string description) => Set(out _description, description);
+    public SetupWizardPageBuilder WithNotes(TkLocale? note) => note is null ? this : WithNotes(Locale[note.Value]);
+    public SetupWizardPageBuilder WithNotes(string note) => Set(out _note, note);
+    public SetupWizardPageBuilder WithOptions(IReadOnlyList<WizardRadioOption> options) => Set(out _options, options);
+    public SetupWizardPageBuilder WithGroupName(string groupName) => Set(out _groupName, groupName);
+    public SetupWizardPageBuilder WithFooter(TkLocale footer) => WithFooter(Locale[footer]);
+    public SetupWizardPageBuilder WithFooter(string footer) => Set(out _footer, footer);
+    public SetupWizardPageBuilder WithControl(Control control) => Set(out _control, control);
 
-    public SetupWizardPageBuilder WithTitle(string title)
-    {
-        _page.Title = title;
-        return this;
-    }
+    public SetupWizardPageBuilder WithFolderPicker(TkLocale browseTitle, string? initialPath = null, TkLocale? header = null)
+        => WithFolderPicker(Locale[browseTitle], initialPath, header is { } h ? Locale[h] : null);
+
+    public SetupWizardPageBuilder WithFolderPicker(string browseTitle, string? initialPath = null, string? header = null)
+        => Set(out _pathField, new WizardPathField {
+            Header = header,
+            Text = initialPath ?? string.Empty,
+            Browse = new WizardBrowseOptions { Title = browseTitle }
+        });
 
     public SetupWizardPageBuilder WithContent(TkLocale content) => WithContent(Locale[content]);
 
@@ -31,71 +52,92 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
         if (content is StyledElement { Parent: ContentControl parent }) {
             parent.Content = null;
         }
-        
+
         ResetComposable();
         _page.Content = content;
         return this;
     }
 
     public SetupWizardPageBuilder WithContent<TControl>(object? context = null) where TControl : Control, new()
-    {
-        ResetComposable();
-        _page.Content = new TControl { DataContext = context };
-        return this;
-    }
+        => WithContent(new TControl { DataContext = context });
 
     public SetupWizardPageBuilder WithActionContent(TkLocale content) => WithActionContent(Locale[content]);
+    public SetupWizardPageBuilder WithActionContent(object? content) { _page.ActionContent = content; return this; }
 
-    public SetupWizardPageBuilder WithActionContent(object? content)
+    public async ValueTask<PageShowResult> Show()
     {
-        _page.ActionContent = content;
-        return this;
+        if (!HasDeferredContent) {
+            return new PageShowResult(await _page.Show(presenter));
+        }
+        
+        ComposeDeferred();
+        
+        return await _page.Show(presenter)
+            ? new PageShowResult(
+                true,
+                _options?.FirstOrDefault(o => o is { IsSelected: true, IsVisible: true, IsEnabled: true }),
+                _pathField?.Text)
+            : default;
+
     }
 
-    public SetupWizardPageBuilder BeginContent(double spacing = 8)
+    private bool HasDeferredContent => _description is not null || _note is not null || _options is not null
+           || _pathField is not null || _footer is not null || _control is not null;
+
+    private void ComposeDeferred()
+    {
+        ArgumentException.ThrowIfNullOrEmpty(_page.Title);
+
+        BeginContent();
+        if (_description is not null) {
+            AddText(_description, bottom: 10);
+        }
+
+        if (_note is not null) {
+            AddText(_note, bottom: 8);
+        }
+
+        if (_options is not null) {
+            ArgumentException.ThrowIfNullOrEmpty(_groupName);
+            AddRadioGroup(_groupName, _options);
+        }
+
+        if (_pathField is not null) {
+            AddPathField(_pathField);
+        }
+
+        if (_control is not null) {
+            _mainPanel!.Children.Add(_control);
+        }
+
+        if (_footer is not null) {
+            AddFooter(_footer);
+        }
+    }
+
+    private void BeginContent(double spacing = 8)
     {
         _mainPanel = new StackPanel { Spacing = spacing };
         _footerPanel = new StackPanel { Spacing = spacing, Margin = new Thickness(0, 8, 0, 0) };
-        var root = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
-        Grid.SetRow(_mainPanel, 0);
+        var root = new Grid {
+            RowDefinitions = new RowDefinitions("*,Auto"),
+            Children = { _mainPanel, _footerPanel }
+        };
         Grid.SetRow(_footerPanel, 1);
-        root.Children.Add(_mainPanel);
-        root.Children.Add(_footerPanel);
         _page.Content = root;
-        return this;
     }
 
-    public SetupWizardPageBuilder AddText(
-        string text,
-        Thickness? margin = null,
-        FontStyle fontStyle = FontStyle.Normal,
-        IBrush? foreground = null)
+    private void AddText(string text, double bottom = 0)
     {
-        EnsureContent();
-        TextBlock block = new() {
+        _mainPanel!.Children.Add(new TextBlock {
             Text = text,
             TextWrapping = TextWrapping.Wrap,
-            FontStyle = fontStyle,
-            Margin = margin ?? default
-        };
-        if (foreground is not null) {
-            block.Foreground = foreground;
-        }
-
-        _mainPanel!.Children.Add(block);
-        return this;
+            Margin = new Thickness(0, 0, 0, bottom)
+        });
     }
 
-    public SetupWizardPageBuilder AddControl(Control control)
+    private void AddRadioGroup(string groupName, IReadOnlyList<WizardRadioOption> options)
     {
-        EnsureContent();
-        _mainPanel!.Children.Add(control);
-        return this;
-    }
-
-    public void AddRadioGroup(string groupName, IReadOnlyList<WizardRadioOption> options)
-    {
-        EnsureContent();
         foreach (var option in options) {
             RadioButton radio = new() {
                 GroupName = groupName,
@@ -111,9 +153,8 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
         }
     }
 
-    public SetupWizardPageBuilder AddPathField(WizardPathField field)
+    private void AddPathField(WizardPathField field)
     {
-        EnsureContent();
         StackPanel block = new() { Spacing = 5 };
         if (!string.IsNullOrEmpty(field.Header)) {
             block.Children.Add(new TextBlock {
@@ -127,13 +168,8 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
             DataContext = field
         };
 
-        TextBox textBox = new() {
-            Watermark = field.Watermark,
-            TextWrapping = TextWrapping.NoWrap
-        };
-        textBox.Bind(TextBox.TextProperty, new Binding(nameof(WizardPathField.Text)) {
-            Mode = BindingMode.TwoWay
-        });
+        TextBox textBox = new() { Watermark = field.Watermark, TextWrapping = TextWrapping.NoWrap };
+        textBox.Bind(TextBox.TextProperty, new Binding(nameof(WizardPathField.Text)) { Mode = BindingMode.TwoWay });
         Grid.SetColumn(textBox, 0);
         row.Children.Add(textBox);
 
@@ -154,12 +190,10 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
 
         block.Children.Add(row);
         _mainPanel!.Children.Add(block);
-        return this;
     }
 
-    public void WithMutedFooter(string text)
+    private void AddFooter(string text)
     {
-        EnsureContent();
         _footerPanel!.Children.Add(new TextBlock {
             Text = text,
             TextWrapping = TextWrapping.Wrap,
@@ -169,13 +203,10 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
         });
     }
 
-    public ValueTask<bool> Show() => _page.Show(presenter);
-
-    private void EnsureContent()
+    private SetupWizardPageBuilder Set<T>(out T field, T value)
     {
-        if (_mainPanel is null) {
-            BeginContent();
-        }
+        field = value;
+        return this;
     }
 
     private void ResetComposable()

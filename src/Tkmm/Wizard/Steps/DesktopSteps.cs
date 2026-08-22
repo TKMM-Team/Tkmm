@@ -8,21 +8,21 @@ using Tkmm.Wizard.Helpers;
 using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 
-namespace Tkmm.Wizard.WizardPages;
+namespace Tkmm.Wizard.Steps;
 
-internal static class DesktopWizardPages
+internal static class DesktopSteps
 {
-    public static async ValueTask<StepResult> Mode(DesktopSetupWizard wizard)
+    public static async ValueTask<StepResult> Mode(SetupWizard wizard)
     {
-        var (next, selected) = await wizard.ChooseAsync(
-            TkLocale.SetupWizard_TkmmMode_Title,
-            [
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Emulator], new TkmmMode("Emulator"), selected: true),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_NintendoSwitch], new TkmmMode("Switch")),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_TkmmMode_Both], new TkmmMode("Hybrid"))
-            ],
-            "tkmmMode",
-            Locale[TkLocale.SetupWizard_TkmmMode_Description]);
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_TkmmMode_Title)
+            .WithDescription(TkLocale.SetupWizard_TkmmMode_Description)
+            .WithOptions([
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_Emulator, new TkmmMode("Emulator"), selected: true),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_NintendoSwitch, new TkmmMode("Switch")),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_Both, new TkmmMode("Hybrid"))])
+            .WithGroupName("tkmmMode")
+            .Show();
 
         if (!next) {
             return StepResult.Back();
@@ -42,11 +42,10 @@ internal static class DesktopWizardPages
             Config.Shared.SwitchFirmwareVersion = Config.FirmwareVersions[0];
         }
 
-        wizard.ShowSwitchDumpOption = mode.IsHybrid;
         return StepResult.Next(WizardSteps.DumpSource);
     }
 
-    public static async ValueTask<StepResult> NxRecommend(DesktopSetupWizard wizard)
+    public static async ValueTask<StepResult> NxRecommend(SetupWizard wizard)
     {
         if (!await wizard.NextPage()
                 .WithTitle(TkLocale.SetupWizard_TkmmNx_Title)
@@ -55,30 +54,31 @@ internal static class DesktopWizardPages
             return StepResult.Back();
         }
 
-        wizard.DumpSource = DumpSource.Switch;
+        wizard.SelectedDumpSource = DumpSource.Switch;
         return StepResult.Next(WizardSteps.Manual);
     }
 
-    public static async ValueTask<StepResult> DumpSourceStep(DesktopSetupWizard wizard)
+    public static async ValueTask<StepResult> DumpSourceStep(SetupWizard wizard)
     {
         var isIntelMac = RuntimeInformation.OSArchitecture is Architecture.X64 && OperatingSystem.IsMacOS();
-        var (next, selected) = await wizard.ChooseAsync(
-            TkLocale.SetupWizard_DumpSource_Title,
-            [
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_DumpSource_Title)
+            .WithOptions([
                 new WizardRadioOption {
                     Content = Locale[TkLocale.SetupWizard_DumpSource_RyujinxOption],
                     IsSelected = !isIntelMac,
                     IsEnabled = !isIntelMac,
                     Tag = DumpSource.Ryujinx
                 },
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpSource_OtherOption], DumpSource.Other, selected: isIntelMac),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpSource_OtherOption, DumpSource.Other, selected: isIntelMac),
                 new WizardRadioOption {
                     Content = Locale[TkLocale.SetupWizard_DumpSource_SwitchOption],
-                    IsVisible = wizard.ShowSwitchDumpOption,
+                    IsVisible = Config.Shared.TkmmMode.IsHybrid,
                     Tag = DumpSource.Switch
                 }
-            ],
-            "dumpSource");
+            ])
+            .WithGroupName("dumpSource")
+            .Show();
 
         if (!next) {
             return StepResult.Back();
@@ -91,14 +91,14 @@ internal static class DesktopWizardPages
             return StepResult.Next(WizardSteps.DumpSource);
         }
 
-        wizard.DumpSource = source;
+        wizard.SelectedDumpSource = source;
         wizard.EmulatorPathHint = null;
         return source is DumpSource.Ryujinx
             ? StepResult.Next(WizardSteps.Ryujinx)
             : StepResult.Next(WizardSteps.Manual);
     }
 
-    public static async ValueTask<StepResult> Ryujinx(DesktopSetupWizard wizard)
+    public static async ValueTask<StepResult> Ryujinx(SetupWizard wizard)
     {
         if (!await wizard.NextPage()
                 .WithTitle(TkLocale.SetupWizard_RyujinxSetup_Title)
@@ -116,7 +116,7 @@ internal static class DesktopWizardPages
                 return StepResult.Next(WizardSteps.Ryujinx);
             }
 
-            wizard.DumpSource = DumpSource.Other;
+            wizard.SelectedDumpSource = DumpSource.Other;
             wizard.EmulatorPathHint = "ryujinx";
             return StepResult.Next(WizardSteps.Manual);
         }

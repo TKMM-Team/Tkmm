@@ -8,9 +8,9 @@ using Tkmm.Views.Pages;
 using Tkmm.Wizard.Models;
 using TkSharp.Extensions.LibHac.Util;
 
-namespace Tkmm.Wizard.WizardPages;
+namespace Tkmm.Wizard.Steps;
 
-internal static class NxWizardPages
+internal static class NxSteps
 {
     public static async ValueTask<StepResult> Wifi(SetupWizard wizard)
     {
@@ -21,9 +21,8 @@ internal static class NxWizardPages
         };
 
         if (!await wizard.NextPage()
-                .WithTitle("WiFi Setup")
+                .WithTitle(TkLocale.NetworkSettings_WiFiService_Name)
                 .WithContent(networkPage)
-                .WithActionContent("Continue")
                 .Show()) {
             return StepResult.Back();
         }

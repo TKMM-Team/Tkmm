@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
@@ -9,9 +8,9 @@ using Tkmm.Wizard.Helpers;
 using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 
-namespace Tkmm.Wizard.WizardPages;
+namespace Tkmm.Wizard.Steps;
 
-internal static class SharedWizardPages
+internal static class SharedSteps
 {
     public static async ValueTask<StepResult> ApplicationLanguage(SetupWizard wizard, string nextStep)
     {
@@ -39,9 +38,8 @@ internal static class SharedWizardPages
 
         if (!await wizard.NextPage()
                 .WithTitle(TkLocale.Config_SystemLanguage)
-                .BeginContent()
-                .AddText(Locale[TkLocale.SetupWizard_ApplicationLanguage_Description], new Thickness(0, 0, 0, 10))
-                .AddControl(languageBox)
+                .WithDescription(TkLocale.SetupWizard_ApplicationLanguage_Description)
+                .WithControl(languageBox)
                 .Show()) {
             return StepResult.Back();
         }
@@ -58,20 +56,16 @@ internal static class SharedWizardPages
 
     public static async ValueTask<StepResult> Firmware(SetupWizard wizard, bool showEmulatorNote = false)
     {
-        string[] notes = showEmulatorNote
-            ? [Locale[TkLocale.SetupWizard_Firmware_EmulatorNote]]
-            : [];
-
-        var (next, selected) = await wizard.ChooseAsync(
-            TkLocale.SetupWizard_Firmware_Title,
-            [
-                WizardRadioOption.Opt(Locale[TkLocale.Config_Firmware_19OrLower], "Firmware19OrLower", selected: true),
-                WizardRadioOption.Opt(Locale[TkLocale.Config_Firmware_20OrHigher], "Firmware20OrHigher")
-            ],
-            "firmware",
-            Locale[TkLocale.SetupWizard_Firmware_Description],
-            Locale[TkLocale.Config_SwitchFirmwareVersionDescription],
-            notes);
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_Firmware_Title)
+            .WithDescription(TkLocale.SetupWizard_Firmware_Description)
+            .WithNotes(showEmulatorNote ? TkLocale.SetupWizard_Firmware_EmulatorNote : null)
+            .WithOptions([
+                WizardRadioOption.Opt(TkLocale.Config_Firmware_19OrLower, "Firmware19OrLower", selected: true),
+                WizardRadioOption.Opt(TkLocale.Config_Firmware_20OrHigher, "Firmware20OrHigher")])
+            .WithGroupName("firmware")
+            .WithFooter(TkLocale.Config_SwitchFirmwareVersionDescription)
+            .Show();
 
         if (!next) {
             return StepResult.Back();

@@ -6,13 +6,13 @@ using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Pages;
 using TkSharp.Extensions.LibHac.Util;
 
-namespace Tkmm.Wizard.WizardPages;
+namespace Tkmm.Wizard.Steps;
 
-internal static class ManualDumpPages
+internal static class ManualSteps
 {
-    public static async ValueTask<StepResult> Show(DesktopSetupWizard wizard)
-        => await Run(wizard, wizard.DumpSource, wizard.EmulatorPathHint)
-            ? DesktopWizardPages.AfterDump()
+    public static async ValueTask<StepResult> Show(SetupWizard wizard)
+        => await Run(wizard, wizard.SelectedDumpSource, wizard.EmulatorPathHint)
+            ? DesktopSteps.AfterDump()
             : StepResult.Back();
 
     private static async ValueTask<bool> Run(SetupWizard wizard, DumpSource dumpSource, string? pathHint)
@@ -27,8 +27,8 @@ internal static class ManualDumpPages
                 pathHint = next;
             }
 
-            if (TKMM.TryGetTkRom(out var hasBase, out var hasUpdate, out _) is null
-                && !await ConfigureDump(wizard, hasBase, hasUpdate)) {
+            if (TKMM.TryGetTkRom(out var hasBase, out _, out _) is null
+                && !await ConfigureDump(wizard, hasBase)) {
                 if (dumpSource is DumpSource.Switch) {
                     return false;
                 }
@@ -44,7 +44,7 @@ internal static class ManualDumpPages
         }
     }
 
-    private static async ValueTask<bool> ConfigureDump(SetupWizard wizard, bool hasBase, bool hasUpdate)
+    private static async ValueTask<bool> ConfigureDump(SetupWizard wizard, bool hasBase)
     {
         var isRomfs = false;
         if (!hasBase) {
@@ -68,13 +68,12 @@ internal static class ManualDumpPages
             return false;
         }
 
-        if (!await ValidateRom(needUpdate: false)) {
+        var (ok, hasUpdate) = await ValidateRom(needUpdate: false);
+        if (!ok) {
             return false;
         }
 
-        TKMM.TryGetTkRom(out _, out hasUpdate, out _);
-        return hasUpdate
-               || (await ConfigureUpdate(wizard) && await ValidateRom(needUpdate: true));
+        return hasUpdate || (await ConfigureUpdate(wizard) && (await ValidateRom(needUpdate: true)).Ok);
     }
 
     private static async ValueTask<(bool Ok, string? Hint)> ConfigureEmulator(SetupWizard wizard, string? hint)
@@ -104,16 +103,16 @@ internal static class ManualDumpPages
         TkConfig.Shared.GameDumpFolderPaths.Clear();
         TkConfig.Shared.PackagedBaseGamePaths.Clear();
 
-        var (next, selected) = await wizard.ChooseAsync(
-            TkLocale.SetupWizard_DumpType_Title,
-            [
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_XciNsp], BaseGameDumpType.XciNsp, selected: true),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Romfs], BaseGameDumpType.Romfs),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], BaseGameDumpType.SdCard),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], BaseGameDumpType.Nand)
-            ],
-            "baseGameDumpType",
-            Locale[TkLocale.SetupWizard_DumpType_Description]);
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_DumpType_Title)
+            .WithDescription(TkLocale.SetupWizard_DumpType_Description)
+            .WithOptions([
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_XciNsp, BaseGameDumpType.XciNsp, selected: true),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_Romfs, BaseGameDumpType.Romfs),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_SdCard, BaseGameDumpType.SdCard),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_Nand, BaseGameDumpType.Nand)])
+            .WithGroupName("baseGameDumpType")
+            .Show();
 
         if (!next) {
             return (false, false);
@@ -136,15 +135,15 @@ internal static class ManualDumpPages
     {
         TkConfig.Shared.PackagedUpdatePaths.Clear();
 
-        var (next, selected) = await wizard.ChooseAsync(
-            TkLocale.SetupWizard_UpdateDumpType_Title,
-            [
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nsp], UpdateDumpType.Nsp, selected: true),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_SdCard], UpdateDumpType.SdCard),
-                WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_DumpType_Nand], UpdateDumpType.Nand)
-            ],
-            "updateDumpType",
-            Locale[TkLocale.SetupWizard_UpdateDumpType_Description]);
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_UpdateDumpType_Title)
+            .WithDescription(TkLocale.SetupWizard_UpdateDumpType_Description)
+            .WithOptions([
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_Nsp, UpdateDumpType.Nsp, selected: true),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_SdCard, UpdateDumpType.SdCard),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpType_Nand, UpdateDumpType.Nand)])
+            .WithGroupName("updateDumpType")
+            .Show();
 
         if (!next) {
             return false;
@@ -157,6 +156,7 @@ internal static class ManualDumpPages
             case UpdateDumpType.Nand:
                 await ApplyNand(wizard);
                 break;
+            case UpdateDumpType.Nsp:
             default:
                 if (await ConfigureKeys(wizard)
                     && await WizardStorageHelper.PickFileAsync(
@@ -178,17 +178,19 @@ internal static class ManualDumpPages
             return true;
         }
 
-        var (next, path) = await wizard.ShowFolderPathAsync(
-            TkLocale.Config_MergeOutputFolder,
-            Locale[TkLocale.SetupWizard_MergeOutputSetup_Description],
-            Locale[TkLocale.SetupWizard_MergeOutputSetup_Path],
-            header: Locale[TkLocale.SetupWizard_MergeOutputSetup_Path]);
+        var result = await wizard.NextPage()
+            .WithTitle(TkLocale.Config_MergeOutputFolder)
+            .WithDescription(TkLocale.SetupWizard_MergeOutputSetup_Description)
+            .WithFolderPicker(
+                browseTitle: TkLocale.SetupWizard_MergeOutputSetup_Path,
+                header: TkLocale.SetupWizard_MergeOutputSetup_Path)
+            .Show();
 
-        if (!next) {
+        if (!result) {
             return false;
         }
 
-        path ??= string.Empty;
+        var path = result.Path ?? string.Empty;
         if (Path.GetFileNameWithoutExtension(path)
             .Equals("0100f2c0115b6000", StringComparison.OrdinalIgnoreCase)) {
             path = Path.Combine(path, "TKMM");
@@ -206,16 +208,19 @@ internal static class ManualDumpPages
         }
 
         while (true) {
-            var (next, path) = await wizard.ShowFolderPathAsync(
-                TkLocale.SetupWizard_KeysFolder_Title,
-                Locale[TkLocale.SetupWizard_KeysFolder_Description],
-                Locale[TkLocale.SetupWizard_SelectKeysFolder],
-                initialPath: TkConfig.Shared.KeysFolderPath);
+            var result = await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_KeysFolder_Title)
+                .WithDescription(TkLocale.SetupWizard_KeysFolder_Description)
+                .WithFolderPicker(
+                    browseTitle: TkLocale.SetupWizard_SelectKeysFolder,
+                    initialPath: TkConfig.Shared.KeysFolderPath)
+                .Show();
 
-            if (!next) {
+            if (!result) {
                 return false;
             }
 
+            var path = result.Path;
             if (!HasValidKeys(path)) {
                 await MessageDialog.Show(
                     TkLocale.SetupWizard_ManualSetup_MissingKeys_Content,
@@ -239,13 +244,13 @@ internal static class ManualDumpPages
                 return false;
             }
 
-            var (next, selected) = await wizard.ChooseAsync(
-                TkLocale.SetupWizard_BaseGameSplit_Title,
-                [
-                    WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SingleFile], false, selected: true),
-                    WizardRadioOption.Opt(Locale[TkLocale.SetupWizard_BaseGameSplit_SplitFolder], true)
-                ],
-                "baseGameSplit");
+            var (next, selected) = await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_BaseGameSplit_Title)
+                .WithOptions([
+                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SingleFile, false, selected: true),
+                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SplitFolder, true)])
+                .WithGroupName("baseGameSplit")
+                .Show();
 
             if (!next) {
                 return false;
@@ -278,20 +283,19 @@ internal static class ManualDumpPages
                Locale[TkLocale.SetupWizard_SelectNandFolder],
                p => TkConfig.Shared.NandFolderPaths.New(p));
 
-    private static async ValueTask<bool> ValidateRom(bool needUpdate)
+    private static async ValueTask<(bool Ok, bool HasUpdate)> ValidateRom(bool needUpdate)
     {
         var rom = TKMM.TryGetTkRom(out var hasBase, out var hasUpdate, out _);
         if (rom is not null || (needUpdate ? hasUpdate : hasBase)) {
-            return true;
+            return (true, rom is not null || hasUpdate);
         }
 
-        await MessageDialog.Show(
-            Locale[needUpdate
-                ? TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration
-                : TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration],
-            needUpdate
-                ? TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration_Title
-                : TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration_Title);
+        var (content, title) = needUpdate
+            ? (TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration,
+                TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration_Title)
+            : (TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration,
+                TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration_Title);
+        await MessageDialog.Show(content, title);
 
         if (needUpdate) {
             TkConfig.Shared.PackagedUpdatePaths.Clear();
@@ -300,7 +304,7 @@ internal static class ManualDumpPages
             TkConfig.Shared.PackagedBaseGamePaths.Clear();
         }
 
-        return false;
+        return (false, false);
     }
 }
 #endif
