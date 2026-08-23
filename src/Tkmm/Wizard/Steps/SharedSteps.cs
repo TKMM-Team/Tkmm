@@ -79,6 +79,45 @@ internal static class SharedSteps
         return StepResult.Next(WizardSteps.GameLanguage);
     }
 
+    public static async ValueTask<StepResult> PreferredVersion(SetupWizard wizard)
+    {
+        if (!GameVersionHelper.ShouldShowPreferredVersion(out var versions, out var showEmulatorMissingFooter)) {
+            return GameVersionHelper.AfterDump(offerPreferredVersion: false);
+        }
+
+        var preferred = TkConfig.Shared.PreferredGameVersion;
+        var selectedIndex = versions.ToList().FindIndex(v => v == preferred);
+        if (selectedIndex < 0) {
+            selectedIndex = 0;
+        }
+
+        var options = versions
+            .Select((version, index) => WizardRadioOption.Opt(version, version, selected: index == selectedIndex))
+            .ToList();
+
+        var page = wizard.NextPage()
+            .WithTitle(TkLocale.TkConfig_PreferredGameVersion)
+            .WithDescription(TkLocale.SetupWizard_PreferredGameVersion_Description)
+            .WithOptions(options)
+            .WithGroupName("preferredGameVersion");
+
+        if (showEmulatorMissingFooter) {
+            page = page.WithFooter(TkLocale.SetupWizard_PreferredGameVersion_EmulatorMissingFooter);
+        }
+
+        var (next, selected) = await page.Show();
+
+        if (!next) {
+            return StepResult.Back();
+        }
+
+        if (selected?.Tag is string preferredVersion) {
+            TkConfig.Shared.PreferredGameVersion = preferredVersion;
+        }
+
+        return GameVersionHelper.AfterDump(offerPreferredVersion: false);
+    }
+
     public static async ValueTask<StepResult> GameLanguage(SetupWizard wizard)
         => await wizard.NextPage()
             .WithTitle(TkLocale.WizPageFinal_Title)

@@ -23,7 +23,12 @@ public sealed partial class PathCollection : ObservableCollection<PathCollection
     {
         base.OnCollectionChanged(e);
         EnsureBlankEntry();
+        PathsChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    public event EventHandler? PathsChanged;
+
+    internal void NotifyItemChanged() => PathsChanged?.Invoke(this, EventArgs.Empty);
 
     public void New(string target)
     {

@@ -24,39 +24,46 @@ public static class TkRyujinxHelper
         var result = false;
         hasUpdate = false;
 
+        TkConfig.Shared.SuspendVersionRefresh();
+        try {
+            if (GetRyujinxDataFolderFromProcess(out var ryujinxExeFilePath) is not { } dataFolder) {
+                if (manualSetup) {
+                    if (GetRyujinxDataFolder("ryujinx") is not { } manualDataFolder) {
+                        return Locale["RyujinxDataFolderNotFound"];
+                    }
 
-        if (GetRyujinxDataFolderFromProcess(out var ryujinxExeFilePath) is not { } dataFolder) {
-            if (manualSetup) {
-                if (GetRyujinxDataFolder("ryujinx") is not { } manualDataFolder) {
+                    dataFolder = manualDataFolder;
+                    ryujinxExeFilePath = "ryujinx";
+                }
+                else {
                     return Locale["RyujinxDataFolderNotFound"];
                 }
-                dataFolder = manualDataFolder;
-                ryujinxExeFilePath = "ryujinx";
             }
-            else {
-                return Locale["RyujinxDataFolderNotFound"];
+
+            var ryujinxDataFolder = dataFolder;
+            Config.Shared.EmulatorPath = ryujinxExeFilePath;
+
+            if (GetRyujinxConfig(ryujinxDataFolder) is not { } config) {
+                return Locale["RyujinxConfigNotFound"];
             }
-        }
-        
-        var ryujinxDataFolder = dataFolder;
-        Config.Shared.EmulatorPath = ryujinxExeFilePath;
-        
-        if (GetRyujinxConfig(ryujinxDataFolder) is not { } config) {
-            return Locale["RyujinxConfigNotFound"];
-        }
 
-        if (GetRyujinxKeys(ryujinxDataFolder, out var systemFolderPath) is not { } keys) {
-            return Locale["RyujinxKeysNotFound"];
+            if (GetRyujinxKeys(ryujinxDataFolder, out var systemFolderPath) is not { } keys) {
+                return Locale["RyujinxKeysNotFound"];
+            }
+
+            TkConfig.Shared.KeysFolderPath = systemFolderPath;
+            TkConfig.Shared.PreferredGameVersion = TkConfig.DefaultGameVersion;
+
+            // ReSharper disable once InvertIf
+            if (GetModFolder(ryujinxDataFolder) is { } modFolderPath) {
+                Config.Shared.MergeOutput = modFolderPath;
+            }
+
+            return TkEmulatorHelper.CheckConfiguredGamePaths(ref result, ref hasUpdate, config.GameDirs, keys);
         }
-
-        TkConfig.Shared.KeysFolderPath = systemFolderPath;
-
-        // ReSharper disable once InvertIf
-        if (GetModFolder(ryujinxDataFolder) is {} modFolderPath) {
-            Config.Shared.MergeOutput = modFolderPath;
+        finally {
+            TkConfig.Shared.ResumeVersionRefresh();
         }
-
-        return TkEmulatorHelper.CheckConfiguredGamePaths(ref result, ref hasUpdate, config.GameDirs, keys);
     }
 
     private static KeySet? GetRyujinxKeys(string ryujinxDataFolder, out string systemFolderPath)

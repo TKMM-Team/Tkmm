@@ -56,52 +56,59 @@ public static class TkEmulatorHelper
         var result = false;
         hasUpdate = false;
 
-        // Only check file existence if the path contains directory separators
-        if (emulatorFilePath.Contains(Path.DirectorySeparatorChar) || emulatorFilePath.Contains(Path.AltDirectorySeparatorChar)) {
-            if (!File.Exists(emulatorFilePath)) {
-                return Locale["EmulatorFilePathNotFound", emulatorFilePath];
+        TkConfig.Shared.SuspendVersionRefresh();
+        try {
+            // Only check file existence if the path contains directory separators
+            if (emulatorFilePath.Contains(Path.DirectorySeparatorChar) || emulatorFilePath.Contains(Path.AltDirectorySeparatorChar)) {
+                if (!File.Exists(emulatorFilePath)) {
+                    return Locale["EmulatorFilePathNotFound", emulatorFilePath];
+                }
             }
-        }
-        else {
-            // if only the emulator name was provided, attempt to find it from running processes
-            var process = Process.GetProcesses()
-                .FirstOrDefault(x => x.ProcessName.Equals(emulatorFilePath, StringComparison.OrdinalIgnoreCase));
-            
-            if (process?.MainModule?.FileName is { } fullPath) {
-                emulatorFilePath = fullPath;
+            else {
+                // if only the emulator name was provided, attempt to find it from running processes
+                var process = Process.GetProcesses()
+                    .FirstOrDefault(x => x.ProcessName.Equals(emulatorFilePath, StringComparison.OrdinalIgnoreCase));
+
+                if (process?.MainModule?.FileName is { } fullPath) {
+                    emulatorFilePath = fullPath;
+                }
             }
+
+            Config.Shared.EmulatorPath = emulatorFilePath;
+
+            if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out var emulatorName)
+                is not { } emulatorConfigFilePath) {
+                return Locale["EmulatorConfigFileNotFound", emulatorName];
+            }
+
+            if (GetKeys(emulatorDataFolderPath, out var keysFolderPath) is not { } keys) {
+                return Locale["EmulatorKeysNotFound", emulatorName];
+            }
+
+            TkConfig.Shared.KeysFolderPath = keysFolderPath;
+            TkConfig.Shared.PreferredGameVersion = TkConfig.DefaultGameVersion;
+
+            var nandFolderPath = GetDirectoryFromConfig(emulatorConfigFilePath, "nand_directory");
+
+            if (Directory.Exists(nandFolderPath)) {
+                TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
+            }
+
+            if (GetModFolder(emulatorConfigFilePath, emulatorFilePath) is { } modFolderPath) {
+                Config.Shared.MergeOutput = modFolderPath;
+            }
+
+            if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
+                return false;
+            }
+
+            CheckConfiguredGamePaths(ref result, ref hasUpdate, gameFolderPaths, keys);
+
+            return result;
         }
-
-        Config.Shared.EmulatorPath = emulatorFilePath;
-
-        if (TryGetEmulatorDataFolder(emulatorFilePath, out var emulatorDataFolderPath, out var emulatorName)
-            is not { } emulatorConfigFilePath) {
-            return Locale["EmulatorConfigFileNotFound", emulatorName];
+        finally {
+            TkConfig.Shared.ResumeVersionRefresh();
         }
-
-        if (GetKeys(emulatorDataFolderPath, out var keysFolderPath) is not { } keys) {
-            return Locale["EmulatorKeysNotFound", emulatorName];
-        }
-
-        TkConfig.Shared.KeysFolderPath = keysFolderPath;
-
-        var nandFolderPath = GetDirectoryFromConfig(emulatorConfigFilePath, "nand_directory");
-        
-        if (Directory.Exists(nandFolderPath)) {
-            TkConfig.Shared.NandFolderPaths.New(nandFolderPath);
-        }
-
-        if (GetModFolder(emulatorConfigFilePath, emulatorFilePath) is {} modFolderPath) {
-            Config.Shared.MergeOutput = modFolderPath;
-        }
-
-        if (GetGameFolderPaths(emulatorConfigFilePath) is not { Count: > 0 } gameFolderPaths) {
-            return false;
-        }
-
-        CheckConfiguredGamePaths(ref result, ref hasUpdate, gameFolderPaths, keys);
-
-        return result;
     }
 
     public static bool CheckConfiguredGamePaths(ref bool result, ref bool hasUpdate, IEnumerable<string> configuredGamePaths, KeySet keys)

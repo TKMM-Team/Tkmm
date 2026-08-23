@@ -12,7 +12,7 @@ internal static class ManualSteps
 {
     public static async ValueTask<StepResult> Show(SetupWizard wizard)
         => await Run(wizard, wizard.SelectedDumpSource, wizard.EmulatorPathHint)
-            ? DesktopSteps.AfterDump()
+            ? GameVersionHelper.AfterDump()
             : StepResult.Back();
 
     private static async ValueTask<bool> Run(SetupWizard wizard, DumpSource dumpSource, string? pathHint)

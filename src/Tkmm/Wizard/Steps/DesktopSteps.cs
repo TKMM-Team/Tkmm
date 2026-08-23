@@ -127,12 +127,7 @@ internal static class DesktopSteps
                 TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
         }
 
-        return AfterDump();
+        return GameVersionHelper.AfterDump();
     }
-
-    public static StepResult AfterDump()
-        => Config.Shared.TkmmMode.IsSwitch || Config.Shared.TkmmMode.IsHybrid
-            ? StepResult.Next(WizardSteps.Firmware)
-            : StepResult.Next(WizardSteps.GameLanguage);
 }
 #endif

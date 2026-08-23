@@ -5,6 +5,7 @@ using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels.Pages;
 using Tkmm.Views.Pages;
+using Tkmm.Wizard.Helpers;
 using Tkmm.Wizard.Models;
 using TkSharp.Extensions.LibHac.Util;
 
@@ -32,7 +33,7 @@ internal static class NxSteps
         }
 
         return TKMM.TryGetTkRom(out _) is not null
-            ? StepResult.Next(WizardSteps.Firmware)
+            ? GameVersionHelper.AfterDump()
             : StepResult.Next(WizardSteps.VerifyDump);
     }
 
@@ -44,7 +45,7 @@ internal static class NxSteps
     public static async ValueTask<StepResult> VerifyDump(SetupWizard wizard)
     {
         if (TKMM.TryGetTkRom(out string? error) is not null) {
-            return StepResult.Next(WizardSteps.Firmware);
+            return GameVersionHelper.AfterDump();
         }
 
         if (error is not null) {

@@ -9,6 +9,7 @@ public static class WizardSteps
     public const string Done = "done";
     public const string Welcome = "welcome";
     public const string ApplicationLanguage = "appLanguage";
+    public const string PreferredVersion = "preferredVersion";
     public const string Firmware = "firmware";
     public const string GameLanguage = "gameLanguage";
 #if !SWITCH
@@ -28,6 +29,7 @@ public static class WizardSteps
     public static ValueTask<StepResult> Run(string step, SetupWizard wizard) => step switch {
         Welcome => WelcomeAsync(wizard),
         ApplicationLanguage => SharedSteps.ApplicationLanguage(wizard, AFTER_APPLICATION_LANGUAGE),
+        PreferredVersion => SharedSteps.PreferredVersion(wizard),
 #if !SWITCH
         Mode => DesktopSteps.Mode(wizard),
         NxRecommend => DesktopSteps.NxRecommend(wizard),
