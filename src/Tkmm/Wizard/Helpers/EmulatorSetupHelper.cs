@@ -8,7 +8,7 @@ public static class EmulatorSetupHelper
 {
     public static void ResetDumpConfiguration()
     {
-        TkConfig.Shared.ResetGameDumpSettings();
+        TkConfig.Shared.Reset();
         Config.Shared.MergeOutput = null;
     }
 

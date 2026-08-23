@@ -24,7 +24,11 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     private bool _versionRefreshSuspended;
 
     [JsonIgnore]
-    public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.DATA_FOLDER_NAME, "TkConfig.json");
+    public override string LocalPath => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        Config.DataFolderName,
+        "TkConfig.json"
+    );
 
     [JsonIgnore]
     public IReadOnlyList<string> AvailableUpdateVersions { get; private set; } = [];
@@ -129,7 +133,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
     public ObservableCollection<string> GetPreferredGameVersionOptions() => PreferredGameVersionOptions;
 
-    public void ResetGameDumpSettings()
+    public override void Reset()
     {
         SuspendVersionRefresh();
         try {
@@ -142,6 +146,7 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             NandFolderPaths = [];
         }
         finally {
+            Shared.Save();
             ResumeVersionRefresh();
         }
     }

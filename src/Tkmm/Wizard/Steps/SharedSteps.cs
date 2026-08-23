@@ -15,7 +15,8 @@ internal static class SharedSteps
     public static async ValueTask<StepResult> ApplicationLanguage(SetupWizard wizard, string nextStep)
     {
         var languages = Config.Shared.GetLanguagesInternal();
-        var selected = languages.FirstOrDefault(language => language.Value == Config.Shared.CultureName.Value);
+        var initialCulture = Config.Shared.CultureName.Value;
+        var selected = languages.FirstOrDefault(language => language.Value == initialCulture);
         if (string.IsNullOrEmpty(selected.Value)) {
             selected = languages[0];
         }
@@ -44,7 +45,8 @@ internal static class SharedSteps
             return StepResult.Back();
         }
 
-        if (await MessageDialog.Show(
+        if (Config.Shared.CultureName.Value != initialCulture
+            && await MessageDialog.Show(
                 TkLocale.SetupWizard_ApplicationLanguage_RestartPrompt,
                 TkLocale.Action_Restart,
                 MessageDialogButtons.YesNo) is MessageDialogResult.Yes) {

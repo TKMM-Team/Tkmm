@@ -63,6 +63,7 @@ internal static class DesktopSteps
         var isIntelMac = RuntimeInformation.OSArchitecture is Architecture.X64 && OperatingSystem.IsMacOS();
         var (next, selected) = await wizard.NextPage()
             .WithTitle(TkLocale.SetupWizard_DumpSource_Title)
+            .WithDescription(TkLocale.SetupWizard_DumpSource_Description)
             .WithOptions([
                 new WizardRadioOption {
                     Content = Locale[TkLocale.SetupWizard_DumpSource_RyujinxOption],

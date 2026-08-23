@@ -13,12 +13,12 @@ namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
 {
-    internal const string DATA_FOLDER_NAME = "tkmm2";
+    internal const string DataFolderName = "tkmm2";
     
     private static bool SuppressFirmwareDefaults { get; set; }
 
     [JsonIgnore]
-    public override string Name => DATA_FOLDER_NAME;
+    public override string Name => DataFolderName;
 
     public event Action<string> ThemeChanged = delegate { };
 
@@ -353,5 +353,19 @@ public sealed partial class Config : ConfigModule<Config>
     public override string Translate(string input)
     {
         return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
+    }
+
+    public override void Reset()
+    {
+#if !SWITCH
+        ExportLocations = [];
+        UseRomfslite = false;
+        EmulatorPath = null;
+        MergeOutput = null;
+        TkmmMode = TkmmModes[0];
+#endif
+        SwitchFirmwareVersion = FirmwareVersions[0];
+        TkConfig.Shared.Reset();
+        SaveAll();
     }
 }
