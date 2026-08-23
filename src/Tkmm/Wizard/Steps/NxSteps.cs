@@ -62,7 +62,7 @@ internal static class NxSteps
         if (!await wizard.NextPage()
                 .WithTitle(title)
                 .WithContent(content)
-                .WithActionContent(TkLocale.Menu_NxReboot)
+                .WithAction(TkLocale.Menu_NxReboot)
                 .Show()) {
             return StepResult.Back();
         }

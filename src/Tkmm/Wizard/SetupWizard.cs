@@ -23,7 +23,7 @@ public sealed class SetupWizard(ContentPresenter presenter)
     internal ValueTask<PageShowResult> FirstPage() => new SetupWizardPageBuilder(presenter, isFirstPage: true)
         .WithTitle(TkLocale.SetupWizard_FirstPage_Title)
         .WithContent(TkLocale.SetupWizard_FirstPage_Content)
-        .WithActionContent(TkLocale.SetupWizard_FirstPage_Action)
+        .WithAction(TkLocale.SetupWizard_FirstPage_Action)
         .Show();
 
     public async ValueTask Start()

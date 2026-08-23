@@ -103,7 +103,7 @@ internal static class DesktopSteps
         if (!await wizard.NextPage()
                 .WithTitle(TkLocale.SetupWizard_RyujinxSetup_Title)
                 .WithContent(TkLocale.SetupWizard_RyujinxSetup_Content)
-                .WithActionContent(TkLocale.SetupWizard_RyujinxSetup_Action)
+                .WithAction(TkLocale.SetupWizard_RyujinxSetup_Action)
                 .Show()) {
             return StepResult.Back();
         }

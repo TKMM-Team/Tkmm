@@ -61,8 +61,8 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
     public SetupWizardPageBuilder WithContent<TControl>(object? context = null) where TControl : Control, new()
         => WithContent(new TControl { DataContext = context });
 
-    public SetupWizardPageBuilder WithActionContent(TkLocale content) => WithActionContent(Locale[content]);
-    public SetupWizardPageBuilder WithActionContent(object? content) { _page.ActionContent = content; return this; }
+    public SetupWizardPageBuilder WithAction(TkLocale content) => WithAction(Locale[content]);
+    public SetupWizardPageBuilder WithAction(string? content) { _page.Action = content; return this; }
 
     public async ValueTask<PageShowResult> Show()
     {

@@ -122,7 +122,7 @@ internal static class SharedSteps
         => await wizard.NextPage()
             .WithTitle(TkLocale.WizPageFinal_Title)
             .WithContent<GameLanguageSelectionPage>(new GameLanguageSelectionPageContext())
-            .WithActionContent(TkLocale.WizPageFinal_Action_Finish)
+            .WithAction(TkLocale.WizPageFinal_Action_Finish)
             .Show()
             ? StepResult.Done()
             : StepResult.Back();

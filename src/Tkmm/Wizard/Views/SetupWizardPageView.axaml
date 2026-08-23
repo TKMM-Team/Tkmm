@@ -57,7 +57,7 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Grid.Column="2">
-                <Button Content="{Binding ActionContent}"
+                <Button Content="{Binding Action}"
                         Command="{Binding MoveNextCommand}" />
             </StackPanel>
         </Grid>
