@@ -158,10 +158,11 @@ internal static class ManualSteps
                 break;
             case UpdateDumpType.Nsp:
             default:
-                if (await ConfigureKeys(wizard)
-                    && await WizardStorageHelper.PickFileAsync(
-                        Locale[TkLocale.SetupWizard_SelectUpdateNspFile], "NSP", "*.nsp") is { } path) {
-                    TkConfig.Shared.PackagedUpdatePaths.New(path);
+                if (await ConfigureKeys(wizard)) {
+                    foreach (var path in await WizardStorageHelper.PickFilesAsync(
+                                 Locale[TkLocale.SetupWizard_SelectUpdateNspFile], "NSP", "*.nsp")) {
+                        TkConfig.Shared.PackagedUpdatePaths.New(path);
+                    }
                 }
 
                 break;

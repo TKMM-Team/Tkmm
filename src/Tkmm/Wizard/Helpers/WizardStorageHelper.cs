@@ -15,14 +15,28 @@ public static class WizardStorageHelper
         };
 
     public static async Task<string?> PickFileAsync(string title, string name, params string[] patterns)
-        => await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = title,
-            AllowMultiple = false,
-            FileTypeFilter = [new FilePickerFileType(name) { Patterns = patterns }]
-        }) switch {
-            [var target] => target.TryGetLocalPath(),
+        => await PickFilesAsync(title, name, allowMultiple: false, patterns) switch {
+            [var path] => path,
             _ => null
         };
+
+    public static async Task<IReadOnlyList<string>> PickFilesAsync(string title, string name, params string[] patterns)
+        => await PickFilesAsync(title, name, allowMultiple: true, patterns);
+
+    private static async Task<IReadOnlyList<string>> PickFilesAsync(string title, string name, bool allowMultiple, params string[] patterns)
+    {
+        var files = await App.XamlRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+            Title = title,
+            AllowMultiple = allowMultiple,
+            FileTypeFilter = [new FilePickerFileType(name) { Patterns = patterns }]
+        });
+
+        return files
+            .Select(file => file.TryGetLocalPath())
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Cast<string>()
+            .ToList();
+    }
 
     public static Task<string?> BrowseAsync(WizardBrowseOptions options)
         => PickFolderAsync(options.Title, options.AllowMultiple);
