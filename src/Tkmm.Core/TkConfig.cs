@@ -262,9 +262,9 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         catch (Exception ex) {
             TkLog.Instance.LogError(ex, Locale["TkConfig_ErrorEnsureKeysAndUpdate"]);
         }
-#endif
 
     Configured:
+#endif
          return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
