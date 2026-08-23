@@ -100,26 +100,30 @@
 
                     <ComboBox Grid.Column="5"
                               Margin="5,0,0,0"
+                              Height="30"
                               IsVisible="{Binding !Browser.ShowMemberLink}"
                               ItemsSource="{x:Static gb:GameBananaSubmissionTypeExtensions.All}"
                               SelectedItem="{Binding Browser.SubmissionType}"
                               ToolTip.Tip="{ext:Locale GameBanana_SubmissionType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="gb:GameBananaSubmissionType">
-                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}"
+                                           VerticalAlignment="Center" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
                     <ComboBox Grid.Column="6"
                               Margin="5,0,0,0"
+                              Height="30"
                               IsVisible="{Binding !Browser.ShowMemberLink}"
                               ItemsSource="{x:Static gb:IGameBananaSource.GameBananaSortModes}"
                               SelectedItem="{Binding GameBananaSortMode, Source={x:Static core:Config.Shared}}"
                               ToolTip.Tip="{ext:Locale GameBanana_SortMode}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="gb:GameBananaSortMode">
-                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}"
+                                           VerticalAlignment="Center" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
