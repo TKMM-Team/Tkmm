@@ -13,16 +13,22 @@
              mc:Ignorable="d">
     <ListBox Margin="5"
              Padding="10,10,15,10"
-             AutoScrollToSelectedItem="True"
              Background="Transparent"
              ItemsSource="{Binding Logs}"
              SelectedItem="{Binding Selected}"
              SelectionMode="AlwaysSelected">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,2" />
                 <Setter Property="MinHeight" Value="0" />
+                <Setter Property="ClipToBounds" Value="True" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             </Style>
         </ListBox.Styles>
         <ListBox.ContextFlyout>
@@ -56,13 +62,14 @@
                             Opacity="0.3" />
 
                     <Grid ColumnDefinitions="*,Auto" Margin="5">
-                        <TextBlock VerticalAlignment="Center"
+                        <TextBlock VerticalAlignment="Top"
                                    FontFamily="{StaticResource UbuntuMono}"
                                    Text="{Binding Content}"
-                                   TextWrapping="WrapWithOverflow" />
+                                   TextWrapping="Wrap" />
                         <TextBlock Grid.Column="1"
+                                   Margin="8,0,0,0"
                                    HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   VerticalAlignment="Top"
                                    FontFamily="{StaticResource UbuntuMono}"
                                    FontSize="9"
                                    Text="{Binding Date}" />
