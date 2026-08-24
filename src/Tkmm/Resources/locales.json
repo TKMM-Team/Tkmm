@@ -8078,7 +8078,7 @@
       "ar_SA": "",
       "de_DE": "",
       "el_GR": "",
-      "en_US": "\nBase Game Found: {0}\n\nUpdate Found: {1}",
+      "en_US": "Base Game Found: {0}\n\nUpdate Found: {1}",
       "es_ES": "",
       "fr_FR": "",
       "he_IL": "",
@@ -8093,8 +8093,8 @@
       "th_TH": "",
       "tr_TR": "",
       "uk_UA": "",
-      "zh_CN": "\n找到基础游戏：{0}\n\n找到更新：{1}",
-      "zh_TW": "\n找到基礎遊戲：{0}\n\n找到更新：{1}"
+      "zh_CN": "找到基础游戏：{0}\n\n找到更新：{1}",
+      "zh_TW": "找到基礎遊戲：{0}\n\n找到更新：{1}"
     },
     "TkExtensibleRomProvider_InvalidGameDump": {
       "ar_SA": "",

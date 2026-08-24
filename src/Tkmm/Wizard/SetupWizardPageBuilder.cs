@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Projektanker.Icons.Avalonia;
 using Tkmm.Wizard.Helpers;
@@ -14,6 +15,7 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
 {
     private readonly SetupWizardPage _page = new(isFirstPage);
     private StackPanel? _mainPanel;
+    private Panel? _optionsHost;
     private StackPanel? _footerPanel;
     private string? _description;
     private string? _note;
@@ -118,12 +120,19 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
     private void BeginContent(double spacing = 8)
     {
         _mainPanel = new StackPanel { Spacing = spacing };
-        _footerPanel = new StackPanel { Spacing = spacing, Margin = new Thickness(0, 8, 0, 0) };
-        var root = new Grid {
-            RowDefinitions = new RowDefinitions("*,Auto"),
-            Children = { _mainPanel, _footerPanel }
+        _optionsHost = new WrapPanel {
+            Orientation = Orientation.Vertical,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Left
         };
-        Grid.SetRow(_footerPanel, 1);
+        _footerPanel = new StackPanel { Spacing = spacing, Margin = new Thickness(0, 8, 0, 0) };
+
+        var root = new Grid {
+            RowDefinitions = new RowDefinitions("Auto,*,Auto"),
+            Children = { _mainPanel, _optionsHost, _footerPanel }
+        };
+        Grid.SetRow(_optionsHost, 1);
+        Grid.SetRow(_footerPanel, 2);
         _page.Content = root;
     }
 
@@ -144,12 +153,13 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
                 Content = option.Content,
                 IsEnabled = option.IsEnabled,
                 IsVisible = option.IsVisible,
+                Margin = new Thickness(0, 0, 24, 4),
                 DataContext = option
             };
             radio.Bind(ToggleButton.IsCheckedProperty, new Binding(nameof(WizardRadioOption.IsSelected)) {
                 Mode = BindingMode.TwoWay
             });
-            _mainPanel!.Children.Add(radio);
+            _optionsHost!.Children.Add(radio);
         }
     }
 
@@ -181,7 +191,7 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
             Content = new Icon { Value = "fa-regular fa-folder-open" }
         };
         browse.Click += async (_, _) => {
-            if (await WizardStorageHelper.BrowseAsync(field.Browse) is { } path) {
+            if (await StorageHelper.BrowseAsync(field.Browse) is { } path) {
                 field.Text = path;
             }
         };
@@ -212,6 +222,7 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
     private void ResetComposable()
     {
         _mainPanel = null;
+        _optionsHost = null;
         _footerPanel = null;
     }
 }

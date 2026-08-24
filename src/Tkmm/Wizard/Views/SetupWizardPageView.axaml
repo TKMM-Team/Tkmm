@@ -9,40 +9,37 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="wiz:SetupWizardPage"
              x:Class="Tkmm.Wizard.Views.SetupWizardPageView">
-    <Grid RowDefinitions="*,Auto" Margin="60">
-        <ScrollViewer>
-            <Grid RowDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Row="0" 
-                           TextWrapping="WrapWithOverflow"
-                           FontFamily="{StaticResource HyliaGlyph}"
-                           FontSize="46"
-                           Text="{Binding Title}" />
+    <Grid RowDefinitions="Auto,*,Auto" Margin="60">
+        <TextBlock TextWrapping="WrapWithOverflow"
+                   FontFamily="{StaticResource HyliaGlyph}"
+                   FontSize="46"
+                   Text="{Binding Title}" />
 
-                <ContentPresenter Grid.Row="1" 
-                                  Content="{Binding}"
-                                  IsVisible="{Binding !#InfoToggle.IsChecked}"
-                                  TextWrapping="WrapWithOverflow"
-                                  Margin="0,15,0,0">
-                    <ContentPresenter.DataTemplates>
-                        <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
-                            <ContentControl Content="{Binding Content}" VerticalAlignment="Stretch"/>
-                        </DataTemplate>
-                    </ContentPresenter.DataTemplates>
-                </ContentPresenter>
-                
-                <StackPanel Grid.Row="2"
-                            Spacing="5"
-                            VerticalAlignment="Top"
-                            HorizontalAlignment="Left"
-                            IsVisible="{Binding #InfoToggle.IsChecked}">
-                    <controls:BrandedQrCode Width="200"
-                                            Url="https://tkmm.org/discord" />
-                    <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
+        <Panel Grid.Row="1" Margin="0,15,0,0">
+            <ContentPresenter Content="{Binding}"
+                              IsVisible="{Binding !#InfoToggle.IsChecked}"
+                              VerticalAlignment="Stretch"
+                              TextWrapping="WrapWithOverflow">
+                <ContentPresenter.DataTemplates>
+                    <DataTemplate DataType="{x:Type wiz:SetupWizardPage}">
+                        <ContentControl Content="{Binding Content}"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalAlignment="Stretch" />
+                    </DataTemplate>
+                </ContentPresenter.DataTemplates>
+            </ContentPresenter>
 
-        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1" Margin="0,12,0,0">
+            <StackPanel Spacing="5"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding #InfoToggle.IsChecked}">
+                <controls:BrandedQrCode Width="200"
+                                        Url="https://tkmm.org/discord" />
+                <HyperlinkButton NavigateUri="https://tkmm.org/discord" Content="Join Discord" />
+            </StackPanel>
+        </Panel>
+
+        <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="2" Margin="0,12,0,0">
             <ToggleButton Name="InfoToggle"
                           Padding="6">
                 <fa:Icon Value="fa-regular fa-circle-info" />

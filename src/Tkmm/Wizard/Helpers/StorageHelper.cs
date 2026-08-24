@@ -3,7 +3,7 @@ using Tkmm.Wizard.Models;
 
 namespace Tkmm.Wizard.Helpers;
 
-public static class WizardStorageHelper
+public static class StorageHelper
 {
     private static async Task<string?> PickFolderAsync(string? title, bool allowMultiple = false)
         => await App.XamlRoot.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions {

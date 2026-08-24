@@ -1,7 +1,6 @@
 #if SWITCH
 using Avalonia.VisualTree;
 using Tkmm.Core;
-using Tkmm.Dialogs;
 using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels.Pages;
 using Tkmm.Views.Pages;
@@ -28,13 +27,9 @@ internal static class NxSteps
             return StepResult.Back();
         }
 
-        if (!TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out _)) {
-            return StepResult.Next(WizardSteps.MissingKeys);
-        }
-
-        return TKMM.TryGetTkRom(out _) is not null
-            ? GameVersionHelper.AfterDump()
-            : StepResult.Next(WizardSteps.VerifyDump);
+        return TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out _)
+            ? StepResult.Next(WizardSteps.VerifyDump)
+            : StepResult.Next(WizardSteps.MissingKeys);
     }
 
     public static async ValueTask<StepResult> MissingKeys(SetupWizard wizard)
@@ -44,12 +39,8 @@ internal static class NxSteps
 
     public static async ValueTask<StepResult> VerifyDump(SetupWizard wizard)
     {
-        if (TKMM.TryGetTkRom(out string? error) is not null) {
-            return GameVersionHelper.AfterDump();
-        }
-
-        if (error is not null) {
-            await MessageDialog.Show(error, TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
+        if ((await TkRomHelper.Validate()).Ok) {
+            return FlowHelper.AfterDump();
         }
 
         return await RebootPrompt(wizard,

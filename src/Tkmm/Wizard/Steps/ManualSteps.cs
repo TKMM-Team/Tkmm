@@ -12,7 +12,7 @@ internal static class ManualSteps
 {
     public static async ValueTask<StepResult> Show(SetupWizard wizard)
         => await Run(wizard, wizard.SelectedDumpSource, wizard.EmulatorPathHint)
-            ? GameVersionHelper.AfterDump()
+            ? FlowHelper.AfterDump()
             : StepResult.Back();
 
     private static async ValueTask<bool> Run(SetupWizard wizard, DumpSource dumpSource, string? pathHint)
@@ -57,28 +57,20 @@ internal static class ManualSteps
         }
 
         if (isRomfs) {
-            if (TKMM.TryGetTkRom(out var error) is not null) {
-                return true;
-            }
-
-            if (error is not null) {
-                await MessageDialog.Show(error, TkLocale.TkExtensibleRomProvider_InvalidGameDump);
-            }
-
-            return false;
+            return (await TkRomHelper.Validate(isRomfs: true)).Ok;
         }
 
-        var (ok, hasUpdate) = await ValidateRom(needUpdate: false);
+        var (ok, isComplete) = await TkRomHelper.Validate(needUpdate: false);
         if (!ok) {
             return false;
         }
 
-        return hasUpdate || (await ConfigureUpdate(wizard) && (await ValidateRom(needUpdate: true)).Ok);
+        return isComplete || (await ConfigureUpdate(wizard) && (await TkRomHelper.Validate()).Ok);
     }
 
     private static async ValueTask<(bool Ok, string? Hint)> ConfigureEmulator(SetupWizard wizard, string? hint)
     {
-        EmulatorSetupHelper.ResetDumpConfiguration();
+        EmulatorHelper.ResetDumpConfiguration();
 
         EmulatorNameInputPageContext ctx = new() { EmulatorName = hint ?? string.Empty };
         if (!await wizard.NextPage()
@@ -89,7 +81,7 @@ internal static class ManualSteps
         }
 
         try {
-            EmulatorSetupHelper.ApplyFromNameOrPath(ctx.EmulatorName);
+            EmulatorHelper.ApplyFromNameOrPath(ctx.EmulatorName);
         }
         catch {
             // Continue with dump setup
@@ -120,7 +112,7 @@ internal static class ManualSteps
 
         var type = selected?.Tag is BaseGameDumpType t ? t : BaseGameDumpType.XciNsp;
         var ok = await (type switch {
-            BaseGameDumpType.Romfs => WizardStorageHelper.ApplyFolder(
+            BaseGameDumpType.Romfs => StorageHelper.ApplyFolder(
                 Locale[TkLocale.SetupWizard_SelectRomfsFolder],
                 p => TkConfig.Shared.GameDumpFolderPaths.New(p)),
             BaseGameDumpType.SdCard => ApplySdCard(),
@@ -159,7 +151,7 @@ internal static class ManualSteps
             case UpdateDumpType.Nsp:
             default:
                 if (await ConfigureKeys(wizard)) {
-                    foreach (var path in await WizardStorageHelper.PickFilesAsync(
+                    foreach (var path in await StorageHelper.PickFilesAsync(
                                  Locale[TkLocale.SetupWizard_SelectUpdateNspFile], "NSP", "*.nsp")) {
                         TkConfig.Shared.PackagedUpdatePaths.New(path);
                     }
@@ -258,13 +250,13 @@ internal static class ManualSteps
             }
 
             if (selected?.Tag is true) {
-                if (await WizardStorageHelper.ApplyFolder(
+                if (await StorageHelper.ApplyFolder(
                         Locale[TkLocale.SetupWizard_SelectSplitFilesFolder],
                         p => TkConfig.Shared.PackagedBaseGamePaths.New(p))) {
                     return true;
                 }
             }
-            else if (await WizardStorageHelper.PickFileAsync(
+            else if (await StorageHelper.PickFileAsync(
                          Locale[TkLocale.SetupWizard_SelectBaseGameFile], "XCI/NSP", "*.xci", "*.nsp") is { } file) {
                 TkConfig.Shared.PackagedBaseGamePaths.New(file);
                 return true;
@@ -273,39 +265,15 @@ internal static class ManualSteps
     }
 
     private static ValueTask<bool> ApplySdCard()
-        => WizardStorageHelper.ApplyFolder(Locale[TkLocale.SetupWizard_SelectSdCardRoot], path => {
+        => StorageHelper.ApplyFolder(Locale[TkLocale.SetupWizard_SelectSdCardRoot], path => {
             TkConfig.Shared.SdCardRootPath = path;
             TkConfig.Shared.KeysFolderPath = Path.Combine(path, "switch");
         });
 
     private static async ValueTask<bool> ApplyNand(SetupWizard wizard)
         => await ConfigureKeys(wizard)
-           && await WizardStorageHelper.ApplyFolder(
+           && await StorageHelper.ApplyFolder(
                Locale[TkLocale.SetupWizard_SelectNandFolder],
                p => TkConfig.Shared.NandFolderPaths.New(p));
-
-    private static async ValueTask<(bool Ok, bool HasUpdate)> ValidateRom(bool needUpdate)
-    {
-        var rom = TKMM.TryGetTkRom(out var hasBase, out var hasUpdate, out _);
-        if (rom is not null || (needUpdate ? hasUpdate : hasBase)) {
-            return (true, rom is not null || hasUpdate);
-        }
-
-        var (content, title) = needUpdate
-            ? (TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration,
-                TkLocale.SetupWizard_UpdateDumpConfigPage_InvalidConfiguration_Title)
-            : (TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration,
-                TkLocale.SetupWizard_BaseGameDumpConfigPage_InvalidConfiguration_Title);
-        await MessageDialog.Show(content, title);
-
-        if (needUpdate) {
-            TkConfig.Shared.PackagedUpdatePaths.Clear();
-        }
-        else {
-            TkConfig.Shared.PackagedBaseGamePaths.Clear();
-        }
-
-        return (false, false);
-    }
 }
 #endif

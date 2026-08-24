@@ -19,10 +19,10 @@ public static class TkRyujinxHelper
     /// <param name="hasUpdate"></param>
     /// <param name="manualSetup"></param>
     /// <returns></returns>
-    public static Either<bool, string> UseRyujinx(out bool hasUpdate, bool manualSetup = false)
+    public static Either<bool, string> UseRyujinx(bool manualSetup = false)
     {
         var result = false;
-        hasUpdate = false;
+        var hasUpdate = false;
 
         TkConfig.Shared.SuspendVersionRefresh();
         try {

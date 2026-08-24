@@ -280,7 +280,7 @@ public sealed partial class Config : ConfigModule<Config>
         }
         
         if (Path.GetFileNameWithoutExtension(newValue).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
-            TkRyujinxHelper.UseRyujinx(out _);
+            TkRyujinxHelper.UseRyujinx();
         }
         else {
             TkEmulatorHelper.UseEmulator(newValue, out _);

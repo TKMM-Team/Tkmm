@@ -83,8 +83,8 @@ internal static class SharedSteps
 
     public static async ValueTask<StepResult> PreferredVersion(SetupWizard wizard)
     {
-        if (!GameVersionHelper.ShouldShowPreferredVersion(out var versions, out var showEmulatorMissingFooter)) {
-            return GameVersionHelper.AfterDump(offerPreferredVersion: false);
+        if (!FlowHelper.ShouldShowPreferredVersion(out var versions)) {
+            return FlowHelper.AfterDump(offerPreferredVersion: false);
         }
 
         var preferred = TkConfig.Shared.PreferredGameVersion;
@@ -103,9 +103,11 @@ internal static class SharedSteps
             .WithOptions(options)
             .WithGroupName("preferredGameVersion");
 
-        if (showEmulatorMissingFooter) {
+#if !SWITCH
+        if (!Config.Shared.TkmmMode.IsSwitch) {
             page = page.WithFooter(TkLocale.SetupWizard_PreferredGameVersion_EmulatorMissingFooter);
         }
+#endif
 
         var (next, selected) = await page.Show();
 
@@ -117,7 +119,7 @@ internal static class SharedSteps
             TkConfig.Shared.PreferredGameVersion = preferredVersion;
         }
 
-        return GameVersionHelper.AfterDump(offerPreferredVersion: false);
+        return FlowHelper.AfterDump(offerPreferredVersion: false);
     }
 
     public static async ValueTask<StepResult> GameLanguage(SetupWizard wizard)

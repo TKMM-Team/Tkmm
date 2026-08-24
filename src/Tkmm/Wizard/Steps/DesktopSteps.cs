@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using FluentAvalonia.UI.Controls;
 using Tkmm.Core;
+using Tkmm.Core.Helpers;
 using Tkmm.Core.Models;
 using Tkmm.Dialogs;
 using Tkmm.Wizard.Helpers;
@@ -109,26 +110,31 @@ internal static class DesktopSteps
             return StepResult.Back();
         }
 
-        if (EmulatorSetupHelper.TryUseRunningRyujinx() is { } error) {
-            var errorResult = await ErrorDialog.ShowAsync(new Exception(error), forceShowInDebug: true,
+        string? errorMessage = null;
+        
+        if (EmulatorHelper.TryUseRyujinx() is { } setupError) {
+            errorMessage = setupError;
+        }
+        else if (TkRyujinxHelper.GetSelectedUpdatePath(Config.Shared.EmulatorPath!) is null) {
+            errorMessage = Locale[TkLocale.TkConfig_ErrorNoUpdateSelected];
+        }
+
+        if (errorMessage is not null) {
+            var errorResult = await ErrorDialog.ShowAsync(
+                new Exception(errorMessage), forceShowInDebug: true,
                 TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
 
             if (errorResult is TaskDialogStandardResult.Retry) {
                 return StepResult.Next(WizardSteps.Ryujinx);
             }
-
-            wizard.SelectedDumpSource = DumpSource.Other;
-            wizard.EmulatorPathHint = "ryujinx";
-            return StepResult.Next(WizardSteps.Manual);
+        }
+        else if ((await TkRomHelper.Validate()).Ok) {
+            return FlowHelper.AfterDump();
         }
 
-        if (TKMM.TryGetTkRom(out var romError) is null) {
-            await MessageDialog.Show(
-                romError ?? Locale[TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration],
-                TkLocale.SetupWizard_GameDumpConfigPage_InvalidConfiguration_Title);
-        }
-
-        return GameVersionHelper.AfterDump();
+        wizard.SelectedDumpSource = DumpSource.Other;
+        wizard.EmulatorPathHint = "ryujinx";
+        return StepResult.Next(WizardSteps.Manual);
     }
 }
 #endif
