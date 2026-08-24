@@ -1,5 +1,7 @@
 #if SWITCH
 using Avalonia.VisualTree;
+using System.Net.NetworkInformation;
+using Tkmm.Actions;
 using Tkmm.Core;
 using Tkmm.Models.MenuModels;
 using Tkmm.ViewModels.Pages;
@@ -27,8 +29,13 @@ internal static class NxSteps
             return StepResult.Back();
         }
 
+        if (NetworkInterface.GetIsNetworkAvailable()) {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            await SystemActions.CheckForUpdates(isUserInvoked: false, cts.Token);
+        }
+
         return TkKeyUtils.TryGetKeys(TkConfig.Shared.SdCardRootPath, out _)
-            ? StepResult.Next(WizardSteps.VerifyDump)
+            ? await VerifyDump(wizard)
             : StepResult.Next(WizardSteps.MissingKeys);
     }
 
@@ -37,7 +44,7 @@ internal static class NxSteps
             TkLocale.SetupWizard_MissingKeys_Title,
             TkLocale.SetupWizard_MissingKeys_Content);
 
-    public static async ValueTask<StepResult> VerifyDump(SetupWizard wizard)
+    private static async ValueTask<StepResult> VerifyDump(SetupWizard wizard)
     {
         if ((await TkRomHelper.Validate()).Ok) {
             return FlowHelper.AfterDump();

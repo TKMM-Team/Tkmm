@@ -18,7 +18,6 @@ public static class WizardSteps
 #else
     public const string Wifi = "wifi";
     public const string MissingKeys = "missingKeys";
-    public const string VerifyDump = "verifyDump";
     private const string AFTER_APPLICATION_LANGUAGE = Wifi;
 #endif
     public const string PreferredVersion = "preferredVersion";
@@ -38,7 +37,6 @@ public static class WizardSteps
 #else
         Wifi => NxSteps.Wifi(wizard),
         MissingKeys => NxSteps.MissingKeys(wizard),
-        VerifyDump => NxSteps.VerifyDump(wizard),
 #endif
         Firmware => SharedSteps.Firmware(wizard),
         PreferredVersion => SharedSteps.PreferredVersion(wizard),
