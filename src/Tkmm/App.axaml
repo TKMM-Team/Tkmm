@@ -37,6 +37,7 @@
         <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
         <StyleInclude Source="avares://Tkmm.VirtualKeyboard/Styles/Fluent.axaml" />
         <StyleInclude Source="/Styles/ContainerStyles.axaml" />
+        <StyleInclude Source="/Styles/ComboBoxStyles.axaml" />
         <StyleInclude Source="/Styles/MenuItem.axaml" />
         <StyleInclude Source="/Styles/ListBoxStyles.axaml" />
         <StyleInclude Source="/Styles/RadioButtonStyles.axaml" />

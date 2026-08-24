@@ -108,8 +108,7 @@
                               ToolTip.Tip="{ext:Locale GameBanana_SubmissionType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="gb:GameBananaSubmissionType">
-                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}"
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -124,8 +123,7 @@
                               ToolTip.Tip="{ext:Locale GameBanana_SortMode}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="gb:GameBananaSortMode">
-                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}"
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Converter={x:Static converters:GameBananaLocaleConverter.Instance}}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
