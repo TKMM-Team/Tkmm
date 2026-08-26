@@ -31,11 +31,11 @@ public static class StorageHelper
             FileTypeFilter = [new FilePickerFileType(name) { Patterns = patterns }]
         });
 
-        return files
-            .Select(file => file.TryGetLocalPath())
-            .Where(path => !string.IsNullOrWhiteSpace(path))
-            .Cast<string>()
-            .ToList();
+        return [ .. files
+                .Select(file => file.TryGetLocalPath())
+                .Where(path => !string.IsNullOrWhiteSpace(path))
+                .Cast<string>()
+        ];
     }
 
     public static Task<string?> BrowseAsync(WizardBrowseOptions options)

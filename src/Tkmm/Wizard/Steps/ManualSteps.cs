@@ -36,7 +36,7 @@ internal static class ManualSteps
                 continue;
             }
 
-            if (!await ConfigureMergeOutput(wizard, dumpSource)) {
+            if (!await ConfigureMergeOutput(wizard)) {
                 continue;
             }
 
@@ -70,7 +70,7 @@ internal static class ManualSteps
 
     private static async ValueTask<(bool Ok, string? Hint)> ConfigureEmulator(SetupWizard wizard, string? hint)
     {
-        EmulatorHelper.ResetDumpConfiguration();
+        EmulatorHelper.ResetConfiguration();
 
         EmulatorNameInputPageContext ctx = new() { EmulatorName = hint ?? string.Empty };
         if (!await wizard.NextPage()
@@ -85,6 +85,7 @@ internal static class ManualSteps
         }
         catch {
             // Continue with dump setup
+            // TODO: show a dialog like the ryu setup page: "Continue with manual setup?" + Retry and Yes buttons
         }
 
         return (true, ctx.EmulatorName);
@@ -149,25 +150,23 @@ internal static class ManualSteps
                 await ApplyNand(wizard);
                 break;
             case UpdateDumpType.Nsp:
-            default:
+            default: {
                 if (await ConfigureKeys(wizard)) {
                     foreach (var path in await StorageHelper.PickFilesAsync(
                                  Locale[TkLocale.SetupWizard_SelectUpdateNspFile], "NSP", "*.nsp")) {
                         TkConfig.Shared.PackagedUpdatePaths.New(path);
                     }
                 }
-
                 break;
+            }
         }
 
         return true;
     }
 
-    private static async ValueTask<bool> ConfigureMergeOutput(SetupWizard wizard, DumpSource dumpSource)
+    private static async ValueTask<bool> ConfigureMergeOutput(SetupWizard wizard)
     {
-        if (!string.IsNullOrEmpty(Config.Shared.MergeOutput)
-            || dumpSource is DumpSource.Switch
-            || Config.Shared.TkmmMode.IsSwitch) {
+        if (!string.IsNullOrEmpty(Config.Shared.MergeOutput) || Config.Shared.TkmmMode.IsSwitch) {
             return true;
         }
 
@@ -240,8 +239,8 @@ internal static class ManualSteps
             var (next, selected) = await wizard.NextPage()
                 .WithTitle(TkLocale.SetupWizard_BaseGameSplit_Title)
                 .WithOptions([
-                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SingleFile, false, selected: true),
-                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SplitFolder, true)])
+                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SingleFile, tag: false, selected: true),
+                    WizardRadioOption.Opt(TkLocale.SetupWizard_BaseGameSplit_SplitFolder, tag: true)])
                 .WithGroupName("baseGameSplit")
                 .Show();
 

@@ -7,7 +7,7 @@ namespace Tkmm.Wizard.Helpers;
 
 public static class EmulatorHelper
 {
-    public static void ResetDumpConfiguration()
+    public static void ResetConfiguration()
     {
         TkConfig.Shared.Reset();
         Config.Shared.MergeOutput = null;
@@ -39,17 +39,13 @@ public static class EmulatorHelper
             return false;
         }
 
-        var exeName = Path.GetFileNameWithoutExtension(emulatorFilePath);
-        
-        if (exeName.Equals("ryujinx", StringComparison.OrdinalIgnoreCase)) {
+        if (IsRyujinx(emulatorFilePath)) {
             return TkRyujinxHelper.GetSelectedUpdatePath(emulatorFilePath) is { } updatePath && File.Exists(updatePath);
         }
 
-        if (TkEmulatorHelper.GetNandPath(emulatorFilePath) is not { } nandPath || !Directory.Exists(nandPath)) {
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(TkConfig.Shared.KeysFolderPath)
+        if (TkEmulatorHelper.GetNandPath(emulatorFilePath) is not { } nandPath
+            || !Directory.Exists(nandPath)
+            || string.IsNullOrWhiteSpace(TkConfig.Shared.KeysFolderPath)
             || TkKeyUtils.GetKeysFromFolder(TkConfig.Shared.KeysFolderPath) is not { } keys) {
             return false;
         }

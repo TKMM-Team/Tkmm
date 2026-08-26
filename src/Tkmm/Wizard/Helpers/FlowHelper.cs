@@ -7,26 +7,23 @@ internal static class FlowHelper
 {
     public static bool ShouldShowPreferredVersion(out IReadOnlyList<string> versions)
     {
+        TkConfig.Shared.RefreshAvailableUpdateVersions();
         versions = TkConfig.Shared.AvailableUpdateVersions;
 
 #if !SWITCH
         if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath) && EmulatorHelper.IsEmulatorUpdateResolved()) {
+            // emulator update is already resolved (use Auto and skip the chooser)
             TkConfig.Shared.PreferredGameVersion = TkConfig.DefaultGameVersion;
             return false;
         }
-#endif
 
-        TkConfig.Shared.RefreshAvailableUpdateVersions();
-        versions = TkConfig.Shared.AvailableUpdateVersions;
-
-#if SWITCH
-        return versions.Count > 1;
-#else
         if (Config.Shared.TkmmMode.IsSwitch) {
             return versions.Count > 1;
         }
 
         return true;
+#else
+        return versions.Count > 1;
 #endif
     }
 
@@ -37,11 +34,11 @@ internal static class FlowHelper
         }
 
 #if !SWITCH
-        return !Config.Shared.TkmmMode.IsEmulator
-            ? StepResult.Next(WizardSteps.Firmware)
-            : StepResult.Next(WizardSteps.GameLanguage);
-#else
-        return StepResult.Next(WizardSteps.Firmware);
+        // Firmware is only relevant when using mods on real hardware
+        if (Config.Shared.TkmmMode.IsEmulator) {
+            return StepResult.Next(WizardSteps.GameLanguage);
+        }
 #endif
+        return StepResult.Next(WizardSteps.Firmware);
     }
 }

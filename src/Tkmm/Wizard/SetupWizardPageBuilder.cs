@@ -80,11 +80,15 @@ public class SetupWizardPageBuilder(ContentPresenter presenter, bool isFirstPage
                 _options?.FirstOrDefault(o => o is { IsSelected: true, IsVisible: true, IsEnabled: true }),
                 _pathField?.Text)
             : default;
-
     }
 
-    private bool HasDeferredContent => _description is not null || _note is not null || _options is not null
-           || _pathField is not null || _footer is not null || _control is not null;
+    private bool HasDeferredContent =>
+        _description is not null
+        || _note is not null
+        || _options is not null
+        || _pathField is not null
+        || _footer is not null
+        || _control is not null;
 
     private void ComposeDeferred()
     {

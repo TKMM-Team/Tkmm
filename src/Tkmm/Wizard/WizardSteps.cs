@@ -1,4 +1,3 @@
-using Tkmm.Core;
 using Tkmm.Wizard.Models;
 using Tkmm.Wizard.Steps;
 
@@ -47,6 +46,8 @@ public static class WizardSteps
     private static async ValueTask<StepResult> WelcomeAsync(SetupWizard wizard)
     {
         await wizard.FirstPage();
+        // Language step is skipped if it was already shown
+        // and the user restarted to apply the new language
         return StepResult.Next(wizard.SkipApplicationLanguage ? AFTER_APPLICATION_LANGUAGE : ApplicationLanguage);
     }
 }

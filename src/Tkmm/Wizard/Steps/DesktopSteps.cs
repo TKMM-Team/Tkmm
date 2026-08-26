@@ -35,11 +35,13 @@ internal static class DesktopSteps
 
         Config.Shared.TkmmMode = mode;
         if (mode.IsSwitch) {
+            // merge output is unused for Switch
             Config.Shared.MergeOutput = null;
             return StepResult.Next(WizardSteps.NxRecommend);
         }
 
         if (mode.IsEmulator) {
+            // firmware step is skipped later, so set a default now
             Config.Shared.SwitchFirmwareVersion = Config.FirmwareVersions[0];
         }
 
@@ -48,6 +50,8 @@ internal static class DesktopSteps
 
     public static async ValueTask<StepResult> NxRecommend(SetupWizard wizard)
     {
+        // if the user selects Switch mode, recommend using TKMM-NX instead
+        // continue with manual setup if the user wishes to proceed anyway 
         if (!await wizard.NextPage()
                 .WithTitle(TkLocale.SetupWizard_TkmmNx_Title)
                 .WithContent<TkmmNxRecommendPage>()
@@ -66,6 +70,7 @@ internal static class DesktopSteps
             .WithTitle(TkLocale.SetupWizard_DumpSource_Title)
             .WithDescription(TkLocale.SetupWizard_DumpSource_Description)
             .WithOptions([
+                // Ryujinx setup is disabled for Intel Macs per GreemDev's request (#109)
                 new WizardRadioOption {
                     Content = Locale[TkLocale.SetupWizard_DumpSource_RyujinxOption],
                     IsSelected = !isIntelMac,
@@ -115,7 +120,7 @@ internal static class DesktopSteps
         if (EmulatorHelper.TryUseRyujinx() is { } setupError) {
             errorMessage = setupError;
         }
-        else if (TkRyujinxHelper.GetSelectedUpdatePath(Config.Shared.EmulatorPath!) is null) {
+        else if (TkRyujinxHelper.GetSelectedUpdatePath(Config.Shared.EmulatorPath!) is not {} p || !File.Exists(p)) {
             errorMessage = Locale[TkLocale.TkConfig_ErrorNoUpdateSelected];
         }
 
