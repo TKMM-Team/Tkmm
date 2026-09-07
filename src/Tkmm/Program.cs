@@ -129,6 +129,9 @@ internal abstract class Program
         return AppBuilder.Configure<App>()
             .UseR2CSharp()
             .UsePlatformDetect()
+#if SWITCH
+            .With(new X11PlatformOptions { OverlayPopups = true })
+#endif
             .WithInterFont();
     }
 
