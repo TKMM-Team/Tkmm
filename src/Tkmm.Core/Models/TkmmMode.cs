@@ -6,11 +6,7 @@ namespace Tkmm.Core.Models;
 [JsonConverter(typeof(TkmmModeJsonConverter))]
 public readonly record struct TkmmMode(string Value)
 {
-    public string DisplayName => Value switch {
-        "Switch" => Locale["TkmmMode_Switch"],
-        "Hybrid" => Locale["TkmmMode_Hybrid"],
-        _ => Locale["TkmmMode_Emulator"]
-    };
+    public string DisplayName => Locale[$"TkmmMode_{Value}"];
 
     public static implicit operator string(TkmmMode mode) => mode.Value;
 

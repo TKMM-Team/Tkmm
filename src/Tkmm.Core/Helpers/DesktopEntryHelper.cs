@@ -8,7 +8,7 @@ public static class DesktopEntryHelper
 {
     private const string URI_HANDLER_DESKTOP_FILE_NAME = "tkmm-uri-handler.desktop";
     private const string URI_SCHEME = "tkmm";
-    private const string DisplayName = "TKMM";
+    private const string DISPLAY_NAME = "TKMM";
 
     private static readonly UTF8Encoding Utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
     private static readonly string[] ToolPaths = ["/usr/bin", "/bin", "/usr/local/bin"];
@@ -20,7 +20,7 @@ public static class DesktopEntryHelper
         }
     }
 
-    public static void RegisterUriSchemeHandler(string executablePath)
+    private static void RegisterUriSchemeHandler(string executablePath)
     {
         if (!OperatingSystem.IsLinux() || string.IsNullOrWhiteSpace(executablePath)) {
             return;
@@ -44,7 +44,7 @@ public static class DesktopEntryHelper
         RegisterMimeAssociation();
     }
 
-    public static string? ResolveLinuxExecutablePath()
+    private static string? ResolveLinuxExecutablePath()
     {
         if (!OperatingSystem.IsLinux()) {
             return null;
@@ -66,7 +66,7 @@ public static class DesktopEntryHelper
             "[Desktop Entry]",
             "Version=1.0",
             "Type=Application",
-            $"Name={DisplayName}",
+            $"Name={DISPLAY_NAME}",
             $"Exec=\"{quotedExecutablePath}\" %u",
             $"MimeType=x-scheme-handler/{URI_SCHEME};",
             "NoDisplay=true",
@@ -159,15 +159,9 @@ public static class DesktopEntryHelper
         lines.Insert(sectionIndex + 1, association);
     }
 
-    private static bool TryRunCommand(string fileName, string arguments)
+    private static void TryRunCommand(string fileName, string arguments)
     {
-        foreach (var toolPath in ResolveToolPaths(fileName)) {
-            if (TryRunCommandAtPath(toolPath, arguments)) {
-                return true;
-            }
-        }
-
-        return false;
+        _ = ResolveToolPaths(fileName).Any(toolPath => TryRunCommandAtPath(toolPath, arguments));
     }
 
     private static IEnumerable<string> ResolveToolPaths(string fileName)

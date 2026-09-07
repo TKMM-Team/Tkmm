@@ -5,6 +5,8 @@ namespace Tkmm.Wizard;
 
 public static class WizardSteps
 {
+    // Steps only need to be referenced here if we want them
+    // to be saved in the history for the Back button to work
     public const string Welcome = "welcome";
     public const string ApplicationLanguage = "appLanguage";
 #if !SWITCH

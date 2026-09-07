@@ -6,7 +6,7 @@ namespace Tkmm.Wizard.Pages;
 public partial class GameLanguageSelectionPageContext : ObservableObject
 {
     [ObservableProperty]
-    private string? _gameVersion;
+    public partial string? GameVersion { get; set; }
 
     public GameLanguageSelectionPageContext()
     {

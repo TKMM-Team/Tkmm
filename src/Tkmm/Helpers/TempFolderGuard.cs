@@ -12,17 +12,7 @@ public static class TempFolderGuard
 {
     public static bool IsRunningFromTemporaryFolder()
     {
-        if (AppUpdater.IsAppImage) {
-            return false;
-        }
-
-        foreach (var candidate in GetPathsToCheck()) {
-            if (IsUnderTemporaryFolder(candidate)) {
-                return true;
-            }
-        }
-
-        return false;
+        return !AppUpdater.IsAppImage && GetPathsToCheck().Any(IsUnderTemporaryFolder);
     }
 
     public static void Apply(Window shellView)
@@ -95,13 +85,7 @@ public static class TempFolderGuard
             return false;
         }
 
-        foreach (var tempRoot in GetTemporaryRoots()) {
-            if (IsSubPathOf(fullPath, tempRoot)) {
-                return true;
-            }
-        }
-
-        return false;
+        return GetTemporaryRoots().Any(tempRoot => IsSubPathOf(fullPath, tempRoot));
     }
 
     private static IEnumerable<string> GetTemporaryRoots()
