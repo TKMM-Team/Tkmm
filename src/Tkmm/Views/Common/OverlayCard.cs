@@ -12,6 +12,12 @@ public class OverlayCard : ContentControl
     public static readonly StyledProperty<double> CardMinWidthProperty =
         AvaloniaProperty.Register<OverlayCard, double>(nameof(CardMinWidth), 0);
 
+    public static readonly StyledProperty<double> CardMaxHeightProperty =
+        AvaloniaProperty.Register<OverlayCard, double>(nameof(CardMaxHeight), double.PositiveInfinity);
+
+    public static readonly StyledProperty<double> CardMinHeightProperty =
+        AvaloniaProperty.Register<OverlayCard, double>(nameof(CardMinHeight), 0);
+
     public static readonly StyledProperty<Thickness> CardPaddingProperty =
         AvaloniaProperty.Register<OverlayCard, Thickness>(nameof(CardPadding), new Thickness(25));
 
@@ -23,6 +29,15 @@ public class OverlayCard : ContentControl
 
     protected override Type StyleKeyOverride => typeof(OverlayCard);
 
+    public static OverlayCard Sized(double width, double height) => new() {
+        CardPadding = new Thickness(0),
+        CardMargin = new Thickness(0),
+        CardMinWidth = width,
+        CardMaxWidth = width,
+        CardMinHeight = height,
+        CardMaxHeight = height
+    };
+
     public double CardMaxWidth
     {
         get => GetValue(CardMaxWidthProperty);
@@ -33,6 +48,18 @@ public class OverlayCard : ContentControl
     {
         get => GetValue(CardMinWidthProperty);
         set => SetValue(CardMinWidthProperty, value);
+    }
+
+    public double CardMaxHeight
+    {
+        get => GetValue(CardMaxHeightProperty);
+        set => SetValue(CardMaxHeightProperty, value);
+    }
+
+    public double CardMinHeight
+    {
+        get => GetValue(CardMinHeightProperty);
+        set => SetValue(CardMinHeightProperty, value);
     }
 
     public Thickness CardPadding

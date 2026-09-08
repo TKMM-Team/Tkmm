@@ -13,6 +13,10 @@ using Tkmm.Core.Services;
 using Tkmm.Helpers;
 using TkSharp.Core;
 using TkSharp.Core.Common;
+#if SWITCH
+using Avalonia.Dialogs;
+using Tkmm.Views.Common;
+#endif
 
 namespace Tkmm;
 
@@ -126,11 +130,18 @@ internal abstract class Program
         // }
 #endif
 
+#pragma warning disable CA1416
         return AppBuilder.Configure<App>()
             .UseR2CSharp()
             .UsePlatformDetect()
 #if SWITCH
             .With(new X11PlatformOptions { OverlayPopups = true })
+            .With(new ManagedFileDialogOptions {
+                ContentRootFactory = static () => OverlayCard.Sized(
+                    App.XamlRoot.Bounds.Width * 0.75,
+                    App.XamlRoot.Bounds.Height * 0.75)
+            })
+            .UseManagedSystemDialogs()
 #endif
             .WithInterFont();
     }

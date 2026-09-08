@@ -13,6 +13,8 @@
                             Margin="{TemplateBinding CardMargin}"
                             MinWidth="{TemplateBinding CardMinWidth}"
                             MaxWidth="{TemplateBinding CardMaxWidth}"
+                            MinHeight="{TemplateBinding CardMinHeight}"
+                            MaxHeight="{TemplateBinding CardMaxHeight}"
                             HorizontalAlignment="{TemplateBinding CardHorizontalAlignment}"
                             VerticalAlignment="Center"
                             BoxShadow="5 5 15 0 #9A000000"
