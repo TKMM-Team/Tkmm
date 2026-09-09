@@ -21,10 +21,7 @@ public partial class SdExportProgressView : OverlayCard
         _modal.Show();
     }
 
-    public void Hide()
-    {
-        _modal?.Hide();
-    }
+    public Task HideAsync() => _modal?.HideAsync() ?? Task.CompletedTask;
 
     public void SetIndeterminate(string status)
     {

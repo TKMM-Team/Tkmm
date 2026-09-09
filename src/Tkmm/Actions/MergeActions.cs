@@ -183,7 +183,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 await ErrorDialog.ShowAsync(ex);
             }
             finally {
-                progressView.Hide();
+                await progressView.HideAsync();
             }
         }
         catch (Exception ex) {

@@ -44,9 +44,7 @@ public partial class JoyConControlsView : OverlayCard
     }
 
     private void Close_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        _modal?.Hide();
-    }
+        => _ = _modal?.HideAsync();
 }
 
 public sealed record JoyConControlMapping(string Button, string Action);

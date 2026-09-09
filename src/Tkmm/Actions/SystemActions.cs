@@ -26,7 +26,7 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         contents = contents.Replace("@@version@@", App.Version);
 
-        await AboutView.ShowAsync(contents);
+        await MarkdownOverlay.ShowAsync(contents);
     }
 
 #if SWITCH

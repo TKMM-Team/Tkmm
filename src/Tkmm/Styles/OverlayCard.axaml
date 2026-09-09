@@ -6,10 +6,15 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid Background="#9A111111"
-                      HorizontalAlignment="Stretch"
+                <Grid HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch">
-                    <Border Padding="{TemplateBinding CardPadding}"
+                    <Border Name="PART_Backdrop"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="#AA111111"
+                            Opacity="0" />
+                    <Border Name="PART_Card"
+                            Padding="{TemplateBinding CardPadding}"
                             Margin="{TemplateBinding CardMargin}"
                             MinWidth="{TemplateBinding CardMinWidth}"
                             MaxWidth="{TemplateBinding CardMaxWidth}"
@@ -17,6 +22,9 @@
                             MaxHeight="{TemplateBinding CardMaxHeight}"
                             HorizontalAlignment="{TemplateBinding CardHorizontalAlignment}"
                             VerticalAlignment="Center"
+                            Opacity="0"
+                            RenderTransform="scale(0.94)"
+                            RenderTransformOrigin="50%,50%"
                             BoxShadow="5 5 15 0 #9A000000"
                             BorderBrush="{DynamicResource ControlOnImageFillColorSecondary}"
                             BorderThickness="2"

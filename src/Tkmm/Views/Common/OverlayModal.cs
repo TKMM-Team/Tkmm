@@ -10,6 +10,7 @@ public sealed class OverlayModal(Control content) : IDisposable
     private readonly DialogHost _host = new() {
         Content = content
     };
+
     private OverlayLayer? _overlayLayer;
     private bool _isShown;
 
@@ -31,15 +32,26 @@ public sealed class OverlayModal(Control content) : IDisposable
         _isShown = true;
     }
 
-    public void Hide()
+    public async Task HideAsync()
     {
         if (!_isShown) {
             return;
         }
 
-        _overlayLayer?.Children.Remove(_host);
-        _overlayLayer = null;
-        _isShown = false;
+        if (content is OverlayCard card) {
+            await card.PlayCloseAsync();
+        }
+
+        RemoveFromOverlay();
+    }
+
+    private void Hide()
+    {
+        if (!_isShown) {
+            return;
+        }
+
+        RemoveFromOverlay();
     }
 
     public void Dispose() => Hide();
@@ -57,8 +69,15 @@ public sealed class OverlayModal(Control content) : IDisposable
                 catch (OperationCanceledException) {
                 }
 
-                await Dispatcher.UIThread.InvokeAsync(modal.Hide);
+                await Dispatcher.UIThread.InvokeAsync(modal.HideAsync);
             }, CancellationToken.None);
         }
+    }
+
+    private void RemoveFromOverlay()
+    {
+        _overlayLayer?.Children.Remove(_host);
+        _overlayLayer = null;
+        _isShown = false;
     }
 }
