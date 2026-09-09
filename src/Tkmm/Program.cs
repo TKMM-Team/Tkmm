@@ -138,8 +138,8 @@ internal abstract class Program
             .With(new X11PlatformOptions { OverlayPopups = true })
             .With(new ManagedFileDialogOptions {
                 ContentRootFactory = static () => OverlayCard.Sized(
-                    App.XamlRoot.Bounds.Width * 0.75,
-                    App.XamlRoot.Bounds.Height * 0.75)
+                    App.XamlRoot.Bounds.Width * 0.80,
+                    App.XamlRoot.Bounds.Height * 0.80)
             })
             .UseManagedSystemDialogs()
 #endif
