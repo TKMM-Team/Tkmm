@@ -17,11 +17,6 @@
              ItemsSource="{Binding Logs}"
              SelectedItem="{Binding Selected}"
              SelectionMode="AlwaysSelected">
-        <ListBox.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel />
-            </ItemsPanelTemplate>
-        </ListBox.ItemsPanel>
         <ListBox.Styles>
             <Style Selector="ListBoxItem">
                 <Setter Property="Padding" Value="0" />
@@ -29,6 +24,9 @@
                 <Setter Property="MinHeight" Value="0" />
                 <Setter Property="ClipToBounds" Value="True" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+            <Style Selector="ListBoxItem:not(:selected)">
+                <Setter Property="MaxHeight" Value="200" />
             </Style>
         </ListBox.Styles>
         <ListBox.ContextFlyout>
@@ -53,7 +51,7 @@
         </ListBox.ContextFlyout>
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:EventLog}">
-                <Grid>
+                <Grid ClipToBounds="True">
                     <Border Margin="1"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
