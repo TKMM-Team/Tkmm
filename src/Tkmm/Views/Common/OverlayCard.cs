@@ -6,7 +6,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace Tkmm.Views.Common;
@@ -39,7 +38,6 @@ public class OverlayCard : ContentControl
 
     private Border? _backdrop;
     private Border? _card;
-    private CancellationTokenSource? _animationCts;
 
     protected override Type StyleKeyOverride => typeof(OverlayCard);
 
@@ -132,49 +130,46 @@ public class OverlayCard : ContentControl
             return;
         }
 
-        if (_animationCts is not null) {
-            if (Dispatcher.UIThread.CheckAccess()) {
-                await _animationCts.CancelAsync();
-            }
-            else {
-                await Dispatcher.UIThread.InvokeAsync(_animationCts.Cancel);
-            }
-
-            _animationCts.Dispose();
-        }
-
-        _animationCts = new CancellationTokenSource();
-        var token = _animationCts.Token;
-
-        var fromOpacity = _backdrop.Opacity;
-        var fromScale = scale.ScaleX;
         Easing easing = opening ? new CubicEaseOut() : new CubicEaseIn();
+        EnsureTransitions(_backdrop, scale, easing);
 
-        try {
-            await Task.WhenAll(
-                CreateAnimation(Visual.OpacityProperty, fromOpacity, toOpacity, easing).RunAsync(_backdrop, token),
-                CreateAnimation(Visual.OpacityProperty, fromOpacity, toOpacity, easing).RunAsync(_card, token),
-                CreateAnimation(ScaleTransform.ScaleXProperty, fromScale, toScale, easing).RunAsync(_card, token),
-                CreateAnimation(ScaleTransform.ScaleYProperty, fromScale, toScale, easing).RunAsync(_card, token));
-        }
-        catch (Exception ex) when (ex is OperationCanceledException or AggregateException) {
-        }
+        _backdrop.Opacity = toOpacity;
+        _card.Opacity = toOpacity;
+        scale.ScaleX = toScale;
+        scale.ScaleY = toScale;
+
+        await Task.Delay(AnimationDuration);
     }
 
-    private static Animation CreateAnimation(AvaloniaProperty property, double from, double to, Easing easing)
-        => new() {
-            Duration = AnimationDuration,
-            Easing = easing,
-            FillMode = FillMode.Forward,
-            Children = {
-                new KeyFrame {
-                    Cue = new Cue(0d),
-                    Setters = { new Setter(property, from) }
-                },
-                new KeyFrame {
-                    Cue = new Cue(1d),
-                    Setters = { new Setter(property, to) }
-                }
+    private void EnsureTransitions(Border backdrop, ScaleTransform scale, Easing easing)
+    {
+        backdrop.Transitions = [
+            new DoubleTransition {
+                Property = OpacityProperty,
+                Duration = AnimationDuration,
+                Easing = easing
             }
-        };
+        ];
+
+        _card!.Transitions = [
+            new DoubleTransition {
+                Property = OpacityProperty,
+                Duration = AnimationDuration,
+                Easing = easing
+            }
+        ];
+
+        scale.Transitions = [
+            new DoubleTransition {
+                Property = ScaleTransform.ScaleXProperty,
+                Duration = AnimationDuration,
+                Easing = easing
+            },
+            new DoubleTransition {
+                Property = ScaleTransform.ScaleYProperty,
+                Duration = AnimationDuration,
+                Easing = easing
+            }
+        ];
+    }
 }
