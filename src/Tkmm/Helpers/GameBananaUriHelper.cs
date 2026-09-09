@@ -13,8 +13,21 @@ public static partial class GameBananaUriHelper
     [GeneratedRegex(@"https?://gamebanana\.com/members?/(\d+)", RegexOptions.IgnoreCase)]
     private static partial Regex MemberUrlRegex();
 
+    [GeneratedRegex(@"https?://[^\s<>\[\]()]+", RegexOptions.IgnoreCase)]
+    private static partial Regex HttpUrlRegex();
+
     public static string ReplaceTkmmUrls(string content)
-        => ReplaceMemberUrls(ReplaceWipUrls(ReplaceModUrls(content)));
+        => ReplaceMemberUrls(ReplaceWipUrls(ReplaceModUrls(ReplacePlainTextUrls(content))));
+
+    public static string ReplacePlainTextUrls(string content)
+        => HttpUrlRegex().Replace(content, match => {
+            var url = match.Value;
+            if (match.Index > 0 && content[match.Index - 1] is '(' or '[') {
+                return url;
+            }
+
+            return $"[{url}]({url})";
+        });
 
     private static string ReplaceModUrls(string content)
         => ModUrlRegex().Replace(content, match => $"tkmm://mod/{match.Groups[1].Value}");
