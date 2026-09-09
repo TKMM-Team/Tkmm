@@ -1,6 +1,6 @@
 ## TotK Mod Manager (TKMM)
 
-Version `@@version@@` - [Official Website](https://totkmods.github.io/tkmm/)
+Version `@@version@@` - [Official Website](https://tkmm.org/)
 
 ***
 

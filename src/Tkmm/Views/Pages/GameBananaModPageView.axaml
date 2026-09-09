@@ -31,28 +31,42 @@
         <!-- Header -->
         <Border Grid.Row="0"
                 BorderBrush="{DynamicResource SystemAccentColor}">
-            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="12">
                 <Button Width="40"
                         Height="40"
                         Command="{Binding ((pages:GameBananaPageViewModel)DataContext).BackToMainCommand, RelativeSource={RelativeSource AncestorType=views:GameBananaPageView}}"
                         ToolTip.Tip="{markup:Locale Tooltip_BackToModBrowser}">
                     <pi:Icon Value="fa-solid fa-arrow-left" />
                 </Button>
-                <StackPanel Grid.Column="1">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button Grid.Column="1"
+                        Width="40"
+                        Height="40"
+                        Command="{Binding ToggleBookmarkCommand}"
+                        ToolTip.Tip="{Binding BookmarkLabel}">
+                    <pi:Icon Value="{Binding BookmarkIcon}" />
+                </Button>
+                <Grid Grid.Column="2"
+                      RowDefinitions="Auto,Auto"
+                      ClipToBounds="True"
+                      VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="Auto,*">
                         <TextBlock Text="[WIP]"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="Gray"
                                    Opacity="0.85"
+                                   Margin="0,0,6,0"
                                    IsVisible="{Binding SelectedMod.IsWip}"
                                    VerticalAlignment="Center" />
-                        <TextBlock FontSize="16"
+                        <TextBlock Grid.Column="1"
+                                   FontSize="16"
                                    FontWeight="SemiBold"
                                    Text="{Binding SelectedMod.Name}"
-                                   TextWrapping="Wrap" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal">
                         <TextBlock FontSize="12"
                                    FontStyle="Italic"
                                    Foreground="{DynamicResource SystemChromeHighColor}"
@@ -69,24 +83,14 @@
                                    Foreground="{DynamicResource SystemChromeHighColor}"
                                    Text="{Binding FormattedDateAdded, StringFormat=' on {0}'}" />
                     </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Column="2"
+                </Grid>
+                <StackPanel Grid.Column="3"
                             Orientation="Horizontal"
                             Spacing="12"
                             VerticalAlignment="Top">
-                    <Button Padding="8,4"
-                            Command="{Binding ToggleBookmarkCommand}"
-                            ToolTip.Tip="{Binding BookmarkLabel}">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <pi:Icon Value="{Binding BookmarkIcon}" />
-                            <TextBlock Text="{Binding BookmarkLabel}"
-                                       FontSize="14"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
                     <HyperlinkButton NavigateUri="{Binding ModUrl}"
                                      IsVisible="{Binding ShowGameBananaLink}"
-                                     ToolTip.Tip="Open in GameBanana">
+                                     ToolTip.Tip="{markup:Locale GameBanana_OpenInGameBanana}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <Image Width="20"
                                    Height="20"

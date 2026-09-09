@@ -32,7 +32,7 @@
                              VerticalAlignment="Center"
                              KeyDown="TextBox_KeyDown"
                              Text="{Binding Browser.SearchArgument}"
-                             Watermark="Search (must be more than 2 characters)" />
+                             Watermark="{ext:Locale GameBanana_SearchWatermark}" />
 
                     <Button Grid.Column="1"
                             Width="30"
@@ -56,26 +56,24 @@
                     </Button>
 
                     <ToggleButton Grid.Column="3"
+                                  Width="30"
                                   Height="30"
                                   Padding="0"
                                   Margin="0,0,5,0"
+                                  ToolTip.Tip="{ext:Locale GameBanana_Bookmarks}"
                                   IsVisible="{Binding !Browser.ShowMemberLink}"
                                   IsChecked="{Binding Browser.IsShowingBookmarks}">
-                        <StackPanel Margin="7,0" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_Bookmarks}" />
-                            <pi:Icon Value="fa-solid fa-star" />
-                        </StackPanel>
+                        <pi:Icon Value="fa-solid fa-star" />
                     </ToggleButton>
 
                     <ToggleButton Grid.Column="4"
+                                  Width="30"
                                   Height="30"
                                   Padding="0"
+                                  ToolTip.Tip="{ext:Locale GameBanana_SuggestedMods}"
                                   IsVisible="{Binding !Browser.ShowMemberLink}"
                                   IsChecked="{Binding Browser.IsShowingSuggested}">
-                        <StackPanel Margin="7,0" Orientation="Horizontal">
-                            <TextBlock Margin="0,0,7,0" Text="{ext:Locale GameBanana_SuggestedMods}" />
-                            <pi:Icon Value="fa-solid fa-gift" />
-                        </StackPanel>
+                        <pi:Icon Value="fa-solid fa-gift" />
                     </ToggleButton>
 
                     <HyperlinkButton Grid.Column="3"
