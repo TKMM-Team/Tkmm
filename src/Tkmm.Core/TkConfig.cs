@@ -186,6 +186,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
 
             AvailableUpdateVersions = builder.Build().GetAvailableUpdateVersions();
 
+            var preferred = PreferredGameVersion;
+
             PreferredGameVersionOptions.Clear();
 #if !SWITCH
             if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
@@ -196,7 +198,10 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
                 PreferredGameVersionOptions.Add(version);
             }
 
-            if (PreferredGameVersionOptions.Count > 0 && !PreferredGameVersionOptions.Contains(PreferredGameVersion)) {
+            if (PreferredGameVersionOptions.Contains(preferred)) {
+                PreferredGameVersion = preferred;
+            }
+            else if (PreferredGameVersionOptions.Count > 0) {
                 PreferredGameVersion = PreferredGameVersionOptions[0];
             }
         }
@@ -277,8 +282,19 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             .Build();
     }
 
-    partial void OnKeysFolderPathChanged(string? value) => RefreshAvailableUpdateVersions();
-    partial void OnSdCardRootPathChanged(string? value) => RefreshAvailableUpdateVersions();
+    partial void OnKeysFolderPathChanged(string? value)
+    {
+        if (_dumpHandlersAttached) {
+            RefreshAvailableUpdateVersions();
+        }
+    }
+
+    partial void OnSdCardRootPathChanged(string? value)
+    {
+        if (_dumpHandlersAttached) {
+            RefreshAvailableUpdateVersions();
+        }
+    }
 
     partial void OnPackagedBaseGamePathsChanged(PathCollection value) => AttachPathCollection(value);
     partial void OnPackagedUpdatePathsChanged(PathCollection value) => AttachPathCollection(value);
