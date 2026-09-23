@@ -133,6 +133,19 @@ write_plist() {
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © ${AUTHOR_NAME}</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>dev.tkmm.tkmm</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>tkmm</string>
+            </array>
+        </dict>
+    </array>
     <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
