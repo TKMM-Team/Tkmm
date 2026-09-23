@@ -41,7 +41,7 @@ cp distribution/appimage/AppRun "${ROOT}/AppDir/AppRun"
 cp distribution/appimage/tkmm.svg "${ROOT}/AppDir/tkmm.svg"
 cp distribution/appimage/tkmm.svg "${ROOT}/AppDir/usr/share/icons/hicolor/scalable/apps/tkmm.svg"
 cp -R "${publish_dir}/." "${ROOT}/AppDir/usr/bin/"
-chmod +x "${ROOT}/AppDir/AppRun" "${ROOT}/AppDir/usr/bin/Tkmm*"
+chmod +x "${ROOT}/AppDir/AppRun" "${ROOT}"/AppDir/usr/bin/Tkmm*
 
 export UFLAG="gh-releases-zsync|${GITHUB_REPOSITORY_OWNER:-}|${GITHUB_REPOSITORY##*/}|latest|*-${ARCH_NAME}.AppImage.zsync"
 
