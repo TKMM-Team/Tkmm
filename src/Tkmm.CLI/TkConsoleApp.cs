@@ -47,12 +47,23 @@ public static class TkConsoleApp
             }
 
             if (File.Exists(arg)) {
-                using var fs = File.OpenRead(arg);
-                _ = InstallRequested.Invoke(arg, fs);
+                _ = InstallFromFile(arg, File.OpenRead(arg));
                 continue;
             }
 
             _ = InstallRequested.Invoke(arg, null);
+        }
+    }
+
+    private static async Task InstallFromFile(string path, Stream stream)
+    {
+        try {
+            if (InstallRequested is { } handler) {
+                await handler(path, stream);
+            }
+        }
+        finally {
+            await stream.DisposeAsync();
         }
     }
 
