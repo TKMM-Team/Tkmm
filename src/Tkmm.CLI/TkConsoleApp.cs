@@ -36,6 +36,11 @@ public static class TkConsoleApp
     {
         foreach (var raw in args) {
             var arg = raw.Trim('"');
+            if (arg.StartsWith("file:", StringComparison.OrdinalIgnoreCase)
+                && Uri.TryCreate(arg, UriKind.Absolute, out var fileUri)
+                && fileUri.IsFile) {
+                arg = Uri.UnescapeDataString(fileUri.LocalPath);
+            }
 
             if (arg.StartsWith("tkmm://", StringComparison.OrdinalIgnoreCase)) {
                 HandleAppUri(new Uri(arg));

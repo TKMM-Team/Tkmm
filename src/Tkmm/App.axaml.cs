@@ -19,6 +19,7 @@ using MenuFactory.Abstractions;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Builders;
+using Tkmm.CLI;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
@@ -102,6 +103,10 @@ public class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        ArgumentHandler.EnsureWired();
+#pragma warning disable CS0618
+        UrlsOpened += (_, e) => TkConsoleApp.ProcessArguments(e.Urls);
+#pragma warning restore CS0618
     }
 
     public override void OnFrameworkInitializationCompleted()
