@@ -75,7 +75,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.0.0
         with:
-          dotnet-version: "9.x.x"
+          dotnet-version: "10.x.x"
 
       - name: Build
         shell: bash
@@ -152,7 +152,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.0.0
         with:
-          dotnet-version: "9.x.x"
+          dotnet-version: "10.x.x"
 
       - name: Build
         shell: bash
