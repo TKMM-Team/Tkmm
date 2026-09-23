@@ -151,14 +151,13 @@ public static class AppUpdater
 
         Config.SaveAll();
         TKMM.ModManager.Save();
+        EnsureProcessStartLoaded();
 
         if (TryGetReplaceTarget(out var targetPath)) {
             await ReplaceTarget(targetPath, stream, ct);
             Restart();
             return;
         }
-
-        EnsureProcessStartLoaded();
 
         ZipArchive archive = new(stream, ZipArchiveMode.Read);
         foreach (var entry in archive.Entries) {
