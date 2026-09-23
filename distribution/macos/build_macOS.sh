@@ -271,14 +271,14 @@ create_dmg() {
 
 publish_osx() {
     rid="$1"
-    release="${APP_NAME}_v${VERSION}_${rid}"
-    publish_dir="${OUT_DIR}/${release}_build"
+    package="${HOST_NAME}-${rid}"
+    publish_dir="${OUT_DIR}/${package}_build"
     app_dir="${OUT_DIR}/${APP_NAME}.app"
-    zip_path="${OUT_DIR}/${release}.zip"
-    dmg_path="${OUT_DIR}/${release}.dmg"
+    zip_path="${OUT_DIR}/${package}.zip"
+    dmg_path="${OUT_DIR}/${package}.dmg"
 
     echo "============================================================================"
-    echo "> Publishing ${release}.zip and ${release}.dmg"
+    echo "> Publishing ${package}.zip and ${package}.dmg"
     rm -rf "$publish_dir" "$app_dir" "$zip_path" "$dmg_path"
 
     dotnet publish "$PROJECT" -c Release -r "$rid" --self-contained true \

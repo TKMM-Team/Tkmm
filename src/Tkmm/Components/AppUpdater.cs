@@ -35,6 +35,29 @@ public static class AppUpdater
                && Path.GetFileName(appImagePath).EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static bool TryGetAppBundlePath([NotNullWhen(true)] out string? appBundlePath)
+    {
+        appBundlePath = null;
+        if (!OperatingSystem.IsMacOS() || Path.GetDirectoryName(Environment.ProcessPath) is not { } macOsDir) {
+            return false;
+        }
+
+        var bundleDir = Path.GetFullPath(Path.Combine(macOsDir, "..", ".."));
+        if (bundleDir.EndsWith(".moldy", StringComparison.Ordinal)) {
+            bundleDir = bundleDir[..^6];
+        }
+
+        if (!bundleDir.EndsWith(".app", StringComparison.OrdinalIgnoreCase)) {
+            return false;
+        }
+
+        appBundlePath = bundleDir;
+        return true;
+    }
+
+    private static bool TryGetReplaceTarget([NotNullWhen(true)] out string? targetPath)
+        => TryGetAppImagePath(out targetPath) || TryGetAppBundlePath(out targetPath);
+
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
 #if NO_UPDATE
@@ -129,9 +152,9 @@ public static class AppUpdater
         Config.SaveAll();
         TKMM.ModManager.Save();
 
-        if (IsAppImage) {
-            await UpdateAppImage(stream, ct);
-            RestartAppImage();
+        if (TryGetReplaceTarget(out var targetPath)) {
+            await ReplaceTarget(targetPath, stream, ct);
+            Restart();
             return;
         }
 
@@ -147,48 +170,53 @@ public static class AppUpdater
         Restart();
     }
 
-    private static async ValueTask UpdateAppImage(Stream stream, CancellationToken ct)
+    private static async ValueTask ReplaceTarget(string targetPath, Stream stream, CancellationToken ct)
     {
-        if (!TryGetAppImagePath(out var appImagePath)) {
-            throw new InvalidOperationException("AppImage path could not be resolved.");
+        var moldy = $"{targetPath}.moldy";
+        if (Directory.Exists(targetPath)) {
+            var extractDir = Path.Combine(Path.GetTempPath(), "tkmm-update");
+            if (Directory.Exists(extractDir)) Directory.Delete(extractDir, recursive: true);
+            Directory.CreateDirectory(extractDir);
+
+            using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+            await archive.ExtractToDirectoryAsync(extractDir, ct);
+
+            var newApp = Directory.EnumerateDirectories(extractDir, "*.app").FirstOrDefault()
+                         ?? throw new InvalidOperationException("The update archive does not contain a macOS app bundle.");
+
+            if (Directory.Exists(moldy)) Directory.Delete(moldy, recursive: true);
+            Directory.Move(targetPath, moldy);
+            Directory.Move(newApp, targetPath);
+            Directory.Delete(extractDir, recursive: true);
+            return;
         }
 
-        if (File.Exists(appImagePath)) {
-            File.Move(appImagePath, $"{appImagePath}.moldy", overwrite: true);
+        if (File.Exists(targetPath)) {
+            File.Move(targetPath, moldy, overwrite: true);
         }
 
-        await using (var output = File.Create(appImagePath)) {
+        await using (var output = File.Create(targetPath)) {
             await stream.CopyToAsync(output, ct);
         }
 
         if (OperatingSystem.IsLinux()) {
-            var mode = File.GetUnixFileMode(appImagePath);
-            File.SetUnixFileMode(appImagePath,
+            var mode = File.GetUnixFileMode(targetPath);
+            File.SetUnixFileMode(targetPath,
                 mode | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
         }
     }
 
-    private static void RestartAppImage()
-    {
-        if (!TryGetAppImagePath(out var appImagePath)) {
-            throw new InvalidOperationException("AppImage path could not be resolved.");
-        }
-
-        SingleInstanceAppManager.MarkRestarting();
-
-        Process.Start(new ProcessStartInfo(appImagePath) {
-            UseShellExecute = true,
-            WorkingDirectory = Path.GetDirectoryName(appImagePath),
-        });
-        
-        Environment.Exit(0);
-    }
-
     public static void Restart()
     {
-        if (IsAppImage) {
-            RestartAppImage();
-            return;
+        if (TryGetReplaceTarget(out var targetPath)) {
+            SingleInstanceAppManager.MarkRestarting();
+            Process.Start(Directory.Exists(targetPath)
+                ? new ProcessStartInfo("open") { ArgumentList = { "-n", targetPath } }
+                : new ProcessStartInfo(targetPath) {
+                    UseShellExecute = true,
+                    WorkingDirectory = Path.GetDirectoryName(targetPath)
+                });
+            Environment.Exit(0);
         }
 
         var executableDirectory = AppContext.BaseDirectory;
@@ -224,18 +252,23 @@ public static class AppUpdater
     public static void CleanupUpdate()
     {
 #if !SWITCH
-        var cleanupDirectory = TryGetAppImagePath(out var appImagePath)
-            ? Path.GetDirectoryName(appImagePath)
+        var cleanupDirectory = TryGetReplaceTarget(out var targetPath)
+            ? Path.GetDirectoryName(targetPath)
             : AppContext.BaseDirectory;
 
         if (string.IsNullOrEmpty(cleanupDirectory)) {
             return;
         }
 
-        foreach (var oldFile in Directory.EnumerateFiles(cleanupDirectory, "*.moldy")) {
+        foreach (var oldEntry in Directory.GetFileSystemEntries(cleanupDirectory, "*.moldy")) {
         Retry:
             try {
-                File.Delete(oldFile);
+                if (Directory.Exists(oldEntry)) {
+                    Directory.Delete(oldEntry, recursive: true);
+                }
+                else {
+                    File.Delete(oldEntry);
+                }
             }
             catch {
                 goto Retry;
