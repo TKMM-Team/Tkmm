@@ -8,6 +8,8 @@ public static class DataFolderGuard
     {
 #if SWITCH
         return "/storage/.tkmm";
+#elif READONLY_FS
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
 #else
         return AppContext.BaseDirectory;
 #endif
