@@ -98,42 +98,7 @@ jobs:
 
       - name: Build AppImage
         if: matrix.kind == 'appimage'
-        shell: bash
-        run: |
-          mkdir -p tools
-          wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
-          chmod +x tools/appimagetool
-
-          rm -rf AppDir
-          mkdir -p AppDir/usr/bin
-          mkdir -p AppDir/usr/share/applications
-          mkdir -p AppDir/usr/share/icons/hicolor/scalable/apps
-
-          cp distribution/appimage/Tkmm.desktop AppDir/usr/share/applications/tkmm.desktop
-          ln -s usr/share/applications/tkmm.desktop AppDir/Tkmm.desktop
-          cp distribution/appimage/AppRun AppDir/AppRun
-          cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
-          cp distribution/appimage/tkmm.svg AppDir/usr/share/icons/hicolor/scalable/apps/tkmm.svg
-
-          cp -R Tkmm-${{ matrix.runtime }}/* AppDir/usr/bin/
-
-          chmod +x AppDir/AppRun AppDir/usr/bin/Tkmm*
-
-          if [ "${{ matrix.runtime }}" = "linux-x64" ]; then
-            ARCH_NAME=x64
-            export ARCH=x86_64
-          elif [ "${{ matrix.runtime }}" = "linux-arm64" ]; then
-            ARCH_NAME=arm64
-            export ARCH=aarch64
-          else
-            echo "Unexpected runtime ${{ matrix.runtime }}"
-            exit 1
-          fi
-
-          export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
-
-          ./tools/appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
-          mv ./*.AppImage Tkmm-${{ matrix.runtime }}.AppImage
+        run: sh ./distribution/appimage/build_AppImage.sh ${{ matrix.runtime }}
 
       - name: Build macOS
         if: matrix.kind == 'macos'
