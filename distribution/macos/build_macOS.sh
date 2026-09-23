@@ -291,6 +291,7 @@ publish_osx() {
         -p:IncludeAllContentForSelfExtract=false \
         -p:DebugType=None \
         -p:DebugSymbols=false \
+        -p:IsReadonlyFileSystem=True \
         -o "$publish_dir"
 
     host="${publish_dir}/${HOST_NAME}"
