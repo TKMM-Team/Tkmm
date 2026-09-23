@@ -338,9 +338,17 @@ publish_osx() {
     rm -rf "$app_dir" "$publish_dir"
 }
 
+RID="${1:-}"
+case "$RID" in
+    osx-x64|osx-arm64) ;;
+    *)
+        echo "Usage: $0 osx-x64|osx-arm64"
+        exit 1
+        ;;
+esac
+
 ensure_deps
 mkdir -p "$OUT_DIR"
 dotnet clean "$PROJECT"
-publish_osx osx-x64
-publish_osx osx-arm64
+publish_osx "$RID"
 echo "Done. macOS packages are in \"${OUT_DIR}\"."

@@ -28,43 +28,43 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
 
-  build:
+  publish:
     needs: release
     permissions: write-all
-    name: ${{ matrix.target.project }} on ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        target:
-          - project: Tkmm
-        config:
+        include:
           - name: Windows (x64)
-            os: ubuntu-latest
+            kind: zip
             runtime: win-x64
             runtime_name: win-x64
-            extension: .exe
           - name: Windows (arm64)
-            os: ubuntu-latest
+            kind: zip
             runtime: win-arm64
             runtime_name: win-arm64
-            extension: .exe
           - name: Linux (x64)
-            os: ubuntu-latest
+            kind: zip
             runtime: linux-x64
             runtime_name: linux-x64
-            extension: ~
           - name: Linux (arm64)
-            os: ubuntu-latest
+            kind: zip
             runtime: linux-arm64
             runtime_name: linux-arm64
-            extension: ~
-          - name: Switch (arm64)
-            os: ubuntu-latest
+          - name: AppImage (x64)
+            kind: appimage
+            runtime: linux-x64
+          - name: AppImage (arm64)
+            kind: appimage
             runtime: linux-arm64
-            runtime_name: linux-nx
-            flags: "-p:IsSwitch=true"
-            extension: ~
+          - name: macOS (x64)
+            kind: macos
+            runtime: osx-x64
+          - name: macOS (arm64)
+            kind: macos
+            runtime: osx-arm64
 
     steps:
       - name: Checkout
@@ -77,100 +77,39 @@ jobs:
         with:
           dotnet-version: "10.x.x"
 
-      - name: Build
+      - name: Publish
+        if: matrix.kind != 'macos'
         shell: bash
         run: |
-          dotnet publish src/${{ matrix.target.project }} \
-          -c Release \
-          -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
-          -r ${{ matrix.config.runtime }} \
-          --sc ${{ matrix.config.runtime_name != 'linux-nx' }} \
-          --version-suffix ${{ needs.release.outputs.version }} \
-          -p:Version=${{ needs.release.outputs.version }} ${{ matrix.config.flags }} \
-          -p:DebugType=embedded
+          dotnet publish src/Tkmm \
+            -c Release \
+            -o Tkmm-${{ matrix.runtime }} \
+            -r ${{ matrix.runtime }} \
+            --sc true \
+            --version-suffix ${{ needs.release.outputs.version }} \
+            -p:Version=${{ needs.release.outputs.version }} \
+            -p:DebugType=embedded \
+            -p:IsReadonlyFileSystem=${{ matrix.kind == 'appimage' }}
 
       - name: Archive Build
+        if: matrix.kind == 'zip'
         uses: TheDoctor0/zip-release@0.7.6
         with:
           type: zip
-          filename: ../${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
-          directory: ${{ matrix.target.project }}-${{ matrix.config.runtime }}
+          filename: ../Tkmm-${{ matrix.runtime_name }}.zip
+          directory: Tkmm-${{ matrix.runtime }}
           path: ./**
 
-      - name: Create Checksum File
-        shell: bash
-        run: |
-          md5=($(md5sum -b ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip))
-          echo $md5 > ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip.checksum
-
-      - name: Upload Release
-        uses: actions/upload-release-asset@v1
+      - name: Upload Zip
+        if: matrix.kind == 'zip'
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip
-          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.zip
-          asset_content_type: application/zip
-          
-      - name: Upload Release Checksum
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.zip.checksum
-          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime_name }}.zip.checksum
-          asset_content_type: application/zip
-
-  appimage:
-    needs: release
-    runs-on: ubuntu-latest
-    permissions: write-all
-    name: AppImage for ${{ matrix.target.project }} on ${{ matrix.config.name }}
-    strategy:
-      fail-fast: true
-      matrix:
-        target:
-          - project: Tkmm
-        config:
-          - name: Linux (x64)
-            os: ubuntu-latest
-            runtime: linux-x64
-            extension: ~
-          - name: Linux (arm64)
-            os: ubuntu-latest
-            runtime: linux-arm64
-            extension: ~
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-        with:
-          submodules: true
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4.0.0
-        with:
-          dotnet-version: "10.x.x"
-
-      - name: Build
-        shell: bash
-        run: |
-          dotnet publish src/${{ matrix.target.project }} \
-          -c Release \
-          -o ${{ matrix.target.project }}-${{ matrix.config.runtime }} \
-          -r ${{ matrix.config.runtime }} \
-          --sc true \
-          --version-suffix ${{ needs.release.outputs.version }} \
-          -p:Version=${{ needs.release.outputs.version }} \
-          -p:DebugType=embedded \
-          -p:IsReadonlyFileSystem=True
+        run: gh release upload "$GITHUB_REF_NAME" Tkmm-${{ matrix.runtime_name }}.zip
 
       - name: Build AppImage
+        if: matrix.kind == 'appimage'
         shell: bash
         run: |
-          # Setup appimagetool
           mkdir -p tools
           wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
           chmod +x tools/appimagetool
@@ -186,64 +125,40 @@ jobs:
           cp distribution/appimage/tkmm.svg AppDir/tkmm.svg
           cp distribution/appimage/tkmm.svg AppDir/usr/share/icons/hicolor/scalable/apps/tkmm.svg
 
-          cp -R ${{ matrix.target.project }}-${{ matrix.config.runtime }}/* AppDir/usr/bin/
+          cp -R Tkmm-${{ matrix.runtime }}/* AppDir/usr/bin/
 
-          chmod +x AppDir/AppRun AppDir/usr/bin/${{ matrix.target.project }}*
+          chmod +x AppDir/AppRun AppDir/usr/bin/Tkmm*
 
-          # Set $ARCH for appimagetool based on the runtime
-          if [ "${{ matrix.config.runtime }}" = "linux-x64" ]; then
+          if [ "${{ matrix.runtime }}" = "linux-x64" ]; then
             ARCH_NAME=x64
             export ARCH=x86_64
-          elif [ "${{ matrix.config.runtime }}" = "linux-arm64" ]; then
+          elif [ "${{ matrix.runtime }}" = "linux-arm64" ]; then
             ARCH_NAME=arm64
             export ARCH=aarch64
           else
-            echo "Unexpected runtime ${{ matrix.config.runtime }}"
+            echo "Unexpected runtime ${{ matrix.runtime }}"
             exit 1
           fi
 
           export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
 
           ./tools/appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
-          mv ./*.AppImage ${{ matrix.target.project }}-${{ matrix.config.runtime }}.AppImage
+          mv ./*.AppImage Tkmm-${{ matrix.runtime }}.AppImage
 
       - name: Upload AppImage
-        uses: actions/upload-release-asset@v1
+        if: matrix.kind == 'appimage'
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ needs.release.outputs.release }}
-          asset_path: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.AppImage
-          asset_name: ${{ matrix.target.project }}-${{ matrix.config.runtime }}.AppImage
-          asset_content_type: application/octet-stream
-
-  macos:
-    needs: release
-    runs-on: ubuntu-latest
-    permissions: write-all
-    name: macOS app for ${{ matrix.target.project }}
-    strategy:
-      fail-fast: true
-      matrix:
-        target:
-          - project: Tkmm
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-        with:
-          submodules: true
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4.0.0
-        with:
-          dotnet-version: "10.0.x"
+        run: gh release upload "$GITHUB_REF_NAME" Tkmm-${{ matrix.runtime }}.AppImage
 
       - name: Build macOS
+        if: matrix.kind == 'macos'
         env:
           VERSION: ${{ needs.release.outputs.version }}
-        run: sh ./distribution/macos/build_macOS.sh
+        run: sh ./distribution/macos/build_macOS.sh ${{ matrix.runtime }}
 
       - name: Upload macOS packages
+        if: matrix.kind == 'macos'
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
-        run: gh release upload "$GITHUB_REF_NAME" Publish/*.zip Publish/*.dmg
+        run: gh release upload "$GITHUB_REF_NAME" Publish/Tkmm-${{ matrix.runtime }}.zip Publish/Tkmm-${{ matrix.runtime }}.dmg
