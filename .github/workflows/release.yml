@@ -40,19 +40,15 @@ jobs:
           - name: Windows (x64)
             kind: zip
             runtime: win-x64
-            runtime_name: win-x64
           - name: Windows (arm64)
             kind: zip
             runtime: win-arm64
-            runtime_name: win-arm64
           - name: Linux (x64)
             kind: zip
             runtime: linux-x64
-            runtime_name: linux-x64
           - name: Linux (arm64)
             kind: zip
             runtime: linux-arm64
-            runtime_name: linux-arm64
           - name: AppImage (x64)
             kind: appimage
             runtime: linux-x64
@@ -96,15 +92,9 @@ jobs:
         uses: TheDoctor0/zip-release@0.7.6
         with:
           type: zip
-          filename: ../Tkmm-${{ matrix.runtime_name }}.zip
+          filename: ../Tkmm-${{ matrix.runtime }}.zip
           directory: Tkmm-${{ matrix.runtime }}
           path: ./**
-
-      - name: Upload Zip
-        if: matrix.kind == 'zip'
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        run: gh release upload "$GITHUB_REF_NAME" Tkmm-${{ matrix.runtime_name }}.zip
 
       - name: Build AppImage
         if: matrix.kind == 'appimage'
@@ -145,20 +135,20 @@ jobs:
           ./tools/appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 21 -u "$UFLAG" AppDir
           mv ./*.AppImage Tkmm-${{ matrix.runtime }}.AppImage
 
-      - name: Upload AppImage
-        if: matrix.kind == 'appimage'
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        run: gh release upload "$GITHUB_REF_NAME" Tkmm-${{ matrix.runtime }}.AppImage
-
       - name: Build macOS
         if: matrix.kind == 'macos'
         env:
           VERSION: ${{ needs.release.outputs.version }}
         run: sh ./distribution/macos/build_macOS.sh ${{ matrix.runtime }}
 
-      - name: Upload macOS packages
-        if: matrix.kind == 'macos'
+      - name: Upload Release Assets
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
-        run: gh release upload "$GITHUB_REF_NAME" Publish/Tkmm-${{ matrix.runtime }}.zip Publish/Tkmm-${{ matrix.runtime }}.dmg
+        run: |
+          if [ "${{ matrix.kind }}" = zip ]; then
+            gh release upload "$GITHUB_REF_NAME" "Tkmm-${{ matrix.runtime }}.zip"
+          elif [ "${{ matrix.kind }}" = appimage ]; then
+            gh release upload "$GITHUB_REF_NAME" "Tkmm-${{ matrix.runtime }}.AppImage"
+          elif [ "${{ matrix.kind }}" = macos ]; then
+            gh release upload "$GITHUB_REF_NAME" "Publish/Tkmm-${{ matrix.runtime }}.zip" "Publish/Tkmm-${{ matrix.runtime }}.dmg"
+          fi
