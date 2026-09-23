@@ -136,7 +136,8 @@ public static class AppUpdater
 
     private static async ValueTask<Release?> HasAvailableUpdates()
     {
-        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "Tkmm");
+        //var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "Tkmm");
+        var latest = await OctokitHelper.GetLatestRelease("LordBubblesDev", "TkmmTests-macOS");
         return latest.TagName.Length < 1 || latest.TagName[1..] != App.Version ? latest : null;
     }
 
