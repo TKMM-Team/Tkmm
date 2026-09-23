@@ -28,7 +28,7 @@ public static class OctokitHelper
             .GetLatest(owner, name);
     }
     
-    public static async Task<Stream?> DownloadReleaseAsset(Release release, string assetName, string repo, CancellationToken ct = default)
+    public static async Task<Stream?> DownloadReleaseAsset(Release release, string assetName, CancellationToken ct = default)
     {
         var asset = release
             .Assets
@@ -38,7 +38,7 @@ public static class OctokitHelper
             return null;
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/repos/TKMM-Team/{repo}/releases/assets/{asset.Id}");
+        var request = new HttpRequestMessage(HttpMethod.Get, asset.Url);
         request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         
         var response = await Client.SendAsync(request, ct);

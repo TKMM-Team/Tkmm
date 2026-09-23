@@ -142,7 +142,7 @@ public static class AppUpdater
 
     private static async ValueTask PerformUpdate(Release release, CancellationToken ct = default)
     {
-        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, AssetName, "Tkmm", ct);
+        await using var stream = await OctokitHelper.DownloadReleaseAsset(release, AssetName, ct);
 
         if (stream is null) {
             throw new Exception(
@@ -175,7 +175,11 @@ public static class AppUpdater
         var moldy = $"{targetPath}.moldy";
         if (Directory.Exists(targetPath)) {
             var extractDir = Path.Combine(Path.GetTempPath(), "tkmm-update");
-            if (Directory.Exists(extractDir)) Directory.Delete(extractDir, recursive: true);
+
+            if (Directory.Exists(extractDir)) {
+                Directory.Delete(extractDir, recursive: true);
+            }
+            
             Directory.CreateDirectory(extractDir);
 
             using var archive = new ZipArchive(stream, ZipArchiveMode.Read);

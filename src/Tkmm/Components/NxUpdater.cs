@@ -111,7 +111,7 @@ public static class NxUpdater
 
     private static async ValueTask DownloadUpdate(Release release, CancellationToken ct = default)
     {
-        await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", "TKMM-NX", ct);
+        await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", ct);
         
         if (systemStream is null) {
             throw new Exception(
