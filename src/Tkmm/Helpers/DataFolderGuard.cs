@@ -1,26 +1,13 @@
-namespace Tkmm.Helpers;
-
+using Tkmm.Core;
 using Tkmm.Core.Helpers;
+
+namespace Tkmm.Helpers;
 
 public static class DataFolderGuard
 {
-    public static string GetApplicationBaseDirectory()
+    public static bool IsDataFolderWritable()
     {
-#if SWITCH
-        return "/storage/.tkmm";
-#elif READONLY_FS
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
-#else
-        return AppContext.BaseDirectory;
-#endif
-    }
-
-    private static string GetDataFolderPath(string baseDirectory)
-        => Path.Combine(baseDirectory, ".data2");
-
-    public static bool IsDataFolderWritable(string baseDirectory)
-    {
-        var dataFolder = GetDataFolderPath(baseDirectory);
+        var dataFolder = Path.Combine(TKMM.BaseDirectory, ".data2");
 
         try {
             Directory.CreateDirectory(dataFolder);

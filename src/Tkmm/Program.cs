@@ -51,7 +51,7 @@ internal abstract class Program
                 return;
             }
 
-            ReadOnlyFileSystemGuard.Detect(DataFolderGuard.GetApplicationBaseDirectory());
+            ReadOnlyFileSystemGuard.Detect();
 
             if (CrashHandler.IsRunning()) {
                 return;

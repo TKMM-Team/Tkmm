@@ -21,9 +21,9 @@ public static class ReadOnlyFileSystemGuard
 
     public static bool IsPending { get; private set; }
 
-    public static void Detect(string baseDirectory)
+    public static void Detect()
     {
-        IsPending = !DataFolderGuard.IsDataFolderWritable(baseDirectory);
+        IsPending = !DataFolderGuard.IsDataFolderWritable();
     }
 
     public static void Apply(Window shellView)
