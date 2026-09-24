@@ -85,7 +85,7 @@ jobs:
             --version-suffix ${{ needs.release.outputs.version }} \
             -p:Version=${{ needs.release.outputs.version }} \
             -p:DebugType=embedded \
-            -p:IsReadonlyFileSystem=${{ matrix.kind == 'appimage' }}
+            -p:UseApplicationDataFolder=${{ matrix.kind == 'appimage' }}
 
       - name: Archive Build
         if: matrix.kind == 'zip'

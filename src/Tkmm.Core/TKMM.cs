@@ -22,7 +22,7 @@ namespace Tkmm.Core;
 // ReSharper disable once InconsistentNaming
 public static class TKMM
 {
-#if READONLY_FS
+#if USE_APPDATA
     public static readonly string BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
 #elif SWITCH
     public static readonly string BaseDirectory = "/storage/.tkmm";

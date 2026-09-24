@@ -296,7 +296,6 @@ publish_osx() {
 
     dotnet publish "$PROJECT" -c Release -r "$rid" --self-contained true \
         -p:Version="$VERSION" \
-        -p:SelfContained=true \
         -p:UseAppHost=true \
         -p:PublishSingleFile=true \
         -p:EnableCompressionInSingleFile=true \
@@ -304,7 +303,7 @@ publish_osx() {
         -p:IncludeAllContentForSelfExtract=false \
         -p:DebugType=None \
         -p:DebugSymbols=false \
-        -p:IsReadonlyFileSystem=True \
+        -p:UseApplicationDataFolder=True \
         -o "$publish_dir"
 
     host="${publish_dir}/${HOST_NAME}"

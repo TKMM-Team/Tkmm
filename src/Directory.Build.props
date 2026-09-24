@@ -2,6 +2,6 @@
   <PropertyGroup>
     <DefineConstants Condition="'$(NoUpdate)' == 'true'">$(DefineConstants);NO_UPDATE</DefineConstants>
     <DefineConstants Condition="'$(IsSwitch)' == 'true'">$(DefineConstants);SWITCH;TARGET_NX</DefineConstants>
-    <DefineConstants Condition="'$(IsReadonlyFileSystem)' == 'true'">$(DefineConstants);READONLY_FS</DefineConstants>
+    <DefineConstants Condition="'$(UseApplicationDataFolder)' == 'true'">$(DefineConstants);USE_APPDATA</DefineConstants>
   </PropertyGroup>
 </Project>
