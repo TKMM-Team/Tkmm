@@ -25,8 +25,14 @@
                 <Setter Property="ClipToBounds" Value="True" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             </Style>
-            <Style Selector="ListBoxItem:not(:selected)">
-                <Setter Property="MaxHeight" Value="200" />
+            <Style Selector="ListBoxItem:not(:selected) TextBlock.LogContent">
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                <Setter Property="MaxLines" Value="1" />
+            </Style>
+            <Style Selector="ListBoxItem:selected TextBlock.LogContent">
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="TextTrimming" Value="None" />
             </Style>
         </ListBox.Styles>
         <ListBox.ContextFlyout>
@@ -60,10 +66,10 @@
                             Opacity="0.3" />
 
                     <Grid ColumnDefinitions="*,Auto" Margin="5">
-                        <TextBlock VerticalAlignment="Top"
+                        <TextBlock Classes="LogContent"
+                                   VerticalAlignment="Top"
                                    FontFamily="{StaticResource UbuntuMono}"
-                                   Text="{Binding Content}"
-                                   TextWrapping="Wrap" />
+                                   Text="{Binding Content}" />
                         <TextBlock Grid.Column="1"
                                    Margin="8,0,0,0"
                                    HorizontalAlignment="Right"
