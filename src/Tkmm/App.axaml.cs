@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data.Core.Plugins;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
@@ -11,6 +12,7 @@ using Avalonia.Threading;
 using ConfigFactory;
 using ConfigFactory.Avalonia;
 using ConfigFactory.Avalonia.Helpers;
+using ConfigFactory.Core;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -220,6 +222,16 @@ public class App : Application
             settingsModel.AppendAndValidate<GbConfig>(ref isValid);
             settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
+
+        settingsPage.AddHandler(InputElement.LostFocusEvent, (_, e) => {
+            if (!Config.Shared.AutoSaveSettings) {
+                return;
+            }
+
+            if (e.Source is Control { DataContext: IConfigModule module }) {
+                module.Save();
+            }
+        });
 
         PageManager.Shared.Register(Page.Home, TkLocale.HomePageTitle, new HomePageView(), Symbol.Home, TkLocale.HomePageDesc, isDefault: true);
         PageManager.Shared.Register(Page.Profiles, TkLocale.ProfilesPageTitle, new ProfilesPageView(), Symbol.OtherUser, TkLocale.ProfilesPageDesc);
