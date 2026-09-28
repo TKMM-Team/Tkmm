@@ -76,6 +76,8 @@ public sealed partial class Config : ConfigModule<Config>
         _switchFirmwareVersion = FirmwareVersions[0];
 #if !SWITCH
         _tkmmMode = TkmmModes[0];
+        OnSave += ApplyEmulatorPath;
+        OnSave += CreateMergeOutputFolder;
 #endif
     }
 
@@ -177,6 +179,7 @@ public sealed partial class Config : ConfigModule<Config>
         Title = "Config_SelectEmulatorExecutable")]
     [ObservableProperty]
     private string? _emulatorPath;
+    private string? _appliedEmulatorPath;
 #endif
 
     [ObservableProperty]
@@ -238,6 +241,7 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Config_MergeOutputFolderDescription",
         Group = "ConfigSection_Merging")]
     private string? _mergeOutput;
+    private string? _appliedMergeOutput;
 #endif
 
     [ObservableProperty]
@@ -273,41 +277,45 @@ public sealed partial class Config : ConfigModule<Config>
     }
 
 #if !SWITCH
-    partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
+    private void ApplyEmulatorPath()
     {
-        if (newValue is null || oldValue is null) {
+        if (EmulatorPath is null || EmulatorPath == _appliedEmulatorPath) {
             return;
         }
         
-        if (Path.GetFileNameWithoutExtension(newValue).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
+        var oldMergeOutput = MergeOutput;
+        
+        if (Path.GetFileNameWithoutExtension(EmulatorPath).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
             TkRyujinxHelper.UseRyujinx();
         }
         else {
-            TkEmulatorHelper.UseEmulator(newValue, out _);
+            TkEmulatorHelper.UseEmulator(EmulatorPath, out _);
         }
         
-        var oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
-        if (MergeOutput == oldMergedModPath) {
-            MergeOutput = TkEmulatorHelper.GetModPath(newValue);
+        if (MergeOutput == oldMergeOutput && TkEmulatorHelper.GetModPath(EmulatorPath) is { } modPath) {
+            MergeOutput = modPath;
         }
+
+        _appliedEmulatorPath = EmulatorPath;
     }
 
-    partial void OnMergeOutputChanged(string? oldValue, string? newValue)
+    private void CreateMergeOutputFolder()
     {
-        if (oldValue == null || newValue == null) {
+        if (MergeOutput is null || MergeOutput == _appliedMergeOutput) {
             return;
         }
 
-        if (!Directory.Exists(newValue) && !string.IsNullOrWhiteSpace(newValue)) {
+        if (!Directory.Exists(MergeOutput) && !string.IsNullOrWhiteSpace(MergeOutput)) {
             try {
-                Directory.CreateDirectory(newValue);
+                Directory.CreateDirectory(MergeOutput);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Invalid merge output: {MergeOutput}", newValue);
+                TkLog.Instance.LogError(ex, "Invalid merge output: {MergeOutput}", MergeOutput);
             }
         }
 
-        ExportLocations.Reset(newValue);
+        ExportLocations.Reset(MergeOutput);
+        _appliedMergeOutput = MergeOutput;
     }
     
     partial void OnUseRomfsliteChanged(bool value)
@@ -348,6 +356,11 @@ public sealed partial class Config : ConfigModule<Config>
         finally {
             SuppressFirmwareDefaults = false;
         }
+
+#if !SWITCH
+        module._appliedEmulatorPath = module.EmulatorPath;
+        module._appliedMergeOutput = module.MergeOutput;
+#endif
     }
 
     public override string Translate(string input)
