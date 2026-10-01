@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
 using Projektanker.Icons.Avalonia;
@@ -143,7 +144,10 @@ internal abstract class Program
             })
             .UseManagedSystemDialogs()
 #endif
-            .WithInterFont();
+            .WithInterFont()
+            .With(new FontManagerOptions {
+                DefaultFamilyName = OperatingSystem.IsWindows() ? null : "fonts:Inter#Inter"
+            });
     }
 
     private static void HandleArgs(string[] args)
