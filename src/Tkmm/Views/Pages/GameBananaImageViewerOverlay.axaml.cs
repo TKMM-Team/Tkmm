@@ -9,7 +9,7 @@ public partial class GameBananaImageViewerOverlay : OverlayCard
 {
     private static OverlayModal? _modal;
 
-    private GameBananaImageViewerOverlay()
+    public GameBananaImageViewerOverlay()
     {
         InitializeComponent();
     }
