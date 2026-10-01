@@ -52,22 +52,22 @@ internal abstract class Program
                 return;
             }
 
-            ReadOnlyFileSystemGuard.Detect();
-
             if (CrashHandler.IsRunning()) {
                 return;
             }
+
+            GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
+
+            if (!SingleInstanceAppManager.Start(args, Attach)) {
+                return;
+            }
+
+            ReadOnlyFileSystemGuard.Detect();
 
             if (ReadOnlyFileSystemGuard.IsPending) {
                 _startupArgs = args;
                 BuildAvaloniaApp()
                     .StartWithClassicDesktopLifetime(args);
-                return;
-            }
-
-            GameBananaRemoteInstallService.ProcessArguments = TkConsoleApp.ProcessArguments;
-            
-            if (!SingleInstanceAppManager.Start(args, Attach)) {
                 return;
             }
 
@@ -112,8 +112,10 @@ internal abstract class Program
     private static void Attach(string[] args)
     {
         if (!TkConsoleApp.IsComplexRequest(args)) {
-            Dispatcher.UIThread.Invoke(App.Focus);
-            HandleArgs(args);
+            Dispatcher.UIThread.Post(() => {
+                App.Focus();
+                HandleArgs(args);
+            });
             return;
         }
 

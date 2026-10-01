@@ -190,6 +190,8 @@ public class App : Application
                 MaxItems = 1,
                 Margin = new Thickness(0, 0, 4, 30)
             };
+            
+            Program.ProcessStartupArgs();
         };
 
         MenuFactory = new AvaloniaMenuFactory(XamlRoot,
@@ -251,20 +253,6 @@ public class App : Application
         ArgumentHandler.EnsureWired();
         
         base.OnFrameworkInitializationCompleted();
-        
-        Dispatcher.UIThread.Post(() => {
-#if !SWITCH
-            if (TempFolderGuard.IsRunningFromTemporaryFolder()) {
-                return;
-            }
-#endif
-            if (ReadOnlyFileSystemGuard.IsPending) {
-                return;
-            }
-
-            Task.Delay(1000).Wait();
-            Program.ProcessStartupArgs();
-        });
     }
 
     private void OnThemeChanged(string theme)
