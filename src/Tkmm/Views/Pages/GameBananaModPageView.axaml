@@ -130,8 +130,10 @@
                                 <Image Name="MainImage"
                                        Source="{Binding SelectedImage}"
                                        Stretch="Uniform"
+                                       Cursor="Hand"
                                        HorizontalAlignment="Center"
-                                       VerticalAlignment="Center">
+                                       VerticalAlignment="Center"
+                                       PointerPressed="MainImage_OnPointerPressed">
                                     <Image.RenderTransform>
                                         <TranslateTransform />
                                     </Image.RenderTransform>

@@ -197,16 +197,16 @@ public partial class GameBananaModPageViewModel : ObservableObject
     [RelayCommand]
     private void NextImage()
     {
-        if (Images.Count > 1) {
-            SelectedImageIndex = (SelectedImageIndex + 1) % Images.Count;
+        if (CanGoToNextImage) {
+            SelectedImageIndex++;
         }
     }
 
     [RelayCommand]
     private void PreviousImage()
     {
-        if (Images.Count > 1) {
-            SelectedImageIndex = SelectedImageIndex == 0 ? Images.Count - 1 : SelectedImageIndex - 1;
+        if (CanGoToPreviousImage) {
+            SelectedImageIndex--;
         }
     }
 
