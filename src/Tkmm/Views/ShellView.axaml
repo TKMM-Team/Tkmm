@@ -139,7 +139,8 @@
         <ContentPresenter Name="WizardPresenter" IsVisible="{Binding IsFirstTimeSetup}" />
 
         <!-- Page from the R2CSharp library that displays Hekate reboot options when pressing Home (TKMM-NX only) -->
-        <Grid Background="#1E1E1E"
+        <Grid ZIndex="1000"
+              Background="#1E1E1E"
               IsVisible="{Binding IsVisibleR2CMenu}"
               Opacity="{Binding R2CMenuOpacity}"
               IsEnabled="{Binding IsVisibleR2CMenu}"

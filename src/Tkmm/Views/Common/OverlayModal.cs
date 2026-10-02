@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 
@@ -11,7 +10,7 @@ public sealed class OverlayModal(Control content) : IDisposable
         Content = content
     };
 
-    private OverlayLayer? _overlayLayer;
+    private Panel? _hostPanel;
     private bool _isShown;
 
     public void Show()
@@ -20,13 +19,13 @@ public sealed class OverlayModal(Control content) : IDisposable
             return;
         }
 
-        if (OverlayLayer.GetOverlayLayer(App.XamlRoot) is not { } overlayLayer) {
+        if (App.XamlRoot is not Window { Content: Panel panel }) {
             return;
         }
 
-        _overlayLayer = overlayLayer;
-        if (!overlayLayer.Children.Contains(_host)) {
-            overlayLayer.Children.Add(_host);
+        _hostPanel = panel;
+        if (!panel.Children.Contains(_host)) {
+            panel.Children.Add(_host);
         }
 
         _isShown = true;
@@ -76,8 +75,8 @@ public sealed class OverlayModal(Control content) : IDisposable
 
     private void RemoveFromOverlay()
     {
-        _overlayLayer?.Children.Remove(_host);
-        _overlayLayer = null;
+        _hostPanel?.Children.Remove(_host);
+        _hostPanel = null;
         _isShown = false;
     }
 }
