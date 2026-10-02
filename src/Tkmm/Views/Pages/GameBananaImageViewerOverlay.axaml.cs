@@ -8,6 +8,7 @@ namespace Tkmm.Views.Pages;
 public partial class GameBananaImageViewerOverlay : OverlayCard
 {
     private static OverlayModal? _modal;
+    private static GameBananaModPageViewModel? _viewModel;
 
     public GameBananaImageViewerOverlay()
     {
@@ -29,9 +30,10 @@ public partial class GameBananaImageViewerOverlay : OverlayCard
             CardMaxHeight = bounds.Height * 0.9
         };
 
+        _viewModel = viewModel;
         _modal = new OverlayModal(overlay);
         _modal.Show();
-        overlay.Focus();
+        App.XamlRoot.AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
     }
 
     public static async Task CloseAsync()
@@ -40,6 +42,9 @@ public partial class GameBananaImageViewerOverlay : OverlayCard
             return;
         }
 
+        App.XamlRoot.RemoveHandler(KeyDownEvent, OnPreviewKeyDown);
+        _viewModel = null;
+
         var modal = _modal;
         _modal = null;
         await modal.HideAsync();
@@ -47,25 +52,25 @@ public partial class GameBananaImageViewerOverlay : OverlayCard
 
     private void Close_OnClick(object? sender, RoutedEventArgs e) => _ = CloseAsync();
 
-    protected override void OnKeyDown(KeyEventArgs e)
+    private static void OnPreviewKeyDown(object? sender, KeyEventArgs e)
     {
-        if (DataContext is not GameBananaModPageViewModel viewModel) {
+        if (_viewModel is null) {
             return;
         }
-        
+
         switch (e.Key) {
             case Key.Left:
-                viewModel.PreviousImageCommand.Execute(null);
+                _viewModel.PreviousImageCommand.Execute(null);
                 e.Handled = true;
-                return;
+                break;
             case Key.Right:
-                viewModel.NextImageCommand.Execute(null);
+                _viewModel.NextImageCommand.Execute(null);
                 e.Handled = true;
-                return;
+                break;
             case Key.Escape:
                 e.Handled = true;
                 _ = CloseAsync();
-                return;
+                break;
         }
     }
 }
