@@ -47,7 +47,7 @@
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.1.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.2" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.2" TreatAsUsed="True" />
-    <PackageReference Include="R2CSharp.Lib" Version="1.2.1"/>
+    <PackageReference Include="R2CSharp.Lib" Version="1.2.3"/>
   </ItemGroup>
 
   <ItemGroup>
