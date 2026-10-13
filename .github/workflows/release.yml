@@ -11,22 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     outputs:
-      release: ${{ steps.release.outputs.upload_url }}
-      version: ${{ steps.version.outputs.version-without-v }}
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Get Version
-        uses: battila7/get-version-action@v2.2.1
         id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
-        uses: actions/create-release@v1
-        id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+        uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: TotK Mod Manager - ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref_name }}
+          name: TotK Mod Manager - ${{ github.ref_name }}
 
   publish:
     needs: release
@@ -64,12 +60,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           submodules: true
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.x.x"
 
@@ -106,9 +102,32 @@ jobs:
           VERSION: ${{ needs.release.outputs.version }}
         run: sh ./distribution/macos/build_macOS.sh ${{ matrix.runtime }}
 
+      - name: Publish CLI
+        if: matrix.kind != 'appimage'
+        shell: bash
+        run: |
+          dotnet publish src/Tkmm.CLI \
+            -c Release \
+            -o Tkmm.CLI-${{ matrix.runtime }} \
+            -r ${{ matrix.runtime }} \
+            --sc true \
+            --version-suffix ${{ needs.release.outputs.version }} \
+            -p:Version=${{ needs.release.outputs.version }} \
+            -p:DebugType=embedded\
+            -p:UseApplicationDataFolder=${{ matrix.kind == 'macos' }}
+
+      - name: Archive CLI Build
+        if: matrix.kind != 'appimage'
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          type: zip
+          filename: ../Tkmm.CLI-${{ matrix.runtime }}.zip
+          directory: Tkmm.CLI-${{ matrix.runtime }}
+          path: ./**
+
       - name: Upload Release Assets
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ matrix.kind }}" = zip ]; then
             gh release upload "$GITHUB_REF_NAME" "Tkmm-${{ matrix.runtime }}.zip"
@@ -116,4 +135,7 @@ jobs:
             gh release upload "$GITHUB_REF_NAME" "Tkmm-${{ matrix.runtime }}.AppImage"
           elif [ "${{ matrix.kind }}" = macos ]; then
             gh release upload "$GITHUB_REF_NAME" "Publish/Tkmm-${{ matrix.runtime }}.zip" "Publish/Tkmm-${{ matrix.runtime }}.dmg"
+          fi
+          if [ "${{ matrix.kind }}" != 'appimage' ]; then
+            gh release upload "$GITHUB_REF_NAME" "Tkmm.CLI-${{ matrix.runtime }}.zip"
           fi
