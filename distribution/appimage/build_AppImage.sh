@@ -21,6 +21,21 @@ case "$RID" in
 esac
 
 publish_dir="${ROOT}/Tkmm-${RID}"
+VERSION="${VERSION:-1.0.0}"
+
+mkdir -p "${publish_dir}"
+rm -rf $ROOT/*.AppImage
+rm -rf $ROOT/AppDir
+
+dotnet publish src/Tkmm \
+    -c Release \
+    -o "${publish_dir}" \
+    -r "${RID}" \
+    --sc true \
+    --version-suffix "${VERSION}" \
+    -p:Version="${VERSION}" \
+    -p:DebugType=embedded \
+    -p:UseApplicationDataFolder=true
 
 mkdir -p "${ROOT}/tools"
 if [ ! -f "${ROOT}/tools/appimagetool" ]; then
@@ -42,6 +57,21 @@ cp distribution/appimage/tkmm.svg "${ROOT}/AppDir/tkmm.svg"
 cp distribution/appimage/tkmm.svg "${ROOT}/AppDir/usr/share/icons/hicolor/scalable/apps/tkmm.svg"
 cp -R "${publish_dir}/." "${ROOT}/AppDir/usr/bin/"
 chmod +x "${ROOT}/AppDir/AppRun" "${ROOT}"/AppDir/usr/bin/Tkmm*
+
+if [ -z "${GITHUB_REPOSITORY:-}" ] || [ -z "${GITHUB_REPOSITORY_OWNER:-}" ]; then
+    origin_url="$(git remote get-url origin 2>/dev/null || true)"
+    origin_path="${origin_url#*github.com[:/]}"
+    origin_path="${origin_path%.git}"
+    origin_owner="${origin_path%%/*}"
+    origin_repo="${origin_path#*/}"
+
+    if [ -z "${GITHUB_REPOSITORY:-}" ] && [ -n "${origin_owner}" ] && [ -n "${origin_repo}" ]; then
+        GITHUB_REPOSITORY="${origin_owner}/${origin_repo}"
+    fi
+    if [ -z "${GITHUB_REPOSITORY_OWNER:-}" ] && [ -n "${origin_owner}" ]; then
+        GITHUB_REPOSITORY_OWNER="${origin_owner}"
+    fi
+fi
 
 export UFLAG="gh-releases-zsync|${GITHUB_REPOSITORY_OWNER:-}|${GITHUB_REPOSITORY##*/}|latest|*-${ARCH_NAME}.AppImage.zsync"
 

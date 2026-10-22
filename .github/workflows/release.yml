@@ -70,7 +70,7 @@ jobs:
           dotnet-version: "10.x.x"
 
       - name: Publish
-        if: matrix.kind != 'macos'
+        if: matrix.kind == 'zip'
         shell: bash
         run: |
           dotnet publish src/Tkmm \
@@ -80,8 +80,7 @@ jobs:
             --sc true \
             --version-suffix ${{ needs.release.outputs.version }} \
             -p:Version=${{ needs.release.outputs.version }} \
-            -p:DebugType=embedded \
-            -p:UseApplicationDataFolder=${{ matrix.kind == 'appimage' }}
+            -p:DebugType=embedded
 
       - name: Archive Build
         if: matrix.kind == 'zip'
@@ -94,6 +93,8 @@ jobs:
 
       - name: Build AppImage
         if: matrix.kind == 'appimage'
+        env:
+          VERSION: ${{ needs.release.outputs.version }}
         run: sh ./distribution/appimage/build_AppImage.sh ${{ matrix.runtime }}
 
       - name: Build macOS
