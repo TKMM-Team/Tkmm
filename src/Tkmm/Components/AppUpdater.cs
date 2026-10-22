@@ -181,13 +181,16 @@ public static class AppUpdater
             
             Directory.CreateDirectory(extractDir);
 
-            using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+            await using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
             await archive.ExtractToDirectoryAsync(extractDir, ct);
 
             var newApp = Directory.EnumerateDirectories(extractDir, "*.app").FirstOrDefault()
                          ?? throw new InvalidOperationException("The update archive does not contain a macOS app bundle.");
 
-            if (Directory.Exists(moldy)) Directory.Delete(moldy, recursive: true);
+            if (Directory.Exists(moldy)) {
+                Directory.Delete(moldy, recursive: true);
+            }
+            
             Directory.Move(targetPath, moldy);
             Directory.Move(newApp, targetPath);
             Directory.Delete(extractDir, recursive: true);
