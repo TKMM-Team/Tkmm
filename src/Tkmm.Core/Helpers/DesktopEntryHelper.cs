@@ -9,8 +9,7 @@ namespace Tkmm.Core.Helpers;
 
 public static class DesktopEntryHelper
 {
-    private const string DESKTOP_FILE_NAME = "tkmm.desktop";
-    private const string LEGACY_DESKTOP_FILE_NAME = "tkmm-uri-handler.desktop";
+    private const string DESKTOP_FILE_NAME = "tkmm-uri-handler.desktop";
     private const string MIME_PACKAGE_FILE_NAME = "tkmm-tkcl.xml";
     private const string URI_SCHEME = "tkmm";
     private const string PACKAGE_MIME_TYPE = "application/x-tkcl";
@@ -50,27 +49,11 @@ public static class DesktopEntryHelper
         var desktopFilePath = Path.Combine(applicationsDirectory, DESKTOP_FILE_NAME);
         File.WriteAllText(desktopFilePath, BuildDesktopEntry(executablePath), Utf8NoBom);
 
-        TryDeleteLegacyDesktopEntry(applicationsDirectory);
         InstallIcons();
         InstallPackageMimeType();
         UpdateDesktopDatabase(applicationsDirectory);
         EnsureMimeAppsListEntry();
         RegisterMimeAssociation();
-    }
-
-    private static void TryDeleteLegacyDesktopEntry(string applicationsDirectory)
-    {
-        var legacyPath = Path.Combine(applicationsDirectory, LEGACY_DESKTOP_FILE_NAME);
-        if (!File.Exists(legacyPath)) {
-            return;
-        }
-
-        try {
-            File.Delete(legacyPath);
-        }
-        catch (Exception ex) {
-            TkLog.Instance.LogDebug(ex, "Failed to delete legacy desktop entry {Path}", legacyPath);
-        }
     }
 
     private static string? ResolveLinuxExecutablePath()
@@ -96,7 +79,7 @@ public static class DesktopEntryHelper
             "Version=1.0",
             "Type=Application",
             $"Name={DISPLAY_NAME}",
-            $"Exec=\"{quotedExecutablePath}\" %U",
+            $"Exec=\"{quotedExecutablePath}\" %u",
             $"Icon={ICON_NAME}",
             $"StartupWMClass={STARTUP_WM_CLASS}",
             $"MimeType={PACKAGE_MIME_TYPE};x-scheme-handler/{URI_SCHEME};",
@@ -260,7 +243,6 @@ public static class DesktopEntryHelper
         try {
             using var stream = typeof(DesktopEntryHelper).Assembly.GetManifestResourceStream(ICON_RESOURCE_NAME);
             if (stream is null) {
-                TkLog.Instance.LogDebug("Embedded icon resource {Resource} was not found", ICON_RESOURCE_NAME);
                 return null;
             }
 
@@ -268,7 +250,6 @@ public static class DesktopEntryHelper
             return reader.ReadToEnd();
         }
         catch (Exception ex) {
-            TkLog.Instance.LogDebug(ex, "Failed to read embedded icon resource {Resource}", ICON_RESOURCE_NAME);
             return null;
         }
     }
