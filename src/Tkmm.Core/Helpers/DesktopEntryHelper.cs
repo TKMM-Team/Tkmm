@@ -249,7 +249,7 @@ public static class DesktopEntryHelper
             using var reader = new StreamReader(stream, Utf8NoBom);
             return reader.ReadToEnd();
         }
-        catch (Exception ex) {
+        catch {
             return null;
         }
     }
