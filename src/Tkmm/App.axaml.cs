@@ -26,6 +26,7 @@ using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using Tkmm.Core.Services;
+using Tkmm.Core.TkOptimizer;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.Helpers;
@@ -190,7 +191,8 @@ public class App : Application
                 MaxItems = 1,
                 Margin = new Thickness(0, 0, 4, 30)
             };
-            
+
+            Program.NotifyUiFrameworkReady();
             Program.ProcessStartupArgs();
         };
 
@@ -251,7 +253,11 @@ public class App : Application
         OnThemeChanged(Config.Shared.Theme);
 
         ArgumentHandler.EnsureWired();
-        
+
+#if !SWITCH
+        TkOptimizerSdPrompt.RequestSdCardRootAsync = TkOptimizerSdPathDialog.RequestSdCardRootAsync;
+#endif
+
         base.OnFrameworkInitializationCompleted();
     }
 
