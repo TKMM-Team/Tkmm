@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Avalonia.Controls.Notifications;
 using Avalonia.Platform;
-using AvaMark;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -10,6 +9,7 @@ using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
 using Tkmm.Dialogs;
+using Tkmm.Views.Common;
 using TkSharp.Core;
 
 namespace Tkmm.Actions;
@@ -26,19 +26,17 @@ public sealed partial class SystemActions : GuardedActionGroup<SystemActions>
 
         contents = contents.Replace("@@version@@", App.Version);
 
-        TaskDialog dialog = new() {
-            XamlRoot = App.XamlRoot,
-            Title = Locale["Dialog_About"],
-            Content = new MarkdownViewer {
-                Markdown = contents
-            },
-            Buttons = [
-                TaskDialogButton.OKButton
-            ]
-        };
-
-        await dialog.ShowAsync();
+        await MarkdownOverlay.ShowAsync(contents);
     }
+
+#if SWITCH
+    [RelayCommand]
+    public static Task ShowJoyConControls()
+    {
+        new JoyConControlsView().Show();
+        return Task.CompletedTask;
+    }
+#endif
 
     [RelayCommand]
     public static async Task OpenDocumentationWebsite()

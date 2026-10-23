@@ -13,6 +13,12 @@ public sealed class HelpMenuModel
     {
         return SystemActions.OpenDocumentationWebsite();
     }
+#else
+    [TkMenu(TkLocale.Menu_HelpJoyConControls, TkLocale.Menu_Help, Icon = "fa-solid fa-gamepad")]
+    public static Task JoyConControls()
+    {
+        return SystemActions.ShowJoyConControls();
+    }
 #endif
 
     [TkMenu(TkLocale.Menu_HelpCheckForUpdates, TkLocale.Menu_Help, InputGesture = "Ctrl + U", Icon = TkIcons.CLOUD_ARROW_UP)]

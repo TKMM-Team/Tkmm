@@ -27,6 +27,9 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
     private string _searchArgument = string.Empty;
 
     [ObservableProperty]
+    private GameBananaSubmissionType _submissionType = GameBananaSubmissionType.Mod;
+
+    [ObservableProperty]
     private bool _isShowingBookmarks;
 
     [ObservableProperty]
@@ -261,8 +264,11 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         IsShowingMember = false;
         MemberUrl = null;
 
-        if (Source is not GameBananaSource) {
-            Source = CreateGameSource();
+        if (Source is not GameBananaSource gameSource) {
+            Source = CreateGameSource(SubmissionType);
+        }
+        else {
+            gameSource.SubmissionType = SubmissionType;
         }
 
         OnPropertyChanged(nameof(ShowMemberLink));
@@ -280,8 +286,25 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         return int.TryParse(search.AsSpan(7).Trim(), out memberId) && memberId > 0;
     }
 
-    private static GameBananaSource CreateGameSource()
-        => new(GAME_ID) { SortMode = TKMM.Config.GameBananaSortMode };
+    private static GameBananaSource CreateGameSource(GameBananaSubmissionType type = GameBananaSubmissionType.Mod)
+        => new(GAME_ID) { SortMode = TKMM.Config.GameBananaSortMode, SubmissionType = type };
+
+    partial void OnSubmissionTypeChanged(GameBananaSubmissionType value)
+    {
+        if (IsShowingMember || IsShowingBookmarks || IsShowingSuggested) {
+            return;
+        }
+
+        if (Source is GameBananaSource gameSource) {
+            gameSource.SubmissionType = value;
+            gameSource.CurrentPage = 0;
+        }
+        else {
+            Source = CreateGameSource(value);
+        }
+
+        _ = Refresh();
+    }
 
     partial void OnSourceChanged(IGameBananaSource value)
         => AttachSourceHandler(value);
@@ -392,7 +415,7 @@ public partial class GameBananaModBrowserViewModel : ObservableObject
         ), ct);
     }
 
-    private static async Task LoadThumbnailAsync(GameBananaModRecord record, CancellationToken ct = default)
+    private static async Task LoadThumbnailAsync(GameBananaSubmissionRecord record, CancellationToken ct = default)
     {
         if (record.ThumbnailUrl is not { } url) {
             return;

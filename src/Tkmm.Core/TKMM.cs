@@ -23,7 +23,7 @@ namespace Tkmm.Core;
 // ReSharper disable once InconsistentNaming
 public static class TKMM
 {
-#if READONLY_FS
+#if USE_APPDATA
     public static readonly string BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "tkmm2");
 #elif SWITCH
     public static readonly string BaseDirectory = "/storage/.tkmm";
@@ -113,7 +113,10 @@ public static class TKMM
             }
 
             using var tkRom = GetTkRom();
-            TkMerger merger = new(writer, tkRom, Config.Shared.GameLanguage, ipsOutputPath);
+            string[] locales = Config.Shared.MergeAllMalsLocales
+                ? [.. Config.Shared.GameLanguages.Select(language => language.Value)]
+                : [Config.Shared.GameLanguage];
+            TkMerger merger = new(writer, tkRom, locales, ipsOutputPath);
 
             var startTime = Stopwatch.GetTimestamp();
 

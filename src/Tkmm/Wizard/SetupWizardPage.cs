@@ -7,22 +7,17 @@ namespace Tkmm.Wizard;
 
 public partial class SetupWizardPage(bool isFirstPage = false) : ObservableObject
 {
-    protected bool? _result;
-    protected readonly CancellationTokenSource _cancellationTokenSource = new();
-    
+    private bool? _result;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
     public bool IsFirstPage { get; } = isFirstPage;
 
     [ObservableProperty]
-    private string? _title;
-
+    public partial string? Title { get; set; }
     [ObservableProperty]
-    private object? _content;
-
+    public partial object? Content { get; set; }
     [ObservableProperty]
-    private object? _helpContent;
-
-    [ObservableProperty]
-    private object? _actionContent = Locale[TkLocale.Action_Next];
+    public partial object? Action { get; set; } = Locale[TkLocale.Action_Next];
 
     [RelayCommand]
     private void MoveBack()

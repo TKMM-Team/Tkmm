@@ -13,8 +13,12 @@ namespace Tkmm.Core;
 
 public sealed partial class Config : ConfigModule<Config>
 {
+    internal const string DataFolderName = "tkmm2";
+    
+    private static bool SuppressFirmwareDefaults { get; set; }
+
     [JsonIgnore]
-    public override string Name => "tkmm2";
+    public override string Name => DataFolderName;
 
     public event Action<string> ThemeChanged = delegate { };
 
@@ -40,6 +44,21 @@ public sealed partial class Config : ConfigModule<Config>
         new("TWzh", "繁體中文 (台灣)")
     ];
 
+    [JsonIgnore]
+    public static SwitchFirmwareVersion[] FirmwareVersions => [
+        new("Firmware19OrLower"),
+        new("Firmware20OrHigher")
+    ];
+
+#if !SWITCH
+    [JsonIgnore]
+    private static TkmmMode[] TkmmModes => [
+        new("Emulator"),
+        new("Switch"),
+        new("Hybrid")
+    ];
+#endif
+
     public static void SaveAll()
     {
         TkConfig.Shared.Save();
@@ -54,6 +73,12 @@ public sealed partial class Config : ConfigModule<Config>
         }
 
         _gameLanguage = GameLanguages[0];
+        _switchFirmwareVersion = FirmwareVersions[0];
+#if !SWITCH
+        _tkmmMode = TkmmModes[0];
+        OnSave += ApplyEmulatorPath;
+        OnSave += CreateMergeOutputFolder;
+#endif
     }
 
     [ObservableProperty]
@@ -78,6 +103,39 @@ public sealed partial class Config : ConfigModule<Config>
         DisplayMemberPath = nameof(SystemLanguage.DisplayName),
         RuntimeItemsSourceMethodName = nameof(GetLanguagesInternal))]
     private SystemLanguage _cultureName = "en_US";
+
+#if !SWITCH
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_TkmmMode",
+        Description = "Config_TkmmModeDescription",
+        Group = "ConfigSection_Application")]
+    [property: DropdownConfig(
+        DisplayMemberPath = nameof(TkmmMode.DisplayName),
+        RuntimeItemsSourceMethodName = nameof(GetTkmmModes))]
+    private TkmmMode _tkmmMode;
+
+    partial void OnTkmmModeChanged(TkmmMode value)
+    {
+        if (value.IsSwitch) {
+            MergeOutput = null;
+        }
+
+        if (value.IsEmulator) {
+            SwitchFirmwareVersion = FirmwareVersions[0];
+        }
+    }
+#endif
+
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_SwitchFirmwareVersion",
+        Description = "Config_SwitchFirmwareVersionDescription",
+        Group = "ConfigSection_Application")]
+    [property: DropdownConfig(
+        DisplayMemberPath = nameof(SwitchFirmwareVersion.DisplayName),
+        RuntimeItemsSourceMethodName = nameof(GetFirmwareVersions))]
+    private SwitchFirmwareVersion _switchFirmwareVersion;
 
     [ObservableProperty]
     [property: Config(
@@ -121,6 +179,7 @@ public sealed partial class Config : ConfigModule<Config>
         Title = "Config_SelectEmulatorExecutable")]
     [ObservableProperty]
     private string? _emulatorPath;
+    private string? _appliedEmulatorPath;
 #endif
 
     [ObservableProperty]
@@ -154,6 +213,13 @@ public sealed partial class Config : ConfigModule<Config>
         RuntimeItemsSourceMethodName = nameof(GetGameLanguages))]
     private GameLanguage _gameLanguage;
 
+    [ObservableProperty]
+    [property: Config(
+        Header = "Config_MergeAllMalsLocales",
+        Description = "Config_MergeAllMalsLocalesDescription",
+        Group = "ConfigSection_Merging")]
+    private bool _mergeAllMalsLocales;
+
 #if !SWITCH
     [ObservableProperty]
     [property: Config(
@@ -175,6 +241,7 @@ public sealed partial class Config : ConfigModule<Config>
         Description = "Config_MergeOutputFolderDescription",
         Group = "ConfigSection_Merging")]
     private string? _mergeOutput;
+    private string? _appliedMergeOutput;
 #endif
 
     [ObservableProperty]
@@ -187,47 +254,68 @@ public sealed partial class Config : ConfigModule<Config>
 
     public GameLanguage[] GetGameLanguages() => GameLanguages;
 
+    public SwitchFirmwareVersion[] GetFirmwareVersions() => FirmwareVersions;
+
+#if !SWITCH
+    public TkmmMode[] GetTkmmModes() => TkmmModes;
+#endif
+
     public List<SystemLanguage> GetLanguagesInternal() => GetLanguages?.Invoke() switch {
         [..] values => values.Select(x => new SystemLanguage(x)).ToList(),
         null => ["en_US"],
     };
 
-#if !SWITCH
-    partial void OnEmulatorPathChanged(string? oldValue, string? newValue)
+    partial void OnSwitchFirmwareVersionChanged(SwitchFirmwareVersion oldValue, SwitchFirmwareVersion newValue)
     {
-        if (newValue is null || oldValue is null) {
+        if (SuppressFirmwareDefaults) {
             return;
         }
-        
-        if (Path.GetFileNameWithoutExtension(newValue).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
-            TkRyujinxHelper.UseRyujinx(out _);
-        }
-        else {
-            TkEmulatorHelper.UseEmulator(newValue, out _);
-        }
-        
-        var oldMergedModPath = TkEmulatorHelper.GetModPath(oldValue);
-        if (MergeOutput == oldMergedModPath) {
-            MergeOutput = TkEmulatorHelper.GetModPath(newValue);
+
+        if (newValue.IsFirmware20OrHigher && !oldValue.IsFirmware20OrHigher) {
+            FirmwareDefaults.Apply(newValue);
         }
     }
 
-    partial void OnMergeOutputChanged(string? oldValue, string? newValue)
+#if !SWITCH
+    private void ApplyEmulatorPath()
     {
-        if (oldValue == null || newValue == null) {
+        if (EmulatorPath is null || EmulatorPath == _appliedEmulatorPath) {
+            return;
+        }
+        
+        var oldMergeOutput = MergeOutput;
+        
+        if (Path.GetFileNameWithoutExtension(EmulatorPath).Equals("ryujinx", StringComparison.InvariantCultureIgnoreCase)) {
+            TkRyujinxHelper.UseRyujinx();
+        }
+        else {
+            TkEmulatorHelper.UseEmulator(EmulatorPath, out _);
+        }
+        
+        if (MergeOutput == oldMergeOutput && TkEmulatorHelper.GetModPath(EmulatorPath) is { } modPath) {
+            MergeOutput = modPath;
+        }
+
+        _appliedEmulatorPath = EmulatorPath;
+    }
+
+    private void CreateMergeOutputFolder()
+    {
+        if (MergeOutput is null || MergeOutput == _appliedMergeOutput) {
             return;
         }
 
-        if (!Directory.Exists(newValue) && !string.IsNullOrWhiteSpace(newValue)) {
+        if (!Directory.Exists(MergeOutput) && !string.IsNullOrWhiteSpace(MergeOutput)) {
             try {
-                Directory.CreateDirectory(newValue);
+                Directory.CreateDirectory(MergeOutput);
             }
             catch (Exception ex) {
-                TkLog.Instance.LogError(ex, "Invalid merge output: {MergeOutput}", newValue);
+                TkLog.Instance.LogError(ex, "Invalid merge output: {MergeOutput}", MergeOutput);
             }
         }
 
-        ExportLocations.Reset(newValue);
+        ExportLocations.Reset(MergeOutput);
+        _appliedMergeOutput = MergeOutput;
     }
     
     partial void OnUseRomfsliteChanged(bool value)
@@ -241,16 +329,39 @@ public sealed partial class Config : ConfigModule<Config>
     public override void Load(ref Config module)
     {
         try {
+            SuppressFirmwareDefaults = true;
             base.Load(ref module);
         }
         catch (Exception ex) {
             module = new Config();
             TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(Config)));
         }
+        finally {
+            SuppressFirmwareDefaults = false;
+        }
+
+#if !SWITCH
+        module._appliedEmulatorPath = module.EmulatorPath;
+        module._appliedMergeOutput = module.MergeOutput;
+#endif
     }
 
     public override string Translate(string input)
     {
         return string.IsNullOrWhiteSpace(input) ? input : Locale[input];
+    }
+
+    public override void Reset()
+    {
+#if !SWITCH
+        ExportLocations = [];
+        UseRomfslite = false;
+        EmulatorPath = null;
+        MergeOutput = null;
+        TkmmMode = TkmmModes[0];
+#endif
+        SwitchFirmwareVersion = FirmwareVersions[0];
+        TkConfig.Shared.Reset();
+        SaveAll();
     }
 }

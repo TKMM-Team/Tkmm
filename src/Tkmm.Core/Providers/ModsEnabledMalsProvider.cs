@@ -43,7 +43,6 @@ public static class ModsEnabledMalsProvider
 
             var sarcStream = new MemoryStream();
             sarc.Write(sarcStream);
-            sarcStream.Position = 0;
 
             var malsFile = $"Mals/{locale}.Product.sarc";
             
@@ -51,7 +50,7 @@ public static class ModsEnabledMalsProvider
                 BuilderVersion = 200,
                 GameVersion = 121,
                 MalsFiles = { malsFile },
-                Source = new StreamSystemSource(sarcStream)
+                Source = new StreamSystemSource(sarcStream.ToArray())
             };
         }
         catch {
@@ -59,13 +58,9 @@ public static class ModsEnabledMalsProvider
         }
     }
 
-    private sealed class StreamSystemSource(Stream stream) : ITkSystemSource
+    private sealed class StreamSystemSource(byte[] data) : ITkSystemSource
     {
-        public Stream OpenRead(string path) 
-        {
-            stream.Position = 0;
-            return stream;
-        }
+        public Stream OpenRead(string path) => new MemoryStream(data);
         public bool Exists(string path) => true;
         public ITkSystemSource GetRelative(string _) => this;
     }

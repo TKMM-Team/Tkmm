@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ConfigFactory.Core;
@@ -16,10 +17,24 @@ namespace Tkmm.Core;
 
 public sealed partial class TkConfig : ConfigModule<TkConfig>
 {
-    private const string DEFAULT_GAME_VERSION = "Auto";
+    public const string DefaultGameVersion = "Auto";
+
+    private bool _isRefreshingVersions;
+    private bool _dumpHandlersAttached;
+    private bool _versionRefreshSuspended;
 
     [JsonIgnore]
-    public override string LocalPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Config.Shared.Name, "TkConfig.json");
+    public override string LocalPath => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        Config.DataFolderName,
+        "TkConfig.json"
+    );
+
+    [JsonIgnore]
+    public IReadOnlyList<string> AvailableUpdateVersions { get; private set; } = [];
+
+    [JsonIgnore]
+    private ObservableCollection<string> PreferredGameVersionOptions { get; } = [];
 
     public TkConfig()
     {
@@ -34,8 +49,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         Header = "TkConfig_PreferredGameVersion",
         Description = "TkConfig_PreferredGameVersionDescription",
         Group = "ConfigSection_GameDump")]
-    [property: DropdownConfig(DEFAULT_GAME_VERSION, "1.4.3", "1.4.2", "1.4.1", "1.4.0", "1.2.1", "1.2.0", "1.1.2", "1.1.1", "1.1.0")]
-    private string _preferredGameVersion = DEFAULT_GAME_VERSION;
+    [property: DropdownConfig(RuntimeItemsSourceMethodName = nameof(GetPreferredGameVersionOptions))]
+    private string _preferredGameVersion = DefaultGameVersion;
 
     [ObservableProperty]
     [property: Config(
@@ -116,15 +131,83 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
     private PathCollection _nandFolderPaths = [];
 #endif
 
-    public void ResetGameDumpSettings()
+    public ObservableCollection<string> GetPreferredGameVersionOptions() => PreferredGameVersionOptions;
+
+    public override void Reset()
     {
-        PreferredGameVersion = DEFAULT_GAME_VERSION;
-        KeysFolderPath = null;
-        PackagedBaseGamePaths = [];
-        PackagedUpdatePaths = [];
-        SdCardRootPath = null;
-        GameDumpFolderPaths = [];
-        NandFolderPaths = [];
+        SuspendVersionRefresh();
+        try {
+            PreferredGameVersion = DefaultGameVersion;
+            KeysFolderPath = null;
+            PackagedBaseGamePaths = [];
+            PackagedUpdatePaths = [];
+            SdCardRootPath = null;
+            GameDumpFolderPaths = [];
+            NandFolderPaths = [];
+        }
+        finally {
+            Shared.Save();
+            ResumeVersionRefresh();
+        }
+    }
+
+    public void SuspendVersionRefresh() => _versionRefreshSuspended = true;
+
+    public void ResumeVersionRefresh()
+    {
+        if (!_versionRefreshSuspended) {
+            return;
+        }
+
+        _versionRefreshSuspended = false;
+        RefreshAvailableUpdateVersions();
+    }
+
+    public void RefreshAvailableUpdateVersions()
+    {
+        if (_isRefreshingVersions || _versionRefreshSuspended) {
+            return;
+        }
+
+        _isRefreshingVersions = true;
+        try {
+            using var checksums = TkEmbeddedDataSource.GetChecksumsBin();
+            using var packFileLookup = TkEmbeddedDataSource.GetPackFileLookup();
+
+            var builder = TkExtensibleRomProviderBuilder.Create(
+                    TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup)
+                )
+                .WithKeysFolder(() => KeysFolderPath)
+                .WithExtractedGameDump(() => GameDumpFolderPaths)
+                .WithPackagedBaseGame(() => PackagedBaseGamePaths)
+                .WithSdCard(() => SdCardRootPath)
+                .WithPackagedUpdate(() => PackagedUpdatePaths)
+                .WithNand(() => NandFolderPaths);
+
+            AvailableUpdateVersions = builder.Build().GetAvailableUpdateVersions();
+
+            var preferred = PreferredGameVersion;
+
+            PreferredGameVersionOptions.Clear();
+#if !SWITCH
+            if (!string.IsNullOrWhiteSpace(Config.Shared.EmulatorPath)) {
+                PreferredGameVersionOptions.Add(DefaultGameVersion);
+            }
+#endif
+            foreach (var version in AvailableUpdateVersions) {
+                PreferredGameVersionOptions.Add(version);
+            }
+
+            if (PreferredGameVersionOptions.Contains(preferred)) {
+                PreferredGameVersion = preferred;
+            }
+            else if (PreferredGameVersionOptions.Count > 0) {
+                PreferredGameVersion = PreferredGameVersionOptions[0];
+            }
+        }
+        finally {
+            _isRefreshingVersions = false;
+        }
     }
 
     public TkExtensibleRomProvider CreateRomProvider()
@@ -132,17 +215,17 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         using var checksums = TkEmbeddedDataSource.GetChecksumsBin();
         using var packFileLookup = TkEmbeddedDataSource.GetPackFileLookup();
 
-#if !SWITCH
         var builder = TkExtensibleRomProviderBuilder.Create(
                 TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup)
             )
-            .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
+            .WithPreferredVersion(() => PreferredGameVersion is DefaultGameVersion ? null : PreferredGameVersion)
             .WithKeysFolder(() => KeysFolderPath)
             .WithExtractedGameDump(() => GameDumpFolderPaths)
             .WithPackagedBaseGame(() => PackagedBaseGamePaths);
 
+#if !SWITCH
         var emulatorFilePath = Config.Shared.EmulatorPath;
-        if (string.IsNullOrWhiteSpace(emulatorFilePath) || !PreferredGameVersion.Equals(DEFAULT_GAME_VERSION)) {
+        if (string.IsNullOrWhiteSpace(emulatorFilePath) || !PreferredGameVersion.Equals(DefaultGameVersion)) {
             goto Configured;
         }
 
@@ -191,21 +274,58 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
         }
 
     Configured:
+#endif
          return builder
             .WithSdCard(() => SdCardRootPath)
             .WithPackagedUpdate(() => PackagedUpdatePaths)
             .WithNand(() => NandFolderPaths)
             .Build();
-#else
-        return TkExtensibleRomProviderBuilder.Create(TkChecksums.FromStream(checksums), new TkPackFileLookup(packFileLookup))
-            .WithPreferredVersion(() => PreferredGameVersion is DEFAULT_GAME_VERSION ? null : PreferredGameVersion)
-            .WithKeysFolder(() => KeysFolderPath)
-            .WithSdCard(() => SdCardRootPath)
-            .WithPackagedBaseGame(() => PackagedBaseGamePaths)
-            .WithPackagedUpdate(() => PackagedUpdatePaths)
-            .Build();
-#endif
     }
+
+    partial void OnKeysFolderPathChanged(string? value)
+    {
+        if (_dumpHandlersAttached) {
+            RefreshAvailableUpdateVersions();
+        }
+    }
+
+    partial void OnSdCardRootPathChanged(string? value)
+    {
+        if (_dumpHandlersAttached) {
+            RefreshAvailableUpdateVersions();
+        }
+    }
+
+    partial void OnPackagedBaseGamePathsChanged(PathCollection value) => AttachPathCollection(value);
+    partial void OnPackagedUpdatePathsChanged(PathCollection value) => AttachPathCollection(value);
+    partial void OnGameDumpFolderPathsChanged(PathCollection value) => AttachPathCollection(value);
+    partial void OnNandFolderPathsChanged(PathCollection value) => AttachPathCollection(value);
+
+    private void AttachDumpPathHandlers()
+    {
+        if (_dumpHandlersAttached) {
+            return;
+        }
+
+        AttachPathCollection(PackagedBaseGamePaths);
+        AttachPathCollection(PackagedUpdatePaths);
+        AttachPathCollection(GameDumpFolderPaths);
+        AttachPathCollection(NandFolderPaths);
+        _dumpHandlersAttached = true;
+        RefreshAvailableUpdateVersions();
+    }
+
+    private void AttachPathCollection(PathCollection paths)
+    {
+        paths.PathsChanged -= OnDumpPathsChanged;
+        paths.PathsChanged += OnDumpPathsChanged;
+
+        if (_dumpHandlersAttached) {
+            RefreshAvailableUpdateVersions();
+        }
+    }
+
+    private void OnDumpPathsChanged(object? sender, EventArgs e) => RefreshAvailableUpdateVersions();
 
     public override void Load(ref TkConfig module)
     {
@@ -216,6 +336,8 @@ public sealed partial class TkConfig : ConfigModule<TkConfig>
             module = new TkConfig();
             TkLog.Instance.LogError(ex, string.Format(Locale["Config_ErrorFailedToLoadConfig"], nameof(TkConfig)));
         }
+
+        module.AttachDumpPathHandlers();
     }
 
     public override string Translate(string input)

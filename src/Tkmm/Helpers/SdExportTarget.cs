@@ -59,15 +59,14 @@ file sealed class MtpSdExportTarget : ISdExportTarget
     private readonly string _deviceId;
     private readonly string _deviceName;
     private readonly string _mtpRootPath;
-    private readonly string _tempIpsDirectory;
 
     public MtpSdExportTarget(string deviceId, string deviceName, string mtpRootPath)
     {
         _deviceId = deviceId;
         _deviceName = deviceName;
         _mtpRootPath = mtpRootPath;
-        _tempIpsDirectory = Path.Combine(Path.GetTempPath(), "tkmm", "mtp-ips", Ulid.NewUlid().ToString());
-        Directory.CreateDirectory(_tempIpsDirectory);
+        LocalIpsDirectory = Path.Combine(Path.GetTempPath(), "tkmm", "mtp-ips", Ulid.NewUlid().ToString());
+        Directory.CreateDirectory(LocalIpsDirectory);
         Label = string.IsNullOrWhiteSpace(deviceName)
             ? mtpRootPath
             : $"{deviceName}\\{mtpRootPath.Trim('\\')}";
@@ -75,7 +74,7 @@ file sealed class MtpSdExportTarget : ISdExportTarget
 
     public string Label { get; }
 
-    public string LocalIpsDirectory => _tempIpsDirectory;
+    public string LocalIpsDirectory { get; }
 
     public void Publish(
         string mergeOutputFolder,
@@ -89,7 +88,7 @@ file sealed class MtpSdExportTarget : ISdExportTarget
             _mtpRootPath,
             mergeOutputFolder,
             useRomfsLite,
-            _tempIpsDirectory,
+            LocalIpsDirectory,
             progress,
             wipeCompleted);
     }
@@ -97,8 +96,8 @@ file sealed class MtpSdExportTarget : ISdExportTarget
     public void Dispose()
     {
         try {
-            if (Directory.Exists(_tempIpsDirectory)) {
-                Directory.Delete(_tempIpsDirectory, recursive: true);
+            if (Directory.Exists(LocalIpsDirectory)) {
+                Directory.Delete(LocalIpsDirectory, recursive: true);
             }
         }
         catch {

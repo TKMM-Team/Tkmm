@@ -9,7 +9,10 @@ public class GameBananaFileSorter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is IEnumerable<GameBananaFile> files) {
-            return files.OrderByDescending(f => f.IsTkcl).ToList();
+            return files
+                .OrderBy(f => f.IsArchived)
+                .ThenByDescending(f => f.IsRecommended)
+                .ToList();
         }
         
         return value;

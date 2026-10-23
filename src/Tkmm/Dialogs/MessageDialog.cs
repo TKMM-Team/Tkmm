@@ -50,11 +50,11 @@ public static class MessageDialog
         ContentDialog dialog = new() {
             PrimaryButtonText = buttons switch {
                 MessageDialogButtons.Ok or MessageDialogButtons.OkCancel => "Ok",
-                MessageDialogButtons.YesNo or MessageDialogButtons.YesNoCancel => "Yes",
+                MessageDialogButtons.YesNo or MessageDialogButtons.YesNoCancel => Locale[TkLocale.Action_Yes],
                 _ => string.Empty
             },
             SecondaryButtonText = buttons switch {
-                MessageDialogButtons.YesNoCancel => "No",
+                MessageDialogButtons.YesNoCancel => Locale[TkLocale.Action_No],
                 _ => string.Empty
             },
             IsSecondaryButtonEnabled = buttons switch {
@@ -62,7 +62,7 @@ public static class MessageDialog
                 _ => false
             },
             CloseButtonText = buttons switch {
-                MessageDialogButtons.YesNo => "No",
+                MessageDialogButtons.YesNo => Locale[TkLocale.Action_No],
                 MessageDialogButtons.OkCancel or MessageDialogButtons.YesNoCancel => "Cancel",
                 _ => string.Empty
             },

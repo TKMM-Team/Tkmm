@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
@@ -87,23 +88,14 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             return;
         }
 
-        var disks = DriveInfo.GetDrives()
-            .Where(static driveInfo => {
-                try {
-                    return driveInfo is { IsReady: true, DriveType: not DriveType.CDRom and not DriveType.NoRootDirectory }
-                           && Directory.Exists(Path.Combine(driveInfo.RootDirectory.FullName, "atmosphere"));
-                }
-                catch {
-                    return false;
-                }
-            })
-            .Select(static driveInfo => new DisplayDisk(driveInfo))
-            .Concat(OperatingSystem.IsWindows()
-                ? MtpSdCardHelper.FindAtmosphereRoots()
-                    .Select(static root => new DisplayDisk(root.DeviceId, root.FriendlyName, root.RootPath))
-                : [])
-            .Append(DisplayDisk.ManualSelection)
-            .ToArray();
+        var localDisks = await Task.Run(EnumerateLocalExportDisks, ct);
+
+        DisplayDisk[] mtpDisks = [];
+        if (OperatingSystem.IsWindows()) {
+            mtpDisks = await EnumerateMtpExportDisksAsync(ct);
+        }
+
+        var disks = localDisks.Concat(mtpDisks).Append(DisplayDisk.ManualSelection).ToArray();
 
         ContentDialog dialog = new() {
             Title = Locale["MergeActions_SelectSdCard"],
@@ -157,6 +149,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             };
             progressView.SetIndeterminate(Locale["MergeActions_WipingSdCard"]);
             progressView.Show();
+            await Dispatcher.UIThread.InvokeAsync(static () => { }, DispatcherPriority.Background);
 
             try {
                 await Task.Run(() => {
@@ -190,7 +183,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
                 await ErrorDialog.ShowAsync(ex);
             }
             finally {
-                progressView.Hide();
+                await progressView.HideAsync();
             }
         }
         catch (Exception ex) {
@@ -198,6 +191,31 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
             await ErrorDialog.ShowAsync(ex);
         }
     }
+
+    private static IEnumerable<DisplayDisk> EnumerateLocalExportDisks()
+    {
+        return DriveInfo.GetDrives()
+            .Where(static driveInfo => {
+                try {
+                    if (driveInfo.DriveType is DriveType.Network or DriveType.CDRom
+                        or DriveType.NoRootDirectory) {
+                        return false;
+                    }
+
+                    return Directory.Exists(Path.Combine(driveInfo.RootDirectory.FullName, "atmosphere"));
+                }
+                catch {
+                    return false;
+                }
+            })
+            .Select(static driveInfo => new DisplayDisk(driveInfo));
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static Task<DisplayDisk[]> EnumerateMtpExportDisksAsync(CancellationToken ct)
+        => Task.Run(() => MtpSdCardHelper.FindAtmosphereRoots(TimeSpan.FromSeconds(2))
+            .Select(static root => new DisplayDisk(root.DeviceId, root.FriendlyName, root.RootPath))
+            .ToArray(), ct);
 
     private static async Task<ISdExportTarget?> CreateExportTarget(DisplayDisk selectedDisk)
     {

@@ -1,0 +1,41 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="clr-namespace:Tkmm.Views.Common">
+    <Style Selector="common|OverlayCard">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                    <Border Name="PART_Backdrop"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="#AA111111"
+                            Opacity="0" />
+                    <Border Name="PART_Card"
+                            Padding="{TemplateBinding CardPadding}"
+                            Margin="{TemplateBinding CardMargin}"
+                            MinWidth="{TemplateBinding CardMinWidth}"
+                            MaxWidth="{TemplateBinding CardMaxWidth}"
+                            MinHeight="{TemplateBinding CardMinHeight}"
+                            MaxHeight="{TemplateBinding CardMaxHeight}"
+                            HorizontalAlignment="{TemplateBinding CardHorizontalAlignment}"
+                            VerticalAlignment="Center"
+                            Opacity="0"
+                            RenderTransform="scale(0.94)"
+                            RenderTransformOrigin="50%,50%"
+                            BoxShadow="5 5 15 0 #9A000000"
+                            BorderBrush="{DynamicResource ControlOnImageFillColorSecondary}"
+                            BorderThickness="2"
+                            Background="{DynamicResource CardStrokeColorDefaultSolid}"
+                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

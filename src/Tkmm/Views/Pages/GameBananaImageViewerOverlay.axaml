@@ -1,0 +1,62 @@
+<common:OverlayCard xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:pi="using:Projektanker.Icons.Avalonia"
+                    xmlns:pages="using:Tkmm.ViewModels.Pages"
+                    xmlns:common="clr-namespace:Tkmm.Views.Common"
+                    x:Class="Tkmm.Views.Pages.GameBananaImageViewerOverlay"
+                    x:DataType="pages:GameBananaModPageViewModel"
+                    CardMargin="0"
+                    CardPadding="8"
+                    Focusable="True">
+    <common:OverlayCard.Styles>
+        <Style Selector="Button.viewer-chrome">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Background" Value="{DynamicResource SystemChromeHighColor}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.18" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Grid#ViewerRoot:pointerover Button">
+            <Setter Property="Opacity" Value="0.9" />
+        </Style>
+    </common:OverlayCard.Styles>
+
+    <Grid Name="ViewerRoot"
+          Background="Transparent">
+        <Image Source="{Binding SelectedImage}"
+               Stretch="Uniform" />
+
+        <Button Classes="viewer-chrome"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="12,0,0,0"
+                Command="{Binding PreviousImageCommand}"
+                IsVisible="{Binding CanGoToPreviousImage}">
+            <pi:Icon Value="fa-solid fa-chevron-left" />
+        </Button>
+
+        <Button Classes="viewer-chrome"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0,0,12,0"
+                Command="{Binding NextImageCommand}"
+                IsVisible="{Binding CanGoToNextImage}">
+            <pi:Icon Value="fa-solid fa-chevron-right" />
+        </Button>
+
+        <Button Classes="viewer-chrome"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,8,8,0"
+                Click="Close_OnClick">
+            <pi:Icon Value="fa-solid fa-xmark" />
+        </Button>
+    </Grid>
+</common:OverlayCard>

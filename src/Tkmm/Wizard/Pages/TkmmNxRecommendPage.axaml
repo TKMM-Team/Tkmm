@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ext="using:Tkmm.Markup"
+             xmlns:controls="clr-namespace:Tkmm.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Tkmm.Wizard.Pages.TkmmNxRecommendPage">
+    <StackPanel Spacing="10">
+        <TextBlock Text="{ext:Locale SetupWizard_TkmmNx_Intro}"
+                   TextWrapping="Wrap" />
+        <TextBlock Text="{ext:Locale SetupWizard_TkmmNx_ScanQr}"
+                   TextWrapping="Wrap" />
+        <controls:BrandedQrCode Width="180"
+                                HorizontalAlignment="Left"
+                                Url="https://nx.tkmm.org/" />
+        <HyperlinkButton NavigateUri="https://nx.tkmm.org/"
+                         Content="https://nx.tkmm.org/" />
+        <TextBlock Text="{ext:Locale SetupWizard_TkmmNx_ProceedAnyway}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>

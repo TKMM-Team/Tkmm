@@ -5,20 +5,20 @@ namespace Tkmm.Core.Services;
 
 public static class SingleInstanceAppManager
 {
-    private const string RestartEnvironmentVariable = "TKMM_RESTARTING";
+    private const string RESTART_ENVIRONMENT_VARIABLE = "TKMM_RESTARTING";
     private const string ID = "TKMM-[2E988D65-5221-4004-B282-E2B9E47A3AEF]";
     
     private static Action<string[]>? _attach;
 
     public static void MarkRestarting() =>
-        Environment.SetEnvironmentVariable(RestartEnvironmentVariable, "1");
+        Environment.SetEnvironmentVariable(RESTART_ENVIRONMENT_VARIABLE, "1");
     
     public static bool Start(string[] args, Action<string[]> attach)
     {
         _attach = attach;
 
-        if (Environment.GetEnvironmentVariable(RestartEnvironmentVariable) == "1") {
-            Environment.SetEnvironmentVariable(RestartEnvironmentVariable, null);
+        if (Environment.GetEnvironmentVariable(RESTART_ENVIRONMENT_VARIABLE) == "1") {
+            Environment.SetEnvironmentVariable(RESTART_ENVIRONMENT_VARIABLE, null);
             while (IsInstanceRunning()) {
                 Thread.Sleep(25);
             }

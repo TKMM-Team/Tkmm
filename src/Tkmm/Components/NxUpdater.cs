@@ -16,7 +16,7 @@ public static class NxUpdater
 {
     public static async ValueTask CheckForUpdates(bool isUserInvoked, CancellationToken ct = default)
     {
-        if (await HasAvailableUpdates() is not { } release) {
+        if (await HasAvailableUpdates(ct) is not { } release) {
             if (isUserInvoked) {
                 await MessageDialog.Show(
                     TkLocale.System_Popup_SoftwareUpToDate,
@@ -58,9 +58,9 @@ public static class NxUpdater
         Restart();
     }
 
-    private static async ValueTask<Release?> HasAvailableUpdates()
+    private static async ValueTask<Release?> HasAvailableUpdates(CancellationToken ct = default)
     {
-        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX");
+        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX").WaitAsync(ct);
         var latestCommit = latest.TargetCommitish;
         var currentCommit = await GetCurrentNxCommit();
         return latestCommit != currentCommit ? latest : null;
@@ -111,7 +111,7 @@ public static class NxUpdater
 
     private static async ValueTask DownloadUpdate(Release release, CancellationToken ct = default)
     {
-        await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", "TKMM-NX", ct);
+        await using var systemStream = await OctokitHelper.DownloadReleaseAsset(release, "update.tar", ct);
         
         if (systemStream is null) {
             throw new Exception(

@@ -1,17 +1,9 @@
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using FluentAvalonia.UI.Controls;
 using Tkmm.Core;
 
 namespace Tkmm.Views.Common;
 
-public partial class MergingModal : UserControl
+public partial class MergingModal : OverlayCard
 {
-    private static readonly DialogHost _host = new() {
-        Content = new MergingModal()
-    };
-    
     public MergingModal()
     {
         InitializeComponent();
@@ -22,23 +14,7 @@ public partial class MergingModal : UserControl
         if (!Config.Shared.ShowTriviaPopup) {
             return;
         }
-        
-        if (OverlayLayer.GetOverlayLayer(App.XamlRoot) is not { } overlayLayer) {
-            return;
-        }
 
-        overlayLayer.Children.Add(_host);
-
-        _ = Task.Run(async () => {
-            try {
-                await Task.Delay(Timeout.Infinite, cancellationToken);
-            }
-            catch (OperationCanceledException) {
-            }
-
-            await Dispatcher.UIThread.InvokeAsync(() => {
-                overlayLayer.Children.Remove(_host);
-            });
-        });
+        OverlayModal.Show(new MergingModal(), cancellationToken);
     }
 }

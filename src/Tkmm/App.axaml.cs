@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data.Core.Plugins;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
@@ -11,6 +12,7 @@ using Avalonia.Threading;
 using ConfigFactory;
 using ConfigFactory.Avalonia;
 using ConfigFactory.Avalonia.Helpers;
+using ConfigFactory.Core;
 using ConfigFactory.Models;
 using FluentAvalonia.UI.Controls;
 using Humanizer;
@@ -19,15 +21,18 @@ using MenuFactory.Abstractions;
 using Microsoft.Extensions.Logging;
 using Tkmm.Actions;
 using Tkmm.Builders;
+using Tkmm.CLI;
 using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Core.Logging;
+using Tkmm.Core.Services;
 using Tkmm.Core.TkOptimizer;
 using Tkmm.Dialogs;
 using Tkmm.Extensions;
 using Tkmm.Helpers;
 using Tkmm.ViewModels;
 using Tkmm.Views;
+using Tkmm.Views.Common;
 using Tkmm.Views.Pages;
 using TkSharp.Core;
 using TkSharp.Core.Models;
@@ -35,6 +40,7 @@ using TkSharp.Core.Models;
 #if SWITCH
 using Tkmm.Components.NX;
 using Tkmm.Models.MenuModels;
+using Tkmm.ViewModels.Pages;
 using Tkmm.VirtualKeyboard.Extensions;
 #endif
 
@@ -58,6 +64,10 @@ public class App : Application
 
     static App()
     {
+        if (CrashHandler.IsLaunch()) {
+            return;
+        }
+
 #if !SWITCH
         ExportLocationControlBuilder.Shared.Register();
 #endif
@@ -68,6 +78,18 @@ public class App : Application
     {
         TkLog.Instance.LogInformation(
             "Version: {Version}", Version);
+
+        if (CrashHandler.IsLaunch()) {
+            return;
+        }
+
+#if !DEBUG
+        Dispatcher.UIThread.UnhandledException += static (_, eventArgs) => {
+            eventArgs.Handled = true;
+            TkLog.Instance.LogError(eventArgs.Exception, "Unhandled UI exception");
+            ErrorDialog.ShowAsync(eventArgs.Exception);
+        };
+#endif
 
         TaskScheduler.UnobservedTaskException += (_, eventArgs) => {
             TkLog.Instance.LogError(
@@ -84,6 +106,10 @@ public class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        ArgumentHandler.EnsureWired();
+#pragma warning disable CS0618
+        UrlsOpened += (_, e) => TkConsoleApp.ProcessArguments(e.Urls);
+#pragma warning restore CS0618
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -94,6 +120,29 @@ public class App : Application
 
         BindingPlugins.DataValidators.RemoveAt(0);
         
+        if (CrashHandler.TryGetCrashInfoPath(Environment.GetCommandLineArgs().Skip(1).ToArray()) is { } crashInfoPath) {
+            CrashHandlerWindow crashWindow = new(crashInfoPath);
+            XamlRoot = crashWindow;
+            desktop.MainWindow = crashWindow;
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
+        if (ReadOnlyFileSystemGuard.IsPending) {
+            Window window = new() {
+                Title = Title,
+                Width = 520,
+                Height = 240,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            XamlRoot = window;
+            desktop.MainWindow = window;
+            ReadOnlyFileSystemGuard.Apply(window);
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         TkThumbnail.CreateBitmap = stream => new Bitmap(stream);
         Config.Shared.GetLanguages = () => Locale.Languages;
 
@@ -114,15 +163,17 @@ public class App : Application
 #if SWITCH
         shellView.AddVirtualKeyboard();
         shellView.PowerOptionsMenu.IsVisible = true;
-        shellView.NxBatteryStatusPanel.IsVisible = true;
+        shellView.NxStatusPanel.IsVisible = true;
         
         AvaloniaMenuFactory nxSystemMenu = new(XamlRoot,
             localeKeyName => Locale[localeKeyName, failSoftly: true]
         );
         nxSystemMenu.AddMenuGroup<NxMenuModel>();
-        shellView.PowerOptionsMenu.ItemsSource = nxSystemMenu.Items;
+        shellView.NxPowerMenuItem.ItemsSource = nxSystemMenu.Items.OfType<MenuItem>().First().ItemsSource;
         
         BatteryStatusWatcher.Start();
+        WiFiStatusWatcher.Start();
+        _ = NetworkSettingsPageViewModel.Shared;
         shellView.InitializeWizard();
 #else
         var isTempLaunch = TempFolderGuard.IsRunningFromTemporaryFolder();
@@ -140,6 +191,9 @@ public class App : Application
                 MaxItems = 1,
                 Margin = new Thickness(0, 0, 4, 30)
             };
+
+            Program.NotifyUiFrameworkReady();
+            Program.ProcessStartupArgs();
         };
 
         MenuFactory = new AvaloniaMenuFactory(XamlRoot,
@@ -173,6 +227,16 @@ public class App : Application
             settingsModel.AppendAndValidate<TkConfig>(ref isValid);
         }
 
+        settingsPage.AddHandler(InputElement.LostFocusEvent, (_, e) => {
+            if (!Config.Shared.AutoSaveSettings) {
+                return;
+            }
+
+            if (e.Source is Control { DataContext: IConfigModule module }) {
+                module.Save();
+            }
+        });
+
         PageManager.Shared.Register(Page.Home, TkLocale.HomePageTitle, new HomePageView(), Symbol.Home, TkLocale.HomePageDesc, isDefault: true);
         PageManager.Shared.Register(Page.Profiles, TkLocale.ProfilesPageTitle, new ProfilesPageView(), Symbol.OtherUser, TkLocale.ProfilesPageDesc);
         PageManager.Shared.Register(Page.Tools, TkLocale.ProjectsPageTitle, new ProjectsPageView(), Symbol.CodeHTML, TkLocale.ProjectsPageDesc);
@@ -195,18 +259,6 @@ public class App : Application
 #endif
 
         base.OnFrameworkInitializationCompleted();
-
-        Program.NotifyUiFrameworkReady();
-        
-        Dispatcher.UIThread.Post(() => {
-#if !SWITCH
-            if (TempFolderGuard.IsRunningFromTemporaryFolder()) {
-                return;
-            }
-#endif
-            Task.Delay(1000).Wait();
-            Program.ProcessStartupArgs();
-        });
     }
 
     private void OnThemeChanged(string theme)

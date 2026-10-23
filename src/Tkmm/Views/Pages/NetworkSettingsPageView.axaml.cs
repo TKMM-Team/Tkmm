@@ -10,7 +10,7 @@ public partial class NetworkSettingsPageView : UserControl
     public NetworkSettingsPageView()
     {
         InitializeComponent();
-        DataContext = new NetworkSettingsPageViewModel();
+        DataContext = NetworkSettingsPageViewModel.Shared;
     }
 
     private void PasswordBox_KeyDown(object? sender, KeyEventArgs e)

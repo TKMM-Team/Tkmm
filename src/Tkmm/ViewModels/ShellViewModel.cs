@@ -21,6 +21,9 @@ public partial class ShellViewModel : ObservableObject
     private int _batteryCharge = -1;
 
     [ObservableProperty]
+    private string _wiFiIcon = string.Empty;
+
+    [ObservableProperty]
     private bool _isVisibleR2CMenu;
 
     [ObservableProperty]

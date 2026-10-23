@@ -185,13 +185,20 @@ public sealed partial class ProjectsPageViewModel : ObservableObject
         SaveResourceSizeOverrides();
         TkStatus.Set($"Installing '{Project.Mod.Name}'", "fa-regular fa-download", StatusType.Working);
 
-        var writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
-        using var tkRom = TKMM.GetTkRom();
-        await Project.Build(writer, tkRom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
+        try {
+            var writer = TKMM.ModManager.GetSystemWriter(new TkModContext(Project.Mod.Id));
+            using var tkRom = TKMM.GetTkRom();
+            await Project.Build(writer, tkRom, TKMM.ModManager.GetSystemSource(Project.Mod.Id.ToString()));
 
-        TKMM.ModManager.Import(Project.Mod);
+            TKMM.ModManager.Import(Project.Mod);
 
-        TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
+            TkStatus.SetTemporary($"Installed '{Project.Mod.Name}'", "fa-regular fa-circle-check");
+        }
+        catch (Exception ex) {
+            TkStatus.SetTemporary($"Failed to install '{Project.Mod.Name}'", "fa-regular fa-circle-exclamation");
+            TkLog.Instance.LogError(ex, "An error occured while installing the project '{ModName}'.", Project.Mod.Name);
+            await ErrorDialog.ShowAsync(ex);
+        }
     }
 
     [RelayCommand]

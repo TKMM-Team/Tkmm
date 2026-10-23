@@ -1,0 +1,145 @@
+#if !SWITCH
+using System.Runtime.InteropServices;
+using FluentAvalonia.UI.Controls;
+using Tkmm.Core;
+using Tkmm.Core.Helpers;
+using Tkmm.Core.Models;
+using Tkmm.Dialogs;
+using Tkmm.Wizard.Helpers;
+using Tkmm.Wizard.Models;
+using Tkmm.Wizard.Pages;
+
+namespace Tkmm.Wizard.Steps;
+
+internal static class DesktopSteps
+{
+    public static async ValueTask<StepResult> Mode(SetupWizard wizard)
+    {
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_TkmmMode_Title)
+            .WithDescription(TkLocale.SetupWizard_TkmmMode_Description)
+            .WithOptions([
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_Emulator, new TkmmMode("Emulator"), selected: true),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_NintendoSwitch, new TkmmMode("Switch")),
+                WizardRadioOption.Opt(TkLocale.SetupWizard_TkmmMode_Both, new TkmmMode("Hybrid"))])
+            .WithGroupName("tkmmMode")
+            .Show();
+
+        if (!next) {
+            return StepResult.Back();
+        }
+
+        if (selected?.Tag is not TkmmMode mode) {
+            return StepResult.Next(WizardSteps.Mode);
+        }
+
+        Config.Shared.TkmmMode = mode;
+        if (mode.IsSwitch) {
+            // merge output is unused for Switch
+            Config.Shared.MergeOutput = null;
+            return StepResult.Next(WizardSteps.NxRecommend);
+        }
+
+        if (mode.IsEmulator) {
+            // firmware step is skipped later, so set a default now
+            Config.Shared.SwitchFirmwareVersion = Config.FirmwareVersions[0];
+        }
+
+        return StepResult.Next(WizardSteps.DumpSource);
+    }
+
+    public static async ValueTask<StepResult> NxRecommend(SetupWizard wizard)
+    {
+        // if the user selects Switch mode, recommend using TKMM-NX instead
+        // continue with manual setup if the user wishes to proceed anyway 
+        if (!await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_TkmmNx_Title)
+                .WithContent<TkmmNxRecommendPage>()
+                .Show()) {
+            return StepResult.Back();
+        }
+
+        wizard.SelectedDumpSource = DumpSource.Switch;
+        return StepResult.Next(WizardSteps.Manual);
+    }
+
+    public static async ValueTask<StepResult> DumpSourceStep(SetupWizard wizard)
+    {
+        var isIntelMac = RuntimeInformation.OSArchitecture is Architecture.X64 && OperatingSystem.IsMacOS();
+        var (next, selected) = await wizard.NextPage()
+            .WithTitle(TkLocale.SetupWizard_DumpSource_Title)
+            .WithDescription(TkLocale.SetupWizard_DumpSource_Description)
+            .WithOptions([
+                // Ryujinx setup is disabled for Intel Macs per GreemDev's request (#109)
+                new WizardRadioOption {
+                    Content = Locale[TkLocale.SetupWizard_DumpSource_RyujinxOption],
+                    IsSelected = !isIntelMac,
+                    IsEnabled = !isIntelMac,
+                    Tag = DumpSource.Ryujinx
+                },
+                WizardRadioOption.Opt(TkLocale.SetupWizard_DumpSource_OtherOption, DumpSource.Other, selected: isIntelMac),
+                new WizardRadioOption {
+                    Content = Locale[TkLocale.SetupWizard_DumpSource_SwitchOption],
+                    IsVisible = Config.Shared.TkmmMode.IsHybrid,
+                    Tag = DumpSource.Switch
+                }
+            ])
+            .WithGroupName("dumpSource")
+            .Show();
+
+        if (!next) {
+            return StepResult.Back();
+        }
+
+        if (selected?.Tag is not DumpSource source) {
+            await MessageDialog.Show(
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Content,
+                TkLocale.SetupWizard_Popup_InvalidDumpSource_Title);
+            return StepResult.Next(WizardSteps.DumpSource);
+        }
+
+        wizard.SelectedDumpSource = source;
+        wizard.EmulatorPathHint = null;
+        return source is DumpSource.Ryujinx
+            ? StepResult.Next(WizardSteps.Ryujinx)
+            : StepResult.Next(WizardSteps.Manual);
+    }
+
+    public static async ValueTask<StepResult> Ryujinx(SetupWizard wizard)
+    {
+        if (!await wizard.NextPage()
+                .WithTitle(TkLocale.SetupWizard_RyujinxSetup_Title)
+                .WithContent(TkLocale.SetupWizard_RyujinxSetup_Content)
+                .WithAction(TkLocale.SetupWizard_RyujinxSetup_Action)
+                .Show()) {
+            return StepResult.Back();
+        }
+
+        string? errorMessage = null;
+        
+        if (EmulatorHelper.TryUseRyujinx() is { } setupError) {
+            errorMessage = setupError;
+        }
+        else if (TkRyujinxHelper.GetSelectedUpdatePath(Config.Shared.EmulatorPath!) is not {} p || !File.Exists(p)) {
+            errorMessage = Locale[TkLocale.TkConfig_ErrorNoUpdateSelected];
+        }
+
+        if (errorMessage is not null) {
+            var errorResult = await ErrorDialog.ShowAsync(
+                new Exception(errorMessage), forceShowInDebug: true,
+                TaskDialogStandardResult.Retry, TaskDialogStandardResult.Cancel);
+
+            if (errorResult is TaskDialogStandardResult.Retry) {
+                return StepResult.Next(WizardSteps.Ryujinx);
+            }
+        }
+        else if ((await TkRomHelper.Validate()).Ok) {
+            return FlowHelper.AfterDump();
+        }
+
+        wizard.SelectedDumpSource = DumpSource.Other;
+        wizard.EmulatorPathHint = "ryujinx";
+        return StepResult.Next(WizardSteps.Manual);
+    }
+}
+#endif

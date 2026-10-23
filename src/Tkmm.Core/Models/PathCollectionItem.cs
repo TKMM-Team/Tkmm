@@ -10,6 +10,7 @@ public sealed partial class PathCollectionItem(PathCollection parent) : Observab
     partial void OnTargetChanged(string value)
     {
         parent.EnsureBlankEntry();
+        parent.NotifyItemChanged();
     }
 
     public override bool Equals(object? obj)

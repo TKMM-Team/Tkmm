@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using Avalonia.Input.Platform;
+using System.Collections.Specialized;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tkmm.Core.Logging;
@@ -12,7 +13,21 @@ public partial class LogsPageViewModel : ObservableObject
     public static ObservableCollection<EventLog> Logs => EventLogger.Logs;
 
     [ObservableProperty]
-    private EventLog? _selected;
+    public partial EventLog? Selected { get; set; }
+
+    public LogsPageViewModel()
+    {
+        Logs.CollectionChanged += OnLogsChanged;
+    }
+
+    private void OnLogsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (Logs.Count == 0) {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(() => Selected = Logs[^1]);
+    }
 
     [RelayCommand]
     private void Copy()

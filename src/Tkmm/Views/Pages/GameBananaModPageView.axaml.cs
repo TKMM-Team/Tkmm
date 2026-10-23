@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
+using Avalonia.Input;
 using Avalonia.Styling;
 using Avalonia.Media;
 using Tkmm.ViewModels.Pages;
@@ -26,6 +27,8 @@ public partial class GameBananaModPageView : UserControl
 
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
+        _ = GameBananaImageViewerOverlay.CloseAsync();
+
         if (DataContext is not GameBananaModPageViewModel viewModel) {
             return;
         }
@@ -79,4 +82,15 @@ public partial class GameBananaModPageView : UserControl
         _previousImageIndex = viewModel.SelectedImageIndex;
     }
 #endif
+
+    private void MainImage_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed
+            || DataContext is not GameBananaModPageViewModel { SelectedImage: not null } viewModel) {
+            return;
+        }
+
+        e.Handled = true;
+        GameBananaImageViewerOverlay.Show(viewModel);
+    }
 }

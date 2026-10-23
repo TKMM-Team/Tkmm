@@ -4,10 +4,9 @@ using Tkmm.Components;
 using Tkmm.Core;
 using Tkmm.Dialogs;
 
-// ReSharper disable UnusedMember.Global
-
 namespace Tkmm.Models.MenuModels;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class ToolsMenuModel
 {
 #if !SWITCH
@@ -42,8 +41,7 @@ public sealed class ToolsMenuModel
             return;
         }
 
-        TkConfig.Shared.ResetGameDumpSettings();
-        TkConfig.Shared.Save();
+        Config.Shared.Reset();
 
 #if SWITCH
         Environment.Exit(0);

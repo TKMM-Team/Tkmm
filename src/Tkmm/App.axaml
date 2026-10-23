@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sty="using:FluentAvalonia.Styling"
              xmlns:cf="clr-namespace:ConfigFactory.Avalonia;assembly=ConfigFactory.Avalonia"
+             Name="TKMM"
              RequestedThemeVariant="Default">
     <Application.Resources>
         <ResourceDictionary>
@@ -37,12 +38,14 @@
         <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
         <StyleInclude Source="avares://Tkmm.VirtualKeyboard/Styles/Fluent.axaml" />
         <StyleInclude Source="/Styles/ContainerStyles.axaml" />
+        <StyleInclude Source="/Styles/ComboBoxStyles.axaml" />
         <StyleInclude Source="/Styles/MenuItem.axaml" />
         <StyleInclude Source="/Styles/ListBoxStyles.axaml" />
         <StyleInclude Source="/Styles/RadioButtonStyles.axaml" />
         <StyleInclude Source="/Styles/ToastStyles.axaml" />
         <StyleInclude Source="/Styles/Markdown.axaml" />
         <StyleInclude Source="/Styles/MessageDialogStyles.axaml" />
+        <StyleInclude Source="/Styles/OverlayCard.axaml" />
         
         <!-- Controls -->
         <StyleInclude Source="/Controls/PathCollectionEditor.axaml" />
