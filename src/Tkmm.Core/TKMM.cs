@@ -228,9 +228,8 @@ public static class TKMM
     {
         await Task.Run(() => {
             var modPath = Path.Combine(ModManager.ModsFolderPath, target.Id.ToString());
-            using MemoryStream contentArchiveOutput = new();
-            ZipFile.CreateFromDirectory(modPath, contentArchiveOutput);
-            TkPackWriter.Write(output, target, contentArchiveOutput.GetSpan());
+            TkPackWriter.Write(output, target);
+            ZipFile.CreateFromDirectory(modPath, output);
         });
     }
 
