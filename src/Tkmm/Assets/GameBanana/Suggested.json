@@ -4,6 +4,412 @@
     },
     "_aRecords": [
         {
+            "_idRow": 732618,
+            "_nStatus": "0",
+            "_bIsPrivate": false,
+            "_tsDateModified": 1793050890,
+            "_tsDateUpdated": 1793050890,
+            "_tsDateAdded": 1793050890,
+            "_bIsWithheld": false,
+            "_nPostCount": 10,
+            "_bCreatedBySubmitter": true,
+            "_bIsPorted": false,
+            "_nThanksCount": 6,
+            "_nSubscriberCount": 2,
+            "_sName": "Faster Quick Menu",
+            "_bIsNsfw": false,
+            "_sProfileUrl": "https:\/\/gamebanana.com\/mods\/732618",
+            "_aPreviewMedia": {
+                "_aImages": [
+                    {
+                        "_sType": "screenshot",
+                        "_sBaseUrl": "https:\/\/images.gamebanana.com\/img\/ss\/mods",
+                        "_sFile": "6adfc67a1c3fa.jpg",
+                        "_sFile220": "220-90_6adfc67a1c3fa.jpg",
+                        "_hFile220": 124,
+                        "_wFile220": 220,
+                        "_sFile530": "530-90_6adfc67a1c3fa.jpg",
+                        "_hFile530": 298,
+                        "_wFile530": 530,
+                        "_sFile100": "100-90_6adfc67a1c3fa.jpg",
+                        "_hFile100": 56,
+                        "_wFile100": 100,
+                        "_sFile800": "800-90_6adfc67a1c3fa.jpg",
+                        "_hFile800": 450,
+                        "_wFile800": 800
+                    },
+                    {
+                        "_sType": "screenshot",
+                        "_sBaseUrl": "https:\/\/images.gamebanana.com\/img\/ss\/mods",
+                        "_sFile": "6adfc7f46c63e.jpg",
+                        "_sFile100": "100-90_6adfc7f46c63e.jpg",
+                        "_hFile100": 56,
+                        "_wFile100": 100
+                    }
+                ]
+            },
+            "_nDownloadCount": 224,
+            "_sDownloadUrl": "https:\/\/gamebanana.com\/mods\/download\/732618",
+            "_aAdditionalInfo": {
+                "_sVersion": "1.0"
+            },
+            "_nViewCount": 657,
+            "_nLikeCount": 35,
+            "_bIsTrashed": false,
+            "_aModManagerIntegrations": {
+                "1865083": [
+                    {
+                        "_idToolRow": 17165,
+                        "_bSupportsRemoteInstall": true,
+                        "_aGameRowIds": [
+                            7617
+                        ],
+                        "_sModManagerAlias": "TotkModManager",
+                        "_sInstallerName": "TotK Mod Manager",
+                        "_idSubmitterRow": 1797815,
+                        "_sInstallerUrl": "https:\/\/gamebanana.com\/tools\/17165",
+                        "_sIconUrl": "https:\/\/images.gamebanana.com\/img\/ico\/tools\/666a6f165025d.png",
+                        "_sDownloadUrl": "tkmm:\/\/mod\/install\/732618\/1865083"
+                    }
+                ]
+            },
+            "_bIsObsolete": false,
+            "_sLicense": "<a rel=\"license\" href=\"http:\/\/creativecommons.org\/licenses\/by-nc-nd\/4.0\/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"https:\/\/i.creativecommons.org\/l\/by-nc-nd\/4.0\/88x31.png\" \/><\/a><br \/>This work is licensed under a <a rel=\"license\" href=\"http:\/\/creativecommons.org\/licenses\/by-nc-nd\/4.0\/\">Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License<\/a>.",
+            "_aLicenseChecklist": {
+                "yes": [
+                    "Download and install this Mod"
+                ],
+                "ask": [
+                    "Redistribute this Mod on other sites",
+                    "Modify this Mod and distribute the modified Mod on GameBanana",
+                    "Modify this Mod and distribute the modified Mod on another site",
+                    "Use parts of this Mod in another Mod and distribute the Mod on GameBanana",
+                    "Use parts of this Mod in another Mod and distribute the Mod on another site",
+                    "Use this Mod or components of this Mod in adult\/NSFW content"
+                ],
+                "no": [
+                    "Use this Mod or components of this Mod commercially"
+                ]
+            },
+            "_aContributingStudios": [],
+            "_sDevNotes": null,
+            "_aRequirements": null,
+            "_aEmbeddedMedia": null,
+            "_aCredits": {
+                "Key Authors": [
+                    [
+                        "Catzy123",
+                        "Made the Mod",
+                        2386008,
+                        ""
+                    ]
+                ]
+            },
+            "_aFeaturings": null,
+            "_bAcceptsDonations": true,
+            "_aAlternateFileSources": null,
+            "_sModeratorNotice": null,
+            "_aCategory": {
+                "_idRow": 22673,
+                "_sName": "HUD",
+                "_sModelName": "ModCategory",
+                "_sProfileUrl": "https:\/\/gamebanana.com\/mods\/cats\/22673",
+                "_sIconUrl": "https:\/\/images.gamebanana.com\/img\/ico\/ModCategory\/64677819af87a.png"
+            },
+            "_aSuperCategory": {
+                "_idRow": 22561,
+                "_sName": "UI",
+                "_sModelName": "ModCategory",
+                "_sProfileUrl": "https:\/\/gamebanana.com\/mods\/cats\/22561",
+                "_sIconUrl": "https:\/\/images.gamebanana.com\/img\/ico\/ModCategory\/646770f21e004.png"
+            },
+            "_aGame": {
+                "_idRow": 7617,
+                "_sName": "The Legend of Zelda: Tears of the Kingdom",
+                "_sAbbreviation": "TOTK",
+                "_sProfileUrl": "https:\/\/gamebanana.com\/games\/7617",
+                "_sIconUrl": "https:\/\/images.gamebanana.com\/img\/ico\/games\/6320d0fcae0d2.png",
+                "_sBannerUrl": "https:\/\/images.gamebanana.com\/img\/ico\/games\/6320d0fcae0d2.png",
+                "_nSubscriberCount": 9853,
+                "_bHasSubmissionQueue": false,
+                "_bAccessorIsSubscribed": true,
+                "_idAccessorSubscriptionRow": 2078184
+            },
+            "_sObsolescenceNotice": null,
+            "_aTrashInfo": null,
+            "_aContest": null,
+            "_aEmbeddables": {
+                "_sEmbeddableImageBaseUrl": "https:\/\/gamebanana.com\/mods\/embeddables\/732618",
+                "_aVariants": [
+                    "small",
+                    "small_square",
+                    "medium",
+                    "medium_square",
+                    "medium_square_minimal",
+                    "large",
+                    "large_minimal",
+                    "large_square",
+                    "large_minimal_square",
+                    "thumbnail"
+                ]
+            },
+            "_aSubmitter": {
+                "_idRow": 2386008,
+                "_sName": "Catzy123",
+                "_sUserTitle": "Zelda\/Naruto Fan",
+                "_sHonoraryTitle": "",
+                "_tsJoinDate": 1670849956,
+                "_sAvatarUrl": "https:\/\/images.gamebanana.com\/img\/av\/69e60b4902b74.png",
+                "_sSigUrl": "https:\/\/images.gamebanana.com\/img\/sig\/6508a1f961f97.jpg",
+                "_sProfileUrl": "https:\/\/gamebanana.com\/members\/2386008",
+                "_sPointsUrl": "https:\/\/gamebanana.com\/members\/logs\/pointslog\/2386008",
+                "_sMedalsUrl": "https:\/\/gamebanana.com\/members\/stats\/medals\/2386008",
+                "_bIsOnline": false,
+                "_sLocation": "<a href=\"https:\/\/gamebanana.com\">Home<\/a> > <a href=\"https:\/\/gamebanana.com\/games\">Games<\/a> > <a href=\"https:\/\/gamebanana.com\/games\/7617\">The Legend of Zelda: Tears of the Kingdom<\/a>",
+                "_sOnlineTitle": "",
+                "_sOfflineTitle": "",
+                "_nPoints": 10161,
+                "_nPointsRank": 3706,
+                "_aNormalMedals": [
+                    [
+                        "m_age_1.png",
+                        "One month a member",
+                        "normal",
+                        916433
+                    ],
+                    [
+                        "m_age_2.png",
+                        "6 months a member",
+                        "normal",
+                        1067125
+                    ],
+                    [
+                        "features_1.png",
+                        "Submission featured",
+                        "normal",
+                        1077495
+                    ],
+                    [
+                        "thanks_recvd_1.png",
+                        "Received thanks 5 times",
+                        "normal",
+                        1097565
+                    ],
+                    [
+                        "m_pr_1.png",
+                        "Reached 1,000 Points",
+                        "normal",
+                        1099182
+                    ],
+                    [
+                        "subscribers_1.png",
+                        "Reached 10 subscribers",
+                        "normal",
+                        1125282
+                    ],
+                    [
+                        "m_age_3.png",
+                        "1 year a member",
+                        "normal",
+                        1419148
+                    ],
+                    [
+                        "m_pr_2.png",
+                        "Reached 2,500 Points",
+                        "normal",
+                        1932255
+                    ],
+                    [
+                        "mods1.png",
+                        "Submitted 5 Mods",
+                        "normal",
+                        2185542
+                    ],
+                    [
+                        "m_age_4.png",
+                        "2 years a member",
+                        "normal",
+                        2540007
+                    ],
+                    [
+                        "m_pr_3.png",
+                        "Reached 7,500 Points",
+                        "normal",
+                        4439686
+                    ],
+                    [
+                        "returns_1.png",
+                        "Returned 100 times",
+                        "normal",
+                        5076089
+                    ],
+                    [
+                        "mods2.png",
+                        "Submitted 10 Mods",
+                        "normal",
+                        5191107
+                    ]
+                ],
+                "_aRareMedals": [
+                    [
+                        "subscribers_2.png",
+                        "Reached 50 subscribers",
+                        "rare",
+                        1914293
+                    ],
+                    [
+                        "thanks_recvd_2.png",
+                        "Received thanks 50 times",
+                        "rare",
+                        4134410
+                    ]
+                ],
+                "_aLegendaryMedals": [
+                    [
+                        "subscribers_3.png",
+                        "Reached 100 subscribers",
+                        "legendary",
+                        4723499
+                    ]
+                ],
+                "_bHasRipe": false,
+                "_nBuddyCount": 19,
+                "_nSubscriberCount": 113,
+                "_aDonationMethods": [
+                    {
+                        "_sTitle": "Ko-fi Profile",
+                        "_sValue": "https:\/\/ko-fi.com\/catzy123",
+                        "_sInputType": "text",
+                        "_sInputPlaceholder": "Ko-fi Profile URL...",
+                        "_sIconClasses": "MiscIcon KofiIcon",
+                        "_aValidator": {
+                            "_regexValidPattern": "^https?\\:\\\/\\\/(www\\.)?ko\\-fi\\.com\\\/.+$",
+                            "_sWarningMessage": "URL looks incorrect - it should look like: https:\/\/ko-fi.com\/USERNAME"
+                        },
+                        "_sValueTemplate": "<a target=\"_blank\" href=\"%VALUE%\">Ko-fi Profile<\/a>",
+                        "_bIsUrl": true,
+                        "_sFormattedValue": "<a target=\"_blank\" href=\"https:\/\/ko-fi.com\/catzy123\">Ko-fi Profile<\/a>"
+                    }
+                ],
+                "_bAccessorIsBuddy": false,
+                "_bBuddyRequestExistsWithAccessor": false,
+                "_bAccessorIsSubscribed": false,
+                "_aSubjectShaper": {
+                    "_sBorderStyle": "Glow",
+                    "_sFont": "MS Serif",
+                    "_sTextColor": "#5e5e5e",
+                    "_sTextHoverColor": "#ae2424",
+                    "_sBorderColor": "#949494",
+                    "_sBorderHoverColor": "#ff0000"
+                },
+                "_sSubjectShaperCssCode": "font-family:'MS Serif';color:#5e5e5e;",
+                "_sUpicUrl": "https:\/\/images.gamebanana.com\/img\/upic\/664b2c1471e0d.png",
+                "_aBio": [
+                    {
+                        "_sTitle": "Gender",
+                        "_sValue": "Man"
+                    },
+                    {
+                        "_sTitle": "Favorite Game",
+                        "_sValue": "Totk"
+                    },
+                    {
+                        "_sTitle": "Favorite Smash Fighter",
+                        "_sValue": "Sheik"
+                    },
+                    {
+                        "_sTitle": "Favorite Gameplay Style",
+                        "_sValue": "Assault"
+                    },
+                    {
+                        "_sTitle": "Favorite Songs",
+                        "_sValue": "zelda remixes\/naruto songs\/phonk"
+                    },
+                    {
+                        "_sTitle": "Coke or Pepsi",
+                        "_sValue": "Coke"
+                    },
+                    {
+                        "_sTitle": "Sonic or Mario",
+                        "_sValue": "Mario"
+                    },
+                    {
+                        "_sTitle": "Cat or Dog",
+                        "_sValue": "Cat"
+                    },
+                    {
+                        "_sTitle": "Gamer type",
+                        "_sValue": "Hardcore"
+                    },
+                    {
+                        "_sTitle": "Kit Kat or Snickers",
+                        "_sValue": "Kit Kat"
+                    },
+                    {
+                        "_sTitle": "Alignment",
+                        "_sValue": "Lawful Good"
+                    },
+                    {
+                        "_sTitle": "Favorite TV Series",
+                        "_sValue": "Naruto"
+                    },
+                    {
+                        "_sTitle": "First Game ever played",
+                        "_sValue": "idk"
+                    },
+                    {
+                        "_sTitle": "Most proud of",
+                        "_sValue": "Everything"
+                    },
+                    {
+                        "_sTitle": "FPS Hero",
+                        "_sValue": "Genji"
+                    }
+                ],
+                "_aDefaultLicenseChecklist": [
+                    "yes",
+                    "ask",
+                    "ask",
+                    "ask",
+                    "ask",
+                    "ask",
+                    "no",
+                    "ask"
+                ],
+                "_sDefaultLicense": "",
+                "_sHdAvatarUrl": "https:\/\/images.gamebanana.com\/img\/av\/69fb97d5909b4.png"
+            },
+            "_bAccessorIsSubmitter": false,
+            "_aStudio": null,
+            "_aWip": null,
+            "_aProject": null,
+            "_bAccessorHasLiked": true,
+            "_bAccessorHasUnliked": false,
+            "_bAccessorHasThanked": false,
+            "_bAccessorIsSubscribed": false,
+            "_idAccessorSubscriptionRow": 0,
+            "_aFiles": [
+                {
+                    "_idRow": 1865083,
+                    "_sFile": "faster_quick_menu.rar",
+                    "_nFilesize": 947557,
+                    "_tsDateAdded": 1793049520,
+                    "_nDownloadCount": 223,
+                    "_sDownloadUrl": "https:\/\/gamebanana.com\/dl\/1865083",
+                    "_sMd5Checksum": "9eedbc540e44af0dbf045a4b6d289018",
+                    "_sAnalysisState": "done",
+                    "_sAnalysisResult": "ok",
+                    "_sAnalysisResultVerbose": "File passed preliminary analysis",
+                    "_sAvState": "done",
+                    "_sAvResult": "clean",
+                    "_bIsArchived": false,
+                    "_bHasContents": true,
+                    "_sVersion": "1.0",
+                    "_sDescription": "Mod"
+                }
+            ]
+        },
+        {
             "_idRow": 501302,
             "_sModelName": "Mod",
             "_sSingularTitle": "Mod",
