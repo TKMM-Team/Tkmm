@@ -10,6 +10,7 @@ using Tkmm.Actions;
 using Tkmm.Core;
 using Tkmm.Models;
 using TkSharp;
+using TkSharp.Core.Models;
 
 namespace Tkmm.ViewModels.Pages;
 
@@ -132,8 +133,14 @@ public partial class HomePageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static Task Remove()
+    private static Task Remove(TkProfileMod? target)
     {
         return ModActions.Instance.RemoveModFromProfile();
+    }
+
+    [RelayCommand]
+    private static Task Uninstall(TkProfileMod? target)
+    {
+        return ModActions.Instance.UninstallMod();
     }
 }
