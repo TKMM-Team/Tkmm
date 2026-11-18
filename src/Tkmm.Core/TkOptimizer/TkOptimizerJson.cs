@@ -6,9 +6,6 @@ namespace Tkmm.Core.TkOptimizer;
 
 public sealed class TkOptimizerJson
 {
-    [JsonPropertyName("Keys")]
-    public required Dictionary<string, Option> Options { get; init; }
-
     public sealed class Option
     {
         public required string Name { get; init; }
@@ -16,6 +13,8 @@ public sealed class TkOptimizerJson
         public required string Class { get; init; }
 
         public required string Section { get; init; }
+
+        public bool Auto { get; init; }
 
         [JsonPropertyName("Name_Values")]
         public List<string>? NameValues { get; init; }
@@ -47,5 +46,5 @@ public sealed class TkOptimizerJson
     }
 }
 
-[JsonSerializable(typeof(TkOptimizerJson))]
+[JsonSerializable(typeof(Dictionary<string, Dictionary<string, TkOptimizerJson.Option>>))]
 public partial class TkOptimizerJsonContext : JsonSerializerContext;
