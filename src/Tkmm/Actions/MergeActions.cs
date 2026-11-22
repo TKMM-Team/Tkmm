@@ -172,7 +172,7 @@ public sealed partial class MergeActions : GuardedActionGroup<MergeActions>
 
                     target.Publish(
                         TKMM.MergedOutputFolder,
-                        Config.Shared.UseRomfslite,
+                        TKMM.ShouldUseRomfsLiteEx(profile),
                         progress,
                         wipeCompleted: () => Dispatcher.UIThread.Post(() =>
                             progressView.BeginCopy(Locale["MergeActions_ExportingToSdCard"])));
