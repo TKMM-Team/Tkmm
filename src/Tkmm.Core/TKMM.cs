@@ -107,8 +107,8 @@ public static class TKMM
 
             ITkModWriter writer = new FolderModWriter(mergeOutput);
 
-            // For atmosphere 20.0 support with TotK Optimizer
-            if (Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile)) {
+            // Atmosphere 20.0+ / TotK Optimizer, or forced by an enabled mod flag.
+            if (ShouldUseRomfsLiteEx(profile)) {
                 writer = new RomfsLiteExModWriter(writer);
             }
 
@@ -207,6 +207,41 @@ public static class TKMM
         const string processName = "Tkmm";
         RegistryHelper.CreateGameBananaWebProtocol(processName, Environment.ProcessPath);
         RegistryHelper.CreateFileAssociations(processName, ".tkcl", Environment.ProcessPath);
+    }
+
+    public static bool ShouldUseRomfsLiteEx(TkProfile? profile = null)
+    {
+        profile ??= ModManager.GetCurrentProfile();
+
+        if (HasRomfsLiteExFlag(profile)) {
+            return true;
+        }
+
+        return Config.Shared.UseRomfslite && TkOptimizerStore.IsProfileEnabled(profile);
+    }
+
+    private static bool HasRomfsLiteExFlag(TkProfile profile)
+    {
+        const string flagFileName = "romfsliteex.flag";
+
+        foreach (var profileMod in profile.Mods) {
+            if (!profileMod.IsEnabled) {
+                continue;
+            }
+
+            var extrasFolder = Path.Combine(ModManager.ModsFolderPath, profileMod.Mod.Id.ToString(), "extras");
+            if (!Directory.Exists(extrasFolder)) {
+                continue;
+            }
+
+            foreach (var file in Directory.EnumerateFiles(extrasFolder)) {
+                if (Path.GetFileName(file).Equals(flagFileName, StringComparison.OrdinalIgnoreCase)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static IEnumerable<TkChangelog> GetMergeTargets(TkProfile? profile = null)

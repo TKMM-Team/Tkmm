@@ -147,7 +147,7 @@ public static class TkRyujinxHelper
             return null;
         }
         
-        return Config.Shared.UseRomfslite
+        return TKMM.ShouldUseRomfsLiteEx()
             ? Path.Combine(ryujinxDataFolder, "sdcard", "atmosphere", "contents", "0100f2c0115b6000").Replace('\\', '/')
             : Path.Combine(ryujinxDataFolder, "mods", "contents", "0100f2c0115b6000", "TKMM").Replace('\\', '/');
     }

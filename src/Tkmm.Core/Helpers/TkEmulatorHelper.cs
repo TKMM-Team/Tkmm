@@ -219,7 +219,7 @@ public static class TkEmulatorHelper
             return null;
         }
         
-        if (Config.Shared.UseRomfslite && GetSdPath(emulatorFilePath) is {} sdCardPath) {
+        if (TKMM.ShouldUseRomfsLiteEx() && GetSdPath(emulatorFilePath) is {} sdCardPath) {
             return Path.Combine(sdCardPath, "atmosphere", "contents", "0100F2C0115B6000").Replace('\\', '/');
         }
 
