@@ -28,6 +28,15 @@ public static class OctokitHelper
             .GetLatest(owner, name);
     }
     
+#if SWITCH
+    public static async Task<(Release Release, string CommitSha)> GetLatestReleaseCommit(string owner, string name)
+    {
+        var release = await GetLatestRelease(owner, name);
+        var commit = await GithubClient.Repository.Commit.Get(owner, name, release.TagName);
+        return (release, commit.Sha);
+    }
+#endif
+
     public static async Task<Stream?> DownloadReleaseAsset(Release release, string assetName, CancellationToken ct = default)
     {
         var asset = release

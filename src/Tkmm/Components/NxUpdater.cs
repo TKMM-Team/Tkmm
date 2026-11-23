@@ -60,10 +60,15 @@ public static class NxUpdater
 
     private static async ValueTask<Release?> HasAvailableUpdates(CancellationToken ct = default)
     {
-        var latest = await OctokitHelper.GetLatestRelease("TKMM-Team", "TKMM-NX").WaitAsync(ct);
-        var latestCommit = latest.TargetCommitish;
+        var (latest, latestCommit) = await OctokitHelper
+            .GetLatestReleaseCommit("TKMM-Team", "TKMM-NX")
+            .WaitAsync(ct);
+        
         var currentCommit = await GetCurrentNxCommit();
-        return latestCommit != currentCommit ? latest : null;
+        
+        return string.Equals(currentCommit, latestCommit, StringComparison.OrdinalIgnoreCase)
+            ? null
+            : latest;
     }
 
     private static async Task<string> GetCurrentNxCommit()
