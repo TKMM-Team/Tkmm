@@ -9,7 +9,7 @@ public static class CrashHandler
 {
     private const string CRASH_HANDLER_ARGUMENT = "--crash-handler";
     private const string CRASH_INFO_ARGUMENT = "--crash-info";
-    private const string MUTEX_NAME = "Global\\TKMM-CrashHandler-[2E988D65-5221-4004-B282-E2B9E47A3AEF]";
+    private const string MUTEX_NAME = "TKMM-CrashHandler-[2E988D65-5221-4004-B282-E2B9E47A3AEF]";
 
     private static Mutex? _mutex;
 
@@ -20,6 +20,9 @@ public static class CrashHandler
             return true;
         }
         catch (WaitHandleCannotBeOpenedException) {
+            return false;
+        }
+        catch (IOException) {
             return false;
         }
     }
@@ -74,14 +77,20 @@ public static class CrashHandler
             return true;
         }
 
-        _mutex = new Mutex(initiallyOwned: true, MUTEX_NAME, out var createdNew);
-        if (createdNew) {
+        try {
+            _mutex = new Mutex(initiallyOwned: true, MUTEX_NAME, out var createdNew);
+            if (createdNew) {
+                return true;
+            }
+
+            _mutex.Dispose();
+            _mutex = null;
+            return false;
+        }
+        catch (IOException) {
+            _mutex = null;
             return true;
         }
-
-        _mutex.Dispose();
-        _mutex = null;
-        return false;
     }
 
     public static void ReleaseForRestart()
@@ -113,6 +122,17 @@ public static class CrashHandler
 
         SingleInstanceAppManager.MarkRestarting();
 
+#if SWITCH
+        var script =
+            "systemctl stop tkmm; " +
+            $"exec {BashQuote(sourcePath)} {CRASH_HANDLER_ARGUMENT} {CRASH_INFO_ARGUMENT} {BashQuote(crashInfoPath)}";
+
+        Process.Start(new ProcessStartInfo {
+            FileName = "/bin/bash",
+            ArgumentList = { "-c", script },
+            UseShellExecute = false
+        });
+#else
         Process.Start(new ProcessStartInfo(sourcePath) {
             UseShellExecute = true,
             ArgumentList = {
@@ -121,23 +141,20 @@ public static class CrashHandler
                 crashInfoPath
             }
         });
-
-#if SWITCH
-        StopTkmmService();
 #endif
 
         return true;
     }
 
 #if SWITCH
-    public static void StopTkmmService()
-    {
-        NxProcessHelper.Exec("systemctl stop tkmm");
-    }
-
     public static void StartTkmmService()
     {
         NxProcessHelper.Exec("systemctl start tkmm");
+    }
+
+    private static string BashQuote(string value)
+    {
+        return "'" + value.Replace("'", "'\\''") + "'";
     }
 #endif
 
